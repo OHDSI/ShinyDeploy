@@ -1,0 +1,10 @@
+name: ShinyTest
+title:
+account: schuemie
+server: shinyapps.io
+appId: 146242
+bundleId: 654857
+url: https://schuemie.shinyapps.io/ShinyTest/
+when: 1482162348.79431
+asMultiple: FALSE
+asStatic: FALSE
