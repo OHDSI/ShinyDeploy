@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(style = 'width:1000px;',
-  titlePanel("Supplementary data for 'Honest evidence from large-scale analysis of real-world data in health care'"),
+  titlePanel("Supplementary data for 'Honest evidence from large-scale analysis of health care data'"),
   tabsetPanel(
     tabPanel("Systematically generated evidence",
              fluidRow(
@@ -104,7 +104,7 @@ shinyUI(fluidPage(style = 'width:1000px;',
              br(),
              p("Supplementary data for:"),
              p("Schuemie MJ, Ryan PB, Hripcsak G, Madigan D, Suchard MA,", 
-               em("Honest evidence from large-scale analysis of real-world data in health care"), 
+               em("Honest evidence from large-scale analysis of health care data."), 
                ", ...")
     )
   )
