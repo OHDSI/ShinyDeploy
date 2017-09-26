@@ -1,14 +1,7 @@
 library(ggplot2)
 
 plotScatter <- function(d) {
-  d <- d[!is.na(d$logRr), ]
-  d <- d[!is.na(d$ci95lb), ]
-  d <- d[!is.na(d$ci95ub), ]
-  if (nrow(d) == 0) {
-    return(NULL)
-  }
-  d$Group <- as.factor(d$trueRr)
-  d$Significant <- d$ci95lb > d$trueRr | d$ci95ub < d$trueRr
+  d$Significant <- d$ci95lb > d$targetEffectSize | d$ci95ub < d$targetEffectSize
   
   temp1 <- aggregate(Significant ~ Group, data = d, length)
   temp2 <- aggregate(Significant ~ Group, data = d, mean)
@@ -18,18 +11,17 @@ plotScatter <- function(d) {
   
   temp2$meanLabel <- paste0(formatC(100 * (1 - temp2$Significant), digits = 1, format = "f"),
                             "% of CIs includes ",
-                            temp2$Group)
+                            substr(as.character(temp2$Group), start = 21, stop = nchar(as.character(temp2$Group))))
   temp2$Significant <- NULL
   dd <- merge(temp1, temp2)
-  dd$tes <- as.numeric(as.character(dd$Group))
+  # print(substr(as.character(dd$Group), start = 20, stop = nchar(as.character(dd$Group))))
+  dd$tes <- as.numeric(substr(as.character(dd$Group), start = 21, stop = nchar(as.character(dd$Group))))
   
   breaks <- c(0.25, 0.5, 1, 2, 4, 6, 8, 10)
   theme <- element_text(colour = "#000000", size = 12)
   themeRA <- element_text(colour = "#000000", size = 12, hjust = 1)
   themeLA <- element_text(colour = "#000000", size = 12, hjust = 0)
   
-  d$Group <- paste("True hazard ratio =", d$Group)
-  dd$Group <- paste("True hazard ratio =", dd$Group)
   alpha <- 1 - min(0.95*(nrow(d)/nrow(dd)/50000)^0.1, 0.95)
   plot <- ggplot(d, aes(x = logRr, y= seLogRr), environment = environment()) +
     geom_vline(xintercept = log(breaks), colour = "#AAAAAA", lty = 1, size = 0.5) +
@@ -54,9 +46,63 @@ plotScatter <- function(d) {
           strip.text.y = theme,
           strip.background = element_blank(),
           legend.position = "none")
+  return(plot)
+}
+
+plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL) {
+  trueLogRrLevels <- unique(trueLogRr)
+  allData <- data.frame()
+  aucs <- c()
+  labels <- c()
+  overall <- c()
+  for (trueLogRrLevel in trueLogRrLevels){
+    if (trueLogRrLevel != 0 ) {
+      data <- data.frame(logRr = logRr[trueLogRr == 0 | trueLogRr == trueLogRrLevel], 
+                         trueLogRr = trueLogRr[trueLogRr == 0 | trueLogRr == trueLogRrLevel])
+      data$truth <- data$trueLogRr != 0
+      
+      roc <- pROC::roc(data$truth, data$logRr, algorithm = 3)
+      if (showAucs) {
+        aucs <- c(aucs, pROC::auc(roc))
+        labels <- c(labels, paste("True effect size =", exp(trueLogRrLevel)))
+        overall <- c(overall, FALSE)
+      }
+      data <- data.frame(sens = roc$sensitivities, fpRate = 1 - roc$specificities, label = paste("True effect size =", exp(trueLogRrLevel)), overall = FALSE)
+      data <- data[order(data$sens, data$fpRate), ]
+      allData <- rbind(allData, data)
+    }
+  }
+  # Overall ROC
+  data <- data.frame(logRr = logRr, 
+                     trueLogRr = trueLogRr)
+  data$truth <- data$trueLogRr != 0
   
+  roc <- pROC::roc(data$truth, data$logRr, algorithm = 3)
+  if (showAucs) {
+    aucs <- c(aucs, pROC::auc(roc))
+    labels <- c(labels, "Overall")
+    overall <- c(overall, TRUE)
+  }
+  data <- data.frame(sens = roc$sensitivities, fpRate = 1 - roc$specificities, label = "Overall", overall = TRUE)
+  data <- data[order(data$sens, data$fpRate), ]
+  allData <- rbind(allData, data)
   
+  allData$label <- as.factor(allData$label)
+  plot <- ggplot2::ggplot(allData, ggplot2::aes(x = fpRate, y = sens, group = label, color = label, fill = label)) +
+    ggplot2::geom_abline(intercept = 0, slope = 1) +
+    ggplot2::geom_line(aes(linetype = overall), alpha = 0.5, size = 1) +
+    ggplot2::scale_x_continuous("1 - specificity") +
+    ggplot2::scale_y_continuous("Sensitivity")
   
-  
+  if (showAucs) {
+    aucs <- data.frame(auc = aucs, label = labels) 
+    aucs <- aucs[order(-aucs$label), ]
+    for (i in 1:nrow(aucs)) {
+      label <- paste0(aucs$label[i], ": AUC = ", format(round(aucs$auc[i], 2), nsmall = 2))
+      plot <- plot + ggplot2::geom_text(label = label, x = 1, y = (i-1)*0.1, hjust = 1, color = "#000000")
+    }
+  }
+  if (!is.null(fileName))
+    ggplot2::ggsave(fileName, plot, width = 5.5, height = 4.5, dpi = 400)
   return(plot)
 }
