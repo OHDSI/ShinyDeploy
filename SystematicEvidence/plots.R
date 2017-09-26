@@ -19,7 +19,7 @@ plotScatter <- function(d, selected, xLabel) {
   
   oneRow <- data.frame(
     nLabel = paste0(formatC(nrow(d), big.mark = ","), " estimates"),
-    meanLabel = paste0(formatC(100 * mean(!d$Significant, na.rm = TRUE), digits = 1, format = "f"), "% of CIs includes 1"))
+    meanLabel = paste0(formatC(100 * mean(!d$Significant, na.rm = TRUE), digits = 1, format = "f"), "% of CIs include 1"))
   
   breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
   theme <- element_text(colour = "#000000", size = 12)
