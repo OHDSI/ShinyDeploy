@@ -24,7 +24,7 @@ plotScatter <- function(d) {
   
   alpha <- 1 - min(0.95*(nrow(d)/nrow(dd)/50000)^0.1, 0.95)
   plot <- ggplot(d, aes(x = logRr, y= seLogRr), environment = environment()) +
-    geom_vline(xintercept = log(breaks), colour = "#AAAAAA", lty = 1, size = 0.5) +
+    geom_vline(xintercept = log(breaks), colour = "#CCCCCC", lty = 1, size = 0.5) +
     geom_abline(aes(intercept = (-log(tes))/qnorm(0.025), slope = 1/qnorm(0.025)), colour = rgb(0.8, 0, 0), linetype = "dashed", size = 1, alpha = 0.5, data = dd) +
     geom_abline(aes(intercept = (-log(tes))/qnorm(0.975), slope = 1/qnorm(0.975)), colour = rgb(0.8, 0, 0), linetype = "dashed", size = 1, alpha = 0.5, data = dd) +
     geom_point(size = 2, color = rgb(0, 0, 0, alpha = 0.05), alpha = alpha, shape = 16) +
@@ -88,21 +88,43 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
   allData <- rbind(allData, data)
   
   allData$label <- as.factor(allData$label)
-  plot <- ggplot2::ggplot(allData, ggplot2::aes(x = fpRate, y = sens, group = label, color = label, fill = label)) +
-    ggplot2::geom_abline(intercept = 0, slope = 1) +
-    ggplot2::geom_line(aes(linetype = overall), alpha = 0.5, size = 1) +
-    ggplot2::scale_x_continuous("1 - specificity") +
-    ggplot2::scale_y_continuous("Sensitivity")
+  breaks <- seq(0, 1, by = 0.2)
+  theme <- element_text(colour = "#000000", size = 12)
+  themeRA <- element_text(colour = "#000000", size = 12, hjust = 1)
+  themeLA <- element_text(colour = "#000000", size = 12, hjust = 0)
+  plot <- ggplot(allData, aes(x = fpRate, y = sens, group = label, color = label, fill = label)) +
+    geom_vline(xintercept = breaks, colour = "#CCCCCC", lty = 1, size = 0.5) +
+    geom_hline(yintercept = breaks, colour = "#CCCCCC", lty = 1, size = 0.5) +
+    geom_abline(intercept = 0, slope = 1) +
+    geom_line(aes(linetype = overall), alpha = 0.5, size = 1) +
+    scale_x_continuous("1 - specificity", breaks = breaks, labels = breaks) +
+    scale_y_continuous("Sensitivity", breaks = breaks, labels = breaks) +
+    labs(color = "True effect size", linetype = "Overall") +
+    theme(panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          panel.grid.major = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text.y = themeRA,
+          axis.text.x = theme,
+          axis.title = theme,
+          legend.key = element_blank(),
+          strip.text.x = theme,
+          strip.text.y = theme,
+          strip.background = element_blank(),
+          legend.position = "right",
+          legend.text = theme,
+          legend.title = theme)
+  
   
   if (showAucs) {
     aucs <- data.frame(auc = aucs, label = labels) 
     aucs <- aucs[order(-aucs$label), ]
     for (i in 1:nrow(aucs)) {
       label <- paste0(aucs$label[i], ": AUC = ", format(round(aucs$auc[i], 2), nsmall = 2))
-      plot <- plot + ggplot2::geom_text(label = label, x = 1, y = (i-1)*0.1, hjust = 1, color = "#000000")
+      plot <- plot + geom_text(label = label, x = 1, y = (i-1)*0.1, hjust = 1, color = "#000000", size = 5)
     }
   }
   if (!is.null(fileName))
-    ggplot2::ggsave(fileName, plot, width = 5.5, height = 4.5, dpi = 400)
+    ggsave(fileName, plot, width = 5.5, height = 4.5, dpi = 400)
   return(plot)
 }

@@ -20,7 +20,7 @@ strata <- as.character(unique(estimates$stratum))
 strata <- strata[order(strata)]
 strata <- c("All", strata)
 # analysisRef <- readRDS(file.path("data", "analysisRef.rds"))
-analysisRef <- read.csv(file.path("data", "analysisRef.csv"))
+analysisRef <- read.csv(file.path("data", "AnalysisRef.csv"))
 trueRrs <- unique(estimates$targetEffectSize)
 trueRrs <- trueRrs[order(trueRrs)]
 trueRrs <- c("Overall", trueRrs)

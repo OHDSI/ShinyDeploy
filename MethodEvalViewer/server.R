@@ -75,6 +75,7 @@ shinyServer(function(input, output, session) {
           auc <- NA
           type1 <- round(mean(forEval$p < 0.05), 2)  
           type2 <- NA
+          missing <- round(mean(forEval$seLogRr == 999), 2)
         } else {
           negAndPos <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & (subset$targetEffectSize == trueRr | subset$targetEffectSize == 1), ]
           roc <- pROC::roc(negAndPos$targetEffectSize > 1, negAndPos$logRr, algorithm = 3)
@@ -107,7 +108,7 @@ shinyServer(function(input, output, session) {
     isolate(
       if (!is.null(input$performanceMetrics_rows_selected)) {
         selection$selected = input$performanceMetrics_rows_selected
-        options$displayStart = floor(input$performanceMetrics_rows_selected[1] / 10) * 10 + 1
+        options$displayStart = floor(input$performanceMetrics_rows_selected[1] / 10) * 10 
       }
     )
     data <- performanceMetrics()
