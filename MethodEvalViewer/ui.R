@@ -2,7 +2,7 @@ library(shiny)
 library(DT)
 
 shinyUI(
-  fluidPage(style = 'width:1000px;',
+  fluidPage(style = 'width:1200px;',
             titlePanel("OHDSI Population-Level Estimation Method Evaluation"),
             fluidRow(
               column(2,
