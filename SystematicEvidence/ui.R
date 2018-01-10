@@ -1,7 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(style = 'width:1000px;',
-  titlePanel("Supplementary data for 'Improving reproducibility by using high-throughput observational studies with empirical calibration: a comparison of all depression treatments'"),
+  titlePanel("Supplementary data for 'Improving reproducibility using high-throughput observational studies with empirical calibration: comparing all depression treatments'"),
   tabsetPanel(
     tabPanel("Systematically generated evidence",
              fluidRow(
