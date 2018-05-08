@@ -34,3 +34,6 @@ vignettes/*.pdf
 .Rproj.user
 
 */rsconnect
+
+# Manually deployed Shiny app directories
+/AhasHfBkleAmputation/
