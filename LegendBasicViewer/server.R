@@ -80,7 +80,11 @@ shinyServer(function(input, output, session) {
     if (is.null(idx)) {
       return(NULL)
     } else {
-      row <- resultSubset()[idx, ]
+      subset <- resultSubset()
+      if (nrow(subset) == 0) {
+        return(NULL)
+      }
+      row <- subset[idx, ]
       row$psStrategy <- gsub("^PS ", "", gsub(", .*$", "", analyses$description[analyses$analysisId == row$analysisId]))
       return(row)
     }
