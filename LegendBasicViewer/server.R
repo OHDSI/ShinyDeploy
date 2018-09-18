@@ -24,6 +24,14 @@ mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
                      "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
 
 shinyServer(function(input, output, session) {
+  
+  connection <- DatabaseConnector::connect(connectionDetails)
+  
+  session$onSessionEnded(function() {
+    writeLines("Closing connection")
+    DatabaseConnector::disconnect(connection)
+  })
+  
   # Specific research questions tab ---------------------------------------------------------------------------
   observe({
     indicationId <- input$indication
@@ -758,9 +766,4 @@ shinyServer(function(input, output, session) {
     plot <- plotAllPs(ps)
     return(plot)
   }, width = 1000 , height = 600)
-})
-
-onStop(function() {
-  writeLines("Closing connection")
-  DatabaseConnector::disconnect(connection)
 })

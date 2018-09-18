@@ -34,6 +34,8 @@ databases <- getDatabases(connection)
 analyses <- getAnalyses(connection)
 subgroups <- getSubgroups(connection)
 
+writeLines("Closing connection")
+disconnect(connection)
 
 # sql <- "SELECT target_id,\n    comparator_id,\n    outcome_id,\n    cm_interaction_result.analysis_id,\n    cohort_method_analysis.description AS analysis_description,\n    cm_interaction_result.database_id,\n    interaction_covariate_id,\n    covariate_name AS interaction_covariate_name,\n    rrr,\n    ci_95_lb,\n    ci_95_ub,\n    p,\n    calibrated_p,\n    i_2,\n    log_rrr,\n    se_log_rrr,\n    target_subjects,\n    comparator_subjects,\n    target_days,\n    comparator_days,\n    target_outcomes,\n    comparator_outcomes\n  FROM cm_interaction_result\n  INNER JOIN covariate\n  ON cm_interaction_result.interaction_covariate_id = covariate.covariate_id\n  AND cm_interaction_result.database_id = covariate.database_id\n  INNER JOIN cohort_method_analysis\n  ON cm_interaction_result.analysis_id = cohort_method_analysis.analysis_id WHERE target_id IN (18) AND comparator_id IN (17) AND outcome_id IN (24) AND cm_interaction_result.database_id IN ('JMDC')"
 # x <- querySql(connection, sql)
