@@ -113,7 +113,6 @@ shinyServer(function(input, output, session) {
                                       comparatorId = comparatorId,
                                       databaseId = row$databaseId,
                                       analysisId = analysisId)
-       print(nrow(balance))
        return(balance)
      }
   })
