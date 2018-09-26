@@ -91,7 +91,20 @@ getDatabaseDetails <- function(connection, databaseId) {
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   databaseDetails <- querySql(connection, sql)
   colnames(databaseDetails) <- SqlRender::snakeCaseToCamelCase(colnames(databaseDetails))
+  databaseDetails$description <- sub("\\n", " ", databaseDetails$description)
+  databaseDetails$description <- sub("JDMC", "JMDC", databaseDetails$description) # TODO Fix in schema
   return(databaseDetails)
+}
+
+getIndicationForExposure <- function(connection,
+                                     exposureIds = c()) {
+  sql <- "SELECT exposure_id, indication_id FROM single_exposure_of_interest WHERE"  
+  sql <- paste(sql, paste0("exposure_id IN (", paste(exposureIds, collapse = ", "), ")"))
+  
+  sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
+  indications <- querySql(connection, sql)
+  colnames(indications) <- SqlRender::snakeCaseToCamelCase(colnames(indications))
+  return(indications)  
 }
 
 getTcoDbs <- function(connection,

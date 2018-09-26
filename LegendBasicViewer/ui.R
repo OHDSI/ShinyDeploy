@@ -3,7 +3,9 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel("LEGEND basic viewer"),
+            titlePanel(
+              title=div(img(src="logo.png", height = 50, width = 50), 
+                        "LEGEND basic viewer")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -20,7 +22,7 @@ shinyUI(
                                  }
                                  ")),
             conditionalPanel(condition = "$('html').hasClass('shiny-busy')",
-                             tags$div("Procesing...",id = "loadmessage")),
+                             tags$div("Processing...",id = "loadmessage")),
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
                                  HTML("</BR><P>This app is under development. All results are preliminary and may change without notice.</P>"),
@@ -75,11 +77,11 @@ shinyUI(
                                                                                 uiOutput("kaplanMeierPlotPlotCaption")),
                                                                        tabPanel("Subgroups",
                                                                                 uiOutput("subgroupTableCaption"),
-                                                                                dataTableOutput("subgroupTable")) 
+                                                                                dataTableOutput("subgroupTable"))
                                                            )
                                           )
                                    )
-                                   
+
                                  )
                         ),
                         tabPanel("Overview",
@@ -128,7 +130,7 @@ shinyUI(
                                                                plotOutput("psPlot")
                                                         )
                                                       )
-                                                      
+
                                              )
                                  )
                         )

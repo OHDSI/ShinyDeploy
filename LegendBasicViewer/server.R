@@ -1,37 +1,37 @@
 library(shiny)
 library(DT)
 
-mainColumns <- c("description", 
-                 "databaseId", 
-                 "rr", 
+mainColumns <- c("description",
+                 "databaseId",
+                 "rr",
                  "ci95lb",
                  "ci95ub",
                  "p",
-                 "calibratedRr", 
+                 "calibratedRr",
                  "calibratedCi95Lb",
                  "calibratedCi95Ub",
                  "calibratedP")
 
-mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
-                     "<span title=\"Data source\">Data source</span>", 
+mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
+                     "<span title=\"Data source\">Data source</span>",
                      "<span title=\"Hazard ratio (uncalibrated)\">HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (uncalibrated)\">LB</span>",
-                     "<span title=\"Upper bound of the 95 percent confidence interval (uncalibrated)\">UB</span>", 
-                     "<span title=\"Two-sided p-value (uncalibrated)\">P</span>", 
+                     "<span title=\"Upper bound of the 95 percent confidence interval (uncalibrated)\">UB</span>",
+                     "<span title=\"Two-sided p-value (uncalibrated)\">P</span>",
                      "<span title=\"Hazard ratio (calibrated)\">Cal.HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (calibrated)\">Cal.LB</span>",
-                     "<span title=\"Upper bound of the 95 percent confidence interval (calibrated)\">Cal.UB</span>", 
+                     "<span title=\"Upper bound of the 95 percent confidence interval (calibrated)\">Cal.UB</span>",
                      "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
 
 shinyServer(function(input, output, session) {
-  
+
   connection <- DatabaseConnector::connect(connectionDetails)
-  
+
   session$onSessionEnded(function() {
     writeLines("Closing connection")
     DatabaseConnector::disconnect(connection)
   })
-  
+
   # Specific research questions tab ---------------------------------------------------------------------------
   observe({
     indicationId <- input$indication
@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
                       inputId = "comparator",
                       choices = unique(filteredExposures$exposureName))
   })
-  
+
   resultSubset <- reactive({
     targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
     comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
@@ -94,7 +94,7 @@ shinyServer(function(input, output, session) {
     return(!is.null(selectedRow()))
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
-  
+
   balance <- reactive({
      row <- selectedRow()
      if (is.null(row)) {
@@ -147,20 +147,20 @@ shinyServer(function(input, output, session) {
                        class = "stripe nowrap compact")
     return(table)
   })
-  
+
   output$powerTableCaption <- renderUI({
     row <- selectedRow()
     if (!is.null(row)) {
-      text <- "<strong>Table 1a.</strong> Number of subjects, follow-up time (in years), number of outcome 
-      events, and event incidence rate (IR) per 1,000 patient years (PY) in the target (<em>%s</em>) and 
-      comparator (<em>%s</em>) group after %s, as  well as the minimum detectable  relative risk (MDRR). 
+      text <- "<strong>Table 1a.</strong> Number of subjects, follow-up time (in years), number of outcome
+      events, and event incidence rate (IR) per 1,000 patient years (PY) in the target (<em>%s</em>) and
+      comparator (<em>%s</em>) group after %s, as  well as the minimum detectable  relative risk (MDRR).
       Note that the IR does not account for any stratification."
       return(HTML(sprintf(text, input$target, input$comparator, row$psStrategy)))
     } else {
       return(NULL)
     }
   })
-  
+
   output$powerTable <- renderTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -178,21 +178,21 @@ shinyServer(function(input, output, session) {
                            "Comparator IR (per 1,000 PY)",
                            "MDRR")
       return(table)
-    } 
+    }
   })
-  
+
   output$timeAtRiskTableCaption <- renderUI({
     row <- selectedRow()
     if (!is.null(row)) {
       text <- "<strong>Table 1b.</strong> Time (days) at risk distribution expressed as
-      minimum (min), 25th percentile (P25), median, 75th percentile (P75), and maximum (max) in the target 
+      minimum (min), 25th percentile (P25), median, 75th percentile (P75), and maximum (max) in the target
      (<em>%s</em>) and comparator (<em>%s</em>) cohort after %s."
       return(HTML(sprintf(text, input$target, input$comparator, row$psStrategy)))
     } else {
       return(NULL)
     }
   })
-  
+
   output$timeAtRiskTable <- renderTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -209,9 +209,9 @@ shinyServer(function(input, output, session) {
                                         analysisId = row$analysisId)
       table <- prepareFollowUpDistTable(followUpDist)
       return(table)
-    } 
+    }
   })
-  
+
   output$attritionPlot <- renderPlot({
     row <- selectedRow()
     if (is.null(row)) {
@@ -220,40 +220,40 @@ shinyServer(function(input, output, session) {
       targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
-      attrition <- getAttrition(connection = connection, 
+      attrition <- getAttrition(connection = connection,
                                 targetId = targetId,
                                 comparatorId = comparatorId,
                                 outcomeId = outcomeId,
                                 databaseId = row$databaseId,
-                                analysisId = row$analysisId) 
+                                analysisId = row$analysisId)
       plot <- drawAttritionDiagram(attrition)
       return(plot)
     }
   })
-  
+
   output$attritionPlotCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
       return(NULL)
     } else {
-      text <- "<strong>Figure 1.</strong> Attrition diagram, showing the Number of subjectsin the target (<em>%s</em>) and 
+      text <- "<strong>Figure 1.</strong> Attrition diagram, showing the Number of subjectsin the target (<em>%s</em>) and
       comparator (<em>%s</em>) group after various stages in the analysis."
       return(HTML(sprintf(text, input$target, input$comparator)))
-    } 
+    }
   })
-  
+
   output$table1Caption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
       return(NULL)
     } else {
       text <- "<strong>Table 2.</strong> Select characteristics before and after %s, showing the (weighted)
-      percentage of subjects  with the characteristics in the target (<em>%s</em>) and comparator (<em>%s</em>) group, as 
+      percentage of subjects  with the characteristics in the target (<em>%s</em>) and comparator (<em>%s</em>) group, as
       well as the standardized difference of the means."
       return(HTML(sprintf(text, row$psStrategy, input$target, input$comparator)))
-    } 
+    }
   })
-  
+
   output$table1Table <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
       targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
-      chars <- getCovariateBalance(connection = connection, 
+      chars <- getCovariateBalance(connection = connection,
                                    targetId = targetId,
                                    comparatorId = comparatorId,
                                    outcomeId = outcomeId,
@@ -270,8 +270,8 @@ shinyServer(function(input, output, session) {
                                    analysisId = row$analysisId)
       table1 <- prepareTable1(balance = chars,
                              beforeLabel = paste("Before" , row$psStrategy),
-                             afterLabel = paste("Before" , row$psStrategy))
-                             
+                             afterLabel = paste("After" , row$psStrategy))
+
       container <- htmltools::withTags(table(
         class = 'display',
         thead(
@@ -293,16 +293,16 @@ shinyServer(function(input, output, session) {
                       ordering = FALSE,
                       paging = FALSE,
                       bInfo = FALSE)
-      table1 <- datatable(table1[3:nrow(table1), ], 
-                          options = options, 
+      table1 <- datatable(table1[3:nrow(table1), ],
+                          options = options,
                           rownames = FALSE,
                           escape = FALSE,
                           container = container,
                           class = "stripe nowrap compact")
       return(table1)
-    } 
+    }
   })
-  
+
   output$psDistPlot <- renderPlot({
     row <- selectedRow()
     if (is.null(row)) {
@@ -311,7 +311,7 @@ shinyServer(function(input, output, session) {
       targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
-      ps <- getPs(connection = connection, 
+      ps <- getPs(connection = connection,
                   targetId = targetId,
                   comparatorId = comparatorId,
                   databaseId = row$databaseId)
@@ -319,7 +319,7 @@ shinyServer(function(input, output, session) {
       return(plot)
     }
   })
-  
+
   output$balancePlot <- renderPlot({
     bal <- balance()
     if (is.null(bal)) {
@@ -329,24 +329,24 @@ shinyServer(function(input, output, session) {
       writeLines("Plotting covariate balance")
       plot <- plotCovariateBalanceScatterPlot(balance = bal,
                                               beforeLabel = paste("Before", row$psStrategy),
-                                              afterLabel = paste("Before", row$psStrategy))
+                                              afterLabel = paste("After", row$psStrategy))
       return(plot)
     }
   })
-  
+
   output$balancePlotCaption <- renderUI({
     bal <- balance()
     if (is.null(bal)) {
       return(NULL)
     } else {
       row <- selectedRow()
-      text <- "<strong>Figure 3.</strong> Covariate balance before and after %s. Each dot represents 
-      the standardizes difference of means for a single covariate before and after %s on the propensity 
+      text <- "<strong>Figure 3.</strong> Covariate balance before and after %s. Each dot represents
+      the standardizes difference of means for a single covariate before and after %s on the propensity
       score. Move the mouse arrow over a dot for more details."
       return(HTML(sprintf(text, row$psStrategy, row$psStrategy)))
-    } 
+    }
   })
-  
+
   output$hoverInfoBalanceScatter <- renderUI({
     bal <- balance()
     if (is.null(bal)) {
@@ -363,10 +363,10 @@ shinyServer(function(input, output, session) {
       left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
       top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
       style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
-                      "left:", 
-                      left_px - 251, 
-                      "px; top:", 
-                      top_px - 150, 
+                      "left:",
+                      left_px - 251,
+                      "px; top:",
+                      top_px - 150,
                       "px; width:500px;")
       beforeMatchingStdDiff <- formatC(point$beforeMatchingStdDiff, digits = 2, format = "f")
       afterMatchingStdDiff <- formatC(point$afterMatchingStdDiff, digits = 2, format = "f")
@@ -381,7 +381,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-  
+
   output$systematicErrorPlot <- renderPlot({
     row <- selectedRow()
     if (is.null(row)) {
@@ -394,12 +394,12 @@ shinyServer(function(input, output, session) {
                                           comparatorId = comparatorId,
                                           analysisId = row$analysisId,
                                           databaseId = row$databaseId)
-      
+
       plot <- plotScatter(controlResults)
       return(plot)
     }
   })
-  
+
   output$kaplanMeierPlot <- renderPlot({
     row <- selectedRow()
     if (is.null(row)) {
@@ -408,7 +408,7 @@ shinyServer(function(input, output, session) {
       targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
-      km <- getKaplanMeier(connection = connection, 
+      km <- getKaplanMeier(connection = connection,
                                    targetId = targetId,
                                    comparatorId = comparatorId,
                                    outcomeId = outcomeId,
@@ -420,7 +420,7 @@ shinyServer(function(input, output, session) {
       return(plot)
     }
   }, res = 100)
-  
+
   output$kaplanMeierPlotPlotCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
@@ -429,12 +429,12 @@ shinyServer(function(input, output, session) {
       text <- "<strong>Figure 5.</strong> Kaplan Meier plot, showing survival as a function of time. This plot
       is adjusted for the propensity score %s: The target curve (<em>%s</em>) shows the actual observed survival. The
       comparator curve (<em>%s</em>) applies reweighting to approximate the counterfactual of what the target survival
-      would look like had the target cohort been exposed to the comparator instead. The shaded area denotes 
+      would look like had the target cohort been exposed to the comparator instead. The shaded area denotes
       the 95 percent confidence interval."
       return(HTML(sprintf(text, row$psStrategy, input$target, input$comparator)))
-    } 
+    }
   })
-  
+
   interactionEffects <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
@@ -444,7 +444,7 @@ shinyServer(function(input, output, session) {
       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analyses$description[analyses$analysisId == row$analysisId]), analyses$description)]
-      subgroupResults <- getSubgroupResults(connection = connection, 
+      subgroupResults <- getSubgroupResults(connection = connection,
                                             targetIds = targetId,
                                             comparatorIds = comparatorId,
                                             outcomeIds = outcomeId,
@@ -457,20 +457,20 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   output$subgroupTableCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
       return(NULL)
     } else {
       text <- "<strong>Table 4.</strong> Subgroup interactions. For each subgroup, the number of subject within the subroup
-      in the target (<em>%s</em>) and comparator (<em>%s</em>) cohorts are provided, as well as the hazard ratio ratio (HRR) 
-      with 95 percent confidence interval and p-value (uncalibrated and calibrated) for interaction of the main effect with 
+      in the target (<em>%s</em>) and comparator (<em>%s</em>) cohorts are provided, as well as the hazard ratio ratio (HRR)
+      with 95 percent confidence interval and p-value (uncalibrated and calibrated) for interaction of the main effect with
       the subgroup."
       return(HTML(sprintf(text, input$target, input$comparator)))
-    } 
+    }
   })
-  
+
   output$subgroupTable <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -491,29 +491,29 @@ shinyServer(function(input, output, session) {
                       ordering = FALSE,
                       paging = FALSE,
                       bInfo = FALSE)
-      subgroupTable <- datatable(subgroupTable, 
-                                 options = options, 
+      subgroupTable <- datatable(subgroupTable,
+                                 options = options,
                                  rownames = FALSE,
                                  escape = FALSE,
                                  class = "stripe nowrap compact")
       return(subgroupTable)
     }
   })
-  
+
   # Main effects tab ---------------------------------------------------------------------------
   observe({
     indicationId <- input$meIndication
     if (indicationId == "All") {
-      updateSelectInput(session = session, 
+      updateSelectInput(session = session,
                         inputId = "meExposureGroup",
                         choices = c("All", unique(exposureGroups$exposureGroup)))
     } else {
-      updateSelectInput(session = session, 
+      updateSelectInput(session = session,
                         inputId = "meExposureGroup",
                         choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
     }
   })
-  
+
   observe({
     indicationId <- input$meIndication
     exposureGroup <- input$meExposureGroup
@@ -528,18 +528,18 @@ shinyServer(function(input, output, session) {
       filteredExposures <- filteredExposures
     } else {
       filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    } 
-    updateSelectInput(session = session, 
+    }
+    updateSelectInput(session = session,
                       inputId = "meTarget",
                       choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "meComparator",
                       choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "meOutcome",
                       choices = c("All", unique(filteredOutcomes$outcomeName)))
   })
-  
+
   output$mePlot <- renderPlot({
     indicationId <- input$meIndication
     exposureGroup <- input$meExposureGroup
@@ -554,7 +554,7 @@ shinyServer(function(input, output, session) {
       filteredExposures <- filteredExposures
     } else {
       filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    } 
+    }
     target <- input$meTarget
     if (target == "All") {
       targetIds <- unique(filteredExposures$exposureId)
@@ -575,7 +575,7 @@ shinyServer(function(input, output, session) {
     }
     database <- input$meDatabase
     if (database == "All") {
-      databaseIds <- databases$databaseId   
+      databaseIds <- databases$databaseId
     } else {
       databaseIds <- database
     }
@@ -606,16 +606,16 @@ shinyServer(function(input, output, session) {
   observe({
     indicationId <- input$ieIndication
     if (indicationId == "All") {
-      updateSelectInput(session = session, 
+      updateSelectInput(session = session,
                         inputId = "ieExposureGroup",
                         choices = c("All", unique(exposureGroups$exposureGroup)))
     } else {
-      updateSelectInput(session = session, 
+      updateSelectInput(session = session,
                         inputId = "ieExposureGroup",
                         choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
     }
   })
-  
+
   observe({
     indicationId <- input$ieIndication
     exposureGroup <- input$ieExposureGroup
@@ -630,18 +630,18 @@ shinyServer(function(input, output, session) {
       filteredExposures <- filteredExposures
     } else {
       filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    } 
-    updateSelectInput(session = session, 
+    }
+    updateSelectInput(session = session,
                       inputId = "ieTarget",
                       choices = c("All", unique(filteredExposures$exposureNaie)))
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "ieComparator",
                       choices = c("All", unique(filteredExposures$exposureNaie)))
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "ieOutcome",
                       choices = c("All", unique(filteredOutcomes$outcomeNaie)))
   })
-  
+
   output$iePlot <- renderPlot({
     indicationId <- input$ieIndication
     exposureGroup <- input$ieExposureGroup
@@ -656,7 +656,7 @@ shinyServer(function(input, output, session) {
       filteredExposures <- filteredExposures
     } else {
       filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    } 
+    }
     target <- input$ieTarget
     if (target == "All") {
       targetIds <- unique(filteredExposures$exposureId)
@@ -677,7 +677,7 @@ shinyServer(function(input, output, session) {
     }
     database <- input$ieDatabase
     if (database == "All") {
-      databaseIds <- databases$databaseId   
+      databaseIds <- databases$databaseId
     } else {
       databaseIds <- database
     }
@@ -693,7 +693,7 @@ shinyServer(function(input, output, session) {
     } else {
       subgroupIds <- subgroups$subgroupId[subgroups$subgroupName == subgroup]
     }
-    
+
     writeLines("Fetching interaction effects")
     interactionEffects <- getSubgroupResults(connection = connection,
                                              targetIds = targetIds,
@@ -711,30 +711,30 @@ shinyServer(function(input, output, session) {
     plot <- plotLargeScatter(interactionEffects, "Uncalibrated hazard ratio ratio")
     return(plot)
   }, width = 1000 , height = 500)
-  
-    
+
+
   # Propensity scores tab ---------------------------------------------------------------------------
   observe({
     indicationId <- input$psIndication
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                         inputId = "psExposureGroup",
                         choices = unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId]))
   })
-  
+
   observe({
     indicationId <- input$psIndication
     exposureGroup <- input$psExposureGroup
     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "psTarget",
                       choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = "psComparator",
                       choices = c("All", unique(filteredExposures$exposureName)))
   })
-  
+
   output$psPlot <- renderPlot({
     indicationId <- input$psIndication
     exposureGroup <- input$psExposureGroup

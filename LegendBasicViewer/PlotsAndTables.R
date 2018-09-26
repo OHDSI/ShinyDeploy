@@ -2,17 +2,80 @@ createTitle <- function(tcoDbs) {
   tcoDbs$targetName <- exposures$exposureName[match(tcoDbs$targetId, exposures$exposureId)]
   tcoDbs$comparatorName <- exposures$exposureName[match(tcoDbs$comparatorId, exposures$exposureId)]
   tcoDbs$outcomeName <- outcomes$outcomeName[match(tcoDbs$outcomeId, outcomes$outcomeId)]
+  tcoDbs$indicationId <- exposures$indicationId[match(tcoDbs$targetId, exposures$exposureId)]
 
-  titles <- paste("A Comparison of",
-                  tcoDbs$targetName,
-                  "to",
-                  tcoDbs$comparatorName,
-                  "for the Risk of",
-                  tcoDbs$outcomeName,
+  titles <- paste(tcoDbs$outcomeName,
+                  "risk in new-users of",
+                  uncapitalize(tcoDbs$targetName),
+                  "versus",
+                  uncapitalize(tcoDbs$comparatorName),
+                  "for",
+                  uncapitalize(tcoDbs$indicationId),
                   "in the",
                   tcoDbs$databaseId,
-                  "Database.")
+                  "database")
   return(titles)
+}
+
+createAuthors <- function() {
+  authors <- paste0(
+    "Martijn J. Schuemie", ", ",
+    "Patrick B. Ryan", ", ",
+    "Seng Chan You", ", ",
+    "Nicole Pratt", ", ",
+    "David Madigan", ", ",
+    "George Hripcsak", " and ",
+    "Marc A. Suchard"
+  )
+}
+
+
+
+
+createAbstract <- function(tcoDb) {
+  
+  targetName <- uncapitalize(exposures$exposureName[match(tcoDb$targetId, exposures$exposureId)])
+  comparatorName <- uncapitalize(exposures$exposureName[match(tcoDb$comparatorId, exposures$exposureId)])
+  outcomeName <- uncapitalize(outcomes$outcomeName[match(tcoDb$outcomeId, outcomes$outcomeId)])
+  indicationId <- uncapitalize(exposures$indicationId[match(tcoDb$targetId, exposures$exposureId)])
+  
+  results <- getMainResults(connection,
+                            targetIds = tcoDb$targetId,
+                            comparatorIds = tcoDb$comparatorId,
+                            outcomeIds = tcoDb$outcomeId,
+                            databaseIds = tcoDb$databaseId)
+  
+  studyPeriod <- getStudyPeriod(connection = connection,
+                                targetId = tcoDb$targetId,
+                                comparatorId = tcoDb$comparatorId,
+                                databaseId = tcoDb$databaseId)  
+  
+  writeAbstract(outcomeName, targetName, comparatorName, tcoDb$databaseId, studyPeriod, results)
+}
+
+writeAbstract <- function(outcomeName,
+                           targetName,
+                           comparatorName,
+                           databaseId,
+                           studyPeriod,
+                           mainResults) {
+  
+  minYear <- substr(studyPeriod$minDate, 1, 4)
+  maxYear <- substr(studyPeriod$maxDate, 1, 4)
+  
+  abstract <- paste0(
+    "We conduct a large-scale study on the incidence of ", outcomeName, " among new users of ", targetName, " and ", comparatorName, " from ", minYear, " to ", maxYear, " in the ", databaseId, " database.  ",
+    "Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions.  ",
+    "Secondary analyses entertain possible clinically relevant subgroup interaction with the HR.  ",
+    "We identify ", mainResults[1, "targetSubjects"], " ", targetName, " and ", mainResults[1, "comparatorSubjects"], " ", comparatorName, " patients for the on-treatment design, totaling ", round(mainResults[1, "targetDays"] / 365.24), " and ", round(mainResults[1, "comparatorDays"] / 365.24), " patient-years of observation, and ", mainResults[1, "targetOutcomes"], " and ", mainResults[1, "comparatorOutcomes"], " events respectively.  ",
+    "We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation.  ",
+    "We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values.  ",
+    "In terms of ", outcomeName, ", ", targetName, " has a ", judgeHazardRatio(mainResults[1, "calibratedCi95Lb"], mainResults[1, "calibratedCi95Ub"]), 
+    " risk as compared to ", comparatorName, " [HR: ", prettyHr(mainResults[1, "calibratedRr"]), ", 95% confidence interval (CI) ", 
+    prettyHr(mainResults[1, "calibratedCi95Lb"]), " - ", prettyHr(mainResults[1, "calibratedCi95Ub"]), "]."
+  )
+
+  abstract
 }
 
 prepareFollowUpDistTable <- function(followUpDist) {
@@ -161,13 +224,13 @@ prepareTable1 <- function(balance,
                           comparatorLabel = "Comparator",
                           percentDigits = 1,
                           stdDiffDigits = 2,
-                          output = "latex") {
+                          output = "latex",
+                          pathToCsv = "Table1Specs.csv") {
   if (output == "latex") {
     space <- " "
   } else {
     space <- "&nbsp;"
   }
-  pathToCsv <- "Table1Specs.csv"
   specifications <- read.csv(pathToCsv, stringsAsFactors = FALSE)
 
   fixCase <- function(label) {
@@ -807,7 +870,95 @@ judgePropensityScore <- function(ps, bias) {
                 ""))
 }
 
+uncapitalize <- function(x) {
+  if (is.character(x)) {
+    substr(x, 1, 1) <- tolower(substr(x, 1, 1))
+  }
+  x
+}
+
 capitalize <- function(x) {
   substr(x, 1, 1) <- toupper(substr(x, 1, 1))
   x
 }
+
+createDocument <- function(targetId,
+                           comparatorId,
+                           outcomeId,
+                           databaseId,
+                           indicationId,
+                           outputFile,
+                           template = "template.Rnw",
+                           workingDirectory = "temp",
+                           emptyWorkingDirectory = TRUE) {
+  
+  if (missing(outputFile)) {
+    stop("Must provide an output file name")
+  }
+  
+  currentDirectory <- getwd()
+  on.exit(setwd(currentDirectory))
+  
+  input <- file(template, "r")
+  
+  name <- paste0("paper_", targetId, "_", comparatorId, "_", outcomeId, "_", databaseId)
+  
+  if (!dir.exists(workingDirectory)) {
+    dir.create(workingDirectory)
+  }
+  
+  workingDirectory <- file.path(workingDirectory, name)
+  
+  if (!dir.exists(workingDirectory)) {
+    dir.create(workingDirectory)
+  }
+  
+  if (is.null(setwd(workingDirectory))) {
+    stop(paste0("Unable to change directory into: ", workingDirectory))
+  }
+  
+  system(paste0("cp ", file.path(currentDirectory, "pnas-new.cls"), " ."))
+  system(paste0("cp ", file.path(currentDirectory, "widetext.sty"), " ."))
+  system(paste0("cp ", file.path(currentDirectory, "pnasresearcharticle.sty"), " ."))
+  system(paste0("cp ", file.path(currentDirectory, "Sweave.sty"), " ."))
+  
+  texName <- paste0(name, ".Rnw")
+  output <- file(texName, "w")
+  
+  while (TRUE) {
+    line <- readLines(input, n = 1)
+    if (length(line) == 0) {
+      break
+    }
+    line <- sub("DATABASE_ID_TAG", paste0("\"", databaseId, "\""), line)
+    line <- sub("TARGET_ID_TAG", targetId, line)
+    line <- sub("COMPARATOR_ID_TAG", comparatorId, line)
+    line <- sub("OUTCOME_ID_TAG", outcomeId, line)
+    line <- sub("INDICATION_ID_TAG", indicationId, line)
+    line <- sub("CURRENT_DIRECTORY", currentDirectory, line)
+    writeLines(line, output)
+  }
+  close(input)
+  close(output)
+  
+  Sweave(texName)
+  system(paste0("pdflatex ", name))
+  system(paste0("pdflatex ", name))
+  
+  # Save result
+  workingName <- file.path(workingDirectory, name)
+  workingName <- paste0(workingName, ".pdf")
+  
+  setwd(currentDirectory)
+  
+  system(paste0("cp ", workingName, " ", outputFile))
+  
+  if (emptyWorkingDirectory) {
+    # deleteName = file.path(workingDirectory, "*")
+    # system(paste0("rm ", deleteName))
+    unlink(workingDirectory, recursive = TRUE)
+  }
+  
+  invisible(outputFile)
+}
+
