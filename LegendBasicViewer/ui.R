@@ -5,7 +5,8 @@ shinyUI(
   fluidPage(style = "width:1500px;",
             titlePanel(
               title=div(img(src="logo.png", height = 50, width = 50), 
-                        "LEGEND basic viewer")),
+                        "LEGEND basic viewer"),
+              windowTitle = "LEGEND basic viewer"),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;

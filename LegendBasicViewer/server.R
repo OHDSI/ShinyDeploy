@@ -4,8 +4,8 @@ library(DT)
 mainColumns <- c("description",
                  "databaseId",
                  "rr",
-                 "ci95lb",
-                 "ci95ub",
+                 "ci95Lb",
+                 "ci95Ub",
                  "p",
                  "calibratedRr",
                  "calibratedCi95Lb",
@@ -125,8 +125,8 @@ shinyServer(function(input, output, session) {
     table <- merge(table, analyses)
     table <- table[, mainColumns]
     table$rr <- prettyHr(table$rr)
-    table$ci95lb <- prettyHr(table$ci95lb)
-    table$ci95ub <- prettyHr(table$ci95ub)
+    table$ci95Lb <- prettyHr(table$ci95Lb)
+    table$ci95Ub <- prettyHr(table$ci95Ub)
     table$p <- prettyHr(table$p)
     table$calibratedRr <- prettyHr(table$calibratedRr)
     table$calibratedCi95Lb <- prettyHr(table$calibratedCi95Lb)
@@ -595,8 +595,8 @@ shinyServer(function(input, output, session) {
                                   estimatesOnly = TRUE)
     mainEffects <- data.frame(logRr = mainEffects$calibratedLogRr,
                               seLogRr = mainEffects$calibratedSeLogRr,
-                              ci95lb = mainEffects$calibratedCi95Lb,
-                              ci95ub = mainEffects$calibratedCi95Ub)
+                              ci95Lb = mainEffects$calibratedCi95Lb,
+                              ci95Ub = mainEffects$calibratedCi95Ub)
     writeLines("Plotting main effects")
     plot <- plotLargeScatter(mainEffects, "Calibrated hazard ratio")
     return(plot)
@@ -705,8 +705,8 @@ shinyServer(function(input, output, session) {
                                              estimatesOnly = TRUE)
     interactionEffects <- data.frame(logRr = interactionEffects$logRrr,
                                      seLogRr = interactionEffects$seLogRrr,
-                                     ci95lb = interactionEffects$ci95Lb,
-                                     ci95ub = interactionEffects$ci95Ub)
+                                     ci95Lb = interactionEffects$ci95Lb,
+                                     ci95Ub = interactionEffects$ci95Ub)
     writeLines("Plotting interaction effects")
     plot <- plotLargeScatter(interactionEffects, "Uncalibrated hazard ratio ratio")
     return(plot)
