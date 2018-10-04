@@ -95,6 +95,26 @@ shinyServer(function(input, output, session) {
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
 
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- !is.null(row) && (row$databaseId %in% metaAnalysisDbIds)
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+      hideTab("detailsTabsetPanel", "Kaplan-Meier")
+    } else {
+      showTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier")    
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
+  
   balance <- reactive({
      row <- selectedRow()
      if (is.null(row)) {
@@ -177,20 +197,23 @@ shinyServer(function(input, output, session) {
                            "Target IR (per 1,000 PY)",
                            "Comparator IR (per 1,000 PY)",
                            "MDRR")
+      if (row$databaseId %in% metaAnalysisDbIds) {
+        table$i2 <- sprintf("%.2f", as.numeric(row$i2))
+      }
       return(table)
     }
   })
 
   output$timeAtRiskTableCaption <- renderUI({
     row <- selectedRow()
-    if (!is.null(row)) {
+    if (is.null(row)) {
+      return(NULL)
+    } else {
       text <- "<strong>Table 1b.</strong> Time (days) at risk distribution expressed as
       minimum (min), 25th percentile (P25), median, 75th percentile (P75), and maximum (max) in the target
      (<em>%s</em>) and comparator (<em>%s</em>) cohort after %s."
       return(HTML(sprintf(text, input$target, input$comparator, row$psStrategy)))
-    } else {
-      return(NULL)
-    }
+    } 
   })
 
   output$timeAtRiskTable <- renderTable({
