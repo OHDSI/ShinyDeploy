@@ -56,11 +56,8 @@ getExposures <- function(connection, filterByCmResults = TRUE) {
   INNER JOIN exposure_group
   ON exposure.exposure_id = exposure_group.exposure_id
   {@filter_by_cm_results} ? {
-    WHERE exposure.exposure_id IN (
-      SELECT DISTINCT target_id AS exposure_id FROM cohort_method_result
-      UNION ALL
-      SELECT DISTINCT comparator_id AS exposure_id FROM cohort_method_result
-    )
+    INNER JOIN exposure_ids
+    ON exposure_ids.exposure_id = exposure.exposure_id 
   }
   ;"
   sql <- SqlRender::renderSql(sql, filter_by_cm_results = filterByCmResults)$sql
