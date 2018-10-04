@@ -48,13 +48,22 @@ getSubgroups <- function(connection) {
 }
 
 
-getExposures <- function(connection) {
+getExposures <- function(connection, filterByCmResults = TRUE) {
   sql <- "SELECT * FROM (
     SELECT exposure_id, exposure_name, indication_id FROM single_exposure_of_interest
     UNION ALL SELECT exposure_id, exposure_name, indication_id FROM combi_exposure_of_interest
   ) exposure
   INNER JOIN exposure_group
-  ON exposure.exposure_id = exposure_group.exposure_id;"
+  ON exposure.exposure_id = exposure_group.exposure_id
+  {@filter_by_cm_results} ? {
+    WHERE exposure.exposure_id IN (
+      SELECT DISTINCT target_id AS exposure_id FROM cohort_method_result
+      UNION ALL
+      SELECT DISTINCT comparator_id AS exposure_id FROM cohort_method_result
+    )
+  }
+  ;"
+  sql <- SqlRender::renderSql(sql, filter_by_cm_results = filterByCmResults)$sql
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   exposures <- querySql(connection, sql)
   colnames(exposures) <- SqlRender::snakeCaseToCamelCase(colnames(exposures))
