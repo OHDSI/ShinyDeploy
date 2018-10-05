@@ -1,0 +1,131 @@
+\documentclass[$if(papersize)$$papersize$paper,$else$letter,$endif$$if(fontsize)$$fontsize$,$else$9pt,$endif$$if(one_column)$$if(lineno)$lineno,$endif$$else$twocolumn,$endif$$if(one_sided)$$else$twoside,$endif$printwatermark=$if(watermark)$$watermark$$else$false$endif$]{pnas-markdown}
+
+%% Some pieces required from the pandoc template
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+$if(tables)$
+\usepackage{longtable}
+$endif$
+
+% The geometry package layout settings need to be set here...
+\geometry{layoutsize={0.95588\paperwidth,0.98864\paperheight},%
+          layouthoffset=0.02206\paperwidth,%
+		  layoutvoffset=0.00568\paperheight}
+
+$if(headercolor)$
+\definecolor{pinpblue}{HTML}{$headercolor$}
+$else$
+\definecolor{pinpblue}{HTML}{EB6622}
+$endif$
+$if(linkcolor)$
+\definecolor{pnasbluetext}{HTML}{$linkcolor$}
+$else$
+\definecolor{pnasbluetext}{RGB}{101,0,0} %
+$endif$
+
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+\title{$title$}
+
+$for(author)$
+\author[$author.affiliation$]{$author.name$}
+$endfor$
+
+$for(address)$
+  \affil[$address.code$]{$address.address$}
+$endfor$
+
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{0}
+$endif$
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{$lead_author_surname$}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+$if(keywords)$ \keywords{ $for(keywords)$ $keywords$ $sep$| $endfor$ } $endif$
+
+\begin{abstract}
+$abstract$
+\end{abstract}
+
+\dates{This report was \textbf{automatically} compiled on \today.}
+$if(doi)$
+\doi{$doi$}
+$endif$
+
+$if(footer_contents)$
+\pinpfootercontents{$footer_contents$}
+$endif$
+
+$if(author_declaration)$
+\authordeclaration{$author_declaration$}
+$endif$
+
+$if(corresponding_author)$
+\correspondingauthor{\textsuperscript{$corresponding_author$}}}
+$endif$
+
+\begin{document}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+%\verticaladjustment{-2pt}
+
+\maketitle
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+% If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
+
+$if(acknowledgements)$
+\acknow{$acknowledgements$}
+$endif$
+
+$body$
+
+%\showmatmethods
+$if(acknowledgements)$
+\showacknow
+$endif$
+
+$if(skip_final_break)$
+$else$
+\pnasbreak
+$endif$
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(book-class)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$jss$endif$}
+$endif$
+$endif$
+
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$endif$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+\end{document}

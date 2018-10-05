@@ -1,0 +1,7 @@
+base
+shiny
+DatabaseConnector
+DT
+ggplot2
+knitr
+xtable

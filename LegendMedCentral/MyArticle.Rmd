@@ -1,0 +1,722 @@
+---
+params:
+    databaseId: "CCAE"
+    targetId: 1308842
+    comparatorId: 40226742
+    outcomeId: 2
+    indicationId: "Hypertension"
+    root: "."
+    primary: 1
+    ot: 1
+    itt: 2
+    matchOt: 3
+    matchItt: 4
+    title: "Acute myocardial infarction risk in new-users of valsartan versus olmesartan for hypertension in the JMDC database"
+    abstract: "We conduct a large-scale study on the incidence of acute myocardial infarction among new users of valsartan and olmesartan from 2006 to 2017 in the JMDC database. Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions. Secondary analyses entertain possible clinically relevant subgroup interaction with the HR. We identify 7316 valsartan and 9744 olmesartan patients for the on-treatment design, totaling 9093 and 9673 patient-years of observation, and 11 and 16 events respectively. We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation. We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values. In terms of acute myocardial infarction, valsartan has a similar risk as compared to olmesartan [HR: 0.88, 95% confidence interval (CI) 0.39 - 2.01]."
+    save: NULL
+    load: NULL
+
+title: "`r params$title`"
+
+# Corresponding author: Martijn J. Schuemie, Janssen R&D, 1125 Trenton Harbourton Road, Titusville, NJ, 08560, Phone: +31 631793897, schuemie@ohdsi.org
+author:
+
+  - name: Martijn J. Schuemie
+    affiliation: a,b,c
+  - name: Patrick B. Ryan
+    affiliation: a,b,d
+  - name: Seng Chan You
+    affiliation: a,e
+  - name: Nicole Pratt
+    affiliation: a,f
+  - name: David Madigan
+    affiliation: a,g
+  - name: George Hripcsak
+    affiliation: a,d
+  - name: Marc A. Suchard
+    affiliation: a,c,h,i
+address:
+  - code: a
+    address: Observational Health Data Sciences and Informatics, New York, NY, USA
+  - code: b
+    address: Janssen Research & Development, Titusville, NJ, USA
+  - code: c
+    address: Department of Biostatistics, University of California, Los Angeles, CA
+  - code: d
+    address: Department of Biomedical Informatics, Columbia University, New York, NY
+  - code: e
+    address: Department of Biomedical Informatics, Ajou University, Suwon, South Korea
+  - code: f
+    address: Sansom Institute, University of South Australia, Adelaide SA, Australia
+  - code: g
+    address: Department of Statistics, Columbia University, New York, NY
+  - code: h
+    address: Department of Biomathematics, University of California, Los Angeles, CA
+  - code: i
+    address: Department of Human Genetics, University of California, Los Angeles, CA
+lead_author_surname: Schuemie et al.
+
+# Place DOI URL or CRAN Package URL here
+# doi: "https://cran.r-project.org/package=YourPackage"
+
+# Abstract
+abstract: "`r params$abstract`"
+
+# Optional: Acknowledgements
+# acknowledgements: |
+#   This template package builds upon, and extends, the work of the excellent
+#   [rticles](https://cran.r-project.org/package=rticles) package, and both packages rely on the
+#   [PNAS LaTeX](http://www.pnas.org/site/authors/latex.xhtml) macros. Both these sources are
+#   gratefully acknowledged as this work would not have been possible without them.  Our extensions
+#   are under the same respective licensing term
+#   ([GPL-3](https://www.gnu.org/licenses/gpl-3.0.en.html) and
+#   [LPPL (>= 1.3)](https://www.latex-project.org/lppl/)).
+
+# Optional: One or more keywords
+keywords:
+  - new-user cohort design
+  - comparative effectiveness
+  - drug safety
+
+# Paper size for the document, values of letterpaper and a4paper
+papersize: letter
+
+# Font size of the document, values of 9pt (default), 10pt, 11pt and 12pt
+fontsize: 9pt
+
+# Optional: Force one-column layout, default is two-column
+#one_column: true
+
+# Optional: Enables lineno mode, but only if one_column mode is also true
+#lineno: true
+
+# Optional: Enable one-sided layout, default is two-sided
+#one_sided: true
+
+# Optional: Enable section numbering, default is unnumbered
+#numbersections: true
+
+# Optional: Specify the depth of section number, default is 5
+#secnumdepth: 5
+
+# Optional: Skip inserting final break between acknowledgements, default is false
+skip_final_break: true
+
+# Optional: Bibliography
+# bibliography: pinp
+
+# Optional: Enable a 'Draft' watermark on the document
+watermark: true
+
+# Customize footer, eg by referencing the vignette
+footer_contents: OHDSI version 1.0
+
+# Produce a pinp document
+output:
+  pdf_document:
+    template: blank_template.tex
+    citation_package: natbib
+pnas_type: pnasresearcharticle
+bibliography: ohdsi.bib
+#csl: pnas.csl
+#output: rticles::pnas_article
+
+author_declaration: MJS and PBR are employees and share-holders of Janssen Research.  MAS receives contract support from Janssen Research.
+
+# Required: Vignette metadata for inclusion in a package.
+vignette: >
+  %\VignetteIndexEntry{YourPackage-vignetteentry}
+  %\VignetteKeywords{YourPackage, r, anotherkeyword}
+  %\VignettePackage{YourPackage}
+  %\VignetteEngine{knitr::rmarkdown}
+
+---
+
+```{r, setup, echo=FALSE, message=FALSE,comment=FALSE,warning=FALSE}
+library(DatabaseConnector)
+library(knitr)
+library(xtable)
+library(ggplot2)
+# library(kableExtra)
+source("DataPulls.R")
+source("PlotsAndTables.R")
+options(knitr.kable.NA = '')
+
+extraCriteria <- list(
+  depression = "Further, we exclude patients with diagnoses of bipolar disorder or schizophrenia on or prior to their index date."
+)
+
+extraCovariates <- list(
+  depression = "Prior number of depression treatments (1, 2, 3, 4, 5 or higher)"
+)
+
+negativeControls <- list(
+  hypertension = 76
+)
+
+totalOutcomes <- list(
+  hypertension = 57
+)
+
+totalExposures <- list(
+  hypertension = "56 different anti-hypertensive medications, representing 15 different drug-class levels and 7 major drug class levels",
+  stuff = "at least 2500 patients in both target and comparator cohors"
+)
+
+# params <- list(databaseId = "CCAE",
+#                targetId = 1308842,
+#                comparatorId = 40226742,
+#                outcomeId = 2,
+#                indicationId = "Hypertension",
+#                root = ".",
+#                primary = 1,
+#                ot = 1,
+#                itt = 2,
+#                matchOt = 3,
+#                matchItt = 4,
+#                title = "Acute myocardial infarction risk in new-users of valsartan versus olmesartan for hypertension in the JMDC database",
+#                abstract = "We conduct a large-scale study on the incidence of acute myocardial infarction among new users of valsartan and olmesartan from 2006 to 2017 in the JMDC database. Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions. Secondary analyses entertain possible clinically relevant subgroup interaction with the HR. We identify 7316 valsartan and 9744 olmesartan patients for the on-treatment design, totaling 9093 and 9673 patient-years of observation, and 11 and 16 events respectively. We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation. We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values. In terms of acute myocardial infarction, valsartan has a similar risk as compared to olmesartan [HR: 0.88, 95% confidence interval (CI) 0.39 - 2.01].")
+
+```
+
+```{r, loadData, echo=FALSE, message=FALSE, comment=FALSE, warning=FALSE, results='hide'}
+
+if (is.null(params$load)) {
+  connectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                               server = paste(Sys.getenv("legendServer"),
+                                                              Sys.getenv("legendDatabase"), sep = "/"),
+                                               port = Sys.getenv("legendPort"),
+                                               user = Sys.getenv("legendUser"),
+                                               password = Sys.getenv("legendPw"),
+                                               schema = Sys.getenv("legendSchema"))
+  connection <- connect(connectionDetails)
+
+  targetName <- getExposureName(connection = connection, exposureId = params$targetId)
+  comparatorName <- getExposureName(connection = connection, exposureId = params$comparatorId)
+  outcomeName <- getOutcomeName(connection = connection, outcomeId = params$outcomeId)
+  analyses <- getAnalyses(connection = connection)
+  databaseDetails <- getDatabaseDetails(connection = connection,
+                                        databaseId = params$databaseId)
+  studyPeriod <- getStudyPeriod(connection = connection,
+                                targetId = params$targetId,
+                                comparatorId = params$comparatorId,
+                                databaseId = params$databaseId)
+
+  mainResults <- getMainResults(connection = connection,
+                                targetIds = params$targetId,
+                                comparatorIds = params$comparatorId,
+                                outcomeIds = params$outcomeId,
+                                databaseIds = params$databaseId,
+                                analysisIds = c(1, 2, 3, 4))
+
+  subgroupResults <- getSubgroupResults(connection = connection,
+                                        targetIds = params$targetId,
+                                        comparatorIds = params$comparatorId,
+                                        outcomeIds = params$outcomeId,
+                                        databaseIds = params$databaseId)
+
+  controlResults <- getControlResults(connection = connection,
+                                      targetId = params$targetId,
+                                      comparatorId = params$comparatorId,
+                                      analysisId = 1,
+                                      databaseId = params$databaseId)
+
+  attrition <- getAttrition(connection = connection,
+                            targetId = params$targetId,
+                            comparatorId = params$comparatorId,
+                            outcomeId = params$outcomeId,
+                            analysisId = 1,
+                            databaseId = params$databaseId)
+
+  followUpDist <- getCmFollowUpDist(connection = connection,
+                                    targetId = params$targetId,
+                                    comparatorId = params$comparatorId,
+                                    outcomeId = params$outcomeId,
+                                    databaseId = params$databaseId,
+                                    analysisId = 1)
+
+  balance <- getCovariateBalance(connection = connection,
+                                 targetId = params$targetId,
+                                 comparatorId = params$comparatorId,
+                                 databaseId = params$databaseId,
+                                 analysisId = 2)
+
+  popCharacteristics <- getCovariateBalance(connection = connection,
+                                            targetId = params$targetId,
+                                            comparatorId = params$comparatorId,
+                                            databaseId = params$databaseId,
+                                            analysisId = 1,
+                                            outcomeId = params$outcomeId)
+
+  ps <- getPs(connection = connection,
+              targetIds = params$targetId,
+              comparatorIds = params$comparatorId,
+              databaseId = params$databaseId)
+
+  kaplanMeier <- getKaplanMeier(connection = connection,
+                                targetId = params$targetId,
+                                comparatorId = params$comparatorId,
+                                outcomeId = params$outcomeId,
+                                databaseId = params$databaseId,
+                                analysisId = 2)
+
+  DatabaseConnector::disconnect(connection)
+
+  if (!is.null(params$save)) {
+    save(targetName, comparatorName, outcomeName, analyses, databaseDetails,
+         studyPeriod, mainResults, subgroupResults, controlResults,
+         attrition, followUpDist, balance, popCharacteristics, ps, kaplanMeier,
+         file = params$save)
+  }
+} else {
+  load(params$load)
+}
+
+targetName <- uncapitalize(targetName)
+comparatorName <- uncapitalize(comparatorName)
+outcomeName <- uncapitalize(outcomeName)
+indicationName <- uncapitalize(params$indicationId)
+
+databaseName <- databaseDetails$databaseName
+
+minYear <- substr(studyPeriod$minDate, 1, 4)
+maxYear <- substr(studyPeriod$maxDate, 1, 4)
+
+coverage <- getCoverage(controlResults)
+```
+
+\dropcap{T}he Large-scale Evidence Generation and Evaluation in a Network of Databases (LEGEND) project aims to generate reliable evidence on the effects of medical interventions using observational healthcare data to support clinical decision making.
+LEGEND follows ten guiding principles (see [Supporting Information](#suppinfo)); chief among these stand that we generate evidence at large-scale to achieve completeness and faciliate analysis of the overall distribution of effect size estimates across treatments and outcomes.
+We also generate evidence consistently by applying a systematic approach across all research questions and disseminate evidence regardless on the estimates effects to avoid publication bias. These aims help overcome the questionable reliable of observational research \citep{schuemie2018improving}.
+This LEGEND document reports the risk of `r outcomeName` between new users of `r targetName` and `r comparatorName` treated for `r params$indicationId`.
+
+\begin{itemize}
+  \item Add short introduction to indication.
+\end{itemize}
+
+<!-- This *pinp is not PNAS* template started when the introduction to -->
+<!-- [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) by \cite{PeerJ:Rcpp}  -->
+<!-- was converted into this updated -->
+<!-- [Rcpp Introduction](https://eddelbuettel.github.io/pinp/Rcpp-introduction.pdf) -->
+<!-- vignette.  It is based on the -->
+<!-- [pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article) -->
+<!-- template of the wonderful [rticles](https://cran.r-project.org/package=rticles) package by -->
+<!-- \cite{CRAN:rticles}. The conversion from markdown to latex is facilitated by -->
+<!-- [rmarkdown](https://cran.r-project.org/package=rmarkdown) -->
+<!-- \citep{CRAN:rmarkdown} and [knitr](https://cran.r-project.org/package=knitr) -->
+<!-- \citep{CRAN:knitr}. The underlying LaTeX macros are from -->
+<!-- [pnas.org](http://www.pnas.org/site/authors/latex.xhtml). -->
+
+<!-- The remainder of the document carries over from the corresponding -->
+<!-- [pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article) -->
+<!-- template document. but has been edited and updated to our use case.  A -->
+<!-- few specific tips follow.  In general, for fine-tuning some knowledge -->
+<!-- of LaTeX is helpful. -->
+
+# Methods
+
+## Data source
+
+We conduct a new-user cohort study comparing new users of `r targetName` with new users of `r comparatorName` in the `r databaseName` (`r params$databaseId`) database encoded in the Observational Medical Outcomes Partnership (OMOP) common data model (CDM) version 5
+\citep{hripcsak2015observational,overhage2012validation,ryan2013empirical}.
+`r sub(paste0(".*\\(",databaseDetails$databaseId,"\\)"), paste0("The ", databaseDetails$databaseId), databaseDetails$description)`
+The study period spans from `r studyPeriod$minDate` to `r studyPeriod$maxDate`.
+
+## Study design
+
+This study follows a retrospective, observational, comparative cohort design \citep{ryan2013empirical}
+.
+We include patients who are first time users of `r targetName` or `r comparatorName`, and who have a diagnosis of `r indicationName` on or prior to treatment initation.
+We require that patients have continuous observation in the database for at least 365 days prior to treatment initiation.
+We exclude patients with prior `r outcomeName` events and less than 1 day at risk. `r if (indicationName %in% names(extraCriteria)) { extraCriteria[indicationName] }` Links to full cohort details, include concept codes, are provided in the [Supporting Information](#suppinfo).
+The outcome of interest is `r outcomeName`.
+We begin the outcome risk window 1 day after treatment initation and consider two design choices to define the window end.
+First, we end the outcome time-at-risk window at first cessation of continuous drug exposure, analogous to an on-treatment design and, second,  we end the outcome time-at-risk window when the patient is no longer observable in the database, analogous to an intent-to-treat design.
+Continuous drug exposures are constructed from the available longitudinal data by considering sequential prescriptions that have fewer than 30 days gap between prescriptions.
+
+## Statistical analysis
+
+We conduct our cohort study using the open-source OHDSI CohortMethod R package \citep{schuemie2018cohortmethod}
+, with large-scale analytics achieved through the Cyclops R package \citep{suchard2013massive}
+.
+We use propensity scores (PSs) -- estimates of treatment exposure probability conditional on pre-treatment baseline features in the one year prior to treatment initiation -- to control for potential measured confoudning and improve balance between the target (`r targetName`) and comparator (`r comparatorName`) cohorts \citep{rosenbaum1983central}
+.
+We use an expansive PS model that includes all available patient demographics, drug, condition and procedure covariates generated through the FeatureExtraction R package \citep{schuemie2018featureextration}
+ instead of a prespecified set of investigator-selected confounders.
+ We perform PS stratification or variable-ratio matching and then estimate comparative `r targetName`-vs-`r comparatorName` hazard ratios (HRs) using a Cox proportional hazards model.
+ Detailed covariate and methods informations are provided in the 
+ [Supporting Information](#suppinfo).
+ We present PS and covariate balance metrics to assess successful confounding control, and provide HR estimates and Kaplan-Meier survival plots for the outcome of `r outcomeName`.
+ We additionally estimate HRs for pre-specified subgroups to evaluate interactions with the treatment effect.
+For efficiency reasons, we fit subgroup Cox models using PS stratification only.
+
+Residual study bias from unmeasured and systematic sources can exist in observational studies after controlling for measured confounding \citep{schuemie2014interpreting,schuemie2016robust}
+.
+To estimate such residual bias, we conduct negative control outcome experiments with `r length(unique(controlResults$outcomeName))` negative control outcomes
+identified through a data-rich algorithm \citep{voss2017accuracy}.
+We fit the negative control estimates to an empirical null distribution that characterizes the study residual bias and is an important artifact from which to assess the study design \citep{schuemie2018improving}
+.
+Using the empirical null distribution and synthetic positive controls \citep{schuemie2018empirical}
+, we additionally calibrate all HR estimates, their 95\% confidence intervals (CIs) and the $p$-value to reject the null hypothesis of no differential effect (HR = 1).
+Empirical calibration serves as an important diagnostic tool to evaluate if residual systematic error is sufficient to cast doubt on the accuracy of the unknown effect estimate.
+
+# Results
+
+## Population characteristics
+
+```{r, attrition_plot, echo=FALSE, cache=TRUE, warning=FALSE, fig.align="center", fig.width=6, fig.height=10, out.width = '90%', fig.cap=paste("\\textbf{Attrition diagram for selecting new-users of", targetName, "and",  comparatorName, "from the", params$databaseId, "database.\\label{fig:attrition}}")}
+drawAttritionDiagram(attrition, targetName, comparatorName)
+```
+
+Figure \ref{fig:attrition} diagrams the inclusion of study subjects from the `r params$databaseId` database under the on-treatment with stratification design.
+We augment these counts with cohort sizes we identify for the remaining designs in Table \ref{tab:power}.
+This table also reports total patient follow-up time, numbers of `r outcomeName` events these patients experience and unadjusted incidence rates.
+Table \ref{tab:demographics} compares base-line characteristics between patient cohorts.
+\begin{table*}
+\caption{\textbf{Patient cohorts.}
+Target (T) cohort is `r targetName` new-users.  Comparative (C) cohort is `r comparatorName` new-users.
+We report total number of patients, follow-up time (in years), number of `r outcomeName` events, and event incidence rate (IR) per 1,000 patient years (PY) in patient cohorts, as well as the their minimum detectable relative risk (MDRR).
+Note that the IR does not account for any stratification or matching.
+}\label{tab:power}
+\vspace*{-0.5em}
+\centering{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{lrrrrrrrrr}
+\hiderowcolors
+\toprule
+ &
+\multicolumn{2}{c}{Patients} &
+\multicolumn{2}{c}{PYs} &
+\multicolumn{2}{c}{Events} &
+\multicolumn{2}{c}{IR} &
+\\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+\multicolumn{1}{c}{Design} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{MDRR} \\
+\midrule 
+\showrowcolors
+```{r, outcomes, echo=FALSE, results="asis", cache=TRUE, warning=FALSE}
+table <- preparePowerTable(mainResults, analyses)
+
+print(xtable(table, format = "latex"),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+\end{table*}
+
+\begin{table}
+\caption{\textbf{Patient demographics.} We report the standardized difference of population means (StdDiff) before and after stratification for selected base-line patient characteristics.}\label{tab:demographics}
+\vspace*{-0.5em}
+\centerline{
+\resizebox{0.5\textwidth}{!}{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{lrrrrrr}
+\hiderowcolors
+\toprule
+& \multicolumn{3}{c}{Before stratification}
+& \multicolumn{3}{c}{After stratification} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+\multicolumn{1}{c}{Characteristic}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff} \\
+\midrule
+\showrowcolors
+```{r, features, echo=FALSE, results="asis", cache=TRUE, warning=FALSE}
+table <- prepareTable1(balance, pathToCsv = file.path(params$root, "Table1Specs.csv"))
+table <- table[3:nrow(table),]
+
+print(xtable(table, format = "latex", align = c("l","l","r","r","r","r","r","r")),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+}
+\end{table}
+
+## Patient characteristics balance
+
+```{r, make_ps, echo=FALSE, warning=FALSE, fig.align='center', fig.width=5, fig.height=5, out.width='70%', fig.cap=paste("\\textbf{Preference score distribution for", targetName, "and", comparatorName, "new-users.}", "The preference score is a transformation of the propensity score that adjusts for prevalence differences between populations.  A higher overlap indicates that subjects in the two populations are more similar in terms of their predicted probability of receiving one treatment over the other.\\label{fig:ps}")}
+plotPs(ps, targetName, comparatorName)
+```
+
+Figure \ref{fig:ps} plots the preference score distributions, re-scalings of PS estimates to adjust for differential treatment prevalences, for patients treated with `r targetName` and `r comparatorName`.
+We assess characteristics balance achieved through PS adjustment by comparing all characteristics' standardized difference (StdDiff) between treatment group means before and after PS trimming and stratification (Table \ref{tab:demographics}).
+Figure \ref{fig:balance} plots StdDiff for all `r nrow(balance)` base-line patient features that serve as input for the PS model.
+Before stratification, `r sum(na.omit(balance$beforeMatchingStdDiff) > 0.1)` features have a StdDiff $> 0.1$.  After stratification, the count is `r sum(na.omit(balance$afterMatchingStdDiff) > 0.1)`.
+<!-- (TODO) Add judgement statement about measured confounding control using something like: `r judgePropensityScore(1.1,1.1)` -->
+
+```{r, make_balance, echo=FALSE, warning=FALSE, warning=FALSE, fig.align='center', fig.width=5, fig.height=5, out.width='70%', fig.cap="\\textbf{Patient characteristics balance before and after stratification.} As a rule-of-thum, all values $<0.1$ is generall considered well-balance \\citep{austin2009balance}."}
+plotCovariateBalanceScatterPlot(balance,
+                                beforeLabel = "Before stratification",
+                                afterLabel = "After stratification")
+```
+
+## Outcome assessment
+
+\begin{table*}
+\caption{Time-at-risk distributions as percentiles in the target and comparator cohorts after stratification.}
+\label{tab:fu}
+\centering{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{crrrrrrr}
+\hiderowcolors
+\toprule
+&
+\multicolumn{1}{c}{min} &
+\multicolumn{1}{c}{10\%} &
+\multicolumn{1}{c}{25\%} &
+\multicolumn{1}{c}{50\%} &
+\multicolumn{1}{c}{75\%} &
+\multicolumn{1}{c}{90\%} &
+\multicolumn{1}{c}{max} \\
+\midrule
+\showrowcolors
+```{r, fu, echo=FALSE, results='asis', warning=FALSE}
+table <- prepareFollowUpDistTable(followUpDist)
+table$Cohort <- c(targetName, comparatorName)
+
+print(xtable(table, format = "latex"),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+\end{table*}
+
+Table \ref{tab:fu} details the time to first `r outcomeName` or censoring distributions for patients in the `r targetName` and `r comparatorName` cohorts.
+We report in Table \ref{tab:hr} estimated HRs comparing `r targetName` to `r comparatorName` for the on-treatment and intent-to-treat designs with stratification or matching.
+Figure \ref{fig:km} plots Kaplan-Meier survival curves for patients under the intent-to-treat design.
+To examine possible subgroup differences in treatment-effect, we include Table{tab:subgroups} that reports HR estimates separately for children (age $<$ 18), the elderly (age $\ge$ 65), female patients, pregnant women, patients with hepatic impairment and patients with renal impairment, using PS stratification.
+
+```{r, km, echo=FALSE, results='hide', fig.width=6, fig.height=6, fig.align='center', out.width='80%', fig.cap=paste0("\\textbf{Kaplan Meier plot of ", outcomeName, "-free survival.} This plot is adjusted for the propensity score stratification; the ", targetName, " curve shows the actual observed survival. The ", comparatorName, " curve applies reweighting to approximate the counterfactual of what ", targetName, " survival would look like had the ", targetName, " cohort been exposed to ", comparatorName, " instead. The shaded area denotes the 95\\% CI.")}
+plotKm <- plotKaplanMeier(kaplanMeier, targetName, comparatorName)
+```
+
+\begin{table*}
+\caption{
+Hazard ratio (HR) estimates and their confidence intervals (CIs) and $p$-value to reject the null hypothesis of no difference (HR = 1) under various designs.
+}
+\label{tab:hr}
+\centering{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{lrrrr}
+\hiderowcolors
+\toprule
+& \multicolumn{2}{c}{Uncalibrated} & \multicolumn{2}{c}{Calibrated} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\multicolumn{1}{c}{Design}
+& \multicolumn{1}{c}{HR (95\% CI)} & \multicolumn{1}{c}{$p$}
+& \multicolumn{1}{c}{HR (95\% CI)} & \multicolumn{1}{c}{$p$} \\
+\midrule
+\showrowcolors
+```{r, result_table, echo=FALSE, results='asis'}
+table <- mainResults
+table$hr <- sprintf("%.2f (%.2f - %.2f)", mainResults$rr, mainResults$ci95Lb, mainResults$ci95Ub)
+table$p <- sprintf("%.2f", table$p)
+table$calHr <- sprintf("%.2f (%.2f - %.2f)", mainResults$calibratedRr, mainResults$calibratedCi95Lb, mainResults$calibratedCi95Ub)
+table$calibratedP <- sprintf("%.2f", table$calibratedP)
+table <- merge(table, analyses)
+table <- table[, c("description", "hr", "p", "calHr", "calibratedP")]
+
+print(xtable(table),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+\end{table*}
+
+\begin{table*}
+\caption{
+Subgroup analyses. We report HR estimates, their 95\% CIs and uncalibrated and calibrated (cal) $p$-values to reject the null hypothesis of no difference in five pre-specified patient subgroups.
+}
+\label{tab:subgroups}
+\centering{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{lrrrrrrrr}
+\hiderowcolors
+\toprule
+&
+\multicolumn{2}{c}{Subjects} &
+\multicolumn{3}{c}{On-treatment} &
+\multicolumn{3}{c}{Intent-to-treat} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-6} \cmidrule(lr){7-9}
+\multicolumn{1}{c}{Subgroup} &
+\multicolumn{1}{c}{T} &
+\multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{HR (95\% CI)} &
+\multicolumn{1}{c}{$p$} &
+\multicolumn{1}{c}{cal-$p$} &
+\multicolumn{1}{c}{HR (95\% CI)} &
+\multicolumn{1}{c}{$p$} &
+\multicolumn{1}{c}{cal-$p$} \\
+\midrule
+\showrowcolors
+```{r, subgroups, echo=FALSE, results='asis', warning=FALSE}
+if (nrow(subgroupResults) > 0) {
+  table <- prepareSubgroupTable(subgroupResults)
+  print(xtable(table),
+        include.rownames = FALSE,
+        include.colnames = FALSE,
+        hline.after = NULL,
+        only.contents = TRUE,
+        add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+        sanitize.text.function = identity)
+}
+```
+\end{tabular}
+}
+\end{table*}
+
+## Residual systematic error
+
+In the absense of bias, we expect 95\% of negative and positive control estimate 95\% confidence intervals to include their presumed HR.  In the case of negative controls, the presumed HR = 1.  Figure \ref{fig:negatives} describes the negative and positive control estimates under the on-treatment with PS stratification design.
+Before calibration, negative and positive controls demonstrate `r judgeCoverage(coverage[coverage$group == "Uncalibrated", "coverage"])` coverage.  After calibration, controls demonstrate `r judgeCoverage(coverage[coverage$group == "Calibrated", "coverage"])` coverage.
+
+```{r, make_error, echo=FALSE, warning=FALSE}
+plot <- plotScatter(controlResults)
+suppressMessages(ggsave(paste0(opts_chunk$get("fig.path"), "error.pdf"), plot,
+                        width = 14, height = 4, units = "in"))
+```
+\begin{figure*}
+\centerline{
+\includegraphics[width=1.0\textwidth]{`r opts_chunk$get("fig.path")`error}
+}
+\caption{
+\textbf{Evaluation of effect estimation between `r targetName` and `r comparatorName` new-users}. The top plots HRs and their corresponding standard errors before calibration for each negative and synthetic positive control.  The bottom plots the same estimates after calibration.
+}
+\label{fig:negatives}
+\end{figure*}
+
+# Conclusions
+
+We find that `r targetName` has a `r judgeHazardRatio(mainResults[params$primary,"calibratedCi95Lb"], mainResults[params$primary,"calibratedCi95Ub"])` risk of `r outcomeName` as compared to `r comparatorName` within the population that the `r params$databaseId` represents.
+
+
+
+# Supporting Information {#suppinfo}
+
+Here we enumerate the guiding principles of LEGEND and provide linking details on study cohorts and design.
+
+## LEGEND principles
+
+\begin{enumerate}[noitemsep]
+  \item Evidence will be generated at large-scale.
+  \item Dissemination of the evidence will not depend on the estimated effects.
+  \item Evidence will be generated by consistently applying a systematic approach across all research questions.
+  \item Evidence will be generated using a pre-specified analysis design.
+  \item Evidence will be generated using open source software that is freely available to all.
+  \item Evidence generation process will be empirically evaluated by including control research questions where the true effect size is known.
+  \item Evidence will be generated using best-practices.
+  \item LEGEND will not be used to evaluate methods.
+  \item Evidence will be updated on a regular basis.
+  \item No patient-level data will be shared between sites in the network, only aggregated data.
+\end{enumerate}
+
+## Study cohorts
+
+Please see the LEGEND `r indicationName` Study protocol (https://github.com/OHDSI/Legend/tree/master/Documents) for complete specification of the `r targetName`, `r comparatorName` and `r outcomeName` cohorts using ATLAS (http://www.ohdsi.org/web/atlas).
+
+## Negative controls
+
+We selected negative controls using a process similar to that outlined by \cite{voss2017accuracy}.
+We first construct a list of all conditions that satisfy the following criteria with respect to all drug exposures in the LEGEND `r indicationName` study:
+\begin{itemize}[noitemsep]
+  \item No Medline abstract where the MeSH terms suggests a drug-condition association \citep{winnenburg2015leveraging},
+  \item No mention of the drug-condition pair on a US product label in the ``Adverse Drug Reactions'' or ``Postmarketing'' section \citep{duke2013consistency},
+  \item No US spontaneous reports suggesting that the pair is in an adverse event relationship \citep{evans2001use,banda2016curated},
+  \item OMOP vocabulary does not suggest that the drug is indicated for the condition,
+  \item Vocabulary conditional concepts are usable (i.e., not too broad, not suggestive of an adverse event relationship, no pregnancy related), and
+  \item Exact condition concept itself is used in patient level data.
+\end{itemize}
+
+```{r, echo=FALSE}
+negatives <- controlResults[controlResults$effectSize == 1.0 & !is.na(controlResults$rr), ]
+```
+
+
+We optimize remaining condition concepts, such that parent concepts remove children as defined by the OMOP vocabulary and perform manual review to exclude any pairs that may still be in a causal relationship or too similar to the study outcome.
+For `r indicationName`, this process led to a candidate list of `r negativeControls[indicationName]` negative controls for which table can be found in study protocol [TODO URL].
+In the comparison of `r targetName` and `r comparatorName` in the `r params$databaseId` database, `r nrow(negatives)` negative controls had sufficient outcomes to return estimable HRs.   We list these conditions in Table \ref{tab:negatives}
+
+\begin{table}
+\caption{Negative controls employed in the comparison of `r targetName` and `r comparatorName` in the `r params$databaseId` database.}
+\label{tab:negatives}
+\centering{
+\rowcolors{2}{gray!6}{white}
+\begin{tabular}{l}
+\hiderowcolors
+\toprule
+\multicolumn{1}{c}{Condition} \\
+\midrule
+\showrowcolors
+```{r, echo=FALSE, results='asis'}
+table <- data.frame(outcomeName = sort(negatives[,"outcomeName"]))
+print(xtable(table),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+\end{table}
+
+## Covariate sets
+
+\begin{itemize}[noitemsep]
+\item Demographics (age in 5-year bands, gender, index year, index month)
+\item Conditions (condition occurrence in lookback window)
+  \begin{itemize}[noitemsep]
+  \item in 365 days prior to index date
+  \item in 30 days prior to index date
+  \end{itemize}
+\item Condition aggregation
+  \begin{itemize}[noitemsep]
+  \item SMOMED
+  \end{itemize}
+\item Drugs (drug occurrence in lookback window)
+  \begin{itemize}[noitemsep]
+  \item in 365 days prior to index date
+  \item in 30 days prior to index date
+  \end{itemize}
+\item Drug aggregation
+  \begin{itemize}[noitemsep]
+  \item Ingredient
+  \item ATC class
+  \end{itemize}
+\item Risk Scores (Charlson comorbidity index)
+`r if (indicationName %in% names(extraCovariates)) { paste("\\item", extraCovariates[indicationName]) }`
+\end{itemize}
+
+We exclude all covariates that occur in fewer than 0.1\% of patients within the target and comparator cohorts prior to model fitting for computational efficiency.
+
