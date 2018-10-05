@@ -364,7 +364,7 @@ Empirical calibration serves as an important diagnostic tool to evaluate if resi
 
 ## Population characteristics
 
-```{r, attrition_plot, echo=FALSE, cache=TRUE, warning=FALSE, fig.align="center", fig.width=6, fig.height=10, out.width = '90%', fig.cap=paste("\\textbf{Attrition diagram for selecting new-users of", targetName, "and",  comparatorName, "from the", params$databaseId, "database.\\label{fig:attrition}}")}
+```{r, attrition_plot, echo=FALSE, cache=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height=10, out.width = '90%', fig.cap=paste("\\textbf{Attrition diagram for selecting new-users of", targetName, "and",  comparatorName, "from the", params$databaseId, "database.\\label{fig:attrition}}")}
 drawAttritionDiagram(attrition, targetName, comparatorName)
 ```
 
@@ -399,7 +399,7 @@ Note that the IR does not account for any stratification or matching.
 \multicolumn{1}{c}{MDRR} \\
 \midrule 
 \showrowcolors
-```{r, outcomes, echo=FALSE, results="asis", cache=TRUE, warning=FALSE}
+```{r, outcomes, echo=FALSE, results="asis", cache=FALSE, warning=FALSE}
 table <- preparePowerTable(mainResults, analyses)
 
 print(xtable(table, format = "latex"),
@@ -435,7 +435,7 @@ print(xtable(table, format = "latex"),
   & \multicolumn{1}{c}{StdDiff} \\
 \midrule
 \showrowcolors
-```{r, features, echo=FALSE, results="asis", cache=TRUE, warning=FALSE}
+```{r, features, echo=FALSE, results="asis", cache=FALSE, warning=FALSE}
 table <- prepareTable1(balance, pathToCsv = file.path(params$root, "Table1Specs.csv"))
 table <- table[3:nrow(table),]
 

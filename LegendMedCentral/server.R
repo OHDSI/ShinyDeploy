@@ -169,15 +169,19 @@ shinyServer(function(input, output, session) {
 
   output$pdf <- downloadHandler(filename = function() {
     return("Paper.pdf")
-  }, content = function(con) {
+  }, content = function(fileName) {
     tcoDb <- selectedTcoDb()
     tcoDb$indicationId <- exposures$indicationId[match(tcoDb$targetId, exposures$exposureId)]
     title <- createTitle(tcoDb)
     abstract <- createAbstract(connection, tcoDb)
-    tempFileName <- paste0(paste(sample(letters, 8), collapse = ""), ".pdf")
+    tempFolder <- tempdir()
+    file.copy(c("blank_template.tex", 
+                "pnasresearcharticle.sty", 
+                "ohdsi.bib"), tempFolder)
     withProgress(message = "Generating PDF", value = 0, {
       rmarkdown::render("MyArticle.Rmd",
-                        output_file = tempFileName,
+                        intermediates_dir = tempFolder,
+                        output_file = fileName,
                         params = list(targetId = tcoDb$targetId,
                                       comparatorId = tcoDb$comparatorId,
                                       outcomeId = tcoDb$outcomeId,
@@ -187,14 +191,7 @@ shinyServer(function(input, output, session) {
                                       abstract = abstract,
                                       save = NULL,
                                       load = NULL))
-      # createDocument(targetId = tcoDb$targetId,
-      #                comparatorId = tcoDb$comparatorId, 
-      #                outcomeId = tcoDb$outcomeId, 
-      #                databaseId = tcoDb$databaseId,
-      #                indicationId = tcoDb$indicationId,
-      #                outputFile = tempFileName,
-      #                workingDirectory = paste(sample(letters, 8), collapse = ""))
     })
-    file.rename(tempFileName, con)
+    # unlink(tempFolder, recursive = TRUE)
   })
 })
