@@ -55,8 +55,13 @@ shinyServer(function(input, output, session) {
   })
 
   resultSubset <- reactive({
-    targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-    comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
+    targetId <- unique(exposures$exposureId[exposures$exposureName == input$target &
+                                              exposures$exposureGroup == input$exposureGroup])
+    comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator &
+                                                  exposures$exposureGroup == input$exposureGroup])
+    if (length(targetId) == 0 || length(comparatorId) == 0) {
+      return(NULL)
+    }
     outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
     analysisIds <- analyses$analysisId[analyses$description %in% input$analysis]
     databaseIds <- input$database
