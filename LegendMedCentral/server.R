@@ -175,12 +175,17 @@ shinyServer(function(input, output, session) {
     title <- createTitle(tcoDb)
     abstract <- createAbstract(connection, tcoDb)
     tempFolder <- tempdir()
-    file.copy(c("blank_template.tex", 
+    file.copy(c("MyArticle.Rmd",
+                "DataPulls.R",
+                "PlotsAndTables.R",
+                "Table1Specs.csv",
+                "blank_template.tex", 
                 "pnasresearcharticle.sty", 
+                "pnas-markdown.cls",
+                "jss.bst",
                 "ohdsi.bib"), tempFolder)
     withProgress(message = "Generating PDF", value = 0, {
-      rmarkdown::render("MyArticle.Rmd",
-                        intermediates_dir = tempFolder,
+      rmarkdown::render(file.path(tempFolder, "MyArticle.Rmd"),
                         output_file = fileName,
                         params = list(targetId = tcoDb$targetId,
                                       comparatorId = tcoDb$comparatorId,
