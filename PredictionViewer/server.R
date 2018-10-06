@@ -198,37 +198,22 @@ shiny::shinyServer(function(input, output, session) {
   output$prefPlotTest <- plotly::renderPlotly({
     if(is.null(reactVars$plpResult))
       return(NULL)
-    dataval <- reactVars$plpResult$performanceEvaluation$thresholdSummary[reactVars$plpResult$performanceEvaluation$thresholdSummary$Eval=='test',]
-    dataval$nonout <- (dataval$falsePositiveCount-c(dataval$falsePositiveCount[-1],0))/dataval$falsePositiveCount[1]
-    dataval$out <- (dataval$truePositiveCount-c(dataval$truePositiveCount[-1],0))/dataval$truePositiveCount[1]
-    
-    plot_ly(x = dataval$preferenceThreshold, alpha = 0.6) %>%
-      add_bars(y = dataval$nonout, name = 'Non-outcome')  %>%
-      add_bars(y = dataval$out, name = 'Outcome') %>%
-      layout(barmode = "overlay") %>%
-      layout(bargap = 0) %>%
-      layout(title = 'Preference Distribution',
-             xaxis = list(title = "Predicted Preference (scaled risk)"),
-             yaxis = list(title = "Density"))
-    
+    print(
+      ggplotly(plotPreferencePDF(reactVars$plpResult$performanceEvaluation,type='test'))
+    )
   })
   output$prefPlotTrain <- plotly::renderPlotly({
     if(is.null(reactVars$plpResult))
       return(NULL)
-    #PatientLevelPrediction::plotPreferencePDF(reactVars$plpResult$performanceEvaluation, 
-    #                                              type='train')
-    dataval <- reactVars$plpResult$performanceEvaluation$thresholdSummary[reactVars$plpResult$performanceEvaluation$thresholdSummary$Eval=='train',]
-    dataval$nonout <- (dataval$falsePositiveCount-c(dataval$falsePositiveCount[-1],0))/dataval$falsePositiveCount[1]
-    dataval$out <- (dataval$truePositiveCount-c(dataval$truePositiveCount[-1],0))/dataval$truePositiveCount[1]
-    
-    plot_ly(x = dataval$preferenceThreshold, alpha = 0.6) %>%
-      add_bars(y = dataval$nonout, name = 'Non-outcome')  %>%
-      add_bars(y = dataval$out, name = 'Outcome') %>%
-      layout(barmode = "overlay") %>%
-      layout(bargap = 0) %>%
-      layout(title = 'Preference Distribution',
-             xaxis = list(title = "Predicted Preference (scaled risk)"),
-             yaxis = list(title = "Density"))
+
+    print(
+      ggplotly(plotPreferencePDF(reactVars$plpResult$performanceEvaluation,type='train'))
+    ) %>%
+      layout(
+        yaxis = list(
+          hoverformat = '.2f'
+        )
+      )
   })
   
   # box plots

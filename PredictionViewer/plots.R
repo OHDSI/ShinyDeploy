@@ -157,7 +157,7 @@ plotCovSummary <- function(reactVars, input) {
       layout(
          xaxis = list(title = "Prevalance in persons without outcome"),
         yaxis = list(title = "Prevalance in persons with outcome"),
-        showlegend = FALSE
+        showlegend = TRUE
       )
   } else{
     plot_ly(x = dataVal$CovariateMeanWithNoOutcome[inc]) %>%
@@ -165,14 +165,16 @@ plotCovSummary <- function(reactVars, input) {
         y = dataVal$CovariateMeanWithOutcome[inc],
         marker = list(size = dataVal$size[inc], #sizeBig,
                       color = dataVal$color[inc]),
-        text = paste(dataVal$covariateName[inc])
+        text = paste(dataVal$covariateName[inc]),
+        name = 'Included'
       ) %>%
       plotly::add_markers(
         y = dataVal$CovariateMeanWithOutcome[nonInc],
         x = dataVal$CovariateMeanWithNoOutcome[nonInc],
         marker = list(size = dataVal$size[nonInc], #sizeSmall,
                       color = dataVal$color[nonInc]),
-        text = paste(dataVal$covariateName[nonInc])
+        text = paste(dataVal$covariateName[nonInc]),
+        name = 'Not included'
       ) %>%
       plotly::add_trace(
         x = c(0, 1),
@@ -180,12 +182,75 @@ plotCovSummary <- function(reactVars, input) {
         mode = 'lines',
         line = list(dash = "dash"),
         color = I('black'),
-        type = 'scattergl'
+        type = 'scattergl',
+        name = 'Line'
       ) %>%
       layout(
         xaxis = list(title = "Prevalance in persons without outcome"),
         yaxis = list(title = "Prevalance in persons with outcome"),
-        showlegend = FALSE
+        showlegend = TRUE
       )
   }
+}
+
+
+#' Plot the preference score probability density function, showing prediction overlap between true and false cases
+#' #'
+#' @details
+#' Create a plot showing the preference score probability density function, showing prediction overlap between true and false cases
+#' #'
+#' @param evaluation            A prediction object as generated using the
+#'                              \code{\link{runPlp}} function.
+#' @param type                  options: 'train' or test'
+#' @param fileName              Name of the file where the plot should be saved, for example
+#'                              'plot.png'. See the function \code{ggsave} in the ggplot2 package for
+#'                              supported file formats.
+#'
+#' @return
+#' A ggplot object. Use the \code{\link[ggplot2]{ggsave}} function to save to file in a different
+#' format.
+#'
+#' @export
+plotPreferencePDF <- function(evaluation, type='test', fileName=NULL){
+  ind <- evaluation$thresholdSummary$Eval==type
+  
+  x<- evaluation$thresholdSummary[ind,c('preferenceThreshold','truePositiveCount','trueNegativeCount',
+                                        'falsePositiveCount','falseNegativeCount')]
+  x<- x[order(x$preferenceThreshold,-x$truePositiveCount),]
+  x$out <- c(x$truePositiveCount[-length(x$truePositiveCount)]-x$truePositiveCount[-1], x$truePositiveCount[length(x$truePositiveCount)])
+  x$nout <- c(x$falsePositiveCount[-length(x$falsePositiveCount)]-x$falsePositiveCount[-1], x$falsePositiveCount[length(x$falsePositiveCount)])
+  
+  vals <- c()
+  for(i in 1:length(x$preferenceThreshold)){
+    if(i!=length(x$preferenceThreshold)){
+      upper <- x$preferenceThreshold[i+1]} else {upper <- 1}
+    val <- x$preferenceThreshold[i]+runif(x$out[i])*(upper-x$preferenceThreshold[i])
+    vals <- c(val, vals)
+  }
+  vals[!is.na(vals)]
+  
+  vals2 <- c()
+  for(i in 1:length(x$preferenceThreshold)){
+    if(i!=length(x$preferenceThreshold)){
+      upper <- x$preferenceThreshold[i+1]} else {upper <- 1}
+    val2 <- x$preferenceThreshold[i]+runif(x$nout[i])*(upper-x$preferenceThreshold[i])
+    vals2 <- c(val2, vals2)
+  }
+  vals2[!is.na(vals2)]
+  
+  x <- rbind(data.frame(variable=rep('outcome',length(vals)), value=vals),
+             data.frame(variable=rep('No outcome',length(vals2)), value=vals2)
+  )
+  
+  plot <- ggplot2::ggplot(x, ggplot2::aes(x=x$value,
+                                          group=x$variable,
+                                          fill=x$variable)) +
+    ggplot2::geom_density(ggplot2::aes(x=x$value, fill=x$variable), alpha=.3) +
+    ggplot2::scale_x_continuous("Preference Threshold")+#, limits=c(0,1)) +
+    ggplot2::scale_y_continuous("Density") + 
+    ggplot2::guides(fill=ggplot2::guide_legend(title="Class"))
+  
+  if (!is.null(fileName))
+    ggplot2::ggsave(fileName, plot, width = 5, height = 4.5, dpi = 400)
+  return(plot)
 }
