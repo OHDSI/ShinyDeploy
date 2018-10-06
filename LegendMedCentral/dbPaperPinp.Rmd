@@ -1,0 +1,387 @@
+---
+params:
+  databaseId: "MDCR"
+  targetId: 739138
+  comparatorId: 715259
+  outcomeId: 18
+  setTitle: "Stroke risk in new-users of sertaline versus duloxetine for major depressive disorder in the MDCR database."
+title: "`r params$setTitle`"
+# Corresponding author: Martijn J. Schuemie, Janssen R&D, 1125 Trenton Harbourton Road, Titusville, NJ, 08560, Phone: +31 631793897, schuemie@ohdsi.org
+author:
+    
+  - name: Martijn J. Schuemie
+    affiliation: a,b,c
+  - name: Patrick B. Ryan
+    affiliation: a,b,d
+  - name: Seng Chan You
+    affiliation: a,e
+  - name: Nicole Pratt
+    affiliation: a,f
+  - name: David Madigan
+    affiliation: a,g
+  - name: George Hripcsak
+    affiliation: a,d
+  - name: Marc A. Suchard
+    affiliation: a,c,h,i
+address:
+  - code: a
+    address: Observational Health Data Sciences and Informatics, New York, NY, USA
+  - code: b
+    address: Janssen Research & Development, Titusville, NJ, USA
+  - code: c
+    address: Department of Biostatistics, University of Califoria, Los Angeles, CA
+  - code: d
+    address: Department of Biomedical Informatics, Columbia University, New York, NY     
+  - code: e
+    address: Department of Biomedical Informatics, Ajou University, Suwon, South Korea
+  - code: f
+    address: Sansom Institute, University of South Australia, Adelaide SA, Australia
+  - code: g
+    address: Department of Statistics, Columbia University, New York, NY
+  - code: h
+    address: Department of Biomathematics, University of Califoria, Los Angeles, CA
+  - code: i
+    address: Department of Human Genetics, University of Califoria, Los Angeles, CA
+lead_author_surname: Schuemie et al.
+doi: "https://cran.r-project.org/package=YourPackage"
+abstract: |
+  Your abstract will be typeset here, and used by default a visually distinctive font.
+  An abstract should explain to the general reader the major contributions of the article.
+# Optional: Acknowledgements
+acknowledgements: |
+  This template package builds upon, and extends, the work of the excellent
+  gratefully acknowledged as this work would not have been possible without them.  Our extensions
+  are under the same respective licensing term
+  [rticles](https://cran.r-project.org/package=rticles) package, and both packages rely on the
+  [PNAS LaTeX](http://www.pnas.org/site/authors/latex.xhtml) macros. Both these sources are
+  ([GPL-3](https://www.gnu.org/licenses/gpl-3.0.en.html) and
+  [LPPL (>= 1.3)](https://www.latex-project.org/lppl/)).
+# Optional: One or more keywords
+keywords:
+  - one
+  - two
+  - optional
+  - keywords
+  - here
+papersize: letter
+fontsize: 9pt
+# Optional: Force one-column layout, default is two-column
+# one_column: true
+# Optional: Enables lineno mode, but only if one_column mode is also true
+#lineno: true
+# Optional: Enable one-sided layout, default is two-sided
+#one_sided: true
+# Optional: Enable section numbering, default is unnumbered
+#numbersections: true
+# Optional: Specify the depth of section number, default is 5
+#secnumdepth: 5
+# Optional: Skip inserting final break between acknowledgements, default is false
+skip_final_break: true
+# Optional: Bibliography
+bibliography: bibliography.bib
+# Optional: Enable a 'Draft' watermark on the document
+watermark: true
+footer_contents: "LEGEND Project Document"
+output: pinp::pinp
+# Required: Vignette metadata for inclusion in a package.
+vignette: >
+  %\VignetteIndexEntry{YourPackage-vignetteentry}
+  %\VignetteKeywords{YourPackage, r, anotherkeyword}
+  %\VignettePackage{YourPackage}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+## Introduction
+
+This *pinp is not PNAS* template started when the introduction to
+[Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) by \cite{PeerJ:Rcpp}
+was converted into this updated
+[Rcpp Introduction](https://eddelbuettel.github.io/pinp/Rcpp-introduction.pdf)
+vignette.  It is based on the
+[pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article)
+template of the wonderful [rticles](https://cran.r-project.org/package=rticles) package by
+\cite{CRAN:rticles}. The conversion from markdown to latex is facilitated by
+[rmarkdown](https://cran.r-project.org/package=rmarkdown)
+\citep{CRAN:rmarkdown} and [knitr](https://cran.r-project.org/package=knitr)
+\citep{CRAN:knitr}. The underlying LaTeX macros are from
+[pnas.org](http://www.pnas.org/site/authors/latex.xhtml).
+
+The remainder of the document carries over from the corresponding
+[pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article)
+template document. but has been edited and updated to our use case.  A
+few specific tips follow.  In general, for fine-tuning some knowledge
+of LaTeX is helpful.
+
+<!-- Read in analysis data -->
+
+```{r, echo=FALSE, message=FALSE, comment=FALSE, results='hide'}
+library(DatabaseConnector)
+library(CohortMethod)
+library(Legend)
+library(knitr)
+library(xtable)
+library(ggplot2)
+source("DataPulls.R")
+source("PlotsAndTables.R")
+options(knitr.kable.NA = '')
+
+# params <- list(databaseId = "MDCR",
+#                targetId = 739138,
+#                comparatorId =  715259,
+#                outcomeId = 18)
+
+useStoredObject <- TRUE
+
+if (!useStoredObject) {
+    connectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                                 server = "localhost/ohdsi",
+                                                 user = "postgres",
+                                                 password = Sys.getenv("pwPostgres"),
+                                                 schema = "legend")
+    connection <- connect(connectionDetails)
+    targetName <- getExposureName(connection, params$targetId)
+    comparatorName <- getExposureName(connection, params$comparatorId)
+    outcomeName <- getOutcomeName(connection, params$outcomeId)
+    analyses <- getAnalyses(connection)
+    mainResults <- getMainResults(connection,
+                                  targetIds = params$targetId,
+                                  comparatorIds = params$comparatorId,
+                                  outcomeIds = params$outcomeId,
+                                  databaseIds = params$databaseId)
+
+    attrition <- getAttrition(connection,
+                              targetId = params$targetId,
+                              comparatorId = params$comparatorId,
+                              outcomeId = params$outcomeId,
+                              analysisId = 1,
+                              databaseId = params$databaseId)
+
+    balance <- getCovariateBalance(connection,
+                                   targetId = params$targetId,
+                                   comparatorId = params$comparatorId,
+                                   databaseId = params$databaseId)
+
+    ps <- getPs(connection,
+                targetId = params$targetId,
+                comparatorId = params$comparatorId,
+                databaseId = params$databaseId)
+
+    kaplanMeier <- getKaplanMeier(connection,
+                                  targetId = params$targetId,
+                                  comparatorId = params$comparatorId,
+                                  outcomeId = params$outcomeId,
+                                  databaseId = params$databaseId,
+                                  analysisId = 2)
+} else {
+    load("paperData.rda")
+}
+```
+
+## Methods
+
+## Results
+
+Table \ref{tab:demographics} \ldots
+
+\clearpage
+
+\begin{figure*}
+\caption{\textbf{Patient demographics.} Target (T) population is sertaline new-users.  Comparative (C) population is dulexotine new-users.  We report the standardized difference of population means (StdDiff) before and after stratification for selected base-line patient characteristics.}\label{tab:demographics}
+\begin{center}
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{lrrrrrr}
+\hline
+& \multicolumn{3}{c}{Before stratification}
+& \multicolumn{3}{c}{After stratification} \\
+\multicolumn{1}{c}{Characteristic}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff} \\
+  \hline
+```{r, echo=FALSE, results="asis", cache=TRUE}
+table <- prepareTable1(balance)
+table <- table[3:nrow(table),]
+
+print(xtable(table, format = "latex", align = c("l","l","r","r","r","r","r","r")),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+```
+\end{tabular}
+}
+\end{center}
+\end{figure*}
+
+\clearpage
+
+```{r, echo=FALSE, cache=TRUE}
+plot <- plotPs(ps, targetName, comparatorName)
+suppressMessages(ggsave("ps.pdf", plot,
+                        width = 5, height = 5, units = "in"))
+```
+
+\begin{figure}
+  \centerline{
+    \includegraphics[width=0.4\textwidth]{ps}
+  }
+  \caption{\textbf{Preference score distribution for sertaline and dulexotine new-users.}
+  The preference score is a transformation of the propensity score that adjusts for size differences between populations.  A higher overlap indicates that subjects in the two populations are more similar in terms of their predicted probability of receiving one treatment over the other.
+  }
+\end{figure}
+
+More text here.
+
+\begin{figure}
+\begin{tabular}{lrrrr}
+```{r, echo=FALSE, results="asis"}
+table <- mainResults
+table$hr <- sprintf("%.2f (%.2f - %.2f)", mainResults$rr, mainResults$ci95lb, mainResults$ci95ub)
+table$p <- sprintf("%.2f", table$p)
+table$calHr <- sprintf("%.2f (%.2f - %.2f)", mainResults$calibratedRr, mainResults$calibratedCi95Lb, mainResults$calibratedCi95Ub)
+table$calibratedP <- sprintf("%.2f", table$calibratedP)
+table <- merge(table, analyses)
+table <- table[, c("description", "hr", "p", "calHr", "calibratedP")]
+
+print(xtable(table),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+```
+\end{tabular}
+\end{figure}
+
+
+## Discussion
+
+## Appendix
+
+```{r, echo=FALSE, cache=TRUE}
+plot <- drawAttritionDiagram(attrition, targetName, comparatorName)
+suppressMessages(ggsave("attrition.pdf", plot,
+                        width = 6, height = 10, units = "in"))
+```
+
+\begin{figure*}
+  \begin{center}
+    \includegraphics[width=0.66\textwidth]{attrition}
+  \end{center}
+  \caption{Attrition diagram for selecting new-users of }\label{fig:attrition}
+\end{figure*}
+
+## Inline R Code
+
+The PNAS sample included a fixed PNG image here, but this document prefers
+to show the results and embedding of _R_ code.
+
+```{r figex, fig.width=3, fig.height=3, cache=TRUE, echo=TRUE, fig.cap="Narrow ggplot2 figure"}
+library(ggplot2)
+ggplot(mtcars, aes(wt, mpg)) +
+    geom_point(size=3, aes(colour=factor(cyl))) +
+    theme(legend.position="none")
+```
+
+Here we use a standard knitr bloc with explicit options for
+
+- figure width and height (`fig.width`, `fig.height`), both set to three inches;
+- whether the code is shown (`echo=TRUE`); and
+- the caption (`fig.cap`) as shown above.
+
+
+## Digital Figures
+
+Markdown, Pandoc and LaTeX support `.eps` and `.pdf` files.
+
+Figures and Tables should be labelled and referenced in the standard way
+using the `\label{}` and `\ref{}` commands.
+
+The R examples above show how to insert a column-wide
+figure. To insert a figure wider than one column, please use the
+`\begin{figure*}...\end{figure*}` environment.
+
+One (roundabout) way of doing this is to _not_ actually plot a figure, but to
+save it in a file as the following segment shows:
+
+```{r densityPlot, echo=TRUE}
+library(ggplot2)
+p <- ggplot(data = midwest,
+            mapping = aes(x = area,
+                          fill = state,
+                          color = state)) +
+    geom_density(alpha = 0.3)
+## save to file
+suppressMessages(ggsave("densities.pdf", p))
+```
+
+This file is then included via standard LaTeX commands.
+
+\begin{figure*}
+  \begin{center}
+    \includegraphics[width=0.66\textwidth, height=3.5in]{densities}
+  \end{center}
+  \caption{Wide ggplot2 figure}\label{fig}
+\end{figure*}
+
+
+## Typeset Code (But Do Not Run It)
+
+We can also just show code.
+
+```r
+xx <- faithful[,"eruptions"]
+fit <- density(xx)
+plot(fit)
+```
+
+This simply used a pandoc bloc started and ended by three backticks,
+with `r` as the language choice.  Similarly, _many_ other languages
+can be typeset directly simply by relying on pandoc.
+
+
+## Single column equations
+
+Authors may use 1- or 2-column equations in their article, according to
+their preference.
+
+To allow an equation to span both columns, options are to use the
+`\begin{figure*}...\end{figure*}` environment mentioned above for
+figures, or to use the `\begin{widetext}...\end{widetext}` environment
+as shown in equation \ref{eqn:example} below.
+
+Please note that this option may run into problems with floats and
+footnotes, as mentioned in the [cuted package
+documentation](http://texdoc.net/pkg/cuted). In the case of problems
+with footnotes, it may be possible to correct the situation using
+commands `\footnotemark` and `\footnotetext`.
+
+\begin{equation}
+  \begin{aligned}
+(x+y)^3&=(x+y)(x+y)^2\\
+       &=(x+y)(x^2+2xy+y^2) \\
+       &=x^3+3x^2y+3xy^3+x^3.
+       \label{eqn:example}
+  \end{aligned}
+\end{equation}
+
+
+<!-- pandoc writes all tables using longtable, which fails in 2-column mode
+
+  Species                    CBS     CV     G3
+  ----------------------- ------ ------ ------
+  1\. Acetaldehyde           0.0    0.0    0.0
+  2\. Vinyl alcohol          9.1    9.6   13.5
+  3\. Hydroxyethylidene     50.8   51.2   54.0
+
+  : Comparison of the fitted potential energy surfaces and ab initio
+  benchmark electronic energy calculations
+
+-->
+

@@ -1,0 +1,787 @@
+\documentclass[9pt,twocolumn,twoside,]{pnas-new}
+
+%% Some pieces required from the pandoc template
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment.
+
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{longtable}
+
+<<params, echo=FALSE, message=FALSE, comment=FALSE, results=hide>>=
+params <- list(databaseId = DATABASE_ID_TAG,
+               targetId = TARGET_ID_TAG,
+               comparatorId = COMPARATOR_ID_TAG,
+               outcomeId = OUTCOME_ID_TAG,
+               indication = uncapitalize("INDICATION_ID_TAG"),
+               primary = 1,
+               ot = 1,
+               itt = 2,
+               matchOt = 3,
+               matchItt = 4
+               )
+@
+
+<<setup, echo=FALSE, message=FALSE, comment=FALSE, results=hide>>=
+library(DatabaseConnector)
+library(CohortMethod)
+library(Legend)
+library(knitr)
+library(xtable)
+library(ggplot2)
+source("CURRENT_DIRECTORY/DataPulls.R")
+source("CURRENT_DIRECTORY/PlotsAndTables.R")
+options(knitr.kable.NA = '')
+
+extraCriteria <- list(
+  depression = "Further, we exclude patients with diagnoses of bipolar disorder or schizophrenia on or prior to their index date."
+)
+
+extraCovariates <- list(
+  depression = "Prior number of depression treatments (1, 2, 3, 4, 5 or higher)"
+)
+@
+
+<<loadData, echo=FALSE, message=FALSE, comment=FALSE, results=hide>>=
+useStoredObject <- FALSE
+
+if (!useStoredObject) {
+  connectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                               server = paste(Sys.getenv("legendServer"),
+                                                              Sys.getenv("legendDatabase"), sep = "/"),
+                                               port = Sys.getenv("legendPort"),
+                                               user = Sys.getenv("legendUser"),
+                                               password = Sys.getenv("legendPw"),
+                                               schema = Sys.getenv("legendSchema"))
+  connection <- connect(connectionDetails)
+  targetName <- getExposureName(connection = connection, exposureId = params$targetId)
+  comparatorName <- getExposureName(connection = connection, exposureId = params$comparatorId)
+  outcomeName <- getOutcomeName(connection = connection, outcomeId = params$outcomeId)
+  analyses <- getAnalyses(connection = connection)
+  databaseDetails <- getDatabaseDetails(connection = connection,
+                                        databaseId = params$databaseId)
+  studyPeriod <- getStudyPeriod(connection = connection,
+                                targetId = params$targetId,
+                                comparatorId = params$comparatorId,
+                                databaseId = params$databaseId)
+  mainResults <- getMainResults(connection = connection,
+                                targetIds = params$targetId,
+                                comparatorIds = params$comparatorId,
+                                outcomeIds = params$outcomeId,
+                                databaseIds = params$databaseId,
+                                analysisIds = c(1, 2, 3, 4))
+
+  subgroupResults <- getSubgroupResults(connection = connection,
+                                        targetIds = params$targetId,
+                                        comparatorIds = params$comparatorId,
+                                        outcomeIds = params$outcomeId,
+                                        databaseIds = params$databaseId)
+
+  controlResults <- getControlResults(connection = connection,
+                                      targetId = params$targetId,
+                                      comparatorId = params$comparatorId,
+                                      analysisId = 1,
+                                      databaseId = params$databaseId)
+
+  attrition <- getAttrition(connection = connection,
+                            targetId = params$targetId,
+                            comparatorId = params$comparatorId,
+                            outcomeId = params$outcomeId,
+                            analysisId = 1,
+                            databaseId = params$databaseId)
+
+  followUpDist <- getCmFollowUpDist(connection = connection,
+                                    targetId = params$targetId,
+                                    comparatorId = params$comparatorId,
+                                    outcomeId = params$outcomeId,
+                                    databaseId = params$databaseId,
+                                    analysisId = 1)
+
+  balance <- getCovariateBalance(connection = connection,
+                                 targetId = params$targetId,
+                                 comparatorId = params$comparatorId,
+                                 databaseId = params$databaseId,
+                                 analysisId = 2)
+
+  popCharacteristics <- getCovariateBalance(connection = connection,
+                                            targetId = params$targetId,
+                                            comparatorId = params$comparatorId,
+                                            databaseId = params$databaseId,
+                                            analysisId = 1,
+                                            outcomeId = params$outcomeId)
+
+  ps <- getPs(connection = connection,
+              targetIds = params$targetId,
+              comparatorIds = params$comparatorId,
+              databaseId = params$databaseId)
+
+  kaplanMeier <- getKaplanMeier(connection = connection,
+                                targetId = params$targetId,
+                                comparatorId = params$comparatorId,
+                                outcomeId = params$outcomeId,
+                                databaseId = params$databaseId,
+                                analysisId = 2)
+} else {
+    load("paperData.rda")
+    targetName <- uncapitalize(targetName)
+    comparatorName <- uncapitalize(comparatorName)
+    outcomeName <- uncapitalize(outcomeName)
+}
+
+
+targetName <- uncapitalize(targetName)
+comparatorName <- uncapitalize(comparatorName)
+outcomeName <- uncapitalize(outcomeName)
+
+databaseName <- databaseDetails$databaseName
+
+minYear <- substr(studyPeriod$minDate, 1, 4)
+maxYear <- substr(studyPeriod$maxDate, 1, 4)
+
+coverage <- getCoverage(controlResults)
+
+@
+
+\templatetype{pnasresearcharticle}  % Choose template
+
+\title{ \Sexpr{capitalize(outcomeName)} risk in new-users of \Sexpr{targetName} versus \Sexpr{comparatorName}
+for \Sexpr{params$indication} in the \Sexpr{params$databaseId} database}
+
+\author[a,b,c,1]{Martijn J. Schuemie}
+\author[a,b,d]{Patrick B. Ryan}
+\author[a,e]{Seng Chan You}
+\author[a,f]{Nicole Pratt}
+\author[a,g]{David Madigan}
+\author[a,d]{George Hripcsak}
+\author[a,c,h,i]{Marc A. Suchard}
+
+  \affil[a]{Observational Health Data Sciences and Informatics, New York, NY, USA}
+  \affil[b]{Janssen Research \& Development, Titusville, NJ, USA}
+  \affil[c]{Department of Biostatistics, University of Califoria, Los Angeles, CA}
+  \affil[d]{Department of Biomedical Informatics, Columbia University, New York, NY}
+  \affil[e]{Department of Biomedical Informatics, Ajou University, Suwon, South
+Korea}
+  \affil[f]{Sansom Institute, University of South Australia, Adelaide SA, Australia}
+  \affil[g]{Department of Statistics, Columbia University, New York, NY}
+  \affil[h]{Department of Biomathematics, University of Califoria, Los Angeles, CA}
+  \affil[i]{Department of Human Genetics, University of Califoria, Los Angeles, CA}
+
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{Schuemie}
+
+% Please add here a significance statement to explain the relevance of your work
+% \significancestatement{Authors must submit a 120-word maximum statement about the significance
+% of their research paper written at a level understandable to an
+% undergraduate educated scientist outside their field of speciality. The
+% primary goal of the Significance Statement is to explain the relevance
+% of the work in broad context to a broad readership. The Significance
+% Statement appears in the paper itself and is required for all research
+% papers.}
+
+% \authorcontributions{Please provide details of author contributions here.}
+
+\authordeclaration{
+MJS and PBR are employees and share-holders of Janssen Research.
+MAS receives contract support from Janssen Research.
+}
+
+\equalauthors{\textsuperscript{} }
+
+\correspondingauthor{\textsuperscript{Corresponding author contact: \url{mschuemie@ohdsi.org}} }
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+ % \keywords{  one |  two |  optional |  optional |  optional   }
+
+\begin{abstract}
+We conduct a large-scale study on the incidence of \Sexpr{outcomeName} among new users of \Sexpr{targetName} and \Sexpr{comparatorName} from \Sexpr{minYear} to \Sexpr{maxYear} in the \Sexpr{params$databaseId} database.
+Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions.  Secondary analyses entertain possible clinically relevant subgroup interaction with the HR.
+We identify \Sexpr{mainResults[params$primary,"targetSubjects"]} \Sexpr{targetName} and \Sexpr{mainResults[params$primary,"comparatorSubjects"]} \Sexpr{comparatorName} patients for the on-treatment design, totaling \Sexpr{round(mainResults[params$primary,"targetDays"]/365.24)} and \Sexpr{round(mainResults[params$primary,"comparatorDays"]/365.24)} patient-years of observation, and \Sexpr{mainResults[params$primary,"targetOutcomes"]} and \Sexpr{mainResults[params$primary,"comparatorOutcomes"]} events respectively.
+We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation.
+We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and $p$-values.
+In terms of \Sexpr{outcomeName}, \Sexpr{targetName} has a
+\Sexpr{judgeHazardRatio(mainResults[params$primary,"calibratedCi95Lb"], mainResults[params$primary,"calibratedCi95Ub"])}
+risk as \Sexpr{comparatorName} [HR: \Sexpr{prettyHr(mainResults[params$primary,"calibratedRr"])},
+95\% confidence interval (CI) \Sexpr{prettyHr(mainResults[params$primary, "calibratedCi95Lb"])} - \Sexpr{prettyHr(mainResults[params$primary, "calibratedCi95Ub"])}].
+%We demonstrate (TODO) \Sexpr{judgePropensityScore(1.1,1.1)}.
+%In conclusion, we find that \Sexpr{targetName} is \Sexpr{judgeEffectiveness(mainResults[params$primary,"calibratedCi95Lb"], mainResults[params$primary,"calibratedCi95Ub"])} effective as \Sexpr{comparatorName} in preventing \Sexpr{outcomeName}.
+\end{abstract}
+
+\dates{This manuscript was \textbf{automatically} compiled on \today.}
+% \doi{\url{ADD}}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+\verticaladjustment{-2pt}
+
+\maketitle
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+% If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
+
+\acknow{We are grateful for \ldots.}
+
+The Large-scale Evidence Generation and Evaluation in a Network of Databases (LEGEND) project aims to generate reliable evidence on the effects of medical interventions using observational healthcare data to support clinical decision making.
+LEGEND follows ten guiding principles (see Supplementary Material); chief among these stand that we generate evidence at large-scale to achieve completeness and faciliate analysis of the overall distribution of effect size estimates across treatments and outcomes.
+We also generate evidence consistently by applying a systematic approach across all research questions and disseminate evidence regardless on the estimates effects to avoid publication bias. These aims help overcome the questionable reliable of observational research [schuemie2018].
+This LEGEND document reports the risk of \Sexpr{outcomeName} between new users of \Sexpr{targetName} and \Sexpr{comparatorName} treated for \Sexpr{params$indication}.
+
+\begin{itemize}
+  \item Add short introduction to indication.
+\end{itemize}
+
+\hypertarget{methods}{%
+\section*{Methods}\label{methods}}
+\addcontentsline{toc}{section}{Methods}
+
+\subsection*{Data source}
+We conduct a new-user cohort study comparing new users of \Sexpr{targetName} with new users of \Sexpr{comparatorName} in the \Sexpr{params$databaseName} (\Sexpr{params$databaseId}) database encoded in the Observational Medical Outcomes Partnership (OMOP) common data model (CDM) version 5 %\citep{hripcsak2015observational,overhage2012validation,ryan2013empirical}
+.
+\Sexpr{sub(paste0(".*\\(",databaseDetails$databaseId,"\\)"), databaseDetails$databaseId, databaseDetails$description)}
+The study period spans from \Sexpr{studyPeriod$minDate} to \Sexpr{studyPeriod$maxDate}.
+
+\subsection*{Study design}
+This study follows a retrospective, observational, comparative cohort design %\citep{ryan2013empirical}
+.
+We include patients who are first time users of \Sexpr{targetName} or \Sexpr{comparatorName}, and who have a diagnosis of \Sexpr{params$indication} on or prior to treatment initation.
+We require that patients have continuous observation in the database for at least 365 days prior to treatment initiation.
+We exclude patients with prior \Sexpr{outcomeName} events and less than 1 day at risk.
+\Sexpr{extraCriteria["depression"]}
+Full cohort details, include concept codes, are provided in the Supplementary Inforamtion (add link).
+The outcome of interest is \Sexpr{outcomeName}.
+We begin the outcome risk window 1 day after treatment initation and consider two design choices to define the window end.
+%As our primary analysis, we have pre-specified \ldots
+%We consider two design choices to define
+First, we end the outcome time-at-risk window at first cessation of continuous drug exposure, analogous to an on-treatment design and, second,  we end the outcome time-at-risk window when the patient is no longer observable in the database, analogous to an intent-to-treat design.
+%
+Continuous drug exposures are constructed from the available longitudinal data by considering sequential prescriptions that have fewer than 30 days gap between prescriptions.
+
+\subsection*{Statistical analysis}
+We conduct our cohort study using the open-source OHDSI CohortMethod R package %\citep{schuemie2017cohort}
+, with large-scale analytics achieved through the Cyclops R package %\citep{suchard2013high?}
+.
+We use propensity scores (PSs) -- estimates of treatment exposure probability conditional on pre-treatment baseline features in the one year prior to treatment initiation -- to control for potential measured confoudning and improve balance between the target (\Sexpr{targetName}) and comparator (\Sexpr{comparatorName}) cohorts %\citep{rosenbaum1983central}
+.
+We use an expansive PS model that includes all available patient demographics, drug, condition and procedure covariates generated through the FeatureExtraction R package %\citep{schuemie2018feature}
+ instead of a prespecified set of investigator-selected confounders.
+ We perform PS stratification or variable-ratio matching and then estimate comparative \Sexpr{targetName}-vs-\Sexpr{comparatorName} hazard ratios (HRs) using a Cox proportional hazards model.
+ Detailed covariate and methods informations are provided in the Supplementary Information (add link).
+ We present PS and covariate balance metrics to assess successful confounding control, and provide HR estimates and Kaplan-Meier survival plots for the outcome of \Sexpr{outcomeName}.
+ We additionally estimate HRs for pre-specified subgroups to evaluate interactions with the treatment effect.
+For efficiency reasons, we fit subgroup Cox models using PS stratification only.
+
+Residual study bias from unmeasured and systematic sources can exist in observational studies after controlling for measured confounding %\citep{schuemie2018reliable}
+.
+To estimate such residual bias, we conduct negative control outcome experiments with \Sexpr{length(unique(controlResults$outcomeName))} negative control outcomes %\citep{negative-controls}
+identified through a data-rich algorithm %\citep{voss2017accuracy}
+.
+We fit the negative control estimates to an empirical null distribution that characterizes the study residual bias and is an important artifact from which to assess the study design %\citep{schuemie2014interpreting,schuemie2018empirical}
+.
+Using the empirical null distribution and synthetic positive controls %\citep{positive-controls}
+, we additionally calibrate all HR estimates, their 95\% confidence intervals (CIs) and the $p$-value to reject the null hypothesis of no differential effect (HR = 1).
+Empirical calibration serves as an important diagnostic tool to evaluate if residual systematic error is sufficient to cast doubt on the accuracy of the unknown effect estimate.
+
+\hypertarget{results}{%
+\section*{Results}\label{results}}
+\addcontentsline{toc}{section}{Results}
+
+\subsection*{Population characteristics}
+
+Figure \ref{fig:attrition} diagrams the inclusion of study subjects from the \Sexpr{params$databaseId} database under the on-treatment with stratification design.
+%
+%For the intent-to-treatment analysis, we identify \Sexpr{mainResults[params$itt,"targetSubjects"]} \Sexpr{targetName} and \Sexpr{mainResults[params$itt,"comparatorSubjects"]} \Sexpr{comparatorName} patients, totaling \Sexpr{round(mainResults[params$itt,"targetDays"]/365.24)} and \Sexpr{round(mainResults[params$itt,"comparatorDays"]/365.24)} patient-years of observation, and \Sexpr{mainResults[params$itt,"targetOutcomes"]} and \Sexpr{mainResults[params$itt,"comparatorOutcomes"]} events respectively.
+%Similarly, for the on-treatment analylsis, we identify \Sexpr{mainResults[params$ot,"targetSubjects"]} \Sexpr{targetName} and \Sexpr{mainResults[params$ot,"comparatorSubjects"]} \Sexpr{comparatorName} patients, totaling \Sexpr{round(mainResults[params$ot,"targetDays"]/365.24)} and \Sexpr{round(mainResults[params$ot,"comparatorDays"]/365.24)} patient-years of observation, and \Sexpr{mainResults[params$ot,"targetOutcomes"]} and \Sexpr{mainResults[params$ot,"comparatorOutcomes"]} events respectively.
+<<attrition_plot, echo=FALSE, cache=TRUE>>==
+plot <- drawAttritionDiagram(attrition, targetName, comparatorName)
+suppressMessages(ggsave("attrition.pdf", plot,
+                        width = 6, height = 10, units = "in"))
+@
+%
+\begin{figure}
+  \vspace*{-1em}
+  \centerline{\includegraphics[width=0.45\textwidth]{attrition}}
+  \vspace*{-2em}
+  \caption{\textbf{Attrition diagram for selecting new-users of \Sexpr{targetName} and \Sexpr{comparatorName} from the \Sexpr{params$databaseId} database.}}
+  \label{fig:attrition}
+\end{figure}
+%
+We augment these counts with cohort sizes we identify for the remaining designs in Table \ref{tab:power}.
+This table also reports total patient follow-up time, numbers of \Sexpr{outcomeName} events these patients experience and unadjusted incidence rates.
+%
+\begin{table*}
+\caption{\textbf{Patient cohorts.}
+Target (T) cohort is \Sexpr{targetName} new-users.  Comparative (C) cohort is \Sexpr{comparatorName} new-users.
+%
+We report total number of patients, follow-up time (in years), number of \Sexpr{outcomeName} events, and event incidence rate (IR) per 1,000 patient years (PY) in patient cohorts, as well as the their minimum detectable relative risk (MDRR).
+%
+Note that the IR does not account for any stratification or matching.
+}\label{tab:power}
+\vspace*{-0.5em}
+\centering{
+\begin{tabular}{lrrrrrrrrr}
+\hline
+ &
+\multicolumn{2}{c}{Patients} &
+\multicolumn{2}{c}{PYs} &
+\multicolumn{2}{c}{Events} &
+\multicolumn{2}{c}{IR} &
+%\multicolumn{1}{c}{MDRR}
+\\
+\multicolumn{1}{c}{Design} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{MDRR} \\
+\hline
+<<outcomes, echo=FALSE, results=tex, cache=TRUE>>==
+table <- preparePowerTable(mainResults, analyses)
+
+print(xtable(table, format = "latex"),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+@
+\hline
+\end{tabular}
+}
+\end{table*}
+%
+Table \ref{tab:demographics} compares base-line characteristics between patient cohorts.
+%
+\begin{table}
+\caption{\textbf{Patient demographics.} We report the standardized difference of population means (StdDiff) before and after stratification for selected base-line patient characteristics.}\label{tab:demographics}
+\vspace*{-0.5em}
+\centerline{
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{lrrrrrr}
+\hline
+& \multicolumn{3}{c}{Before stratification}
+& \multicolumn{3}{c}{After stratification} \\
+\multicolumn{1}{c}{Characteristic}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff}
+  & \multicolumn{1}{c}{T (\%)}
+  & \multicolumn{1}{c}{C (\%)}
+  & \multicolumn{1}{c}{StdDiff} \\
+  \hline
+<<features, echo=FALSE, results=tex, cache=TRUE>>==
+table <- prepareTable1(balance, pathToCsv = "CURRENT_DIRECTORY/Table1Specs.csv")
+table <- table[3:nrow(table),]
+
+print(xtable(table, format = "latex", align = c("l","l","r","r","r","r","r","r")),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+@
+\hline
+\end{tabular}
+}
+}
+\end{table}
+
+\subsection*{Patient characteristics balance}
+Figure \ref{fig:ps} plots the preference score distributions, re-scalings of PS estimates to adjust for differential treatment prevalences, for patients treated with \Sexpr{targetName} and \Sexpr{comparatorName}.
+We assess characteristics balance achieved through PS adjustment by comparing all characteristics' standardized difference (StdDiff) between treatment group means before and after PS trimming and stratification (Table \ref{tab:demographics}).
+Figure \ref{fig:balance} plots StdDiff for all \Sexpr{nrow(balance)} base-line patient features that serve as input for the PS model.
+Before stratification, \Sexpr{sum(na.omit(balance$beforeMatchingStdDiff) > 0.1)} features have a StdDiff $> 0.1$.  After stratification, the count is \Sexpr{sum(na.omit(balance$afterMatchingStdDiff) > 0.1)}.
+%
+<<make_ps, echo=FALSE, cache=TRUE>>==
+plot <- plotPs(ps, targetName, comparatorName)
+suppressMessages(ggsave("ps.pdf", plot,
+                        width = 5, height = 5, units = "in"))
+@
+%
+\begin{figure}
+  \centerline{
+    \includegraphics[width=0.35\textwidth]{ps}
+  }
+  \caption{\textbf{Preference score distribution for sertaline and dulexotine new-users.}
+  The preference score is a transformation of the propensity score that adjusts for prevalence differences between populations.  A higher overlap indicates that subjects in the two populations are more similar in terms of their predicted probability of receiving one treatment over the other.
+  }
+  \label{fig:ps}
+\end{figure}
+%
+<<make_balance, echo=FALSE, cache=TRUE>>==
+plot <- CohortMethod::plotCovariateBalanceScatterPlot(balance,
+                                                      beforeLabel = "Before stratification",
+                                                      afterLabel = "After stratification")
+suppressMessages(ggsave("balance.pdf", plot,
+                        width = 5, height = 5, units = "in"))
+@
+%
+\begin{figure}
+  \centerline{
+    \includegraphics[width=0.35\textwidth]{balance}
+  }
+  \caption{\textbf{Patient characteristics balance before and after stratification.} As a rule-of-thumb, all values $< 0.1$ is generally considered well-balanced (add citation).}
+  \label{fig:balance}
+\end{figure}
+%
+(TODO) Add judgement statement about measured confounding control using something like: \Sexpr{judgePropensityScore(1.1,1.1)}
+%
+%Finally, Figure \ref{fig:topTen} presents the top ten most imbalanced characteristics before and after stratification.
+% %
+% make_features, echo=FALSE, cache=TRUE>>==
+% plot <- CohortMethod::plotCovariateBalanceOfTopVariables(balance, n = 10,
+%                                                          beforeLabel = "before",
+%                                                          afterLabel = "after",
+%                                                          maxNameWidth = 50)
+% plot$theme$legend.direction <- "horizontal"
+% suppressMessages(ggsave("top_10.pdf", plot,
+%                         width = 5, height = 3.5, units = "in"))
+% @
+% %
+% \begin{figure}
+%   \centerline{
+%     \includegraphics[width=0.5\textwidth]{top_10}
+%   }
+%   \caption{\textbf{Top ten most imbalanced patient characteristics before and after stratification.}}
+%   \label{fig:topTen}
+% \end{figure}
+% @
+
+\subsection*{Outcome assessment}
+
+Table \ref{tab:fu} details the time to first \Sexpr{outcomeName} or censoring distributions for patients in the \Sexpr{targetName} and \Sexpr{comparatorName} cohorts.
+%
+\begin{table}
+\caption{Time-at-risk distributions as percentiles in the target and comparator cohorts after stratification.}
+\label{tab:fu}
+\begin{tabular}{crrrrrrr}
+\hline
+&
+\multicolumn{1}{c}{min} &
+\multicolumn{1}{c}{10\%} &
+\multicolumn{1}{c}{25\%} &
+\multicolumn{1}{c}{50\%} &
+\multicolumn{1}{c}{75\%} &
+\multicolumn{1}{c}{90\%} &
+\multicolumn{1}{c}{max} \\
+\hline
+<<fu, echo=FALSE, results=tex, cache=TRUE>>==
+table <- prepareFollowUpDistTable(followUpDist)
+table$Cohort <- c(targetName, comparatorName)
+
+print(xtable(table, format = "latex"),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+@
+\hline
+\end{tabular}
+\end{table}
+%
+% **Table 2**. Time (days) at risk distribution expressed as minimum (Min), 10th Percentile (P10), 25th percentile (P25), median, 75th percentile (P75), 90th percentile (P90) and maximum (Max) in the target and comparator cohort after stratification.
+% ```{r, echo = FALSE}
+% table <- prepareFollowUpDistTable(followUpDist)
+% kable_styling(kable(table, "latex",
+%                     booktabs = TRUE,
+%                     longtable = FALSE,
+%                     row.names = FALSE,
+%                     linesep = "",
+%                     align = c("l", "r", "r", "r", "r", "r", "r", "r")),
+%               font_size = 8,
+%               latex_options = c("HOLD_position"))
+%
+% ```
+%
+We report in Table \ref{tab:hr} estimated HRs comparing \Sexpr{targetName} to \Sexpr{comparatorName} for the on-treatment and intent-to-treat designs with stratification or matching.
+%
+%The table also presents HRs after adjusting for possible subgroup differences (how we know which subgroups?).
+%
+\begin{table*}
+\caption{Hazard ratio (HR) estimates and their confidence intervals (CIs) and $p$-value to reject the null hypothesis of no difference (HR = 1) under various designs.}
+\label{tab:hr}
+\vspace*{-0.5em}
+\centerline{
+\begin{tabular}{lrrrr}
+\hline
+& \multicolumn{2}{c}{Uncalibrated} & \multicolumn{2}{c}{Calibrated} \\
+\multicolumn{1}{c}{Design}
+& \multicolumn{1}{c}{HR (95\% CI)} & \multicolumn{1}{c}{$p$}
+& \multicolumn{1}{c}{HR (95\% CI)} & \multicolumn{1}{c}{$p$} \\
+\hline
+<<result_table, echo=FALSE, results=tex>>==
+table <- mainResults
+table$hr <- sprintf("%.2f (%.2f - %.2f)", mainResults$rr, mainResults$ci95lb, mainResults$ci95ub)
+table$p <- sprintf("%.2f", table$p)
+table$calHr <- sprintf("%.2f (%.2f - %.2f)", mainResults$calibratedRr, mainResults$calibratedCi95Lb, mainResults$calibratedCi95Ub)
+table$calibratedP <- sprintf("%.2f", table$calibratedP)
+table <- merge(table, analyses)
+table <- table[, c("description", "hr", "p", "calHr", "calibratedP")]
+
+print(xtable(table),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+@
+\hline
+\end{tabular}
+}
+\end{table*}
+%
+Figure \ref{fig:km} plots Kaplan-Meier survival curves for patients under the intent-to-treat design.
+%
+<<km, echo=FALSE, cache=TRUE>>==
+if (nrow(kaplanMeier) > 0) {
+  plot <- plotKaplanMeier(kaplanMeier, targetName, comparatorName)
+  # + ggplot2::theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
+  suppressMessages(ggsave("km.pdf", plot,
+                          width = 6, height = 6, units = "in"))
+} else {
+  system("cp missing.pdf km.pdf")
+}
+@
+%
+\begin{figure}
+  %\centerline{
+  \hspace*{-1em}
+    \includegraphics[width=0.5\textwidth]{km}
+  %}
+  \vspace*{-1em}
+  \caption{\textbf{Kaplan Meier plot of \Sexpr{outcomeName}-free survival.}
+  This plot is adjusted for the propensity score stratification; the \Sexpr{targetName} curveshows the actual observed survival. The \Sexpr{comparatorName} curve applies reweighting to approximate the counterfactual of what \Sexpr{targetName} survival
+      would look like had the \Sexpr{targetName} cohort been exposed to the \Sexpr{comparatorName} instead. The shaded area denotes the 95\% CI.
+  }
+  \label{fig:topTen}
+\end{figure}
+%
+To examine possible subgroup differences in treatment-effect, we include Table{tab:subgroups} that reports HR estimates separately for children (age $<$ 18), the elderly (age $\ge$ 65), female patients, pregnant women, patients with hepatic impairment and patients with renal impairment, using PS stratification.
+%
+\begin{table*}
+\caption{
+Subgroup analyses. We report HR estimates, their 95\% CIs and uncalibrated and calibrated (cal) $p$-values to reject the null hypothesis of no difference in five pre-specified patient subgroups.
+}
+\label{tab:subgroups}
+\centering{
+\begin{tabular}{lrrrrrrrr}
+\hline
+&
+\multicolumn{2}{c}{Subjects} &
+\multicolumn{3}{c}{On-treatment} &
+\multicolumn{3}{c}{Intent-to-treat} \\
+\multicolumn{1}{c}{Subgroup} &
+\multicolumn{1}{c}{T} &
+\multicolumn{1}{c}{C} &
+\multicolumn{1}{c}{HR (95\% CI)} &
+\multicolumn{1}{c}{$p$} &
+\multicolumn{1}{c}{cal-$p$} &
+\multicolumn{1}{c}{HR (95\% CI)} &
+\multicolumn{1}{c}{$p$} &
+\multicolumn{1}{c}{cal-$p$} \\
+\hline
+<<subgroups, echo=FALSE, results=tex, cache=TRUE>>==
+table <- prepareSubgroupTable(subgroupResults)
+print(xtable(table),
+      include.rownames = FALSE,
+      include.colnames = FALSE,
+      hline.after = NULL,
+      only.contents = TRUE,
+      sanitize.text.function = identity)
+@
+\hline
+\end{tabular}
+}
+\end{table*}
+%
+
+\subsection*{Residual systematic error}
+In the absense of bias, we expect 95\% of negative and positive control estimate 95\% confidence intervals to include their presumed HR.  In the case of negative controls, the presumed HR = 1.  Figure \ref{fig:negatives} describes the negative and positive control estimates under the on-treatment with PS stratification design.
+<<make_error, echo=FALSE, cache=TRUE>>==
+plot <- plotScatter(controlResults)
+suppressMessages(ggsave("error.pdf", plot,
+                        width = 14, height = 4, units = "in"))
+@
+\begin{figure*}
+\centerline{
+\includegraphics[width=1.0\textwidth]{error}
+}
+\caption{
+\textbf{Evaluation of effect estimation between \Sexpr{targetName} and \Sexpr{comparatorName} new-users}. The top plots HRs and their corresponding standard errors before calibration for each negative and synthetic positive control.  The bottom plots the same estimates after calibration.
+}
+\label{fig:negatives}
+\end{figure*}
+%
+Before calibration, negative and positive controls demonstrate \Sexpr{judgeCoverage(coverage[coverage$group == "Uncalibrated", "coverage"])} coverage.  After calibration, controls demonstrate \Sexpr{judgeCoverage(coverage[coverage$group == "Calibrated", "coverage"])} coverage.
+% (TODO) Add judgement statement about residual bias control, using something like: \Sexpr{judgePropensityScore(1.1,1.1)}.
+% \begin{itemize}
+%   \item Insert negative control plots
+% \end{itemize}
+
+\hypertarget{conclusions}{%
+\section*{Conclusions}\label{conclusions}}
+\addcontentsline{toc}{section}{Conclusions}
+
+We find that \Sexpr{targetName} has a
+\Sexpr{judgeHazardRatio(mainResults[params$primary,"calibratedCi95Lb"], mainResults[params$primary,"calibratedCi95Ub"])}
+risk of \Sexpr{outcomeName} as \Sexpr{comparatorName} within the population that the \Sexpr{params$databaseId} represents.
+%(What else?)
+
+\hypertarget{supporting-information-si}{%
+\subsection*{Supporting Information
+(SI)}\label{supporting-information-si}}
+\addcontentsline{toc}{subsection}{Supporting Information (SI)}
+
+Here we provide extended details on study cohorts and design and the guiding principles of LEGEND.
+
+\hypertarget{si-principles}{%
+\subsubsection*{SI LEGEND Principles}\label{si-text}}
+\addcontentsline{toc}{subsubsection}{SI Principles} (Need to re-order these)
+
+\begin{enumerate}[noitemsep]
+  \item Evidence will be generated at large-scale.
+  \item Dissemination of the evidence will not depend on the estimated effects.
+  \item Evidence will be generated by consistently applying a systematic approach across all research questions.
+  \item Evidence will be generated using a pre-specified analysis design.
+  \item Evidence will be generated using open source software that is freely available to all.
+  \item Evidence generation process will be empirically evaluated by including control research questions where the true effect size is known.
+  \item Evidence will be generated using best-practices.
+  \item LEGEND will not be used to evaluate methods.
+  \item Evidence will be updated on a regular basis.
+  \item No patient-level data will be shared between sites in the network, only aggregated data.
+\end{enumerate}
+
+\subsubsection*{SI \Sexpr{capitalize(targetName)} cohort definition}
+(TODO)
+
+\subsubsection*{SI \Sexpr{capitalize(comparatorName)} cohort definition}
+(TODO)
+
+\subsubsection*{SI \Sexpr{capitalize(outcomeName)} cohort definition}
+(TODO)
+
+\subsubsection*{SI Covariate sets}
+\begin{itemize}[noitemsep]
+\item Demographics (age in 5-year bands, gender, index year, index month)
+\item Conditions (condition occurrence in lookback window)
+  \begin{itemize}[noitemsep]
+  \item in 365 days prior to index date\
+  \item in 30 days prior to index date
+  \end{itemize}
+\item Condition aggregation
+  \begin{itemize}[noitemsep]
+  \item SMOMED
+  \end{itemize}
+\item Drugs (drug occurrence in lookback window)
+  \begin{itemize}[noitemsep]
+  \item in 365 days prior to index date
+  \item in 30 days prior to index date
+  \end{itemize}
+\item Drug aggregation
+  \begin{itemize}[noitemsep]
+  \item Ingredient
+  \item ATC class
+  \end{itemize}
+\item Risk Scores (Charlson comorbidity index)
+\item \Sexpr{extraCovariates["depression"]}
+\end{itemize}
+
+We exclude all covariates that occur in fewer than 0.1\% of patients within the target and comparator cohorts prior to model fitting for computational efficiency.
+
+\subsubsection*{SI Anticoagulants Study Negative Controls}
+Negative controls were selected using the following criteria:
+\begin{itemize}[noitemsep]
+  \item No evidence found in literature on clinical trials using the method proposed by Avillach %\citep{avillach2012design}
+  \item No evidence found in literature using the method used in SemMedDB %\citep{kilicoglu2011constructing}
+  \item No evidence found in the structured product label (US and EU).
+  \item FAERS Proportional Reporting Ratio (PRR) needed to be less than 2.
+\end{itemize}
+
+Negative controls were rank-ordered by prevalence in study cohort, and manually reviewed until 50 controls were selected. Negative controls with fewer than $0.02\%$ prevalence were discarded. See Table \ref{tab:negatives}
+%
+%\vspace*{-2em}
+\begin{table}
+\caption{Negative controls employed with \Sexpr{params$indication} patients.}
+\label{tab:negatives}
+\vspace*{-1em}
+\begin{tabular}{ll}
+\hline
+% \begin{table}[t]{  |p{8.1cm} | p{8.1cm} |} \hline
+Acute bronchitis & Allergic rhinitis \\
+Anxiety disorder & Arthritis of spine \\
+Arthropathy of knee joint & Atelectasis \\
+Barrett's esophagus & Blepharitis \\
+Bronchiectasis & Bundle branch block \\
+Cellulitis & Chronic sinusitis \\
+Chronic ulcer of skin & Communication disorder \\
+Crohn's disease & Curvature of spine \\
+Cutis laxa & Diabetic renal disease \\
+Diabetic retinopathy & Dislocation of joint \\
+Dyssomnia & Dysuria \\
+Effusion of joint & Fracture of upper limb \\
+Gallstone & Gammopathy \\
+Human papilloma virus infection & Hyperplasia of prostate \\
+Inflammation of sacroiliac joint & Ingrowing nail \\
+Malignant tumor of breast & Multiple sclerosis \\
+Neck pain & Neurologic disorder associated \\
+& $\quad$ with diabetes mellitus \\
+Obesity & Osteomyelitis \\
+Otitis media & Peripheral vertigo \\
+Plantar fasciitis & Presbyopia \\
+Prolapse of female genital organs & Psychotic disorder \\
+Seborrheic keratosis & Simple goiter \\
+Sleep apnea & Superficial mycosis \\
+Urge incontinence of urine & Urinary tract infectious disease \\
+Verruca vulgaris & \\
+\hline
+% \end{table}
+\end{tabular}
+\end{table}
+
+% \hypertarget{appendices}{%
+% \subsubsection*{Appendices}\label{appendices}}
+% \addcontentsline{toc}{subsubsection}{Appendices}
+%
+% PNAS prefers that authors submit individual source files to ensure
+% readability. If this is not possible, supply a single PDF file that
+% contains all of the SI associated with the paper. This file type will be
+% published in raw format and will not be edited or composed.
+
+\showmatmethods
+\showacknow
+\pnasbreak
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-belkin2002using}{}%
+1. Belkin M, Niyogi P (2002) Using manifold stucture for partially
+labeled classification. \emph{Advances in Neural Information Processing
+Systems}, pp 929--936.
+
+\leavevmode\hypertarget{ref-berard1994embedding}{}%
+2. Bérard P, Besson G, Gallot S (1994) Embedding riemannian manifolds by
+their heat kernel. \emph{Geometric \& Functional Analysis GAFA}
+4(4):373--398.
+
+\leavevmode\hypertarget{ref-coifman2005geometric}{}%
+3. Coifman RR, et al. (2005) Geometric diffusions as a tool for harmonic
+analysis and structure definition of data: Diffusion maps.
+\emph{Proceedings of the National Academy of Sciences of the United
+States of America} 102(21):7426--7431.
+
+
+
+% Bibliography
+% \bibliography{pnas-sample}
+
+\end{document}
+

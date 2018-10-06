@@ -55,8 +55,13 @@ shinyServer(function(input, output, session) {
   })
 
   resultSubset <- reactive({
-    targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-    comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
+    targetId <- unique(exposures$exposureId[exposures$exposureName == input$target &
+                                              exposures$exposureGroup == input$exposureGroup])
+    comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator &
+                                                  exposures$exposureGroup == input$exposureGroup])
+    if (length(targetId) == 0 || length(comparatorId) == 0) {
+      return(NULL)
+    }
     outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
     analysisIds <- analyses$analysisId[analyses$description %in% input$analysis]
     databaseIds <- input$database
@@ -95,6 +100,26 @@ shinyServer(function(input, output, session) {
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
 
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- !is.null(row) && (row$databaseId %in% metaAnalysisDbIds)
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+      hideTab("detailsTabsetPanel", "Kaplan-Meier")
+    } else {
+      showTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier")    
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
+  
   balance <- reactive({
      row <- selectedRow()
      if (is.null(row)) {
@@ -177,20 +202,23 @@ shinyServer(function(input, output, session) {
                            "Target IR (per 1,000 PY)",
                            "Comparator IR (per 1,000 PY)",
                            "MDRR")
+      if (row$databaseId %in% metaAnalysisDbIds) {
+        table$i2 <- sprintf("%.2f", as.numeric(row$i2))
+      }
       return(table)
     }
   })
 
   output$timeAtRiskTableCaption <- renderUI({
     row <- selectedRow()
-    if (!is.null(row)) {
+    if (is.null(row)) {
+      return(NULL)
+    } else {
       text <- "<strong>Table 1b.</strong> Time (days) at risk distribution expressed as
       minimum (min), 25th percentile (P25), median, 75th percentile (P75), and maximum (max) in the target
      (<em>%s</em>) and comparator (<em>%s</em>) cohort after %s."
       return(HTML(sprintf(text, input$target, input$comparator, row$psStrategy)))
-    } else {
-      return(NULL)
-    }
+    } 
   })
 
   output$timeAtRiskTable <- renderTable({
@@ -500,273 +528,273 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Main effects tab ---------------------------------------------------------------------------
-  observe({
-    indicationId <- input$meIndication
-    if (indicationId == "All") {
-      updateSelectInput(session = session,
-                        inputId = "meExposureGroup",
-                        choices = c("All", unique(exposureGroups$exposureGroup)))
-    } else {
-      updateSelectInput(session = session,
-                        inputId = "meExposureGroup",
-                        choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
-    }
-  })
-
-  observe({
-    indicationId <- input$meIndication
-    exposureGroup <- input$meExposureGroup
-    if (indicationId == "All") {
-      filteredExposures <- exposures
-      filteredOutcomes <- outcomes
-    } else {
-      filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-      filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    }
-    if (exposureGroup == "All") {
-      filteredExposures <- filteredExposures
-    } else {
-      filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    }
-    updateSelectInput(session = session,
-                      inputId = "meTarget",
-                      choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session,
-                      inputId = "meComparator",
-                      choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session,
-                      inputId = "meOutcome",
-                      choices = c("All", unique(filteredOutcomes$outcomeName)))
-  })
-
-  output$mePlot <- renderPlot({
-    indicationId <- input$meIndication
-    exposureGroup <- input$meExposureGroup
-    if (indicationId == "All") {
-      filteredExposures <- exposures
-      filteredOutcomes <- outcomes
-    } else {
-      filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-      filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    }
-    if (exposureGroup == "All") {
-      filteredExposures <- filteredExposures
-    } else {
-      filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    }
-    target <- input$meTarget
-    if (target == "All") {
-      targetIds <- unique(filteredExposures$exposureId)
-    } else {
-      targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
-    }
-    comparator <- input$meComparator
-    if (comparator == "All") {
-      comparatorIds <- unique(filteredExposures$exposureId)
-    } else {
-      comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
-    }
-    outcome <- input$meOutcome
-    if (outcome == "All") {
-      outcomeIds <- unique(filteredOutcomes$outcomeId)
-    } else {
-      outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeName == outcome])
-    }
-    database <- input$meDatabase
-    if (database == "All") {
-      databaseIds <- databases$databaseId
-    } else {
-      databaseIds <- database
-    }
-    analysis <- input$meAnalysis
-    if (analysis == "All") {
-      analysisIds <- 1:4
-    } else {
-      analysisIds <- analyses$analysisId[analyses$description == analysis]
-    }
-    writeLines("Fetching main effects")
-    mainEffects <- getMainResults(connection = connection,
-                                  targetIds = targetIds,
-                                  comparatorIds = comparatorIds,
-                                  outcomeIds = outcomeIds,
-                                  databaseIds = databaseIds,
-                                  analysisIds = analysisIds,
-                                  estimatesOnly = TRUE)
-    mainEffects <- data.frame(logRr = mainEffects$calibratedLogRr,
-                              seLogRr = mainEffects$calibratedSeLogRr,
-                              ci95Lb = mainEffects$calibratedCi95Lb,
-                              ci95Ub = mainEffects$calibratedCi95Ub)
-    writeLines("Plotting main effects")
-    plot <- plotLargeScatter(mainEffects, "Calibrated hazard ratio")
-    return(plot)
-  }, width = 1000 , height = 500)
-
-  # Interaction effects tab ---------------------------------------------------------------------------
-  observe({
-    indicationId <- input$ieIndication
-    if (indicationId == "All") {
-      updateSelectInput(session = session,
-                        inputId = "ieExposureGroup",
-                        choices = c("All", unique(exposureGroups$exposureGroup)))
-    } else {
-      updateSelectInput(session = session,
-                        inputId = "ieExposureGroup",
-                        choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
-    }
-  })
-
-  observe({
-    indicationId <- input$ieIndication
-    exposureGroup <- input$ieExposureGroup
-    if (indicationId == "All") {
-      filteredExposures <- exposures
-      filteredOutcomes <- outcomes
-    } else {
-      filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-      filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    }
-    if (exposureGroup == "All") {
-      filteredExposures <- filteredExposures
-    } else {
-      filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    }
-    updateSelectInput(session = session,
-                      inputId = "ieTarget",
-                      choices = c("All", unique(filteredExposures$exposureNaie)))
-    updateSelectInput(session = session,
-                      inputId = "ieComparator",
-                      choices = c("All", unique(filteredExposures$exposureNaie)))
-    updateSelectInput(session = session,
-                      inputId = "ieOutcome",
-                      choices = c("All", unique(filteredOutcomes$outcomeNaie)))
-  })
-
-  output$iePlot <- renderPlot({
-    indicationId <- input$ieIndication
-    exposureGroup <- input$ieExposureGroup
-    if (indicationId == "All") {
-      filteredExposures <- exposures
-      filteredOutcomes <- outcomes
-    } else {
-      filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-      filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    }
-    if (exposureGroup == "All") {
-      filteredExposures <- filteredExposures
-    } else {
-      filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    }
-    target <- input$ieTarget
-    if (target == "All") {
-      targetIds <- unique(filteredExposures$exposureId)
-    } else {
-      targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == target])
-    }
-    comparator <- input$ieComparator
-    if (comparator == "All") {
-      comparatorIds <- unique(filteredExposures$exposureId)
-    } else {
-      comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == comparator])
-    }
-    outcome <- input$ieComparator
-    if (outcome == "All") {
-      outcomeIds <- unique(filteredOutcomes$outcomeId)
-    } else {
-      outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeNaie == outcome])
-    }
-    database <- input$ieDatabase
-    if (database == "All") {
-      databaseIds <- databases$databaseId
-    } else {
-      databaseIds <- database
-    }
-    analysis <- input$ieAnalysis
-    if (analysis == "All") {
-      analysisIds <- c()
-    } else {
-      analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analysis), analyses$description)]
-    }
-    subgroup <- input$ieSubgroup
-    if (subgroup == "All") {
-      subgroupIds <- subgroups$subgroupId
-    } else {
-      subgroupIds <- subgroups$subgroupId[subgroups$subgroupName == subgroup]
-    }
-
-    writeLines("Fetching interaction effects")
-    interactionEffects <- getSubgroupResults(connection = connection,
-                                             targetIds = targetIds,
-                                             comparatorIds = comparatorIds,
-                                             outcomeIds = outcomeIds,
-                                             databaseIds = databaseIds,
-                                             analysisIds = analysisIds,
-                                             subgroupIds = subgroupIds,
-                                             estimatesOnly = TRUE)
-    interactionEffects <- data.frame(logRr = interactionEffects$logRrr,
-                                     seLogRr = interactionEffects$seLogRrr,
-                                     ci95Lb = interactionEffects$ci95Lb,
-                                     ci95Ub = interactionEffects$ci95Ub)
-    writeLines("Plotting interaction effects")
-    plot <- plotLargeScatter(interactionEffects, "Uncalibrated hazard ratio ratio")
-    return(plot)
-  }, width = 1000 , height = 500)
-
-
-  # Propensity scores tab ---------------------------------------------------------------------------
-  observe({
-    indicationId <- input$psIndication
-    updateSelectInput(session = session,
-                        inputId = "psExposureGroup",
-                        choices = unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId]))
-  })
-
-  observe({
-    indicationId <- input$psIndication
-    exposureGroup <- input$psExposureGroup
-    filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-    filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    updateSelectInput(session = session,
-                      inputId = "psTarget",
-                      choices = c("All", unique(filteredExposures$exposureName)))
-    updateSelectInput(session = session,
-                      inputId = "psComparator",
-                      choices = c("All", unique(filteredExposures$exposureName)))
-  })
-
-  output$psPlot <- renderPlot({
-    indicationId <- input$psIndication
-    exposureGroup <- input$psExposureGroup
-    filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-    filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-    target <- input$psTarget
-    if (target == "All") {
-      targetIds <- unique(filteredExposures$exposureId)
-    } else {
-      targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
-    }
-    comparator <- input$psComparator
-    if (comparator == "All") {
-      comparatorIds <- unique(filteredExposures$exposureId)
-    } else {
-      comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
-    }
-    databaseId <- input$psDatabase
-    writeLines("Fetching PS distributions")
-    ps <- getPs(connection = connection,
-                targetIds = targetIds,
-                comparatorIds = comparatorIds,
-                databaseId = databaseId)
-    if (nrow(ps) == 0) {
-      return(NULL)
-    }
-    ps <- merge(ps, data.frame(targetId = exposures$exposureId,
-                               targetName = exposures$exposureName))
-    ps <- merge(ps, data.frame(comparatorId = exposures$exposureId,
-                               comparatorName = exposures$exposureName))
-    writeLines("Plotting PS distributions")
-    plot <- plotAllPs(ps)
-    return(plot)
-  }, width = 1000 , height = 600)
+  # # Main effects tab ---------------------------------------------------------------------------
+  # observe({
+  #   indicationId <- input$meIndication
+  #   if (indicationId == "All") {
+  #     updateSelectInput(session = session,
+  #                       inputId = "meExposureGroup",
+  #                       choices = c("All", unique(exposureGroups$exposureGroup)))
+  #   } else {
+  #     updateSelectInput(session = session,
+  #                       inputId = "meExposureGroup",
+  #                       choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
+  #   }
+  # })
+  # 
+  # observe({
+  #   indicationId <- input$meIndication
+  #   exposureGroup <- input$meExposureGroup
+  #   if (indicationId == "All") {
+  #     filteredExposures <- exposures
+  #     filteredOutcomes <- outcomes
+  #   } else {
+  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+  #   }
+  #   if (exposureGroup == "All") {
+  #     filteredExposures <- filteredExposures
+  #   } else {
+  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   }
+  #   updateSelectInput(session = session,
+  #                     inputId = "meTarget",
+  #                     choices = c("All", unique(filteredExposures$exposureName)))
+  #   updateSelectInput(session = session,
+  #                     inputId = "meComparator",
+  #                     choices = c("All", unique(filteredExposures$exposureName)))
+  #   updateSelectInput(session = session,
+  #                     inputId = "meOutcome",
+  #                     choices = c("All", unique(filteredOutcomes$outcomeName)))
+  # })
+  # 
+  # output$mePlot <- renderPlot({
+  #   indicationId <- input$meIndication
+  #   exposureGroup <- input$meExposureGroup
+  #   if (indicationId == "All") {
+  #     filteredExposures <- exposures
+  #     filteredOutcomes <- outcomes
+  #   } else {
+  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+  #   }
+  #   if (exposureGroup == "All") {
+  #     filteredExposures <- filteredExposures
+  #   } else {
+  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   }
+  #   target <- input$meTarget
+  #   if (target == "All") {
+  #     targetIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
+  #   }
+  #   comparator <- input$meComparator
+  #   if (comparator == "All") {
+  #     comparatorIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
+  #   }
+  #   outcome <- input$meOutcome
+  #   if (outcome == "All") {
+  #     outcomeIds <- unique(filteredOutcomes$outcomeId)
+  #   } else {
+  #     outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeName == outcome])
+  #   }
+  #   database <- input$meDatabase
+  #   if (database == "All") {
+  #     databaseIds <- databases$databaseId
+  #   } else {
+  #     databaseIds <- database
+  #   }
+  #   analysis <- input$meAnalysis
+  #   if (analysis == "All") {
+  #     analysisIds <- 1:4
+  #   } else {
+  #     analysisIds <- analyses$analysisId[analyses$description == analysis]
+  #   }
+  #   writeLines("Fetching main effects")
+  #   mainEffects <- getMainResults(connection = connection,
+  #                                 targetIds = targetIds,
+  #                                 comparatorIds = comparatorIds,
+  #                                 outcomeIds = outcomeIds,
+  #                                 databaseIds = databaseIds,
+  #                                 analysisIds = analysisIds,
+  #                                 estimatesOnly = TRUE)
+  #   mainEffects <- data.frame(logRr = mainEffects$calibratedLogRr,
+  #                             seLogRr = mainEffects$calibratedSeLogRr,
+  #                             ci95Lb = mainEffects$calibratedCi95Lb,
+  #                             ci95Ub = mainEffects$calibratedCi95Ub)
+  #   writeLines("Plotting main effects")
+  #   plot <- plotLargeScatter(mainEffects, "Calibrated hazard ratio")
+  #   return(plot)
+  # }, width = 1000 , height = 500)
+  # 
+  # # Interaction effects tab ---------------------------------------------------------------------------
+  # observe({
+  #   indicationId <- input$ieIndication
+  #   if (indicationId == "All") {
+  #     updateSelectInput(session = session,
+  #                       inputId = "ieExposureGroup",
+  #                       choices = c("All", unique(exposureGroups$exposureGroup)))
+  #   } else {
+  #     updateSelectInput(session = session,
+  #                       inputId = "ieExposureGroup",
+  #                       choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
+  #   }
+  # })
+  # 
+  # observe({
+  #   indicationId <- input$ieIndication
+  #   exposureGroup <- input$ieExposureGroup
+  #   if (indicationId == "All") {
+  #     filteredExposures <- exposures
+  #     filteredOutcomes <- outcomes
+  #   } else {
+  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+  #   }
+  #   if (exposureGroup == "All") {
+  #     filteredExposures <- filteredExposures
+  #   } else {
+  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   }
+  #   updateSelectInput(session = session,
+  #                     inputId = "ieTarget",
+  #                     choices = c("All", unique(filteredExposures$exposureNaie)))
+  #   updateSelectInput(session = session,
+  #                     inputId = "ieComparator",
+  #                     choices = c("All", unique(filteredExposures$exposureNaie)))
+  #   updateSelectInput(session = session,
+  #                     inputId = "ieOutcome",
+  #                     choices = c("All", unique(filteredOutcomes$outcomeNaie)))
+  # })
+  # 
+  # output$iePlot <- renderPlot({
+  #   indicationId <- input$ieIndication
+  #   exposureGroup <- input$ieExposureGroup
+  #   if (indicationId == "All") {
+  #     filteredExposures <- exposures
+  #     filteredOutcomes <- outcomes
+  #   } else {
+  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+  #   }
+  #   if (exposureGroup == "All") {
+  #     filteredExposures <- filteredExposures
+  #   } else {
+  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   }
+  #   target <- input$ieTarget
+  #   if (target == "All") {
+  #     targetIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == target])
+  #   }
+  #   comparator <- input$ieComparator
+  #   if (comparator == "All") {
+  #     comparatorIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == comparator])
+  #   }
+  #   outcome <- input$ieComparator
+  #   if (outcome == "All") {
+  #     outcomeIds <- unique(filteredOutcomes$outcomeId)
+  #   } else {
+  #     outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeNaie == outcome])
+  #   }
+  #   database <- input$ieDatabase
+  #   if (database == "All") {
+  #     databaseIds <- databases$databaseId
+  #   } else {
+  #     databaseIds <- database
+  #   }
+  #   analysis <- input$ieAnalysis
+  #   if (analysis == "All") {
+  #     analysisIds <- c()
+  #   } else {
+  #     analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analysis), analyses$description)]
+  #   }
+  #   subgroup <- input$ieSubgroup
+  #   if (subgroup == "All") {
+  #     subgroupIds <- subgroups$subgroupId
+  #   } else {
+  #     subgroupIds <- subgroups$subgroupId[subgroups$subgroupName == subgroup]
+  #   }
+  # 
+  #   writeLines("Fetching interaction effects")
+  #   interactionEffects <- getSubgroupResults(connection = connection,
+  #                                            targetIds = targetIds,
+  #                                            comparatorIds = comparatorIds,
+  #                                            outcomeIds = outcomeIds,
+  #                                            databaseIds = databaseIds,
+  #                                            analysisIds = analysisIds,
+  #                                            subgroupIds = subgroupIds,
+  #                                            estimatesOnly = TRUE)
+  #   interactionEffects <- data.frame(logRr = interactionEffects$logRrr,
+  #                                    seLogRr = interactionEffects$seLogRrr,
+  #                                    ci95Lb = interactionEffects$ci95Lb,
+  #                                    ci95Ub = interactionEffects$ci95Ub)
+  #   writeLines("Plotting interaction effects")
+  #   plot <- plotLargeScatter(interactionEffects, "Uncalibrated hazard ratio ratio")
+  #   return(plot)
+  # }, width = 1000 , height = 500)
+  # 
+  # 
+  # # Propensity scores tab ---------------------------------------------------------------------------
+  # observe({
+  #   indicationId <- input$psIndication
+  #   updateSelectInput(session = session,
+  #                       inputId = "psExposureGroup",
+  #                       choices = unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId]))
+  # })
+  # 
+  # observe({
+  #   indicationId <- input$psIndication
+  #   exposureGroup <- input$psExposureGroup
+  #   filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #   filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+  #   filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   updateSelectInput(session = session,
+  #                     inputId = "psTarget",
+  #                     choices = c("All", unique(filteredExposures$exposureName)))
+  #   updateSelectInput(session = session,
+  #                     inputId = "psComparator",
+  #                     choices = c("All", unique(filteredExposures$exposureName)))
+  # })
+  # 
+  # output$psPlot <- renderPlot({
+  #   indicationId <- input$psIndication
+  #   exposureGroup <- input$psExposureGroup
+  #   filteredExposures <- exposures[exposures$indicationId == indicationId, ]
+  #   filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+  #   target <- input$psTarget
+  #   if (target == "All") {
+  #     targetIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
+  #   }
+  #   comparator <- input$psComparator
+  #   if (comparator == "All") {
+  #     comparatorIds <- unique(filteredExposures$exposureId)
+  #   } else {
+  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
+  #   }
+  #   databaseId <- input$psDatabase
+  #   writeLines("Fetching PS distributions")
+  #   ps <- getPs(connection = connection,
+  #               targetIds = targetIds,
+  #               comparatorIds = comparatorIds,
+  #               databaseId = databaseId)
+  #   if (nrow(ps) == 0) {
+  #     return(NULL)
+  #   }
+  #   ps <- merge(ps, data.frame(targetId = exposures$exposureId,
+  #                              targetName = exposures$exposureName))
+  #   ps <- merge(ps, data.frame(comparatorId = exposures$exposureId,
+  #                              comparatorName = exposures$exposureName))
+  #   writeLines("Plotting PS distributions")
+  #   plot <- plotAllPs(ps)
+  #   return(plot)
+  # }, width = 1000 , height = 600)
 })
