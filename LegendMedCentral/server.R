@@ -184,9 +184,10 @@ shinyServer(function(input, output, session) {
                 "pnas-markdown.cls",
                 "jss.bst",
                 "ohdsi.bib"), tempFolder)
+    tempOutput <- file.path(tempFolder, "output.pdf")
     withProgress(message = "Generating PDF", value = 0, {
       rmarkdown::render(file.path(tempFolder, "MyArticle.Rmd"),
-                        output_file = fileName,
+                        output_file = tempOutput,
                         params = list(targetId = tcoDb$targetId,
                                       comparatorId = tcoDb$comparatorId,
                                       outcomeId = tcoDb$outcomeId,
@@ -197,6 +198,7 @@ shinyServer(function(input, output, session) {
                                       save = NULL,
                                       load = NULL))
     })
+    file.copy(tempOutput, fileName)
     # unlink(tempFolder, recursive = TRUE)
   })
 })
