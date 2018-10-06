@@ -53,14 +53,18 @@ shiny::shinyServer(function(input, output, session) {
     returnTab <- rbind(returnTab, inc)
     
     returnTab <-data.frame(Metric=returnTab[,colnames(returnTab)=='Metric'],
-                           test=sprintf("%.3f",as.double(unlist(returnTab[,colnames(returnTab)=='test']))),
-                           train=sprintf("%.3f",as.double(unlist(returnTab[,colnames(returnTab)=='train'])))) 
+                           train=round_df(as.double(unlist(returnTab[,colnames(returnTab)=='train'])),3),
+                           test=round_df(as.double(unlist(returnTab[,colnames(returnTab)=='test'])),3)
+                           )
+    returnTab[]
     
     #rownames(returnTab) <- 1:length(returnTab)
     
   },     escape = FALSE, selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 25,
+    dom = 't',
+    columnDefs = list(list(visible=FALSE, targets=0))
     #,initComplete = I("function(settings, json) {alert('Done.');}")
   ))
   
@@ -88,7 +92,8 @@ shiny::shinyServer(function(input, output, session) {
     
   },     escape = FALSE, #selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 25,
+    columnDefs = list(list(visible=FALSE, targets=0))
   ))
   
   # ROCs
@@ -421,7 +426,9 @@ shiny::shinyServer(function(input, output, session) {
     
   },     escape = FALSE, selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 25,
+    dom = 't',
+    columnDefs = list(list(visible=FALSE, targets=0))
     #,initComplete = I("function(settings, json) {alert('Done.');}")
   ))
   
@@ -439,7 +446,9 @@ shiny::shinyServer(function(input, output, session) {
     return(returnTab)
   },     escape = FALSE, selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 25,
+    dom = 't',
+    columnDefs = list(list(visible=FALSE, targets=0))
     #,initComplete = I("function(settings, json) {alert('Done.');}")
   ))
   
@@ -460,16 +469,16 @@ shiny::shinyServer(function(input, output, session) {
     
     
     
-    returnTab <- data.frame(Input= names(reactVars$plpResult$inputSetting$dataExtrractionSettings$covariateSettings),
-                            Value = unlist(lapply(reactVars$plpResult$inputSetting$dataExtrractionSettings$covariateSettings, function(x) paste(x, collapse='-')))
-                            
-    )
+    returnTab <- data.frame(Setting = names(reactVars$plpResult$inputSetting$dataExtrractionSettings$covariateSettings),
+                            Value = unlist(lapply(reactVars$plpResult$inputSetting$dataExtrractionSettings$covariateSettings, function(x) paste(x, collapse='-'))))
     
-    #rownames(returnTab) <- 1:length(returnTab)
-    
+    rownames(returnTab) <- NULL
+    return(returnTab)  
   },     escape = FALSE, selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 100,
+    dom = 't',
+    columnDefs = list(list(visible=FALSE, targets=0))
     #,initComplete = I("function(settings, json) {alert('Done.');}")
   ))
   
@@ -482,7 +491,9 @@ shiny::shinyServer(function(input, output, session) {
     return(returnTab)
   },     escape = FALSE, selection = 'none',
   options = list(
-    pageLength = 25
+    pageLength = 25,
+    dom = 't',
+    columnDefs = list(list(visible=FALSE, targets=0))
     #,initComplete = I("function(settings, json) {alert('Done.');}")
   ))
   

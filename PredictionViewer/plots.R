@@ -70,9 +70,10 @@ plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
 plotCovSummary <- function(reactVars, input) {
   if (is.null(reactVars$plpResult))
     return(NULL)
-  warning("Enter plotCovSummary")
-
   dataVal <- reactVars$plpResult$covariateSummary
+  
+  # make sure the included are on top in the graph
+  dataVal <- dataVal[order(dataVal$covariateValue),]
   # remove large values...
   dataVal$CovariateCountWithOutcome[is.na(dataVal$CovariateMeanWithOutcome)] <-
     0
@@ -82,10 +83,10 @@ plotCovSummary <- function(reactVars, input) {
                                        1] <- 1
   dataVal$covariateValue[is.na(dataVal$covariateValue)] <- 0
   
+  #remove small values for speed
   dataVal <- subset(dataVal,CovariateMeanWithOutcome>0.01)
   dataVal <- subset(dataVal,CovariateMeanWithNoOutcome>0.001)
   
-  warning("After remove large values")
   #get the size
   #====================================
   if (input$covSumSize == 'binary') {
@@ -99,7 +100,6 @@ plotCovSummary <- function(reactVars, input) {
     dataVal$size <- 10 * dataVal$size / max(dataVal$size)
   }
   
-  warning("After get size")
   #get the included
   #====================================
   inc <- dataVal$covariateValue != 0
@@ -110,8 +110,7 @@ plotCovSummary <- function(reactVars, input) {
   #   incAnnotations <- T
   #   writeLines(paste0(inc, collapse = '-'))
   # }
-  warning("After get included")
-  
+
   #get the color
   #=====================================
   if (input$covSumCol == 'binary') {
@@ -124,7 +123,6 @@ plotCovSummary <- function(reactVars, input) {
     dataVal$color <- rep('black', length(dataVal$covariateName))
   }
   
-  warning("After get color")
   # do annotations
   dataVal$annotation <- sapply(dataVal$covariateName, getName)
   
@@ -154,11 +152,10 @@ plotCovSummary <- function(reactVars, input) {
         mode = 'lines',
         line = list(dash = "dash"),
         color = I('black'),
-        type = 'scatter'
+        type = 'scattergl'
       ) %>%
       layout(
-        title = 'Prevalance of baseline predictors in persons with and without outcome',
-        xaxis = list(title = "Prevalance in persons without outcome"),
+         xaxis = list(title = "Prevalance in persons without outcome"),
         yaxis = list(title = "Prevalance in persons with outcome"),
         showlegend = FALSE
       )
@@ -186,7 +183,6 @@ plotCovSummary <- function(reactVars, input) {
         type = 'scattergl'
       ) %>%
       layout(
-        title = 'Prevalance of baseline predictors in persons with and without outcome',
         xaxis = list(title = "Prevalance in persons without outcome"),
         yaxis = list(title = "Prevalance in persons with outcome"),
         showlegend = FALSE

@@ -36,24 +36,35 @@ ui <- shiny::shinyUI(shiny::fluidPage(
   shiny::navbarPage(
     title = "",
     id = 'mainnav',
-    footer =  paste0("Data generated add ",runPlp$executionSummary$ExecutionDateTime),
+    footer =  paste0("Data generated: ",runPlp$executionSummary$ExecutionDateTime),
+    shiny::tabPanel("About",
+             HTML("</BR><P>This is a demo of the result viewer from the <a href='https://github.com/OHDSI/PatientLevelPrediction'>Patient-Level Prediction R package</a></P>"),
+             div(img(src="about.png", height = 150, width = 450)),
+             HTML("<b>The prediction problem we address:</b></BR></BR>
+                   Among a population at risk, we aim to predict which patients at a defined moment in time (t = 0) will experience some outcome during a time-at-risk.</BR>
+                   </BR>Prediction is done using only information about the patients in an observation window prior to that moment in time."),
+              HTML("</BR></BR><P style='color:#FF0000'>The app is currently under development. Do not use.</P>")
+    ),
     
     shiny::tabPanel(
       title = "Internal Validation",
       value = "plots",
       
       #shiny::uiOutput("resultSelect"),
-      
       shiny::tabsetPanel(
         id = "visTabs",
         shiny::tabPanel(
           title = "Evaluation Summary",
-          value =
-            "panel_evalSum",
-          shiny::h4("Evaluation Summary"),
-          DT::dataTableOutput("evalSummary")
+          value = "panel_evalSum",
+          fluidRow(
+            column(
+              HTML("</BR>"),
+              div(strong("Table 1."),"Performance of the model on the train and test set and information about the study population."),
+              HTML("</BR>"),
+              DT::dataTableOutput("evalSummary"),width=6
+            )
+          )
         ),
-        
         shiny::tabPanel(
           title = "Characterization",
           value =
@@ -90,66 +101,108 @@ ui <- shiny::shinyUI(shiny::fluidPage(
                   shiny::tabPanel(
                     title = "Plot",
                     value = "character_plot",
-                    withSpinner(plotly::plotlyOutput("characterization"))
+                    withSpinner(plotly::plotlyOutput("characterization")),
+                    HTML("</BR>"),
+                    div(strong("Figure 1."),"The variable scatter plot shows the mean covariate value for the people with the outcome against the mean covariate value for the people without the outcome. 
+                        The meaning of the size and color of the dots depends on the settings on the left of the figure."
+                    )
                   ),
                   shiny::tabPanel(
                     title = "Table",
                     value = "character_table",
+                    HTML("</BR>"),
+                    div(strong("Table 2."),"This table shows for each covariate the mean value in persons with and without the outcome and their mean difference."),
+                    HTML("</BR>"),
                     withSpinner(DT::dataTableOutput("characterizationTab"))
                   )
                 )
               )
             )
           ),
+        
           shiny::tabPanel(
             title = "ROC",
             value = "panel_roc",
-            shiny::h4("Test"),
-            withSpinner(plotly::plotlyOutput("rocPlotTest")),
-            shiny::h4("Train"),
-            withSpinner(plotly::plotlyOutput("rocPlotTrain")),
-            
-            shiny::p(
-              "The ROC plot shows the general ability of the model to discriminate between people with the outcome during the time at risk and those without the outcome.  It is a plot of specificity vs 1-sensitivity at every threshold (in general you may only be considered with highly specific mdoels and therefore may only want to focus towards a part of the curve)."
-            ),
-            shiny::p(
-              "The x=y line is added to the plot as this shows the performance of a model that assigns a class at random (i.e., the model can not discrimiante between the people who will and will not develop the outcome during the time at risk)"
-            )
-            
+            fluidRow(
+              column(shiny::h4("Train"),
+                     withSpinner(plotly::plotlyOutput("rocPlotTrain")),width=6),
+              column(shiny::h4("Test"),
+                    withSpinner(plotly::plotlyOutput("rocPlotTest")),width=6)
+             ),
+            HTML("</BR>"),
+            div(strong("Figure 2."),"The Receiver Operating Characteristics (ROC) curve shows the ability of the model to discriminate between people with and without the outcome during the time at risk. 
+                It is a plot of sensitivity vs 1-specificity at every probability threshold. The higher the area under the ROC plot the higher the discriminative performance of the model.
+                The diagonal refers to a model assigning a class at random (area under de ROC = 0.5)."
+                )
           ),
           
           shiny::tabPanel(
             title = "Calibration",
             value = "panel_cal",
-            shiny::h4("Test"),
-            withSpinner(plotly::plotlyOutput("calPlotTest")),
-            shiny::h4("Train"),
-            withSpinner(plotly::plotlyOutput("calPlotTrain"))
+            fluidRow(
+              column(shiny::h4("Train"),
+                     withSpinner(plotly::plotlyOutput("calPlotTrain")),width=6),
+              column(
+                shiny::h4("Test"),
+                withSpinner(plotly::plotlyOutput("calPlotTest")),width=6),
+              HTML("</BR>"),
+              div(strong("Figure 3."),"The calibration plot shows how close the predicted risk is to the observed risk. 
+                  The diagonal dashed line thus indicates a perfectly calibrated model. 
+                  The ten (or fewer) dots represent the mean predicted values for each quantile plotted against the observed fraction of people in that quantile who had the outcome (observed fraction). 
+                  The straight black line is the linear regression using these 10 plotted quantile mean predicted vs observed fraction points."
+                 )
+            )
           ),
+          
           shiny::tabPanel(
             title = "Demographics",
             value = "panel_demo",
-            shiny::h4("Test"),
-            withSpinner(plotly::plotlyOutput("demoPlotTest")),
-            shiny::h4("Train"),
-            withSpinner(plotly::plotlyOutput("demoPlotTrain"))
+            fluidRow(
+              column(shiny::h4("Train"),
+                     withSpinner(plotly::plotlyOutput("demoPlotTrain")),width=6
+              ),
+              column(shiny::h4("Test"),
+                     withSpinner(plotly::plotlyOutput("demoPlotTest")),width=6
+              ),
+              HTML("</BR>"),
+              div(strong("Figure 4."),"This demogrophics plot shows for females and males the expected and observed risk in different age groups and the confidence areas."
+              )
+            )
           ),
+
           shiny::tabPanel(
             title = "Preference",
             value = "panel_pref",
-            shiny::h4("Test"),
-            withSpinner(plotly::plotlyOutput("prefPlotTest")),
-            shiny::h4("Train"),
-            withSpinner(plotly::plotlyOutput("prefPlotTrain"))
-          ),
+            fluidRow(
+              column(shiny::h4("Train"),
+                     withSpinner(plotly::plotlyOutput("prefPlotTrain")),width=6
+              ),
+              column(shiny::h4("Test"),
+                     withSpinner(plotly::plotlyOutput("prefPlotTest")),width=6
+              ),
+              HTML("</BR>"),
+              div(strong("Figure 5."),"The preference distribution plots are the preference score distributions corresponding to i) people in the test set with the outcome (red) and ii) people in the test set without the outcome (blue)."
+              )
+            )
+           ),
+        
           shiny::tabPanel(
             title = "Box Plot",
             value = "panel_box",
-            shiny::h4("Test"),
-            withSpinner(shiny::plotOutput("boxPlotTest")),
-            shiny::h4("Train"),
-            withSpinner(shiny::plotOutput("boxPlotTrain"))
+            fluidRow(
+              column(shiny::h4("Train"),
+                     withSpinner(shiny::plotOutput("boxPlotTrain")),width=6
+              ),
+              column(shiny::h4("Test"),
+                     withSpinner(shiny::plotOutput("boxPlotTest")),width=6
+              ),
+              HTML("</BR>"),
+              div(strong("Figure 6."),"The prediction distribution boxplots are box plots for the predicted risks of the people in the test set with the outcome (class 1: blue) and without the outcome (class 0: red)."
+              )
+            )
           ),
+        
+        
           #========================================================
           #  view settings
           #========================================================
@@ -159,15 +212,25 @@ ui <- shiny::shinyUI(shiny::fluidPage(
             shiny::tabsetPanel(
               id = "settingsTabs",
               shiny::tabPanel(
-                title = "Settingse",
+                title = "Settings",
                 value = "panel_options",
-                #shiny::h4(shiny::textOutput("modelName")),
-                shiny::h4("Modelling Settings"),
-                DT::dataTableOutput("modelDetails"),
-                shiny::h4("Population Settings"),
-                DT::dataTableOutput("popDetails"),
-                shiny::h4("Variable Settings"),
-                DT::dataTableOutput("varDetails")
+                fluidRow(
+                  column(
+                    HTML("</BR>"),
+                    div(strong("Table 3."),"Settings for model development."),
+                    HTML("</BR>"),
+                    DT::dataTableOutput("modelDetails"),
+                    HTML("</BR>"),
+                    div(strong("Table 4."),"Covariate settings."),
+                    HTML("</BR>"),
+                    DT::dataTableOutput("varDetails"),
+                    width = 6),
+                  column(
+                        HTML("</BR>"),
+                        div(strong("Table 5."),"Population definition settings."),
+                        HTML("</BR>"),
+                        DT::dataTableOutput("popDetails"), width = 6)
+                )
               ),
               
               shiny::tabPanel(
