@@ -38,13 +38,22 @@ ui <- shiny::shinyUI(shiny::fluidPage(
     id = 'mainnav',
     footer =  paste0("Data generated: ",runPlp$executionSummary$ExecutionDateTime),
     shiny::tabPanel("About",
-             HTML("</BR><P>This is a demo of the result viewer from the <a href='https://github.com/OHDSI/PatientLevelPrediction'>Patient-Level Prediction R package</a></P>"),
-             div(img(src="about.png", height = 150, width = 450)),
-             HTML("<b>The prediction problem we address:</b></BR></BR>
-                   Among a population at risk, we aim to predict which patients at a defined moment in time (t = 0) will experience some outcome during a time-at-risk.</BR>
-                   </BR>Prediction is done using only information about the patients in an observation window prior to that moment in time."),
-              HTML("</BR></BR><P style='color:#FF0000'>The app is currently under development. Do not use.</P>")
-    ),
+             fluidRow(
+               column(
+                 HTML("</BR><P>This is a demo of the result viewer from the <a href='https://github.com/OHDSI/PatientLevelPrediction'>Patient-Level Prediction R package</a></P>"),
+                 div(img(src="about.png", height = 300, width = 900)),
+                 HTML("We have applied the PatientLevelPrediction package to observational healthcare data to address the following patient-level prediction question: </BR></BR>
+                      
+                      Amongst patients who are newly diagnosed with Atrial Fibrillation, which patients will go on to have Ischemic Stroke within 1 year? </BR></BR>
+                      
+                      We have defined 'patients who are newly diagnosed with Atrial Fibrillation' as the first condition record of cardiac arrhythmia, which is followed by another cardiac arrhythmia condition record, at least two drug records for a drug used to treat arrhythmias, or a procedure to treat arrhythmias.</BR> </BR> 
+                      We have defined 'Ischemic stroke events' as ischemic stroke condition records during an inpatient or ER visit;  successive records with > 180 day gap are considered independent episodes. </BR> </BR>
+                      The results viewer shows the results of internal validation and external validation on one large database."),
+                 HTML("</BR></BR><P style='color:#FF0000'>The app is currently under development. Do not use.</P>"),
+                 width=6
+               )
+             )
+      ),
     
     shiny::tabPanel(
       title = "Internal Validation",

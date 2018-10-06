@@ -1,6 +1,6 @@
 
 # uncomment if running standalone
 runPlp <- readRDS(file.path("data","results.rds"))
-validatePlp <- NULL
+validatePlp <- readRDS(file.path("data","extValidation.rds"))
 
 
