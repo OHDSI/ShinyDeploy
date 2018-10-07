@@ -147,7 +147,7 @@ getTcoDbs <- function(connection,
 }
 
 getTcoDbsStrict <- function(connection, exposureIds = c(), outcomeIds = c(), databaseIds = c()) {
-  sql <- "SELECT target_id, comparator_id, outcome_id, database_id FROM cohort_method_result WHERE analysis_id = 1"
+  sql <- "SELECT TOP 100 target_id, comparator_id, outcome_id, database_id FROM cohort_method_result WHERE analysis_id = 1"
   parts <- c()
   if (length(exposureIds) != 0) {
     for (exposureId in exposureIds) {
