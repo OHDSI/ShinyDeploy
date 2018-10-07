@@ -106,7 +106,7 @@ skip_final_break: true
 # bibliography: pinp
 
 # Optional: Enable a 'Draft' watermark on the document
-watermark: true
+watermark: false
 
 # Customize footer, eg by referencing the vignette
 footer_contents: OHDSI version 1.0
@@ -163,20 +163,26 @@ totalExposures <- list(
   stuff = "at least 2500 patients in both target and comparator cohors"
 )
 
-# params <- list(databaseId = "CCAE",
-#                targetId = 1308842,
-#                comparatorId = 40226742,
-#                outcomeId = 2,
-#                indicationId = "Hypertension",
-#                root = ".",
-#                primary = 1,
-#                ot = 1,
-#                itt = 2,
-#                matchOt = 3,
-#                matchItt = 4,
-#                title = "Acute myocardial infarction risk in new-users of valsartan versus olmesartan for hypertension in the JMDC database",
-#                abstract = "We conduct a large-scale study on the incidence of acute myocardial infarction among new users of valsartan and olmesartan from 2006 to 2017 in the JMDC database. Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions. Secondary analyses entertain possible clinically relevant subgroup interaction with the HR. We identify 7316 valsartan and 9744 olmesartan patients for the on-treatment design, totaling 9093 and 9673 patient-years of observation, and 11 and 16 events respectively. We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation. We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values. In terms of acute myocardial infarction, valsartan has a similar risk as compared to olmesartan [HR: 0.88, 95% confidence interval (CI) 0.39 - 2.01].")
+  abbr <- read.table(header = TRUE, sep = ",", stringsAsFactors = FALSE, text = "
+name,shortName
+ACE inhibitors,ACEIs
+Aldosterone antagonist diuretics,AADs
+Alpha-1 blockers,A1Bs
+Angiotensin receptor blockers (ARBs),ARBs
+Beta blockers - cardioselective,cBBs
+Beta blockers - cardioselective and vasodilatory,cvBBs
+Beta blockers - combined alpha and beta receptor,aBBs
+Beta blockers - intrinsic sympathomimetic activity,sBBs
+Beta blockers - noncardioselective,nBBs
+Dihydropyridine calcium channel blockers (dCCB),dCCBs
+Direct vasodilators,DVs
+Loop diuretics,LDs
+Nodihydropyridine calcium channel blockers (ndCCB),nCCBs
+Potassium sparing diurectics,KSDs
+Thiazide or thiazide-like diuretics,TZs")
 
+  abbreviations <- abbr$shortName
+  names(abbreviations) <- abbr$name
 ```
 
 ```{r, loadData, echo=FALSE, message=FALSE, comment=FALSE, warning=FALSE, results='hide'}
@@ -263,10 +269,47 @@ if (is.null(params$load)) {
 
   DatabaseConnector::disconnect(connection)
 
+  originalTargetName <- targetName
+  originalComparatorName <- comparatorName
+
+  if (params$targetId < 5000) {
+    names <- unlist(strsplit(targetName, " & "))
+    newName <- paste(
+    sapply(names, function(name) {
+      if (name %in% names(abbreviations)) {
+        name <- abbreviations[name]
+      }
+      name
+    }), collapse = " & ")
+
+    targetName <- newName
+  }
+
+  if (params$comparatorId < 5000) {
+    names <- unlist(strsplit(comparatorName, " & "))
+    newName <- paste(
+    sapply(names, function(name) {
+      if (name %in% names(abbreviations)) {
+        name <- abbreviations[name]
+      }
+      name
+    }), collapse = " & ")
+
+    comparatorName <- newName
+  }
+
   if (!is.null(params$save)) {
     save(targetName, comparatorName, outcomeName, analyses, databaseDetails,
          studyPeriod, mainResults, subgroupResults, controlResults,
          attrition, followUpDist, balance, popCharacteristics, ps, kaplanMeier,
+         file = params$save)
+  }
+
+  if (!is.null(params$save)) {
+    save(targetName, comparatorName, outcomeName, analyses, databaseDetails,
+         studyPeriod, mainResults, subgroupResults, controlResults,
+         attrition, followUpDist, balance, popCharacteristics, ps, kaplanMeier,
+         originalTargetName, originalComparatorName,
          file = params$save)
   }
 } else {
@@ -291,28 +334,20 @@ LEGEND follows ten guiding principles (see [Supporting Information](#suppinfo));
 We also generate evidence consistently by applying a systematic approach across all research questions and disseminate evidence regardless on the estimates effects to avoid publication bias. These aims help overcome the questionable reliable of observational research \citep{schuemie2018improving}.
 This LEGEND document reports the risk of `r outcomeName` between new users of `r targetName` and `r comparatorName` treated for `r params$indicationId`.
 
-\begin{itemize}
-  \item Add short introduction to indication.
-\end{itemize}
 
-<!-- This *pinp is not PNAS* template started when the introduction to -->
-<!-- [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) by \cite{PeerJ:Rcpp}  -->
-<!-- was converted into this updated -->
-<!-- [Rcpp Introduction](https://eddelbuettel.github.io/pinp/Rcpp-introduction.pdf) -->
-<!-- vignette.  It is based on the -->
-<!-- [pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article) -->
-<!-- template of the wonderful [rticles](https://cran.r-project.org/package=rticles) package by -->
-<!-- \cite{CRAN:rticles}. The conversion from markdown to latex is facilitated by -->
-<!-- [rmarkdown](https://cran.r-project.org/package=rmarkdown) -->
-<!-- \citep{CRAN:rmarkdown} and [knitr](https://cran.r-project.org/package=knitr) -->
-<!-- \citep{CRAN:knitr}. The underlying LaTeX macros are from -->
-<!-- [pnas.org](http://www.pnas.org/site/authors/latex.xhtml). -->
-
-<!-- The remainder of the document carries over from the corresponding -->
-<!-- [pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article) -->
-<!-- template document. but has been edited and updated to our use case.  A -->
-<!-- few specific tips follow.  In general, for fine-tuning some knowledge -->
-<!-- of LaTeX is helpful. -->
+Worldwide, hypertension stands as a leading cause of mortality, with an increasing prevalence over the last two decades \citep{forouzanfar2017global}.
+The 2017 American College of Cardiology (ACC) / American Heart Association (AHA) clinical practice guidelines define hypertension based on averaged blood pressure (BP) measured in a healthcare setting;
+systolic BP between 130 - 139 mmHg or diastolic BP between 80 - 89 mmHg characterize stage 1 hypertension, and systolic BP $>$ 140 mmHg or diastolic BP $>$ 90 mmHg mark stage 2 hypertension \citep{whelton20182017}.
+Elevated BPs contribute to approximately half of all stroke and ischemic heart disease deaths and 13\% of all forms of deaths globally \citep{who2009global}.
+While antihypertensive therapies carry well-established benefits in reducing BP and the risk of major cardiovascular events, the health benefits and drug safety concerns of any one class of antihypertensive drugs relative to other classes as first-line therapy remains debatable.
+Part of this debate arises from a paucity of large randomized controlled trials and observational studies providing head-to-head comparisons between all pairs of individual drugs and drug classes.
+One notable counter-example is the Antihypertensive and Lipid-Lowering Treatment to Prevent Heart Attack Trial (ALLHAT) \citep{allhat2002major} that randomized 33,357 patients to receive either
+amlodipine (a dihydropyridine calcium channel blocker),
+chlorthalidone (a thiazide or thiazide-like diuertic) or
+lisinopril (an angiotensin converting enzyme inhibitor).
+However, ALLHAT employed only a single drug representative per class and did not include several other important antihypertensive classes, such as angiotensin receptor blockers and beta-blockers.
+Reboussin et al.~provide a systematic review of randomized controlled trials examining comparative benefits and harms of various antihypertensives as first-line therapy \citep{reboussin2017systematic}.
+Further observational study can help refine first-line therapy recommendations in terms of both treatment effecacy and relative drug safety, such as those from the 2017 ACC/AHA guidelines and the 2018 European Society of Cardiology (ESC) and European Society of Hypertension (ESH) Guidelines for the management of arterial hypertension\citep{williams20182018}.
 
 # Methods
 
@@ -345,7 +380,7 @@ We use propensity scores (PSs) -- estimates of treatment exposure probability co
 We use an expansive PS model that includes all available patient demographics, drug, condition and procedure covariates generated through the FeatureExtraction R package \citep{schuemie2018featureextration}
  instead of a prespecified set of investigator-selected confounders.
  We perform PS stratification or variable-ratio matching and then estimate comparative `r targetName`-vs-`r comparatorName` hazard ratios (HRs) using a Cox proportional hazards model.
- Detailed covariate and methods informations are provided in the 
+ Detailed covariate and methods informations are provided in the
  [Supporting Information](#suppinfo).
  We present PS and covariate balance metrics to assess successful confounding control, and provide HR estimates and Kaplan-Meier survival plots for the outcome of `r outcomeName`.
  We additionally estimate HRs for pre-specified subgroups to evaluate interactions with the treatment effect.
@@ -398,7 +433,7 @@ Note that the IR does not account for any stratification or matching.
 \multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
 \multicolumn{1}{c}{T} & \multicolumn{1}{c}{C} &
 \multicolumn{1}{c}{MDRR} \\
-\midrule 
+\midrule
 \showrowcolors
 ```{r, outcomes, echo=FALSE, results="asis", cache=FALSE, warning=FALSE}
 table <- preparePowerTable(mainResults, analyses)
@@ -664,7 +699,7 @@ negatives <- controlResults[controlResults$effectSize == 1.0 & !is.na(controlRes
 
 
 We optimize remaining condition concepts, such that parent concepts remove children as defined by the OMOP vocabulary and perform manual review to exclude any pairs that may still be in a causal relationship or too similar to the study outcome.
-For `r indicationName`, this process led to a candidate list of `r negativeControls[indicationName]` negative controls for which table can be found in study protocol [TODO URL].
+For `r indicationName`, this process led to a candidate list of `r negativeControls[indicationName]` negative controls for which table can be found in study protocol (https://github.com/OHDSI/Legend/tree/master/Documents).
 In the comparison of `r targetName` and `r comparatorName` in the `r params$databaseId` database, `r nrow(negatives)` negative controls had sufficient outcomes to return estimable HRs.   We list these conditions in Table \ref{tab:negatives}
 
 \begin{table}
