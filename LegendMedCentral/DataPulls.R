@@ -164,6 +164,7 @@ getTcoDbsStrict <- function(connection, exposureIds = c(), outcomeIds = c(), dat
   if (length(parts) != 0) {
     sql <- paste(sql, "AND", paste(parts, collapse = " AND "))
   }
+  sql <- paste0(sql, ";")
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   tcoDbs <- querySql(connection, sql)
   colnames(tcoDbs) <- SqlRender::snakeCaseToCamelCase(colnames(tcoDbs))
