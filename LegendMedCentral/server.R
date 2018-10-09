@@ -19,6 +19,10 @@ shinyServer(function(input, output, session) {
       targetIds <- exposures$exposureId[exposures$exposureName == query$target]
       comparatorIds <- exposures$exposureId[exposures$exposureName == query$comparator]
       outcomeIds <- outcomes$outcomeId[outcomes$outcomeName == query$outcome]
+      if (length(outcomeIds) == 0) {
+        # Don't want negative  or positive controls
+        outcomeIds <- outcomes$outcomeId
+      }
       databaseIds <- databases$databaseId[databases$databaseId == query$database]
       tcoDbs <- getTcoDbs(connection, targetIds = targetIds, comparatorIds = comparatorIds, outcomeIds = outcomeIds, databaseIds = databaseIds, limit = 100)
       return(tcoDbs)
@@ -157,7 +161,7 @@ shinyServer(function(input, output, session) {
         #                   inputId = "indication",
         #                   selected = query$indication)
         # setExposureGroupChoices(query$indication)
-        writeLines(paste("Setting exposure group selection to ", query$exposureGroup))
+        # writeLines(paste("Setting exposure group selection to ", query$exposureGroup))
         updateSelectInput(session = session,
                           inputId = "exposureGroup",
                           selected = query$exposureGroup)
