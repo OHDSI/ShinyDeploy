@@ -37,18 +37,18 @@ createAbstract <- function(connection, tcoDb) {
   comparatorName <- uncapitalize(exposures$exposureName[match(tcoDb$comparatorId, exposures$exposureId)])
   outcomeName <- uncapitalize(outcomes$outcomeName[match(tcoDb$outcomeId, outcomes$outcomeId)])
   indicationId <- uncapitalize(exposures$indicationId[match(tcoDb$targetId, exposures$exposureId)])
-  
+
   results <- getMainResults(connection,
                             targetIds = tcoDb$targetId,
                             comparatorIds = tcoDb$comparatorId,
                             outcomeIds = tcoDb$outcomeId,
                             databaseIds = tcoDb$databaseId)
-  
+
   studyPeriod <- getStudyPeriod(connection = connection,
                                 targetId = tcoDb$targetId,
                                 comparatorId = tcoDb$comparatorId,
-                                databaseId = tcoDb$databaseId)  
-  
+                                databaseId = tcoDb$databaseId)
+
   writeAbstract(outcomeName, targetName, comparatorName, tcoDb$databaseId, studyPeriod, results)
 }
 
@@ -58,10 +58,10 @@ writeAbstract <- function(outcomeName,
                            databaseId,
                            studyPeriod,
                            mainResults) {
-  
+
   minYear <- substr(studyPeriod$minDate, 1, 4)
   maxYear <- substr(studyPeriod$maxDate, 1, 4)
-  
+
   abstract <- paste0(
     "We conduct a large-scale study on the incidence of ", outcomeName, " among new users of ", targetName, " and ", comparatorName, " from ", minYear, " to ", maxYear, " in the ", databaseId, " database.  ",
     "Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions.  ",
@@ -69,8 +69,8 @@ writeAbstract <- function(outcomeName,
     "We identify ", mainResults[1, "targetSubjects"], " ", targetName, " and ", mainResults[1, "comparatorSubjects"], " ", comparatorName, " patients for the on-treatment design, totaling ", round(mainResults[1, "targetDays"] / 365.24), " and ", round(mainResults[1, "comparatorDays"] / 365.24), " patient-years of observation, and ", mainResults[1, "targetOutcomes"], " and ", mainResults[1, "comparatorOutcomes"], " events respectively.  ",
     "We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation.  ",
     "We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values.  ",
-    "In terms of ", outcomeName, ", ", targetName, " has a ", judgeHazardRatio(mainResults[1, "calibratedCi95Lb"], mainResults[1, "calibratedCi95Ub"]), 
-    " risk as compared to ", comparatorName, " [HR: ", prettyHr(mainResults[1, "calibratedRr"]), ", 95% confidence interval (CI) ", 
+    "In terms of ", outcomeName, ", ", targetName, " has a ", judgeHazardRatio(mainResults[1, "calibratedCi95Lb"], mainResults[1, "calibratedCi95Ub"]),
+    " risk as compared to ", comparatorName, " [HR: ", prettyHr(mainResults[1, "calibratedRr"]), ", 95% confidence interval (CI) ",
     prettyHr(mainResults[1, "calibratedCi95Lb"]), " - ", prettyHr(mainResults[1, "calibratedCi95Ub"]), "]."
   )
 
@@ -169,7 +169,7 @@ prepareSubgroupTable <- function(subgroupResults, output = "latex") {
   rnd <- function(x) {
     ifelse(x > 10, sprintf("%.1f", x), sprintf("%.2f", x))
   }
-  
+
   subgroupResults$hrr <- paste0(rnd(subgroupResults$rrr),
                                 " (",
                                 rnd(subgroupResults$ci95Lb),
@@ -182,8 +182,8 @@ prepareSubgroupTable <- function(subgroupResults, output = "latex") {
   subgroupResults$p[subgroupResults$p == "NA"] <- ""
   subgroupResults$calibratedP <- sprintf("%.2f", subgroupResults$calibratedP)
   subgroupResults$calibratedP[subgroupResults$calibratedP == "NA"] <- ""
-  
-  if (any(grepl("on-treatment", subgroupResults$analysisDescription)) && 
+
+  if (any(grepl("on-treatment", subgroupResults$analysisDescription)) &&
       any(grepl("intent-to-treat", subgroupResults$analysisDescription))) {
     idx <- grepl("on-treatment", subgroupResults$analysisDescription)
     onTreatment <- subgroupResults[idx, c("interactionCovariateName",
@@ -203,7 +203,7 @@ prepareSubgroupTable <- function(subgroupResults, output = "latex") {
                                  "hrr",
                                  "p",
                                  "calibratedP")]
-  } 
+  }
   table$interactionCovariateName <- gsub("Subgroup: ", "", table$interactionCovariateName)
   if (output == "latex") {
     table$interactionCovariateName <- gsub(">=", "$\\\\ge$ ", table$interactionCovariateName)
@@ -375,13 +375,13 @@ plotPs <- function(ps, targetName, comparatorName) {
 plotAllPs <- function(ps) {
   ps <- rbind(data.frame(targetName = ps$targetName,
                          comparatorName = ps$comparatorName,
-                         x = ps$preferenceScore, 
-                         y = ps$targetDensity, 
+                         x = ps$preferenceScore,
+                         y = ps$targetDensity,
                          group = "Target"),
               data.frame(targetName = ps$targetName,
                          comparatorName = ps$comparatorName,
-                         x = ps$preferenceScore, 
-                         y = ps$comparatorDensity, 
+                         x = ps$preferenceScore,
+                         y = ps$comparatorDensity,
                          group = "Comparator"))
   ps$group <- factor(ps$group, levels = c("Target", "Comparator"))
   plot <- ggplot2::ggplot(ps, ggplot2::aes(x = x, y = y, color = group, group = group, fill = group)) +
@@ -422,7 +422,7 @@ plotCovariateBalanceScatterPlot <- function(balance, beforeLabel = "Before strat
     ggplot2::scale_x_continuous(beforeLabel, limits = limits) +
     ggplot2::scale_y_continuous(afterLabel, limits = limits) +
     ggplot2::theme(text = theme)
-  
+
   return(plot)
 }
 
@@ -631,16 +631,16 @@ plotScatter <- function(controlResults) {
 
 plotLargeScatter <- function(d, xLabel) {
   d$Significant <- d$ci95Lb > 1 | d$ci95Ub < 1
-  
+
   oneRow <- data.frame(nLabel = paste0(formatC(nrow(d), big.mark = ","), " estimates"),
                        meanLabel = paste0(formatC(100 *
                                                     mean(!d$Significant, na.rm = TRUE), digits = 1, format = "f"), "% of CIs includes 1"))
-  
+
   breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
   theme <- ggplot2::element_text(colour = "#000000", size = 12)
   themeRA <- ggplot2::element_text(colour = "#000000", size = 12, hjust = 1)
   themeLA <- ggplot2::element_text(colour = "#000000", size = 12, hjust = 0)
-  
+
   alpha <- 1 - min(0.95 * (nrow(d)/50000)^0.1, 0.95)
   plot <- ggplot2::ggplot(d, ggplot2::aes(x = logRr, y = seLogRr)) +
     ggplot2::geom_vline(xintercept = log(breaks), colour = "#AAAAAA", lty = 1, size = 0.5) +
@@ -879,6 +879,12 @@ uncapitalize <- function(x) {
     substr(y, 1, 1) <- tolower(substr(y, 1, 1))
     y <- gsub("aCE", "ACE", y)
     y <- gsub("CCB)", "CCBs)", y)
+    y <- gsub("aAD", "AAD", y)
+    y <- gsub("a1B", "A1B", y)
+    y <- gsub("aRB", "ARB", y)
+    y <- gsub("dVs", "DVs", y)
+    y <- gsub("lDs", "LDs", y)
+    y <- gsub("tZs", "TZs", y)
     y
   })
   result <- paste(terms, collapse = " and ")
@@ -900,40 +906,40 @@ createDocument <- function(targetId,
                            template = "template.Rnw",
                            workingDirectory = "temp",
                            emptyWorkingDirectory = TRUE) {
-  
+
   if (missing(outputFile)) {
     stop("Must provide an output file name")
   }
-  
+
   currentDirectory <- getwd()
   on.exit(setwd(currentDirectory))
-  
+
   input <- file(template, "r")
-  
+
   name <- paste0("paper_", targetId, "_", comparatorId, "_", outcomeId, "_", databaseId)
-  
+
   if (!dir.exists(workingDirectory)) {
     dir.create(workingDirectory)
   }
-  
+
   workingDirectory <- file.path(workingDirectory, name)
-  
+
   if (!dir.exists(workingDirectory)) {
     dir.create(workingDirectory)
   }
-  
+
   if (is.null(setwd(workingDirectory))) {
     stop(paste0("Unable to change directory into: ", workingDirectory))
   }
-  
+
   system(paste0("cp ", file.path(currentDirectory, "pnas-new.cls"), " ."))
   system(paste0("cp ", file.path(currentDirectory, "widetext.sty"), " ."))
   system(paste0("cp ", file.path(currentDirectory, "pnasresearcharticle.sty"), " ."))
   system(paste0("cp ", file.path(currentDirectory, "Sweave.sty"), " ."))
-  
+
   texName <- paste0(name, ".Rnw")
   output <- file(texName, "w")
-  
+
   while (TRUE) {
     line <- readLines(input, n = 1)
     if (length(line) == 0) {
@@ -949,25 +955,25 @@ createDocument <- function(targetId,
   }
   close(input)
   close(output)
-  
+
   Sweave(texName)
   system(paste0("pdflatex ", name))
   system(paste0("pdflatex ", name))
-  
+
   # Save result
   workingName <- file.path(workingDirectory, name)
   workingName <- paste0(workingName, ".pdf")
-  
+
   setwd(currentDirectory)
-  
+
   system(paste0("cp ", workingName, " ", outputFile))
-  
+
   if (emptyWorkingDirectory) {
     # deleteName = file.path(workingDirectory, "*")
     # system(paste0("rm ", deleteName))
     unlink(workingDirectory, recursive = TRUE)
   }
-  
+
   invisible(outputFile)
 }
 

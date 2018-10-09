@@ -13,10 +13,10 @@ connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                              password = Sys.getenv("shinydbPw"),
                                              schema = Sys.getenv("shinydbSchema"))
 connection <- connect(connectionDetails)
-
+indications <- getIndications(connection)
 exposures <- getExposures(connection)
-exposures$exposureName <- sapply(exposures$exposureName, uncapitalize)
-
+exposures$exposureGroup[exposures$exposureGroup == "Drug" | exposures$exposureGroup == "Procedure"] <- "Drug or procedure"
+exposureGroups <- unique(exposures[, c("indicationId", "exposureGroup")])
 outcomes <- getOutcomes(connection)
 databases <- getDatabases(connection)
 
