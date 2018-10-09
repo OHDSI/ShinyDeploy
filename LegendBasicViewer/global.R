@@ -1,7 +1,7 @@
 library(DatabaseConnector)
 source("DataPulls.R")
 source("PlotsAndTables.R")
-
+ 
 # connectionDetails <- createConnectionDetails(dbms = 'postgresql', server = 'localhost/ohdsi', user
 # = 'postgres', password = Sys.getenv('pwPostgres'), schema = 'legend')
 
