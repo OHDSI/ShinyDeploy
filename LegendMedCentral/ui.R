@@ -5,7 +5,7 @@ source("widgets.R")
 shinyUI(fluidPage(style = "width:1000px;",
                   titlePanel(title = div(img(src = "logo.png", height = 50, width = 50), 
                                          "LegendMed Central"),
-                             windowTitle = "PubLegend Central"),
+                             windowTitle = "LegendMed Central"),
                   verticalLayout(
                     div(style = "background-color: #CCCCCC; padding: 8px;", 
                         radioButtons("queryType", label = NULL, choices = c("Free-text", "Structured"), inline = TRUE),
