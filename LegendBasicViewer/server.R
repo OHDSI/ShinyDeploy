@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
                       inputId = "comparator",
                       choices = unique(filteredExposures$exposureName))
   })
-
+  
   resultSubset <- reactive({
     targetId <- unique(exposures$exposureId[exposures$exposureName == input$target &
                                               exposures$exposureGroup == input$exposureGroup])
@@ -125,8 +125,6 @@ shinyServer(function(input, output, session) {
      if (is.null(row)) {
        return(NULL)
      } else {
-       targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-       comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
        analysisId <- row$analysisId
        if (analysisId %in% c(1, 3)) {
          # Only computed balance for ITT windows
@@ -134,8 +132,8 @@ shinyServer(function(input, output, session) {
        }
        writeLines("Fetching covariate balance")
        balance <- getCovariateBalance(connection = connection,
-                                      targetId = targetId ,
-                                      comparatorId = comparatorId,
+                                      targetId = row$targetId ,
+                                      comparatorId = row$comparatorId,
                                       databaseId = row$databaseId,
                                       analysisId = analysisId)
        return(balance)
@@ -226,13 +224,10 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       followUpDist <- getCmFollowUpDist(connection = connection,
-                                        targetId = targetId,
-                                        comparatorId = comparatorId,
-                                        outcomeId = outcomeId,
+                                        targetId = row$targetId,
+                                        comparatorId = row$comparatorId,
+                                        outcomeId = row$outcomeId,
                                         databaseId = row$databaseId,
                                         analysisId = row$analysisId)
       table <- prepareFollowUpDistTable(followUpDist)
@@ -245,13 +240,10 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       attrition <- getAttrition(connection = connection,
-                                targetId = targetId,
-                                comparatorId = comparatorId,
-                                outcomeId = outcomeId,
+                                targetId = row$targetId,
+                                comparatorId = row$comparatorId,
+                                outcomeId = row$outcomeId,
                                 databaseId = row$databaseId,
                                 analysisId = row$analysisId)
       plot <- drawAttritionDiagram(attrition)
@@ -287,13 +279,10 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       chars <- getCovariateBalance(connection = connection,
-                                   targetId = targetId,
-                                   comparatorId = comparatorId,
-                                   outcomeId = outcomeId,
+                                   targetId = row$targetId,
+                                   comparatorId = row$comparatorId,
+                                   outcomeId = row$outcomeId,
                                    databaseId = row$databaseId,
                                    analysisId = row$analysisId)
       table1 <- prepareTable1(balance = chars,
@@ -336,12 +325,9 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       ps <- getPs(connection = connection,
-                  targetId = targetId,
-                  comparatorId = comparatorId,
+                  targetIds = row$targetId,
+                  comparatorIds = row$comparatorId,
                   databaseId = row$databaseId)
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
@@ -415,11 +401,9 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
       controlResults <- getControlResults(connection = connection,
-                                          targetId = targetId,
-                                          comparatorId = comparatorId,
+                                          targetId = row$targetId,
+                                          comparatorId = row$comparatorId,
                                           analysisId = row$analysisId,
                                           databaseId = row$databaseId)
 
@@ -433,13 +417,10 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       km <- getKaplanMeier(connection = connection,
-                                   targetId = targetId,
-                                   comparatorId = comparatorId,
-                                   outcomeId = outcomeId,
+                                   targetId = row$targetId,
+                                   comparatorId = row$comparatorId,
+                                   outcomeId = row$outcomeId,
                                    databaseId = row$databaseId,
                                    analysisId = row$analysisId)
       plot <- plotKaplanMeier(kaplanMeier = km,
@@ -468,14 +449,11 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- unique(exposures$exposureId[exposures$exposureName == input$target])
-      comparatorId <- unique(exposures$exposureId[exposures$exposureName == input$comparator])
-      outcomeId <- unique(outcomes$outcomeId[outcomes$outcomeName == input$outcome])
       analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analyses$description[analyses$analysisId == row$analysisId]), analyses$description)]
       subgroupResults <- getSubgroupResults(connection = connection,
-                                            targetIds = targetId,
-                                            comparatorIds = comparatorId,
-                                            outcomeIds = outcomeId,
+                                            targetIds = row$targetId,
+                                            comparatorIds = row$comparatorId,
+                                            outcomeIds = row$outcomeId,
                                             databaseIds = row$databaseId,
                                             analysisIds = analysisIds)
       if (nrow(subgroupResults) == 0) {
