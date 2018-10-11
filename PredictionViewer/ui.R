@@ -29,8 +29,8 @@ ui <- shiny::shinyUI(shiny::fluidPage(
   #),
   titlePanel(
     title=div(img(src="logo.png", height = 50, width = 50), 
-              "PatientLevelPrediction Explorer"),
-    windowTitle = "PatientLevelPrediction Explorer"
+              "Prediction Viewer"),
+    windowTitle = "Prediction Viewer"
     ),
   
   shiny::navbarPage(
@@ -49,7 +49,6 @@ ui <- shiny::shinyUI(shiny::fluidPage(
                       We have defined 'patients who are newly diagnosed with Atrial Fibrillation' as the first condition record of cardiac arrhythmia, which is followed by another cardiac arrhythmia condition record, at least two drug records for a drug used to treat arrhythmias, or a procedure to treat arrhythmias.</BR> </BR> 
                       We have defined 'Ischemic stroke events' as ischemic stroke condition records during an inpatient or ER visit;  successive records with > 180 day gap are considered independent episodes. </BR> </BR>
                       The results viewer shows the results of internal validation and external validation on one large database."),
-                 HTML("</BR></BR><P style='color:#FF0000'>The app is currently under development. Do not use.</P>"),
                  width=6
                )
              )
