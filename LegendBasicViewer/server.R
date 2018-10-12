@@ -77,6 +77,7 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
+    results <- merge(results, analyses)
    return(results)
   })
 
@@ -145,7 +146,7 @@ shinyServer(function(input, output, session) {
     if (is.null(table) || nrow(table) == 0) {
       return(NULL)
     }
-    table <- merge(table, analyses)
+    # table <- merge(table, analyses)
     table <- table[, mainColumns]
     table$rr <- prettyHr(table$rr)
     table$ci95Lb <- prettyHr(table$ci95Lb)
