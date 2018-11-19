@@ -1,7 +1,7 @@
 library(ggplot2)
 
 plotScatter <- function(d) {
-  d$Significant <- d$ci95lb > d$targetEffectSize | d$ci95ub < d$targetEffectSize
+  d$Significant <- d$ci95Lb > d$targetEffectSize | d$ci95Ub < d$targetEffectSize
   
   temp1 <- aggregate(Significant ~ Group, data = d, length)
   temp2 <- aggregate(Significant ~ Group, data = d, mean)
@@ -18,9 +18,9 @@ plotScatter <- function(d) {
   dd$tes <- as.numeric(substr(as.character(dd$Group), start = 21, stop = nchar(as.character(dd$Group))))
   
   breaks <- c(0.25, 0.5, 1, 2, 4, 6, 8, 10)
-  theme <- element_text(colour = "#000000", size = 12)
-  themeRA <- element_text(colour = "#000000", size = 12, hjust = 1)
-  themeLA <- element_text(colour = "#000000", size = 12, hjust = 0)
+  theme <- element_text(colour = "#000000", size = 14)
+  themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
+  themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
   
   alpha <- 1 - min(0.95*(nrow(d)/nrow(dd)/50000)^0.1, 0.95)
   plot <- ggplot(d, aes(x = logRr, y= seLogRr), environment = environment()) +

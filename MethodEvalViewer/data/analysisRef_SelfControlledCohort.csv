@@ -1,0 +1,139 @@
+"method","analysisId","description","details","comparative","nesting","firstExposureOnly"
+"SelfControlledCohort",1,"Length of exposure, index date in exposure window","{
+  ""analysisId"": 1,
+  ""description"": ""Length of exposure, index date in exposure window"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": true,
+    ""riskWindowStartExposed"": 0,
+    ""riskWindowEndExposed"": 0,
+    ""addLengthOfExposureUnexposed"": true,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -1,
+    ""hasFullTimeAtRisk"": false,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCohort",2,"30 days of each exposure, index date in exposure window","{
+  ""analysisId"": 2,
+  ""description"": ""30 days of each exposure, index date in exposure window"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": false,
+    ""riskWindowStartExposed"": 0,
+    ""riskWindowEndExposed"": 30,
+    ""addLengthOfExposureUnexposed"": false,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -30,
+    ""hasFullTimeAtRisk"": false,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCohort",3,"Length of exposure, index date in exposure window, require full obs","{
+  ""analysisId"": 3,
+  ""description"": ""Length of exposure, index date in exposure window, require full obs"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": true,
+    ""riskWindowStartExposed"": 0,
+    ""riskWindowEndExposed"": 0,
+    ""addLengthOfExposureUnexposed"": true,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -1,
+    ""hasFullTimeAtRisk"": true,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCohort",4,"Length of exposure, index date ignored","{
+  ""analysisId"": 4,
+  ""description"": ""Length of exposure, index date ignored"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": true,
+    ""riskWindowStartExposed"": 1,
+    ""riskWindowEndExposed"": 1,
+    ""addLengthOfExposureUnexposed"": true,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -1,
+    ""hasFullTimeAtRisk"": false,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCohort",5,"30 days of each exposure, index date ignored","{
+  ""analysisId"": 5,
+  ""description"": ""30 days of each exposure, index date ignored"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": false,
+    ""riskWindowStartExposed"": 1,
+    ""riskWindowEndExposed"": 30,
+    ""addLengthOfExposureUnexposed"": false,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -30,
+    ""hasFullTimeAtRisk"": false,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCohort",6,"Length of exposure, index date ignored, require full obs","{
+  ""analysisId"": 6,
+  ""description"": ""Length of exposure, index date ignored, require full obs"",
+  ""runSelfControlledCohortArgs"": {
+    ""firstExposureOnly"": false,
+    ""firstOutcomeOnly"": true,
+    ""minAge"": """",
+    ""maxAge"": """",
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""addLengthOfExposureExposed"": true,
+    ""riskWindowStartExposed"": 1,
+    ""riskWindowEndExposed"": 1,
+    ""addLengthOfExposureUnexposed"": true,
+    ""riskWindowEndUnexposed"": -1,
+    ""riskWindowStartUnexposed"": -1,
+    ""hasFullTimeAtRisk"": true,
+    ""washoutPeriod"": 365,
+    ""followupPeriod"": 183,
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccAnalysis""
+}",FALSE,FALSE,FALSE

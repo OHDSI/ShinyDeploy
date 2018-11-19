@@ -1,0 +1,534 @@
+"method","analysisId","description","details","comparative","nesting","firstExposureOnly"
+"SelfControlledCaseSeries",1,"Simple SCCS","{
+  ""analysisId"": 1,
+  ""description"": ""Simple SCCS"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": {
+      ""includeCovariateIds"": ""exposureId"",
+      ""label"": ""Exposure of interest"",
+      ""stratifyById"": true,
+      ""start"": 1,
+      ""addExposedDaysToStart"": false,
+      ""end"": 0,
+      ""addExposedDaysToEnd"": true,
+      ""firstOccurrenceOnly"": false,
+      ""allowRegularization"": false,
+      ""attr_class"": ""covariateSettings""
+    },
+    ""ageSettings"": {
+      ""includeAge"": false,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": false,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": false,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 1e-006,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.1,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCaseSeries",2,"Including day 0","{
+  ""analysisId"": 2,
+  ""description"": ""Including day 0"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": {
+      ""includeCovariateIds"": ""exposureId"",
+      ""label"": ""Exposure of interest"",
+      ""stratifyById"": true,
+      ""start"": 0,
+      ""addExposedDaysToStart"": false,
+      ""end"": 0,
+      ""addExposedDaysToEnd"": true,
+      ""firstOccurrenceOnly"": false,
+      ""allowRegularization"": false,
+      ""attr_class"": ""covariateSettings""
+    },
+    ""ageSettings"": {
+      ""includeAge"": false,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": false,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": false,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 1e-006,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.1,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCaseSeries",3,"Using pre-exposure window","{
+  ""analysisId"": 3,
+  ""description"": ""Using pre-exposure window"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": [
+      {
+        ""includeCovariateIds"": ""exposureId"",
+        ""label"": ""Exposure of interest"",
+        ""stratifyById"": true,
+        ""start"": 1,
+        ""addExposedDaysToStart"": false,
+        ""end"": 0,
+        ""addExposedDaysToEnd"": true,
+        ""firstOccurrenceOnly"": false,
+        ""allowRegularization"": false,
+        ""attr_class"": ""covariateSettings""
+      },
+      {
+        ""includeCovariateIds"": ""exposureId"",
+        ""label"": ""Pre-exposure"",
+        ""stratifyById"": true,
+        ""start"": -60,
+        ""addExposedDaysToStart"": false,
+        ""end"": -1,
+        ""addExposedDaysToEnd"": false,
+        ""firstOccurrenceOnly"": false,
+        ""splitPoints"": -30,
+        ""allowRegularization"": false,
+        ""attr_class"": ""covariateSettings""
+      }
+    ],
+    ""ageSettings"": {
+      ""includeAge"": false,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": false,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": false,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 1e-006,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.1,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCaseSeries",4,"Using age and season","{
+  ""analysisId"": 4,
+  ""description"": ""Using age and season"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": {
+      ""includeCovariateIds"": ""exposureId"",
+      ""label"": ""Exposure of interest"",
+      ""stratifyById"": true,
+      ""start"": 1,
+      ""addExposedDaysToStart"": false,
+      ""end"": 0,
+      ""addExposedDaysToEnd"": true,
+      ""firstOccurrenceOnly"": false,
+      ""allowRegularization"": false,
+      ""attr_class"": ""covariateSettings""
+    },
+    ""ageSettings"": {
+      ""includeAge"": true,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": true,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": false,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 1e-006,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.1,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCaseSeries",5,"Using event-dependent observation","{
+  ""analysisId"": 5,
+  ""description"": ""Using event-dependent observation"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": {
+      ""includeCovariateIds"": ""exposureId"",
+      ""label"": ""Exposure of interest"",
+      ""stratifyById"": true,
+      ""start"": 1,
+      ""addExposedDaysToStart"": false,
+      ""end"": 0,
+      ""addExposedDaysToEnd"": true,
+      ""firstOccurrenceOnly"": false,
+      ""allowRegularization"": false,
+      ""attr_class"": ""covariateSettings""
+    },
+    ""ageSettings"": {
+      ""includeAge"": false,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": false,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": true,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 1e-006,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.1,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
+"SelfControlledCaseSeries",6,"Using all other exposures","{
+  ""analysisId"": 6,
+  ""description"": ""Using all other exposures"",
+  ""getDbSccsDataArgs"": {
+    ""useCustomCovariates"": false,
+    ""useNestingCohort"": false,
+    ""deleteCovariatesSmallCount"": 100,
+    ""studyStartDate"": """",
+    ""studyEndDate"": """",
+    ""maxCasesPerOutcome"": 250000,
+    ""customCovariateIds"": """",
+    ""attr_class"": ""args""
+  },
+  ""createSccsEraDataArgs"": {
+    ""naivePeriod"": 365,
+    ""firstOutcomeOnly"": false,
+    ""covariateSettings"": [
+      {
+        ""includeCovariateIds"": ""exposureId"",
+        ""label"": ""Exposure of interest"",
+        ""stratifyById"": true,
+        ""start"": 1,
+        ""addExposedDaysToStart"": false,
+        ""end"": 0,
+        ""addExposedDaysToEnd"": true,
+        ""firstOccurrenceOnly"": false,
+        ""allowRegularization"": false,
+        ""attr_class"": ""covariateSettings""
+      },
+      {
+        ""excludeCovariateIds"": ""exposureId"",
+        ""label"": ""All other exposures"",
+        ""stratifyById"": true,
+        ""start"": 1,
+        ""addExposedDaysToStart"": false,
+        ""end"": 0,
+        ""addExposedDaysToEnd"": true,
+        ""firstOccurrenceOnly"": false,
+        ""allowRegularization"": true,
+        ""attr_class"": ""covariateSettings""
+      }
+    ],
+    ""ageSettings"": {
+      ""includeAge"": false,
+      ""ageKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""ageSettings""
+    },
+    ""seasonalitySettings"": {
+      ""includeSeasonality"": false,
+      ""seasonKnots"": 5,
+      ""allowRegularization"": false,
+      ""computeConfidenceIntervals"": false,
+      ""attr_class"": ""seasonalitySettings""
+    },
+    ""minCasesForAgeSeason"": 10000,
+    ""eventDependentObservation"": false,
+    ""attr_class"": ""args""
+  },
+  ""fitSccsModelArgs"": {
+    ""prior"": {
+      ""priorType"": ""laplace"",
+      ""variance"": 1,
+      ""exclude"": null,
+      ""graph"": null,
+      ""neighborhood"": null,
+      ""useCrossValidation"": true,
+      ""forceIntercept"": false,
+      ""attr_class"": ""cyclopsPrior""
+    },
+    ""control"": {
+      ""maxIterations"": 1000,
+      ""tolerance"": 2e-007,
+      ""convergenceType"": ""gradient"",
+      ""autoSearch"": true,
+      ""fold"": 10,
+      ""lowerLimit"": 0.01,
+      ""upperLimit"": 20,
+      ""gridSteps"": 10,
+      ""minCVData"": 100,
+      ""cvRepetitions"": 1,
+      ""noiseLevel"": ""quiet"",
+      ""threads"": 1,
+      ""seed"": null,
+      ""resetCoefficients"": false,
+      ""startingVariance"": 0.01,
+      ""useKKTSwindle"": false,
+      ""tuneSwindle"": 10,
+      ""selectorType"": ""byPid"",
+      ""initialBound"": 2,
+      ""maxBoundCount"": 5,
+      ""attr_class"": ""cyclopsControl""
+    },
+    ""attr_class"": ""args""
+  },
+  ""attr_class"": ""sccsAnalysis""
+}",FALSE,FALSE,FALSE
