@@ -136,13 +136,13 @@ shinyServer(function(input, output) {
   output$evaluation <- renderPlot({
     details <- details()
     if (is.null(details)) return(NULL)
-    return(details$evaluationPlot)
+    return(plotControlScatter(details$controlEstimates, size = 2))
   })
   
   output$calibration <- renderPlot({
     details <- details()
     if (is.null(details)) return(NULL)
-    return(details$calibrationPlot)
+    return(plotControlScatter(details$controlCalibratedEstimates, size = 2))
   })
 
   output$balanceScatterPlot <- renderPlot({
