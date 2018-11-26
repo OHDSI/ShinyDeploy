@@ -1,7 +1,7 @@
 "method","analysisId","description","details","comparative","nesting","firstExposureOnly"
-"CaseControl",1,"Matching on age and gender, 2 controls per case","{
+"CaseControl",1,"2 controls per case","{
   ""analysisId"": 1,
-  ""description"": ""Matching on age and gender, 2 controls per case"",
+  ""description"": ""2 controls per case"",
   ""getDbCaseDataArgs"": {
     ""useNestingCohort"": false,
     ""useObservationEndAsNestingEndDate"": true,
@@ -70,15 +70,16 @@
       ""selectorType"": ""byPid"",
       ""initialBound"": 2,
       ""maxBoundCount"": 5,
+      ""algorithm"": ""ccd"",
       ""attr_class"": ""cyclopsControl""
     },
     ""attr_class"": ""args""
   },
   ""attr_class"": ""ccAnalysis""
 }",FALSE,FALSE,FALSE
-"CaseControl",2,"Matching on age and gender, 10 controls per case","{
+"CaseControl",2,"10 controls per case","{
   ""analysisId"": 2,
-  ""description"": ""Matching on age and gender, 10 controls per case"",
+  ""description"": ""10 controls per case"",
   ""getDbCaseDataArgs"": {
     ""useNestingCohort"": false,
     ""useObservationEndAsNestingEndDate"": true,
@@ -147,15 +148,16 @@
       ""selectorType"": ""byPid"",
       ""initialBound"": 2,
       ""maxBoundCount"": 5,
+      ""algorithm"": ""ccd"",
       ""attr_class"": ""cyclopsControl""
     },
     ""attr_class"": ""args""
   },
   ""attr_class"": ""ccAnalysis""
 }",FALSE,FALSE,FALSE
-"CaseControl",3,"Matching on age and gender, nesting in indication, 2 controls per case","{
+"CaseControl",3,"Nesting in indication, 2 controls per case","{
   ""analysisId"": 3,
-  ""description"": ""Matching on age and gender, nesting in indication, 2 controls per case"",
+  ""description"": ""Nesting in indication, 2 controls per case"",
   ""getDbCaseDataArgs"": {
     ""useNestingCohort"": true,
     ""useObservationEndAsNestingEndDate"": true,
@@ -224,15 +226,16 @@
       ""selectorType"": ""byPid"",
       ""initialBound"": 2,
       ""maxBoundCount"": 5,
+      ""algorithm"": ""ccd"",
       ""attr_class"": ""cyclopsControl""
     },
     ""attr_class"": ""args""
   },
   ""attr_class"": ""ccAnalysis""
-}",FALSE,TRUE,FALSE
-"CaseControl",4,"Matching on age and gender, nesting in indication, 10 controls per case","{
+}",FALSE,FALSE,FALSE
+"CaseControl",4,"Nesting in indication, 10 controls per case","{
   ""analysisId"": 4,
-  ""description"": ""Matching on age and gender, nesting in indication, 10 controls per case"",
+  ""description"": ""Nesting in indication, 10 controls per case"",
   ""getDbCaseDataArgs"": {
     ""useNestingCohort"": true,
     ""useObservationEndAsNestingEndDate"": true,
@@ -301,9 +304,10 @@
       ""selectorType"": ""byPid"",
       ""initialBound"": 2,
       ""maxBoundCount"": 5,
+      ""algorithm"": ""ccd"",
       ""attr_class"": ""cyclopsControl""
     },
     ""attr_class"": ""args""
   },
   ""attr_class"": ""ccAnalysis""
-}",FALSE,TRUE,FALSE
+}",FALSE,FALSE,FALSE

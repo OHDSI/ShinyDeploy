@@ -1,7 +1,7 @@
 "method","analysisId","description","details","comparative","nesting","firstExposureOnly"
-"SelfControlledCohort",1,"Length of exposure, index date in exposure window","{
+"SelfControlledCohort",1,"Time exposed, inc. exp. start date","{
   ""analysisId"": 1,
-  ""description"": ""Length of exposure, index date in exposure window"",
+  ""description"": ""Time exposed, inc. exp. start date"",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
@@ -22,9 +22,9 @@
   },
   ""attr_class"": ""sccAnalysis""
 }",FALSE,FALSE,FALSE
-"SelfControlledCohort",2,"30 days of each exposure, index date in exposure window","{
+"SelfControlledCohort",2,"30 days, incl. exp. start date","{
   ""analysisId"": 2,
-  ""description"": ""30 days of each exposure, index date in exposure window"",
+  ""description"": ""30 days, incl. exp. start date"",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
@@ -45,9 +45,9 @@
   },
   ""attr_class"": ""sccAnalysis""
 }",FALSE,FALSE,FALSE
-"SelfControlledCohort",3,"Length of exposure, index date in exposure window, require full obs","{
+"SelfControlledCohort",3,"Time exposed, inc. exp. start date, require full obs.","{
   ""analysisId"": 3,
-  ""description"": ""Length of exposure, index date in exposure window, require full obs"",
+  ""description"": ""Time exposed, inc. exp. start date, require full obs."",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
@@ -68,9 +68,9 @@
   },
   ""attr_class"": ""sccAnalysis""
 }",FALSE,FALSE,FALSE
-"SelfControlledCohort",4,"Length of exposure, index date ignored","{
+"SelfControlledCohort",4,"Time exposed, ex. exp. start date","{
   ""analysisId"": 4,
-  ""description"": ""Length of exposure, index date ignored"",
+  ""description"": ""Time exposed, ex. exp. start date"",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
@@ -91,9 +91,9 @@
   },
   ""attr_class"": ""sccAnalysis""
 }",FALSE,FALSE,FALSE
-"SelfControlledCohort",5,"30 days of each exposure, index date ignored","{
+"SelfControlledCohort",5,"30 days, ex. exp. start date","{
   ""analysisId"": 5,
-  ""description"": ""30 days of each exposure, index date ignored"",
+  ""description"": ""30 days, ex. exp. start date"",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
@@ -114,9 +114,9 @@
   },
   ""attr_class"": ""sccAnalysis""
 }",FALSE,FALSE,FALSE
-"SelfControlledCohort",6,"Length of exposure, index date ignored, require full obs","{
+"SelfControlledCohort",6,"Time exposed, ex. exp. start date, require full obs.","{
   ""analysisId"": 6,
-  ""description"": ""Length of exposure, index date ignored, require full obs"",
+  ""description"": ""Time exposed, ex. exp. start date, require full obs."",
   ""runSelfControlledCohortArgs"": {
     ""firstExposureOnly"": false,
     ""firstOutcomeOnly"": true,
