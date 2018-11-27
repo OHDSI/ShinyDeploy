@@ -51,23 +51,28 @@ plotScatter <- function(d) {
 
 plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL) {
   trueLogRrLevels <- unique(trueLogRr)
+  trueLogRrLevels <- trueLogRrLevels[order(trueLogRrLevels)]
   allData <- data.frame()
   aucs <- c()
   labels <- c()
   overall <- c()
-  for (trueLogRrLevel in trueLogRrLevels){
+  for (trueLogRrLevel in trueLogRrLevels) {
     if (trueLogRrLevel != 0 ) {
       data <- data.frame(logRr = logRr[trueLogRr == 0 | trueLogRr == trueLogRrLevel], 
                          trueLogRr = trueLogRr[trueLogRr == 0 | trueLogRr == trueLogRrLevel])
       data$truth <- data$trueLogRr != 0
-      
+      label <- paste("True effect size =", exp(trueLogRrLevel))
       roc <- pROC::roc(data$truth, data$logRr, algorithm = 3)
       if (showAucs) {
         aucs <- c(aucs, pROC::auc(roc))
-        labels <- c(labels, paste("True effect size =", exp(trueLogRrLevel)))
+        labels <- c(labels, label)
         overall <- c(overall, FALSE)
       }
-      data <- data.frame(sens = roc$sensitivities, fpRate = 1 - roc$specificities, label = paste("True effect size =", exp(trueLogRrLevel)), overall = FALSE)
+      data <- data.frame(sens = roc$sensitivities, 
+                         fpRate = 1 - roc$specificities, 
+                         label = label,
+                         overall = FALSE,
+                         stringsAsFactors = FALSE)
       data <- data[order(data$sens, data$fpRate), ]
       allData <- rbind(allData, data)
     }
@@ -76,22 +81,25 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
   data <- data.frame(logRr = logRr, 
                      trueLogRr = trueLogRr)
   data$truth <- data$trueLogRr != 0
-  
   roc <- pROC::roc(data$truth, data$logRr, algorithm = 3)
   if (showAucs) {
     aucs <- c(aucs, pROC::auc(roc))
     labels <- c(labels, "Overall")
     overall <- c(overall, TRUE)
   }
-  data <- data.frame(sens = roc$sensitivities, fpRate = 1 - roc$specificities, label = "Overall", overall = TRUE)
+  data <- data.frame(sens = roc$sensitivities, 
+                     fpRate = 1 - roc$specificities, 
+                     label = "Overall", 
+                     overall = TRUE,
+                     stringsAsFactors = FALSE)
   data <- data[order(data$sens, data$fpRate), ]
   allData <- rbind(allData, data)
   
-  allData$label <- as.factor(allData$label)
+  allData$label <- factor(allData$label, levels = c(paste("True effect size =", exp(trueLogRrLevels)), "Overall"))
+  # labels <- factor(labels, levels = c("Overall", paste("True effect size =", exp(trueLogRrLevels))))
   breaks <- seq(0, 1, by = 0.2)
-  theme <- element_text(colour = "#000000", size = 12)
-  themeRA <- element_text(colour = "#000000", size = 12, hjust = 1)
-  themeLA <- element_text(colour = "#000000", size = 12, hjust = 0)
+  theme <- element_text(colour = "#000000", size = 15)
+  themeRA <- element_text(colour = "#000000", size = 15, hjust = 1)
   plot <- ggplot(allData, aes(x = fpRate, y = sens, group = label, color = label, fill = label)) +
     geom_vline(xintercept = breaks, colour = "#CCCCCC", lty = 1, size = 0.5) +
     geom_hline(yintercept = breaks, colour = "#CCCCCC", lty = 1, size = 0.5) +
@@ -121,7 +129,7 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
     aucs <- aucs[order(-aucs$label), ]
     for (i in 1:nrow(aucs)) {
       label <- paste0(aucs$label[i], ": AUC = ", format(round(aucs$auc[i], 2), nsmall = 2))
-      plot <- plot + geom_text(label = label, x = 1, y = (i-1)*0.1, hjust = 1, color = "#000000", size = 5)
+      plot <- plot + geom_text(label = label, x = 1, y = 0.4 - (i*0.1), hjust = 1, color = "#000000", size = 5)
     }
   }
   if (!is.null(fileName))

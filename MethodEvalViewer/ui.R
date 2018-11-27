@@ -16,8 +16,8 @@ shinyUI(
                      
               ),
               column(10,
-                     textOutput("controlCount"),
                      dataTableOutput("performanceMetrics"),
+                     uiOutput("tableCaption"),
                      conditionalPanel(condition = "output.details",
                                       div(style = "display:inline-block", h4(textOutput("details"))), 
                                       div(style = "display:inline-block", actionLink("showSettings", "Details")),
@@ -28,9 +28,11 @@ shinyUI(
                                                             height = "270px",
                                                             hover = hoverOpts("plotHoverInfoEstimates", 
                                                                               delay = 100, 
-                                                                              delayType = "debounce"))
-                                                 ),
-                                        tabPanel("ROC curves", plotOutput("rocCurves"))
+                                                                              delayType = "debounce")),
+                                                 div(strong("Figure S.1."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth.")),
+                                        tabPanel("ROC curves", 
+                                                 plotOutput("rocCurves"),
+                                                 div(strong("Figure S.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))
                                       )
                      )   
               )

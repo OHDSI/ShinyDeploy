@@ -52,12 +52,12 @@ shinyServer(function(input, output, session) {
     return(subset)
   })
   
-  output$controlCount <- renderText({
+  output$tableCaption <- renderUI({
     subset <- filterEstimates()
     subset <- unique(subset[, c("targetId", "comparatorId", "oldOutcomeId", "targetEffectSize")])
     ncCount <- sum(subset$targetEffectSize == 1)
     pcCount <- sum(subset$targetEffectSize != 1)
-    return(paste0("Metrics based on ", ncCount, " negative and ", pcCount, " positive controls"))
+    return(HTML(paste0("<strong>Table S.1</strong> Metrics based on ", ncCount, " negative and ", pcCount, " positive controls")))
   })
   
   performanceMetrics <- reactive({
@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
     selection = list(mode = "single", target = "row")
     options = list(pageLength = 10, 
                    searching = FALSE, 
-                   lengthChange = FALSE)
+                   lengthChange = TRUE)
     isolate(
       if (!is.null(input$performanceMetrics_rows_selected)) {
         selection$selected = input$performanceMetrics_rows_selected
