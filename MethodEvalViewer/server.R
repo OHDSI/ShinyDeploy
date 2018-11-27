@@ -73,7 +73,7 @@ shinyServer(function(input, output, session) {
         auc <- round(pROC::auc(roc), 2)
         mse <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
         coverage <- round(mean(forEval$ci95Lb < forEval$trueEffectSize & forEval$ci95Ub > forEval$trueEffectSize), 2)
-        meanP <- round(mean(1/(forEval$seLogRr^2)), 2)
+        meanP <- round(exp(mean(log(1/(forEval$seLogRr^2)))), 2)
         type1 <- round(mean(forEval$p[forEval$targetEffectSize == 1] < 0.05), 2)
         type2 <- round(mean(forEval$p[forEval$targetEffectSize > 1] >= 0.05), 2)
         nonEstimable <- round(mean(forEval$seLogRr == 999), 2)
@@ -86,7 +86,7 @@ shinyServer(function(input, output, session) {
         forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & subset$targetEffectSize == input$trueRr, ]
         mse <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
         coverage <- round(mean(forEval$ci95Lb < forEval$trueEffectSize & forEval$ci95Ub > forEval$trueEffectSize), 2)
-        meanP <- round(mean(1/(forEval$seLogRr^2)), 2)
+        meanP <- round(exp(mean(log(1/(forEval$seLogRr^2)))), 2)
         if (input$trueRr == "1") {
           auc <- NA
           type1 <- round(mean(forEval$p < 0.05), 2)  
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
                           "<span title=\"Analysis variant ID\">ID</span>", 
                           "<span title=\"Area under the receiver operator curve\">AUC</span>", 
                           "<span title=\"Coverage of the 95% confidence interval\">Coverage</span>", 
-                          "<span title=\"Mean precision (1/SE^2)\">Mean Precision</span>", 
+                          "<span title=\"Geometric mean precision (1/SE^2)\">Mean Precision</span>", 
                           "<span title=\"Mean Squared Error\">MSE</span>", 
                           "<span title=\"Type I Error\">Type I error</span>", 
                           "<span title=\"Type II Error\">Type II error</span>", 
