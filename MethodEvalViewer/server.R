@@ -70,12 +70,12 @@ shinyServer(function(input, output, session) {
       computeMetrics <- function(i) {
         forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i], ]
         nonEstimable <- round(mean(forEval$seLogRr >= 99), 2)
-        forEval <- forEval[forEval$seLogRr < 99, ]
+        # forEval <- forEval[forEval$seLogRr < 99, ]
         roc <- pROC::roc(forEval$targetEffectSize > 1, forEval$logRr, algorithm = 3)
         auc <- round(pROC::auc(roc), 2)
         mse <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
         coverage <- round(mean(forEval$ci95Lb < forEval$trueEffectSize & forEval$ci95Ub > forEval$trueEffectSize), 2)
-        meanP <- round(exp(mean(log(1/(forEval$seLogRr^2)))), 2)
+        meanP <- round(-1 + exp(mean(log(1 + (1/(forEval$seLogRr^2))))), 2)
         type1 <- round(mean(forEval$p[forEval$targetEffectSize == 1] < 0.05), 2)
         type2 <- round(mean(forEval$p[forEval$targetEffectSize > 1] >= 0.05), 2)
         return(c(auc = auc, coverage = coverage, meanP = meanP, mse = mse, type1 = type1, type2 = type2, nonEstimable = nonEstimable))
@@ -86,10 +86,10 @@ shinyServer(function(input, output, session) {
       computeMetrics <- function(i) {
         forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & subset$targetEffectSize == input$trueRr, ]
         nonEstimable <- round(mean(forEval$seLogRr >= 99), 2)
-        forEval <- forEval[forEval$seLogRr < 99, ]
+        # forEval <- forEval[forEval$seLogRr < 99, ]
         mse <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
         coverage <- round(mean(forEval$ci95Lb < forEval$trueEffectSize & forEval$ci95Ub > forEval$trueEffectSize), 2)
-        meanP <- round(exp(mean(log(1/(forEval$seLogRr^2)))), 2)
+        meanP <- round(-1 + exp(mean(log(1 + (1/(forEval$seLogRr^2))))), 2)
         if (input$trueRr == "1") {
           auc <- NA
           type1 <- round(mean(forEval$p < 0.05), 2)  
