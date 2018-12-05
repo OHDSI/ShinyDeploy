@@ -10,7 +10,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
@@ -128,7 +128,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
@@ -292,7 +292,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
@@ -456,7 +456,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
@@ -619,7 +619,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
@@ -781,7 +781,7 @@
     ""removeDuplicateSubjects"": true,
     ""restrictToCommonPeriod"": false,
     ""washoutPeriod"": 365,
-    ""maxCohortSize"": 250000,
+    ""maxCohortSize"": 1000000,
     ""covariateSettings"": {
       ""temporal"": false,
       ""DemographicsGender"": true,
