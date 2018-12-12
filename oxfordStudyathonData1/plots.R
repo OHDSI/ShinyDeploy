@@ -440,3 +440,36 @@ plotSparseCalibration2 <- function(evaluation, type='test', fileName=NULL){
     ggplot2::ggsave(fileName, plot, width = 5, height = 3.5, dpi = 400)
   return(plot)
 }
+
+plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
+  ind <- evaluation$predictionDistribution$Eval==type
+  x<- evaluation$predictionDistribution[ind,]
+  
+  #(x=Class, y=predictedProbabllity sequence:  min->P05->P25->Median->P75->P95->max)
+  
+  plot <-   ggplot2::ggplot(x, ggplot2::aes(x=as.factor(class),
+                                            ymin=MinPredictedProbability,
+                                            lower=P25PredictedProbability,
+                                            middle=MedianPredictedProbability,
+                                            upper=P75PredictedProbability, 
+                                            ymax=MaxPredictedProbability, 
+                                            color=as.factor(class))) + 
+    ggplot2::coord_flip() +
+    ggplot2::geom_boxplot(stat="identity")  +
+    ggplot2::scale_x_discrete("Class") + 
+    ggplot2::scale_y_continuous("Predicted Probability") + 
+    ggplot2::theme(legend.position="none") +
+    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = x$P05PredictedProbability[x$class==0], 
+                                       xend = 1.1, yend = x$P05PredictedProbability[x$class==0]), color='red') +
+    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = x$P95PredictedProbability[x$class==0], 
+                                       xend = 1.1, yend = x$P95PredictedProbability[x$class==0]), color='red') +
+    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = x$P05PredictedProbability[x$class==1], 
+                                       xend = 2.1, yend = x$P05PredictedProbability[x$class==1])) +
+    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = x$P95PredictedProbability[x$class==1], 
+                                       xend = 2.1, yend = x$P95PredictedProbability[x$class==1]))
+  
+  
+  if (!is.null(fileName))
+    ggplot2::ggsave(fileName, plot, width = 5, height = 4.5, dpi = 400)
+  return(plot)
+}
