@@ -28,7 +28,7 @@ getPerformance <- function(analysisLocation){
   }
   
   res$plpResultLocation <- location
-  res$plpResultLoad <- 'loadPlpResult'
+  res$plpResultLoad <- 'readRDS'#'loadPlpResult'
   return(res[,c('analysisId', 'AUC', 'AUPRC', 'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad')])
 }
 
