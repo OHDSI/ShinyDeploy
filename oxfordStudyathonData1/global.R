@@ -1,7 +1,7 @@
 # uncomment if running standalone
 ##runPlp <- readRDS(file.path("data","results.rds"))
 ##validatePlp <- readRDS(file.path("data","extValidation.rds"))
-
+source("utils.R")
 analysesLocation <- file.path("data")
 allPerformance <- summaryPlpAnalyses(analysesLocation)
 plpResultLocation <- allPerformance[,c('plpResultLocation', 'plpResultLoad')]
