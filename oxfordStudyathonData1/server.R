@@ -80,24 +80,25 @@ shiny::shinyServer(function(input, output, session) {
       }
       
       loc <- plpResultLocation[summaryData(),][ind,]
-      logLocation <- gsub('plpResult','plplog.txt', as.character(loc[1]))
+      logLocation <- gsub('plpResult.rds','plplog.txt', as.character(loc[1]))
       txt <- readLines(logLocation)
       
       covariates <- NULL
       population <- NULL
       modelset <- NULL
-      if(loc[2]=='loadPlpResult'){
-        eval <- tryCatch(do.call(as.character(loc[2]), list(dirPath=as.character(loc[1]))),
-                         error = function(err) return(NULL))
-        type <- 'test'
-      } else {
-        eval <- tryCatch(do.call(as.character(loc[2]), list(file=as.character(loc[1]))),
-                         error = function(err) return(NULL))
+      #if(loc[2]=='loadPlpResult'){
+      #  eval <- tryCatch(do.call(as.character(loc[2]), list(dirPath=as.character(loc[1]))),
+      #                   error = function(err) return(NULL))
+      #  type <- 'test'
+      #} else {
+        #eval <- tryCatch(do.call(as.character(loc[2]), list(file=as.character(loc[1]))),
+        #                 error = function(err) return(NULL))
+        eval <- readRDS(as.character(loc[1]))
         if(!'inputSetting'%in%names(eval)){
           eval <- eval[[1]]
         }
-        type <- 'validation'
-      }
+        type <- 'test' #'validationre'
+      #}
       if(!is.null(eval)){
         covariates <- eval$inputSetting$dataExtrractionSettings$covariateSettings
         population <- eval$inputSetting$populationSettings
