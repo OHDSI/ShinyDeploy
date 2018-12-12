@@ -1,3 +1,60 @@
+summaryPlpAnalyses <- function(analysesLocation){ 
+  # loads the analyses and validations to get summaries
+  #========================================
+  settings <- read.csv(file.path(analysesLocation,'settings.csv'))
+  settings <- settings[,!colnames(settings)%in%c('plpDataFolder','studyPopFile','plpResultFolder')]
+  settings$analysisId <- paste0('Analysis_',  settings$analysisId)
+  
+  analysisIds <- dir(file.path(analysesLocation), recursive = F, full.names = T)
+  analysisIds <- analysisIds[grep('Analysis_',analysisIds)]
+  if(is.null(settings$devDatabase)){
+    settings$devDatabase <- 'Missing'
+  }
+  settings$valDatabase <- settings$devDatabase
+  devPerformance <- do.call(rbind,lapply(file.path(analysisIds), getPerformance))
+  devPerformance <- merge(settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
+                                      'populationSettingId','modelSettingName','addExposureDaysToStart',
+                                      'riskWindowStart', 'addExposureDaysToEnd',
+                                      'riskWindowEnd','devDatabase','valDatabase')],
+                          devPerformance, by='analysisId', all.x=T)
+  
+  validationLocation <- file.path(analysesLocation,'Validation')
+  if(length(dir(validationLocation))>0){
+    valPerformances <- c()
+    valDatabases <- dir(validationLocation, recursive = F, full.names = T)
+    for( valDatabase in valDatabases){
+      
+      valAnalyses <-  dir(valDatabase, recursive = F, full.names = T)
+      valAnalyses <-  valAnalyses[grep('Analysis_', valAnalyses)]
+      valPerformance <- do.call(rbind,lapply(file.path(valAnalyses), function(x) getValidationPerformance(x)))
+      valSettings <- settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
+                                 'populationSettingId','modelSettingName','addExposureDaysToStart',
+                                 'riskWindowStart', 'addExposureDaysToEnd',
+                                 'riskWindowEnd')]
+      valSettings$devDatabase <- settings$devDatabase[1]  
+      valPerformance <- merge(valSettings,
+                              valPerformance, by='analysisId')
+      valPerformance <- valPerformance[,colnames(devPerformance)] # make sure same order
+      valPerformances <- rbind(valPerformances, valPerformance)
+    }
+    
+    if(ncol(valPerformances)==ncol(devPerformance)){
+      allPerformance <- rbind(devPerformance,valPerformances)
+    } else{
+      stop('Issue with dev and val performance data.frames')
+    }
+  } else {
+    allPerformance <- devPerformance
+  }
+  
+  allPerformance$AUC <- as.double(allPerformance$AUC)
+  allPerformance$AUPRC <- as.double(allPerformance$AUPRC)
+  allPerformance$outcomeCount <- as.double(allPerformance$outcomeCount)
+  allPerformance$populationSize <- as.double(allPerformance$populationSize)
+  allPerformance$incidence <- as.double(allPerformance$incidence)
+  return(allPerformance)
+}
+
 getPerformance <- function(analysisLocation){
   location <- file.path(analysisLocation, 'plpResult.rds')
   if(!file.exists(location)){
@@ -59,60 +116,6 @@ getValidationPerformance <- function(validationLocation){
   return(valPerformance)
 }
 
-#' @export
-summaryPlpAnalyses <- function(analysesLocation){ 
-  # loads the analyses and validations to get summaries
-  #========================================
-  settings <- read.csv(file.path(analysesLocation,'settings.csv'))
-  settings <- settings[,!colnames(settings)%in%c('plpDataFolder','studyPopFile','plpResultFolder')]
-  settings$analysisId <- paste0('Analysis_',  settings$analysisId)
-  
-  analysisIds <- dir(file.path(analysesLocation), recursive = F, full.names = T)
-  analysisIds <- analysisIds[grep('Analysis_',analysisIds)]
-  if(is.null(settings$devDatabase)){
-    settings$devDatabase <- 'Missing'
-  }
-  settings$valDatabase <- settings$devDatabase
-  devPerformance <- do.call(rbind,lapply(file.path(analysisIds), getPerformance))
-  devPerformance <- merge(settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
-                                      'populationSettingId','modelSettingName','addExposureDaysToStart',
-                                      'riskWindowStart', 'addExposureDaysToEnd',
-                                      'riskWindowEnd','devDatabase','valDatabase')],
-                          devPerformance, by='analysisId', all.x=T)
-  
-  validationLocation <- file.path(analysesLocation,'Validation')
-  if(length(dir(validationLocation))>0){
-    valPerformances <- c()
-    valDatabases <- dir(validationLocation, recursive = F, full.names = T)
-    for( valDatabase in valDatabases){
-      
-      valAnalyses <-  dir(valDatabase, recursive = F, full.names = T)
-      valAnalyses <-  valAnalyses[grep('Analysis_', valAnalyses)]
-      valPerformance <- do.call(rbind,lapply(file.path(valAnalyses), function(x) getValidationPerformance(x)))
-      valSettings <- settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
-                                 'populationSettingId','modelSettingName','addExposureDaysToStart',
-                                 'riskWindowStart', 'addExposureDaysToEnd',
-                                 'riskWindowEnd')]
-      valSettings$devDatabase <- settings$devDatabase[1]  
-      valPerformance <- merge(valSettings,
-                              valPerformance, by='analysisId')
-      valPerformance <- valPerformance[,colnames(devPerformance)] # make sure same order
-      valPerformances <- rbind(valPerformances, valPerformance)
-    }
-    
-    if(ncol(valPerformances)==ncol(devPerformance)){
-      allPerformance <- rbind(devPerformance,valPerformances)
-    } else{
-      stop('Issue with dev and val performance data.frames')
-    }
-  } else {
-    allPerformance <- devPerformance
-  }
-  
-  allPerformance$AUC <- as.double(allPerformance$AUC)
-  allPerformance$AUPRC <- as.double(allPerformance$AUPRC)
-  allPerformance$outcomeCount <- as.double(allPerformance$outcomeCount)
-  allPerformance$populationSize <- as.double(allPerformance$populationSize)
-  allPerformance$incidence <- as.double(allPerformance$incidence)
-  return(allPerformance)
-}
+
+
+

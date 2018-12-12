@@ -20,8 +20,8 @@ library(shiny)
 library(plotly)
 library(shinycssloaders)
 
-source("plots.R")
 source("utils.R")
+source("plots.R")
 
 shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(stopApp)
