@@ -1,7 +1,6 @@
 library(shiny)
 library(DT)
 
-source("/home/jweave17/ShinyApps/UkaTkaSafetyCCAE/global.R")
 
 mainColumns <- c("description", 
                  "databaseId", 
