@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-# shinySettings <- list(dataFolder = "/home/jweave17/ShinyApps/UkaTkaSafetyMDCR/data", blind = FALSE)
+shinySettings <- list(dataFolder = "./data", blind = FALSE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
