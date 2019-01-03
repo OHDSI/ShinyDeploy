@@ -186,7 +186,9 @@ getMainResults <- function(connection,
   if (length(analysisIds) != 0) {
     idx <- idx & cohortMethodResult$analysisId %in% analysisIds
   }
-  return(cohortMethodResult[idx, ])
+  result <- cohortMethodResult[idx, ]
+  result <- result[order(result$analysisId), ]
+  return(result)
 }
 
 getSubgroupResults <- function(connection,
