@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "./data", blind = FALSE)
+shinySettings <- list(dataFolder = "./data", blind = TRUE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
@@ -30,6 +30,9 @@ loadFile <- function(file) {
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
       newData <- rbind(existingData, newData)
+    }
+	if (!is.null(newData$databaseId)) {
+      newData$databaseId <- relabel(newData$databaseId, "thin", "THIN")
     }
     assign(camelCaseName, newData, envir = .GlobalEnv)
   }

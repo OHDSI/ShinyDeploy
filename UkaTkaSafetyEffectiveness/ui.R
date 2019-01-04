@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Comparative Safety and Effectiveness of Unicompartmental vs. Total Knee Arthroplasty: Real-World Evidence From the OHDSI Network", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Comparative Safety and Effectiveness of Unicompartmental vs. Total Knee Arthroplasty: Real-World Evidence from the OHDSI Network", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
