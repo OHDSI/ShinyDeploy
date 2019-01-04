@@ -18,6 +18,11 @@ camelCaseNames <- unique(camelCaseNames)
 camelCaseNames <- camelCaseNames[!(camelCaseNames %in% SqlRender::snakeCaseToCamelCase(splittableTables))]
 rm(list = camelCaseNames)
 
+relabel <- function(var, oldLabel, newLabel) {
+  levels(var)[levels(var) == oldLabel] <- newLabel
+  return(var)
+}
+
 # Load data from data folder:
 loadFile <- function(file) {
   # file = files[3]
@@ -48,11 +53,6 @@ outcomesInfoHtml <- readChar("Outcomes.html", file.info("Outcomes.html")$size)
 targetCohortsInfoHtml <- readChar("TargetCohorts.html", file.info("TargetCohorts.html")$size)
 comparatorCohortsInfoHtml <- readChar("ComparatorCohorts.html", file.info("ComparatorCohorts.html")$size)
 analysesInfoHtml <- readChar("Analyses.html", file.info("Analyses.html")$size)
-
-relabel <- function(var, oldLabel, newLabel) {
-  levels(var)[levels(var) == oldLabel] <- newLabel
-  return(var)
-}
 
 # exposures rename
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with unicompartmental knee replacement without limitation on hip-spine-foot pathology", "Unicompartmental knee arthroplasty without hip-spine-foot pathology restriction")
