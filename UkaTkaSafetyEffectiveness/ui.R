@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Comparative Safety and Effectiveness of Unicompartmental vs. Total Knee Arthroplasty: Real-World Evidence from the OHDSI Network", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Comparative Safety and Effectiveness of Unicompartmental vs. Total Knee Replacement: Real-World Evidence from the OHDSI Network", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -26,9 +26,8 @@ shinyUI(
                         tabPanel("About",
                                  HTML("<br/>"),
                                  HTML("<p>These research results are from a retrospective, real-world observational study to evaluate the risk of post-operative infection,
-                                      venous thromboembolism, readmission, mortality, opioid use, and revision with unicompartmental versus total knee arthroplasty. These
-                                      observational study results have been reported in advance of results from an ongoing clinical trial comparing the same procedures for 
-                                      the risk of the same outcomes.</p>"),
+                                      venous thromboembolism, readmission, mortality, opioid use, and revision with unicompartmental versus total knee replacement. The results 
+                                      have been reported in advance of results from an ongoing clinical trial comparing the same procedures for the risk of the same outcomes.</p>"),
                                  HTML("<p>This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as 
                                       a supplement to the manuscript that has been submitted to the Lancet on DATE.</p>"),
                                  HTML("<br/>"),
@@ -40,8 +39,8 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available here: <a href=\"https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety/documents\">https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety/documents</a></li>"),
-                                 HTML("<li>The full source code for the study can be found here: <a href=\"https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety\">https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety</a></li>"),
+                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety/documents\">https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety/documents</a></li>"),
+                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety\">https://github.com/OHDSI/StudyProtocolSandbox/tree/master/ukatkasafety</a></li>"),
                                  HTML("</ul>")
                         ),
                         tabPanel("Explore results",
