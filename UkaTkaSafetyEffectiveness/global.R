@@ -86,5 +86,8 @@ dropRows <- (cohortMethodResult$databaseId %in% c("CCAE", "MDCR", "pmtx") & coho
             (cohortMethodResult$databaseId %in% c("thin") & cohortMethodResult$outcomeId == 8211) |
             (cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(6:11)) |
             (cohortMethodResult$outcomeId == 8212 & cohortMethodResult$analysisId %in% c(1, 4, 5, 8:11)) |
-            (cohortMethodResult$outcomeId == 8233 & cohortMethodResult$analysisId %in% c(1:7))
+            (cohortMethodResult$outcomeId == 8233 & cohortMethodResult$analysisId %in% c(1:7)) |
+            (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(2:11)) |
+            (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8212) & cohortMethodResult$analysisId %in% c(1,2, 4:11)) |
+            (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8233) & cohortMethodResult$analysisId %in% c(1:7, 9:11))
 cohortMethodResult <- cohortMethodResult[!dropRows, ]
