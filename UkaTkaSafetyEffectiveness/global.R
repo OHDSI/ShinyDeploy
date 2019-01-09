@@ -18,6 +18,11 @@ camelCaseNames <- unique(camelCaseNames)
 camelCaseNames <- camelCaseNames[!(camelCaseNames %in% SqlRender::snakeCaseToCamelCase(splittableTables))]
 rm(list = camelCaseNames)
 
+relabel <- function(var, oldLabel, newLabel) {
+  levels(var)[levels(var) == oldLabel] <- newLabel
+  return(var)
+}
+
 # Load data from data folder:
 loadFile <- function(file) {
   # file = files[3]
@@ -31,6 +36,10 @@ loadFile <- function(file) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
       newData <- rbind(existingData, newData)
     }
+    # if (!is.null(newData$databaseId)) {
+    #   newData$databaseId <- relabel(newData$databaseId, "thin", "THIN")
+    #   newData$databaseId <- relabel(newData$databaseId, "pmtx", "PharMetrics")
+    # }
     assign(camelCaseName, newData, envir = .GlobalEnv)
   }
   invisible(NULL)
@@ -46,24 +55,33 @@ targetCohortsInfoHtml <- readChar("TargetCohorts.html", file.info("TargetCohorts
 comparatorCohortsInfoHtml <- readChar("ComparatorCohorts.html", file.info("ComparatorCohorts.html")$size)
 analysesInfoHtml <- readChar("Analyses.html", file.info("Analyses.html")$size)
 
-relabel <- function(var, oldLabel, newLabel) {
-  levels(var)[levels(var) == oldLabel] <- newLabel
-  return(var)
-}
+
 
 # exposures rename
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with unicompartmental knee replacement without limitation on hip-spine-foot pathology", "Unicompartmental knee replacement without hip-spine-foot pathology restriction")
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with unicompartmental knee replacement", "Unicompartmental knee replacement")
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with total knee replacement without limitation on hip-spine-foot pathology", "Total knee replacement without hip-spine-foot pathology restriction")
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with total knee replacement", "Total knee replacement")
+exposureOfInterest$order <- match(exposureOfInterest$exposureName, c("Unicompartmental knee replacement",
+                                                                     "Total knee replacement",
+                                                                     "Unicompartmental knee replacement without hip-spine-foot pathology restriction",
+                                                                     "Total knee replacement without hip-spine-foot pathology restriction"))
+exposureOfInterest <- exposureOfInterest[order(exposureOfInterest$order), ]
 
 # outcomes rename
-outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Post operative infection events","Post-operative infection")
+outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Post operative infection events", "Post-operative infection")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Venous thromboembolism events", "Venous thromboembolism")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Mortality", "Mortality")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Readmission after knee arthroplasty", "Readmission")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Persons with knee arthroplasty revision", "Knee replacement revision")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Opioid use after arthroplasty", "Opioid use")
+outcomeOfInterest$order <- match(outcomeOfInterest$outcomeName, c("Venous thromboembolism",
+                                                                  "Post-operative infection",
+                                                                  "Readmission",
+                                                                  "Mortality",
+                                                                  "Opioid use",
+                                                                  "Knee replacement revision"))
+outcomeOfInterest <- outcomeOfInterest[order(outcomeOfInterest$order), ]
 
 # analyses rename
 cohortMethodAnalysis$description <- relabel(cohortMethodAnalysis$description, "1. PS matching variable ratio No trim TAR 60d", "10:1 variable ratio matching, 60 day time-at-risk")
@@ -82,11 +100,15 @@ dropRows <- (cohortMethodResult$databaseId %in% c("CCAE", "MDCR", "pmtx") & coho
   (cohortMethodResult$databaseId %in% c("thin", "pmtx") & cohortMethodResult$outcomeId == 8211) | # drop readmission from THIN and PharMetrics
   (cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(6:11)) |
   (cohortMethodResult$outcomeId == 8212 & cohortMethodResult$analysisId %in% c(1, 4, 5, 8:11)) | # drop complications analyses (5yr trim, 5yr 1:1, 91d-1yr TARs, 91d-5yr TARs)
-  (cohortMethodResult$outcomeId == 8233 & cohortMethodResult$analysisId %in% c(1:7)) | # drop opioids analyses (60d TAR, 1yr TAR, 5yr TAR)
-  (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(2:11)) |
-  (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8212) & cohortMethodResult$analysisId %in% c(1,2, 4:11)) |
-  (cohortMethodResult$targetId == 8260 & cohortMethodResult$comparatorId == 8259 & cohortMethodResult$outcomeId %in% c(8233) & cohortMethodResult$analysisId %in% c(1:7, 9:11)) # drop pain non-restricted comparisons sensitivity analyses
+  (cohortMethodResult$outcomeId == 8233 & cohortMethodResult$analysisId %in% c(1:7)) # drop opioids analyses (60d TAR, 1yr TAR, 5yr TAR)
 cohortMethodResult <- cohortMethodResult[!dropRows, ]
 
-badCalibration <- (cohortMethodResult$databaseId %in% c("thin") & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(1,5)) # thin 60d complications for removing calibrated results
+badCalibration <- (cohortMethodResult$databaseId %in% c("thin") & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(1,4,5)) # thin 60d complications for removing calibrated results
 cohortMethodResult[badCalibration, c("calibratedP", "calibratedRr", "calibratedCi95Lb", "calibratedCi95Ub", "calibratedLogRr","calibratedSeLogRr")] <- NA
+
+primary <- (cohortMethodResult$targetId == 8257 & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId == 1) |
+           (cohortMethodResult$targetId == 8257 & cohortMethodResult$outcomeId %in% c(8212) & cohortMethodResult$analysisId == 3) |
+           (cohortMethodResult$targetId == 8257 & cohortMethodResult$outcomeId %in% c(8233) & cohortMethodResult$analysisId == 8)
+
+cohortMethodResult$analysisType[primary] <- "Primary"
+cohortMethodResult$analysisType[!primary] <- "Sensitivity"
