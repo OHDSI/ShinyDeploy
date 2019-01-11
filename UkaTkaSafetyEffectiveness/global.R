@@ -36,10 +36,10 @@ loadFile <- function(file) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
       newData <- rbind(existingData, newData)
     }
-    # if (!is.null(newData$databaseId)) {
-    #   newData$databaseId <- relabel(newData$databaseId, "thin", "THIN")
-    #   newData$databaseId <- relabel(newData$databaseId, "pmtx", "PharMetrics")
-    # }
+    if (!is.null(newData$databaseId)) {
+      newData$databaseId <- relabel(newData$databaseId, "thin", "THIN")
+      newData$databaseId <- relabel(newData$databaseId, "pmtx", "PharMetrics")
+    }
     assign(camelCaseName, newData, envir = .GlobalEnv)
   }
   invisible(NULL)
@@ -96,14 +96,14 @@ cohortMethodAnalysis$description <- relabel(cohortMethodAnalysis$description, "9
 cohortMethodAnalysis$description <- relabel(cohortMethodAnalysis$description, "10. PS matching variable ratio Trim 5% TAR 91d-1yr", "10:1 variable ratio matching 5% trim, 91 days to 1 year time-at-risk")
 cohortMethodAnalysis$description <- relabel(cohortMethodAnalysis$description, "11. PS matching 1-1 ratio No trim TAR 91d-1yr" , "1:1 ratio matching, 91 days to 1 year time-at-risk")
 
-dropRows <- (cohortMethodResult$databaseId %in% c("CCAE", "MDCR", "pmtx") & cohortMethodResult$outcomeId == 8210) | # drop mortality from CCAE, MDCR, PharMetrics
-  (cohortMethodResult$databaseId %in% c("thin", "pmtx") & cohortMethodResult$outcomeId == 8211) | # drop readmission from THIN and PharMetrics
+dropRows <- (cohortMethodResult$databaseId %in% c("CCAE", "MDCR", "PharMetrics") & cohortMethodResult$outcomeId == 8210) | # drop mortality from CCAE, MDCR, PharMetrics
+  (cohortMethodResult$databaseId %in% c("THIN", "PharMetrics") & cohortMethodResult$outcomeId == 8211) | # drop readmission from THIN and PharMetrics
   (cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(6:11)) |
   (cohortMethodResult$outcomeId == 8212 & cohortMethodResult$analysisId %in% c(1, 4, 5, 8:11)) | # drop complications analyses (5yr trim, 5yr 1:1, 91d-1yr TARs, 91d-5yr TARs)
   (cohortMethodResult$outcomeId == 8233 & cohortMethodResult$analysisId %in% c(1:7)) # drop opioids analyses (60d TAR, 1yr TAR, 5yr TAR)
 cohortMethodResult <- cohortMethodResult[!dropRows, ]
 
-badCalibration <- (cohortMethodResult$databaseId %in% c("thin") & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(1,4,5)) # thin 60d complications for removing calibrated results
+badCalibration <- (cohortMethodResult$databaseId %in% c("THIN") & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId %in% c(1,4,5)) # THIN 60d complications for removing calibrated results
 cohortMethodResult[badCalibration, c("calibratedP", "calibratedRr", "calibratedCi95Lb", "calibratedCi95Ub", "calibratedLogRr","calibratedSeLogRr")] <- NA
 
 primary <- (cohortMethodResult$targetId == 8257 & cohortMethodResult$outcomeId %in% c(8208, 8209, 8210, 8211) & cohortMethodResult$analysisId == 1) |
