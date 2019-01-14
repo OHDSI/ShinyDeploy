@@ -1,7 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "./data", blind = FALSE)
+shinySettings <- list(dataFolder = "S:/StudyResults/UkaTkaSafetyFull/shinyDataAll", blind = FALSE)
+# shinySettings <- list(dataFolder = "S:/StudyResults/UkaTkaSafetyFull/shinyDataAllTest", blind = FALSE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
@@ -73,14 +74,14 @@ outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] P
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Venous thromboembolism events", "Venous thromboembolism")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Mortality", "Mortality")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Readmission after knee arthroplasty", "Readmission")
-outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Persons with knee arthroplasty revision", "Knee replacement revision")
+outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Persons with knee arthroplasty revision", "Revision")
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Opioid use after arthroplasty", "Opioid use")
 outcomeOfInterest$order <- match(outcomeOfInterest$outcomeName, c("Venous thromboembolism",
                                                                   "Post-operative infection",
                                                                   "Readmission",
                                                                   "Mortality",
                                                                   "Opioid use",
-                                                                  "Knee replacement revision"))
+                                                                  "Revision"))
 outcomeOfInterest <- outcomeOfInterest[order(outcomeOfInterest$order), ]
 
 # analyses rename
