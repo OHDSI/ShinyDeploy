@@ -24,8 +24,8 @@ ui <- shiny::shinyUI(shiny::fluidPage(theme = "mytheme.css",
     #shiny::titlePanel("Multiple Patient-level Prediction Model Viewer"),
 	shiny::titlePanel(
 		shiny::fluidRow(
-			shiny::column(3, shiny::img(height = 50, width = 50, src = "logo.png"),
-			shiny::column(9, "Multiple Patient-level Prediction Model Viewer"))
+			shiny::column(3, shiny::img(height = 50, width = 50, src = "logo.png")),
+			shiny::column(9, "Multiple Patient-level Prediction Model Viewer")
 		)
 	),
     
