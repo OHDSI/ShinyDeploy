@@ -241,9 +241,12 @@ shiny::shinyServer(function(input, output, session) {
         return(NULL)
       plotCovariateSummary(dataofint()$eval$covariateSummary)
     })
+    
     output$covariateSummaryBinary <- plotly::renderPlotly({ covs()$binary })
     output$covariateSummaryMeasure <- plotly::renderPlotly({ covs()$meas })
   
+    
+    output$modelView <- DT::renderDataTable(dataofint()$eval$covariateSummary[,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )])
   
 #=============  
   

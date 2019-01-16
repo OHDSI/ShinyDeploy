@@ -82,8 +82,8 @@ plotShiny <- function(eval, pointOfInterest){
 
 plotCovariateSummary <- function(covariateSummary){
   
-  writeLines(paste(colnames(covariateSummary)))
-  writeLines(paste(covariateSummary[1,]))
+  #writeLines(paste(colnames(covariateSummary)))
+  #writeLines(paste(covariateSummary[1,]))
   # remove na values 
   covariateSummary$CovariateMeanWithNoOutcome[is.na(covariateSummary$CovariateMeanWithNoOutcome)] <- 0
   covariateSummary$CovariateMeanWithOutcome[is.na(covariateSummary$CovariateMeanWithOutcome)] <- 0
@@ -93,6 +93,9 @@ plotCovariateSummary <- function(covariateSummary){
   if(sum(is.na(covariateSummary$covariateValue))>0){
     covariateSummary$covariateValue[is.na(covariateSummary$covariateValue)] <- 0
   }
+  
+  # SPEED EDIT remove the none model variables
+  covariateSummary <- covariateSummary[covariateSummary$covariateValue!=0,]
   
   # save dots based on coef value 
   covariateSummary$size <- abs(covariateSummary$covariateValue)
@@ -116,7 +119,7 @@ plotCovariateSummary <- function(covariateSummary){
     plotly::add_trace(x= c(0,1), y = c(0,1),mode = 'lines',
                       line = list(dash = "dash"), color = I('black'),
                       type='scatter') %>%
-    plotly::layout(title = 'Prevalance of baseline predictors in persons with and without outcome',
+    plotly::layout(#title = 'Prevalance of baseline predictors in persons with and without outcome',
                    xaxis = list(title = "Prevalance in persons without outcome"),
                    yaxis = list(title = "Prevalance in persons with outcome"),
                    showlegend = FALSE)
@@ -130,7 +133,7 @@ plotCovariateSummary <- function(covariateSummary){
       plotly::add_trace(x= c(0,1), y = c(0,1),mode = 'lines',
                         line = list(dash = "dash"), color = I('black'),
                         type='scatter') %>%
-      plotly::layout(title = 'Prevalance of baseline predictors in persons with and without outcome',
+      plotly::layout(#title = 'Prevalance of baseline predictors in persons with and without outcome',
                      xaxis = list(title = "Prevalance in persons without outcome"),
                      yaxis = list(title = "Prevalance in persons with outcome"),
                      showlegend = FALSE)

@@ -46,6 +46,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
           shinydashboard::tabItems(
             # First tab content
             shinydashboard::tabItem(tabName = "Summary",
+                                    
                                     shiny::fluidRow(
                                       shiny::column(2, 
                                                     shiny::h4('Filters'),
@@ -59,57 +60,139 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                       ),  
                                       shiny::column(10, style = "background-color:#F3FAFC;",
                                                     
+                                                    # do this inside tabs:
+                                                    shiny::tabsetPanel(
+                                                      
+                                                      shiny::tabPanel("Results",
                                                     shiny::div(DT::dataTableOutput('summaryTable'), 
-                                                               style = "font-size:70%"),
+                                                               style = "font-size:70%")),
+                                                    
+                                                    shiny::tabPanel("Model Settings",
                                                     shiny::h3('Model Settings: ', shiny::actionLink("modelhelp", "help")),
-                                                    DT::dataTableOutput('modelTable'),
+                                                    DT::dataTableOutput('modelTable')),
+                                                    
+                                                    shiny::tabPanel("Population Settings",
                                                     shiny::h3('Population Settings: ', shiny::actionLink("pophelp", "help")),
-                                                    DT::dataTableOutput('populationTable'),
+                                                    DT::dataTableOutput('populationTable')),
+                                                    
+                                                    shiny::tabPanel("Covariate Settings",
                                                     shiny::h3('Covariate Settings: ', shiny::actionLink("covhelp", "help")),
-                                                    DT::dataTableOutput('covariateTable')
+                                                    DT::dataTableOutput('covariateTable'))
+                                                    )
                                                     
                                       )
                                       
                                     )),
             # second tab
-            shinydashboard::tabItem(tabName = "Performance",
-                                    shiny::h3('Problem:'),
-                                    shiny::textOutput('info'),
-                                    shiny::wellPanel(
-                                      shiny::sliderInput("slider1", 
-                                                         shiny::h5("Threshold value slider: "), 
-                                                         min = 1, max = 100, value = 50, ticks = F),
-                                      shiny::tags$script(shiny::HTML("
-                                                                     $(document).ready(function() {setTimeout(function() {
-                                                                     supElement = document.getElementById('slider1').parentElement;
-                                                                     $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
-                                                                     }, 50);})
-                                                                     ")),
-                                      shiny::tableOutput('performance'),
-                                      shiny::tableOutput('twobytwo')),
+            shinydashboard::tabItem(tabName = "Performance", 
                                     
-                                    shiny::h4('ROC plot:'),
-                                    plotly::plotlyOutput('roc'),
-                                    shiny::h4('Precision recall plot:'),
-                                    plotly::plotlyOutput('pr'),
-                                    shiny::h4('F1 score plot:'),
-                                    plotly::plotlyOutput('f1'),
-                                    shiny::h4('Prediction score distribution:'),
-                                    shiny::plotOutput('preddist'),
-                                    shiny::h4('Preference score distribution:'),
-                                    shiny::plotOutput('prefdist'),
-                                    shiny::h4('Box plot:'),
-                                    shiny::plotOutput('box'),
-                                    shiny::h4('Calibration plot:'),
-                                    shiny::plotOutput('cal'),
-                                    shiny::h4('Demographic plot:'),
-                                    shiny::plotOutput('demo')),
+                                    shiny::fluidRow(
+                                    tabBox(
+                                      title = "Performance", 
+                                      # The id lets us use input$tabset1 on the server to find the current tab
+                                      id = "tabset1", height = "100%", width='100%',
+                                      tabPanel("Summary", 
+                                               
+                                               shiny::fluidRow(
+                                                 shiny::column(width = 4,
+                                                 shinydashboard::box(width = 12,
+                                                   title = "Prediction Question", status = "info", solidHeader = TRUE,
+                                                   shiny::textOutput('info')
+                                                 ),
+                                                 shinydashboard::box(width = 12,
+                                                   title = tagList(shiny::icon("gear"), "Input"), 
+                                                   status = "info", solidHeader = TRUE,
+                                                   shiny::sliderInput("slider1", 
+                                                                      shiny::h5("Threshold value slider: "), 
+                                                                      min = 1, max = 100, value = 50, ticks = F),
+                                                   shiny::tags$script(shiny::HTML("
+                                                                                  $(document).ready(function() {setTimeout(function() {
+                                                                                  supElement = document.getElementById('slider1').parentElement;
+                                                                                  $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
+                                                                                  }, 50);})
+                                                                                  "))
+                                                   )
+                                                 
+                                                 ),
+                                                 
+                                                 
+                                                 shiny::column(width = 8,
+                                                               shinydashboard::box(width = 12,
+                                                                                   title = "Dashboard",
+                                                                                   status = "warning", solidHeader = TRUE,
+                                                                                   infoBoxOutput("performanceBox")
+                                                               ),
+                                                 shinydashboard::box(width = 12,
+                                                   title = "Cutoff Performance",
+                                                   status = "warning", solidHeader = TRUE,
+                                                   shiny::tableOutput('performance'),
+                                                   shiny::tableOutput('twobytwo')
+                                                   #infoBoxOutput("performanceBox"),
+                                                 )
+                                                 )
+                                                 )
+                                               
+                                               
+                                               ),
+                                      tabPanel("Discrimination", 
+                                               
+                                               shiny::fluidRow(
+                                               shinydashboard::box( status = 'info',
+                                                 title = "ROC Plot", solidHeader = TRUE,
+                                               plotly::plotlyOutput('roc')),
+                                               shinydashboard::box(status = 'info',
+                                                 title = "Precision recall plot", solidHeader = TRUE,
+                                                 side = "right",
+                                               plotly::plotlyOutput('pr'))),
+                                               
+                                               shiny::fluidRow(
+                                                 shinydashboard::box(status = 'info',
+                                                   title = "F1 Score Plot", solidHeader = TRUE,
+                                                   plotly::plotlyOutput('f1')),
+                                                 shinydashboard::box(status = 'info',
+                                                   title = "Box Plot", solidHeader = TRUE,
+                                                   side = "right",
+                                                  shiny::plotOutput('box'))),
+                                               
+                                               shiny::fluidRow(
+                                                 shinydashboard::box(status = 'info',
+                                                   title = "Prediction Score Distribution", solidHeader = TRUE,
+                                                   shiny::plotOutput('preddist')),
+                                                 shinydashboard::box(status = 'info',
+                                                   title = "Preference Score Distribution", solidHeader = TRUE,
+                                                   side = "right",
+                                                   shiny::plotOutput('prefdist')))
+                                               
+                                               
+                                               ),
+                                    tabPanel("Calibration", 
+                                             shiny::fluidRow(
+                                               shinydashboard::box(status = 'info',
+                                                 title = "Calibration Plot", solidHeader = TRUE,
+                                             shiny::plotOutput('cal')),
+                                             shinydashboard::box(status = 'info',
+                                               title = "Demographic Plot", solidHeader = TRUE,
+                                               side = "right",
+                                             shiny::plotOutput('demo'))
+                                    )
+                                    )
+                                    ))),
             
             # 3rd tab
             shinydashboard::tabItem(tabName = "Model", 
-                                    shiny::fluidPage(
-                                    plotly::plotlyOutput('covariateSummaryBinary'),
-                                    plotly::plotlyOutput('covariateSummaryMeasure'))
+                                    shiny::fluidRow(
+                                      shinydashboard::box( status = 'info',
+                                                           title = "Binary", solidHeader = TRUE,
+                                                           plotly::plotlyOutput('covariateSummaryBinary')),
+                                      shinydashboard::box(status = 'info',
+                                                          title = "Measurements", solidHeader = TRUE,
+                                                          side = "right",
+                                                          plotly::plotlyOutput('covariateSummaryMeasure'))),
+                                    
+                                    shiny::fluidRow(width=12,
+                                      shinydashboard::box(status = 'info', width = 12,
+                                                           title = "Model Table", solidHeader = TRUE,
+                                                           DT::dataTableOutput('modelView')))
                                     ),
             
             # 4th tab
