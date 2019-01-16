@@ -19,86 +19,105 @@
 library(shiny)
 library(plotly)
 library(shinycssloaders)
+library(shinydashboard)
 
-ui <- shiny::shinyUI(shiny::fluidPage(theme = "mytheme.css",
-    #shiny::titlePanel("Multiple Patient-level Prediction Model Viewer"),
-	shiny::titlePanel(
-		shiny::fluidRow(
-			shiny::column(3, shiny::img(height = 50, width = 50, src = "logo.png")),
-			shiny::column(9, "Multiple Patient-level Prediction Model Viewer")
-		)
-	),
+ui <- shinydashboard::dashboardPage(skin = 'black',
+  
+  shinydashboard::dashboardHeader(title = "Multiple PLP Viewer", 
+                                  
+                                  tags$li(div(img(src = 'logo.png',
+                                                title = "OHDSI PLP", height = "40px", width = "40px"),
+                                            style = "padding-top:0px; padding-bottom:0px;"),
+                                          class = "dropdown")
+                                  
+                                  
+                                  ), 
     
-    shiny::tabsetPanel(type = "tabs",
-                       shiny::tabPanel("Summary Table", 
-                                       shiny::fluidRow(
-                                         shiny::column(3, 
-                                                       shiny::h4('Filters'),
-                                                       shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(allPerformance$devDatabase)))),
-                                                       shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(allPerformance$valDatabase)))),
-                                                       shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(allPerformance$cohortName)))),
-                                                       shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(allPerformance$outcomeName)))),
-                                                       shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(allPerformance$riskWindowStart))),
-                                                       shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(allPerformance$riskWindowEnd)))),
-                                                       shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(allPerformance$modelSettingName))))
-                                         ),  
-                                         shiny::column(8, style = "background-color:#F3FAFC;",
-                                                       
-                                                       shiny::div(DT::dataTableOutput('summaryTable'), 
-                                                                  style = "font-size:70%"),
-                                                       shiny::h3('Model Settings: ', shiny::actionLink("modelhelp", "help")),
-                                                       DT::dataTableOutput('modelTable'),
-                                                       shiny::h3('Population Settings: ', shiny::actionLink("pophelp", "help")),
-                                                       DT::dataTableOutput('populationTable'),
-                                                       shiny::h3('Covariate Settings: ', shiny::actionLink("covhelp", "help")),
-                                                       DT::dataTableOutput('covariateTable')
-                                                       
-                                         )
-                                         
-                                       )),
-                       shiny::tabPanel("Performance Plots", 
-                                       shiny::h3('Problem:'),
-                                       shiny::textOutput('info'),
-                                       shiny::wellPanel(
-                                         shiny::sliderInput("slider1", 
-                                                            shiny::h5("Threshold value slider: "), 
-                                                            min = 1, max = 100, value = 50, ticks = F),
-                                         shiny::tags$script(shiny::HTML("
-                                                                        $(document).ready(function() {setTimeout(function() {
-                                                                        supElement = document.getElementById('slider1').parentElement;
-                                                                        $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
-                                                                        }, 50);})
-                                                                        ")),
-                                         shiny::tableOutput('performance'),
-                                         shiny::tableOutput('twobytwo')),
-                                       
-                                       shiny::h4('ROC plot:'),
-                                       plotly::plotlyOutput('roc'),
-                                       shiny::h4('Precision recall plot:'),
-                                       plotly::plotlyOutput('pr'),
-                                       shiny::h4('F1 score plot:'),
-                                       plotly::plotlyOutput('f1'),
-                                       shiny::h4('Prediction score distribution:'),
-                                       shiny::plotOutput('preddist'),
-                                       shiny::h4('Preference score distribution:'),
-                                       shiny::plotOutput('prefdist'),
-                                       shiny::h4('Box plot:'),
-                                       shiny::plotOutput('box'),
-                                       shiny::h4('Calibration plot:'),
-                                       shiny::plotOutput('cal'),
-                                       shiny::h4('Demographic plot:'),
-                                       shiny::plotOutput('demo')),
-                       shiny::tabPanel("Model Plot", 
-                                       plotly::plotlyOutput('covariateSummaryBinary'),
-                                       plotly::plotlyOutput('covariateSummaryMeasure')),
-                       shiny::tabPanel("Log",
-                                       shiny::verbatimTextOutput('log'))
-                       #, tabPanel("CovariateSummary", covSet, val-T-pop shiny::plotOutput('covSummary'))
+        shinydashboard::dashboardSidebar(
+          shinydashboard::sidebarMenu(
+          shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
+          shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
+          shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
+          shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list"))
+        )
+        ),
+        
+        shinydashboard::dashboardBody(
+          shinydashboard::tabItems(
+            # First tab content
+            shinydashboard::tabItem(tabName = "Summary",
+                                    shiny::fluidRow(
+                                      shiny::column(2, 
+                                                    shiny::h4('Filters'),
+                                                    shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(allPerformance$devDatabase)))),
+                                                    shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(allPerformance$valDatabase)))),
+                                                    shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(allPerformance$cohortName)))),
+                                                    shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(allPerformance$outcomeName)))),
+                                                    shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(allPerformance$riskWindowStart))),
+                                                    shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(allPerformance$riskWindowEnd)))),
+                                                    shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(allPerformance$modelSettingName))))
+                                      ),  
+                                      shiny::column(10, style = "background-color:#F3FAFC;",
+                                                    
+                                                    shiny::div(DT::dataTableOutput('summaryTable'), 
+                                                               style = "font-size:70%"),
+                                                    shiny::h3('Model Settings: ', shiny::actionLink("modelhelp", "help")),
+                                                    DT::dataTableOutput('modelTable'),
+                                                    shiny::h3('Population Settings: ', shiny::actionLink("pophelp", "help")),
+                                                    DT::dataTableOutput('populationTable'),
+                                                    shiny::h3('Covariate Settings: ', shiny::actionLink("covhelp", "help")),
+                                                    DT::dataTableOutput('covariateTable')
+                                                    
+                                      )
+                                      
+                                    )),
+            # second tab
+            shinydashboard::tabItem(tabName = "Performance",
+                                    shiny::h3('Problem:'),
+                                    shiny::textOutput('info'),
+                                    shiny::wellPanel(
+                                      shiny::sliderInput("slider1", 
+                                                         shiny::h5("Threshold value slider: "), 
+                                                         min = 1, max = 100, value = 50, ticks = F),
+                                      shiny::tags$script(shiny::HTML("
+                                                                     $(document).ready(function() {setTimeout(function() {
+                                                                     supElement = document.getElementById('slider1').parentElement;
+                                                                     $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
+                                                                     }, 50);})
+                                                                     ")),
+                                      shiny::tableOutput('performance'),
+                                      shiny::tableOutput('twobytwo')),
+                                    
+                                    shiny::h4('ROC plot:'),
+                                    plotly::plotlyOutput('roc'),
+                                    shiny::h4('Precision recall plot:'),
+                                    plotly::plotlyOutput('pr'),
+                                    shiny::h4('F1 score plot:'),
+                                    plotly::plotlyOutput('f1'),
+                                    shiny::h4('Prediction score distribution:'),
+                                    shiny::plotOutput('preddist'),
+                                    shiny::h4('Preference score distribution:'),
+                                    shiny::plotOutput('prefdist'),
+                                    shiny::h4('Box plot:'),
+                                    shiny::plotOutput('box'),
+                                    shiny::h4('Calibration plot:'),
+                                    shiny::plotOutput('cal'),
+                                    shiny::h4('Demographic plot:'),
+                                    shiny::plotOutput('demo')),
+            
+            # 3rd tab
+            shinydashboard::tabItem(tabName = "Model", 
+                                    shiny::fluidPage(
+                                    plotly::plotlyOutput('covariateSummaryBinary'),
+                                    plotly::plotlyOutput('covariateSummaryMeasure'))
+                                    ),
+            
+            # 4th tab
+            shinydashboard::tabItem(tabName = "Log", 
+              shiny::verbatimTextOutput('log')
+              )
                        
                        
-                       
-                       
-                                       )
+       )
   )
-  )
-#)
+)
