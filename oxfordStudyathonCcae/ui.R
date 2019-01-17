@@ -96,7 +96,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                shiny::fluidRow(
                                                  shiny::column(width = 4,
                                                  shinydashboard::box(width = 12,
-                                                   title = "Prediction Question", status = "info", solidHeader = TRUE,
+                                                   title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
                                                    shiny::textOutput('info')
                                                  ),
                                                  shinydashboard::box(width = 12,
@@ -120,12 +120,17 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                shinydashboard::box(width = 12,
                                                                                    title = "Dashboard",
                                                                                    status = "warning", solidHeader = TRUE,
-                                                                                   infoBoxOutput("performanceBox")
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxThreshold"),
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxIncidence"),
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxPPV"),
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxSpecificity"),
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxSensitivity"),
+                                                                                   shinydashboard::infoBoxOutput("performanceBoxNPV")
+                                                                                   
                                                                ),
                                                  shinydashboard::box(width = 12,
                                                    title = "Cutoff Performance",
                                                    status = "warning", solidHeader = TRUE,
-                                                   shiny::tableOutput('performance'),
                                                    shiny::tableOutput('twobytwo')
                                                    #infoBoxOutput("performanceBox"),
                                                  )
@@ -139,29 +144,29 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                shiny::fluidRow(
                                                shinydashboard::box( status = 'info',
                                                  title = "ROC Plot", solidHeader = TRUE,
-                                               plotly::plotlyOutput('roc')),
+                                                 shinycssloaders::withSpinner(plotly::plotlyOutput('roc'))),
                                                shinydashboard::box(status = 'info',
                                                  title = "Precision recall plot", solidHeader = TRUE,
                                                  side = "right",
-                                               plotly::plotlyOutput('pr'))),
+                                                 shinycssloaders::withSpinner(plotly::plotlyOutput('pr')))),
                                                
                                                shiny::fluidRow(
                                                  shinydashboard::box(status = 'info',
                                                    title = "F1 Score Plot", solidHeader = TRUE,
-                                                   plotly::plotlyOutput('f1')),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('f1'))),
                                                  shinydashboard::box(status = 'info',
                                                    title = "Box Plot", solidHeader = TRUE,
                                                    side = "right",
-                                                  shiny::plotOutput('box'))),
+                                                   shinycssloaders::withSpinner(shiny::plotOutput('box')))),
                                                
                                                shiny::fluidRow(
                                                  shinydashboard::box(status = 'info',
                                                    title = "Prediction Score Distribution", solidHeader = TRUE,
-                                                   shiny::plotOutput('preddist')),
+                                                   shinycssloaders::withSpinner(shiny::plotOutput('preddist'))),
                                                  shinydashboard::box(status = 'info',
                                                    title = "Preference Score Distribution", solidHeader = TRUE,
                                                    side = "right",
-                                                   shiny::plotOutput('prefdist')))
+                                                   shinycssloaders::withSpinner(shiny::plotOutput('prefdist'))))
                                                
                                                
                                                ),
@@ -169,11 +174,11 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                              shiny::fluidRow(
                                                shinydashboard::box(status = 'info',
                                                  title = "Calibration Plot", solidHeader = TRUE,
-                                             shiny::plotOutput('cal')),
+                                                 shinycssloaders::withSpinner(shiny::plotOutput('cal'))),
                                              shinydashboard::box(status = 'info',
                                                title = "Demographic Plot", solidHeader = TRUE,
                                                side = "right",
-                                             shiny::plotOutput('demo'))
+                                               shinycssloaders::withSpinner(shiny::plotOutput('demo')))
                                     )
                                     )
                                     ))),
@@ -183,11 +188,11 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     shiny::fluidRow(
                                       shinydashboard::box( status = 'info',
                                                            title = "Binary", solidHeader = TRUE,
-                                                           plotly::plotlyOutput('covariateSummaryBinary')),
+                                                           shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryBinary'))),
                                       shinydashboard::box(status = 'info',
                                                           title = "Measurements", solidHeader = TRUE,
                                                           side = "right",
-                                                          plotly::plotlyOutput('covariateSummaryMeasure'))),
+                                                          shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryMeasure')))),
                                     
                                     shiny::fluidRow(width=12,
                                       shinydashboard::box(status = 'info', width = 12,

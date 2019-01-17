@@ -248,6 +248,54 @@ shiny::shinyServer(function(input, output, session) {
     
     output$modelView <- DT::renderDataTable(dataofint()$eval$covariateSummary[,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )])
   
+    
+    # dashboard
+    
+    output$performanceBoxIncidence <- renderInfoBox({
+      infoBox(
+        "Incidence", paste0(round(plotters()$performance$Incidence*100, digits=3),'%'), icon = icon("ambulance"),
+        color = "green"
+      )
+    })
+    
+    output$performanceBoxThreshold <- renderInfoBox({
+      infoBox(
+        "Threshold", format((plotters()$performance$Threshold), scientific = F, digits=3), icon = icon("edit"),
+        color = "yellow"
+      )
+    })
+    
+    output$performanceBoxPPV <- renderInfoBox({
+      infoBox(
+        "PPV", paste0(round(plotters()$performance$PPV*1000)/10, "%"), icon = icon("thumbs-up"),
+        color = "orange"
+      )
+    })
+    
+    output$performanceBoxSpecificity <- renderInfoBox({
+      infoBox(
+        "Specificity", paste0(round(plotters()$performance$Specificity*1000)/10, "%"), icon = icon("bullseye"),
+        color = "purple"
+      )
+    })
+    
+    output$performanceBoxSensitivity <- renderInfoBox({
+      infoBox(
+        "Sensitivity", paste0(round(plotters()$performance$Sensitivity*1000)/10, "%"), icon = icon("low-vision"),
+        color = "blue"
+      )
+    })
+    
+    output$performanceBoxNPV <- renderInfoBox({
+      infoBox(
+        "NPV", paste0(round(plotters()$performance$NPV*1000)/10, "%"), icon = icon("minus-square"),
+        color = "black"
+      )
+    })
+    
+   
+    
+    
 #=============  
   
 })
