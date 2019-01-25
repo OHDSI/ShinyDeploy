@@ -80,7 +80,7 @@ shiny::shinyServer(function(input, output, session) {
       }
       
       loc <- plpResultLocation[summaryData(),][ind,]$plpResultLocation
-      logLocation <- gsub('plpResult.rds','plplog.txt', as.character(loc))
+      logLocation <- gsub('validationResult.rds','plplog.txt',gsub('plpResult.rds','plplog.txt', as.character(loc)))
       if(file.exists(logLocation)){
         txt <- readLines(logLocation)
       } else{
@@ -93,13 +93,13 @@ shiny::shinyServer(function(input, output, session) {
      
        if(file.exists(as.character(loc))){
         eval <- readRDS(as.character(loc))
-        if(!'inputSetting'%in%names(eval)){
-          eval <- eval[[1]]
-        }
       } else{
         eval <- NULL
       }
-      type <- 'test' #'validationre'
+      if(length(grep('/Validation',loc))>0){
+        type <- 'validation' }else{
+        type <- 'test'
+        }
 
       if(!is.null(eval)){
         covariates <- eval$model$metaData$call$covariateSettings
@@ -182,7 +182,7 @@ shiny::shinyServer(function(input, output, session) {
                                  ' after ', ifelse(formatPerformance[summaryData(),'addExposureDaysToEnd'][ind]==0, ' cohort start ', ' cohort end '))
         
       }
-      
+
       twobytwo <- as.data.frame(matrix(c(FP,TP,TN,FN), byrow=T, ncol=2))
       colnames(twobytwo) <- c('Ground Truth Negative','Ground Truth Positive')
       rownames(twobytwo) <- c('Predicted Positive','Predicted Negative')
