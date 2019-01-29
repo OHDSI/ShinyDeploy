@@ -4,7 +4,7 @@ library(DT)
 shinyUI(
   fluidPage(style = "width:1500px;",
             titlePanel(
-              title=div(img(src="logo.png", height = 50, width = 50), 
+              title=div(img(src = "logo.png", height = 50, width = 50), 
                         "LEGEND basic viewer"),
               windowTitle = "LEGEND basic viewer"),
             tags$head(tags$style(type = "text/css", "
@@ -34,6 +34,7 @@ shinyUI(
                                    column(3,
                                           selectInput("indication", "Indication", indications$indicationId, selected = "Hypertension"),
                                           selectInput("exposureGroup", "Exposure group", unique(exposureGroups$exposureGroup), selected = "Drug major class"),
+                                          checkboxInput("includeCombis", "Include combination exposures", FALSE),
                                           selectInput("target", "Target", unique(exposures$exposureName), selected = "Calcium channel blockers (CCB)"),
                                           selectInput("comparator", "Comparator", unique(exposures$exposureName), selected = "Beta blockers"),
                                           selectInput("outcome", "Outcome", unique(outcomes$outcomeName)),
@@ -58,6 +59,9 @@ shinyUI(
                                                                        tabPanel("Population characteristics",
                                                                                 uiOutput("table1Caption"),
                                                                                 dataTableOutput("table1Table")),
+                                                                       tabPanel("Forest plot",
+                                                                                plotOutput("forestPlot"),
+                                                                                uiOutput("forestPlotCaption")),
                                                                        tabPanel("Propensity scores",
                                                                                 plotOutput("psDistPlot"),
                                                                                 div(strong("Figure 2."),"Preference score distribution. The preference score is a transformation of the propensity score
@@ -76,67 +80,13 @@ shinyUI(
                                                                                     estimator should have the true effect size within the 95 percent confidence interval 95 percent of times.")),
                                                                        tabPanel("Kaplan-Meier",
                                                                                 plotOutput("kaplanMeierPlot", height = 550),
-                                                                                uiOutput("kaplanMeierPlotPlotCaption")),
-                                                                       tabPanel("Subgroups",
-                                                                                uiOutput("subgroupTableCaption"),
-                                                                                dataTableOutput("subgroupTable"))
+                                                                                uiOutput("kaplanMeierPlotPlotCaption"))
                                                            )
                                           )
                                    )
 
                                  )
                         )
-                        # ,
-                        # tabPanel("Overview",
-                        #          tabsetPanel(id = "overviewTabsetPanel",
-                        #                      tabPanel("Main effects",
-                        #                               fluidRow(
-                        #                                 column(3,
-                        #                                        selectInput("meIndication", "Indication", c("All", indications$indicationId)),
-                        #                                        selectInput("meExposureGroup", "Exposure group", c("All", unique(exposureGroups$exposureGroup))),
-                        #                                        selectInput("meTarget", "Target", c("All", unique(exposures$exposureName))),
-                        #                                        selectInput("meComparator", "Comparator", c("All", unique(exposures$exposureName))),
-                        #                                        selectInput("meOutcome", "Outcome", c("All", unique(outcomes$outcomeName))),
-                        #                                        selectInput("meDatabase", "Database", c("All", databases$databaseId)),
-                        #                                        selectInput("meAnalysis", "Analysis", c("All", analyses$description[analyses$analysisId <= 4]))
-                        #                                 ),
-                        #                                 column(9,
-                        #                                        plotOutput("mePlot")
-                        #                                 )
-                        #                               )
-                        #                      ),
-                        #                      tabPanel("Interaction effects",
-                        #                               column(3,
-                        #                                      selectInput("ieIndication", "Indication", c("All", indications$indicationId)),
-                        #                                      selectInput("ieExposureGroup", "Exposure group", c("All", unique(exposureGroups$exposureGroup))),
-                        #                                      selectInput("ieTarget", "Target", c("All", unique(exposures$exposureName))),
-                        #                                      selectInput("ieComparator", "Comparator", c("All", unique(exposures$exposureName))),
-                        #                                      selectInput("ieOutcome", "Outcome", c("All", unique(outcomes$outcomeName))),
-                        #                                      selectInput("ieSubgroup", "Subgroup", c("All", subgroups$subgroupName)),
-                        #                                      selectInput("ieDatabase", "Database", c("All", databases$databaseId)),
-                        #                                      selectInput("ieAnalysis", "Analysis", c("All", analyses$description[analyses$analysisId <= 2]))
-                        #                               ),
-                        #                               column(9,
-                        #                                      plotOutput("iePlot")
-                        #                               )
-                        #                      ),
-                        #                      tabPanel("Propensity score distributions",
-                        #                               fluidRow(
-                        #                                 column(3,
-                        #                                        selectInput("psIndication", "Indication", indications$indicationId),
-                        #                                        selectInput("psExposureGroup", "Exposure group", unique(exposureGroups$exposureGroup)),
-                        #                                        selectInput("psTarget", "Target", c("All", unique(exposures$exposureName))),
-                        #                                        selectInput("psComparator", "Comparator", c("All", unique(exposures$exposureName))),
-                        #                                        selectInput("psDatabase", "Database", databases$databaseId)
-                        #                                 ),
-                        #                                 column(9,
-                        #                                        plotOutput("psPlot")
-                        #                                 )
-                        #                               )
-                        # 
-                        #                      )
-                        #          )
-                        # )
             )
   )
 )

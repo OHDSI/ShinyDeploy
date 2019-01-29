@@ -50,8 +50,8 @@ getSubgroups <- function(connection) {
 
 getExposures <- function(connection, filterByCmResults = TRUE) {
   sql <- "SELECT * FROM (
-    SELECT exposure_id, exposure_name, indication_id FROM single_exposure_of_interest
-    UNION ALL SELECT exposure_id, exposure_name, indication_id FROM combi_exposure_of_interest
+    SELECT exposure_id, exposure_name, indication_id, 0 AS combi FROM single_exposure_of_interest
+    UNION ALL SELECT exposure_id, exposure_name, indication_id, 1 AS combi FROM combi_exposure_of_interest
   ) exposure
   INNER JOIN exposure_group
   ON exposure.exposure_id = exposure_group.exposure_id
