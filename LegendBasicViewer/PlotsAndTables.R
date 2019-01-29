@@ -120,7 +120,7 @@ prepareMainResultsTable <- function(mainResults, analyses) {
   return(table)
 }
 
-preparePowerTable <- function(mainResults, analyses) {
+preparePowerTable <- function(mainResults, analyses, showDatabaseId = FALSE) {
   table <- merge(mainResults, analyses)
   alpha <- 0.05
   power <- 0.8
@@ -135,6 +135,7 @@ preparePowerTable <- function(mainResults, analyses) {
   table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
   table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
   table <- table[, c("description",
+                     "databaseId", 
                      "targetSubjects",
                      "comparatorSubjects",
                      "targetYears",
@@ -161,6 +162,9 @@ preparePowerTable <- function(mainResults, analyses) {
   table$comparatorIr <- gsub("^-", "<", table$comparatorIr)
   idx <- (table$targetOutcomes < 0 | table$comparatorOutcomes < 0)
   table$mdrr[idx] <- paste0(">", table$mdrr[idx])
+  if (!showDatabaseId) {
+    table$databaseId <- NULL
+  }
   return(table)
 }
 

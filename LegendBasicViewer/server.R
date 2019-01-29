@@ -195,19 +195,38 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      table <- preparePowerTable(row, analyses)
-      table$description <- NULL
-      colnames(table) <- c("Target subjects",
-                           "Comparator subjects",
-                           "Target years",
-                           "Comparator years",
-                           "Target events",
-                           "Comparator events",
-                           "Target IR (per 1,000 PY)",
-                           "Comparator IR (per 1,000 PY)",
-                           "MDRR")
       if (row$databaseId %in% metaAnalysisDbIds) {
-        table$i2 <- sprintf("%.2f", as.numeric(row$i2))
+        results <- getMainResults(connection = connection,
+                                  targetIds = row$targetId,
+                                  comparatorIds = row$comparatorId,
+                                  outcomeIds = row$outcomeId,
+                                  analysisIds = row$analysisId)
+        table <- preparePowerTable(results, analyses, showDatabaseId = TRUE)
+        table$description <- NULL
+        table$databaseId[table$databaseId == "Meta-analysis"] <- "Summary"
+        colnames(table) <- c("Source", 
+                             "Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (per 1,000 PY)",
+                             "Comparator IR (per 1,000 PY)",
+                             "MDRR")
+        # table$i2 <- c(rep("", nrow(table) - 1), sprintf("%.2f", as.numeric(row$i2)))
+      } else {
+        table <- preparePowerTable(row, analyses)
+        table$description <- NULL
+        colnames(table) <- c("Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (per 1,000 PY)",
+                             "Comparator IR (per 1,000 PY)",
+                             "MDRR")
       }
       return(table)
     }
