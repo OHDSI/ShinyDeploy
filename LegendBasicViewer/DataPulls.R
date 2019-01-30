@@ -531,3 +531,23 @@ getCovariateBalanceSummary <- function(connection, targetId, comparatorId, analy
   colnames(balanceSummary) <- SqlRender::snakeCaseToCamelCase(colnames(balanceSummary))
   return(balanceSummary)
 }
+
+getNegativeControlEstimates <- function(connection, targetId, comparatorId, analysisId) {
+  sql <- "SELECT database_id, 
+    log_rr,
+    se_log_rr
+  FROM cohort_method_result
+  INNER JOIN negative_control_outcome
+  ON cohort_method_result.outcome_id = negative_control_outcome.outcome_id
+  WHERE target_id = @target_id
+    AND comparator_id = @comparator_id
+    AND analysis_id = @analysis_id
+    AND se_log_rr IS NOT NULL;"
+  sql <- SqlRender::renderSql(sql,
+                              target_id = targetId,
+                              comparator_id = comparatorId,
+                              analysis_id = analysisId)$sql
+  results <- querySql(connection, sql)
+  colnames(results) <- SqlRender::snakeCaseToCamelCase(colnames(results))
+  return(results)
+}

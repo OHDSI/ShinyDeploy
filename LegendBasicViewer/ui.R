@@ -79,7 +79,11 @@ shinyUI(
                                                                                 div(strong("Figure 4."),"Systematic error. Effect size estimates for the negative controls (true hazard ratio = 1)
                                                                                     and positive controls (true hazard ratio > 1), before and after calibration. Estimates below the diagonal dashed
                                                                                     lines are statistically significant (alpha = 0.05) different from the true effect size. A well-calibrated
-                                                                                    estimator should have the true effect size within the 95 percent confidence interval 95 percent of times.")),
+                                                                                    estimator should have the true effect size within the 95 percent confidence interval 95 percent of times."),
+                                                                                conditionalPanel("output.isMetaAnalysis == true",
+                                                                                                 plotOutput("systematicErrorSummaryPlot"),
+                                                                                                 div(strong("Figure 8."),"Fitter null distributions per data source."))
+                                                                       ),
                                                                        tabPanel("Forest plot",
                                                                                 plotOutput("forestPlot"),
                                                                                 uiOutput("forestPlotCaption")),

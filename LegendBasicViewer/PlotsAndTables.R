@@ -1210,3 +1210,139 @@ plotCovariateBalanceSummary <- function(balanceSummary,
   plot <- gridExtra::grid.arrange(data_table, plot, ncol = 2)
   return(plot)
 }
+
+fitNull <- function (logRr, seLogRr) {
+  if (any(is.infinite(seLogRr))) {
+    warning("Estimate(s) with infinite standard error detected. Removing before fitting null distribution")
+    logRr <- logRr[!is.infinite(seLogRr)]
+    seLogRr <- seLogRr[!is.infinite(seLogRr)]
+  }
+  if (any(is.infinite(logRr))) {
+    warning("Estimate(s) with infinite logRr detected. Removing before fitting null distribution")
+    seLogRr <- seLogRr[!is.infinite(logRr)]
+    logRr <- logRr[!is.infinite(logRr)]
+  }
+  if (any(is.na(seLogRr))) {
+    warning("Estimate(s) with NA standard error detected. Removing before fitting null distribution")
+    logRr <- logRr[!is.na(seLogRr)]
+    seLogRr <- seLogRr[!is.na(seLogRr)]
+  }
+  if (any(is.na(logRr))) {
+    warning("Estimate(s) with NA logRr detected. Removing before fitting null distribution")
+    seLogRr <- seLogRr[!is.na(logRr)]
+    logRr <- logRr[!is.na(logRr)]
+  }
+  gaussianProduct <- function(mu1, mu2, sd1, sd2) {
+    (2 * pi)^(-1/2) * (sd1^2 + sd2^2)^(-1/2) * exp(-(mu1 - 
+                                                       mu2)^2/(2 * (sd1^2 + sd2^2)))
+  }
+  LL <- function(theta, estimate, se) {
+    result <- 0
+    for (i in 1:length(estimate)) {
+      result <- result - log(gaussianProduct(estimate[i], 
+                                             theta[1], se[i], exp(theta[2])))
+    }
+    if (length(result) == 0 || is.infinite(result)) 
+      result <- 99999
+    result
+  }
+  theta <- c(0, 0)
+  fit <- optim(theta, LL, estimate = logRr, se = seLogRr)
+  null <- fit$par
+  null[2] <- exp(null[2])
+  names(null) <- c("mean", "sd")
+  class(null) <- "null"
+  return(null)
+}
+
+plotEmpiricalNulls <- function(negativeControls, limits = c(0.1, 10)) {
+  labels <- unique(negativeControls$databaseId)
+  labels <- labels[labels != "Meta-analysis"]
+  labels <- labels[order(labels)]
+  labels <- c(labels, "Meta-analysis")
+  d <- data.frame(label = labels,
+                  mean = NA,
+                  sd = NA,
+                  xMin = NA,
+                  xMax = NA,
+                  meanLabel = "",
+                  sdLabel = "",
+                  y = length(labels) - (1:length(labels)) + 1,
+                  stringsAsFactors = FALSE)
+  dist <- data.frame(label = rep(unique(negativeControls$databaseId), each = 100),
+                     x = seq(log(limits[1]), log(limits[2]), length.out = 100),
+                     yMax = NA,
+                     yMaxUb = NA,
+                     yMaxLb = NA,
+                     yMin = NA)
+  for (i in 1:nrow(d)) {
+    idx <- negativeControls$databaseId == d$label[i]
+    null <- fitNull(logRr = negativeControls$logRr[idx], seLogRr = negativeControls$seLogRr[idx])
+    d$mean[i] <- null[1]
+    d$sd[i] <- null[2]
+    d$xMin[i] <- null[1] - null[2]
+    d$xMax[i] <- null[1] + null[2]
+    d$meanLabel[i] <- sprintf("% 1.2f", d$mean[i])
+    d$sdLabel[i] <- sprintf("%1.2f", d$sd[i])
+    idx <- dist$label == d$label[i]
+    y <- dnorm(dist$x[idx], mean = null[1], sd = null[2])
+    y <- y/max(y)
+    y <- y * 0.7
+    dist$yMax[idx] <- d$y[i] - 0.35 + y
+    dist$yMin[idx] <- d$y[i] - 0.35
+  }
+  
+  breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
+  plot <- ggplot2::ggplot(d, ggplot2::aes(group = label)) +
+    ggplot2::geom_vline(xintercept = log(breaks), colour = "#AAAAAA", lty = 1, size = 0.2) + 
+    ggplot2::geom_vline(xintercept = 0) +
+    ggplot2::geom_ribbon(ggplot2::aes(x = x, ymax = yMax, ymin = yMin), fill = rgb(1, 0, 0), alpha = 0.6, data = dist)
+  
+  
+  plot <- plot + ggplot2::geom_errorbarh(ggplot2::aes(xmax = xMax, xmin = xMin, y = y), height = 0.5, color = rgb(0, 0, 0), size = 0.5) + 
+    ggplot2::geom_point(ggplot2::aes(x = mean, y = y), shape = 16, size = 2) + 
+    ggplot2::coord_cartesian(xlim = log(limits), ylim = c(0.5, (nrow(d) + 1))) + 
+    ggplot2::scale_x_continuous("Hazard ratio", breaks = log(breaks), labels = breaks) +
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.minor.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_line(color = "#AAAAAA"),
+                   panel.background = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(size = 11),
+                   axis.title.x = ggplot2::element_text(size = 11),
+                   axis.ticks.x = ggplot2::element_line(color = "#AAAAAA"),
+                   strip.background = ggplot2::element_blank(),
+                   strip.text = ggplot2::element_text(size = 11),
+                   plot.margin = grid::unit(c(0,0,0.1,0), "lines"))
+  
+  text <- data.frame(y = rep(c(d$y, nrow(d) + 1), 3),
+                     x = rep(c(1,2,3.2), each = nrow(d) + 1),
+                     label = c(c(as.character(d$label), 
+                                 "Source",
+                                 d$meanLabel, 
+                                 " Mean", 
+                                 d$sdLabel,
+                                 "SD")),
+                     dummy = "")
+  
+  data_table <- ggplot2::ggplot(text, ggplot2::aes(x = x, y = y, label = label)) +
+    ggplot2::geom_text(size = 4, hjust = 0, vjust = 0.5) +
+    ggplot2::geom_hline(ggplot2::aes(yintercept = nrow(d) + 0.5)) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   legend.position = "none",
+                   panel.border = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(colour = "white"),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.ticks = ggplot2::element_line(colour = "white"),
+                   strip.background = ggplot2::element_blank(),
+                   plot.margin = grid::unit(c(0,0,0.1,0), "lines")) +
+    ggplot2::labs(x = "",y = "") +
+    ggplot2::coord_cartesian(xlim = c(1,4), ylim = c(0.5, (nrow(d) + 1)))
+  
+  plot <- gridExtra::grid.arrange(data_table, plot, ncol = 2)
+  return(plot)
+}

@@ -553,4 +553,19 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  output$systematicErrorSummaryPlot <- renderPlot({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      negativeControls <- getNegativeControlEstimates(connection = connection,
+                                                      targetId = row$targetId,
+                                                      comparatorId = row$comparatorId,
+                                                      analysisId =  row$analysisId)
+      plot <- plotEmpiricalNulls(negativeControls) 
+      return(plot)
+    }
+  }, res = 100)
+  
+  
 })
