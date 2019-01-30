@@ -59,25 +59,30 @@ shinyUI(
                                                                        tabPanel("Population characteristics",
                                                                                 uiOutput("table1Caption"),
                                                                                 dataTableOutput("table1Table")),
-                                                                       tabPanel("Forest plot",
-                                                                                plotOutput("forestPlot"),
-                                                                                uiOutput("forestPlotCaption")),
                                                                        tabPanel("Propensity scores",
                                                                                 plotOutput("psDistPlot"),
                                                                                 div(strong("Figure 2."),"Preference score distribution. The preference score is a transformation of the propensity score
                                                                                                          that adjusts for differences in the sizes of the two treatment groups. A higher overlap indicates subjects in the
                                                                                                          two groups were more similar in terms of their predicted probability of receiving one treatment over the other.")),
                                                                        tabPanel("Covariate balance",
-                                                                                uiOutput("hoverInfoBalanceScatter"),
-                                                                                plotOutput("balancePlot",
-                                                                                           hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
-                                                                                uiOutput("balancePlotCaption")),
+                                                                                conditionalPanel("output.isMetaAnalysis == false",
+                                                                                                 uiOutput("hoverInfoBalanceScatter"),
+                                                                                                 plotOutput("balancePlot",
+                                                                                                            hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
+                                                                                                 uiOutput("balancePlotCaption")),
+                                                                                conditionalPanel("output.isMetaAnalysis == true",
+                                                                                                 plotOutput("balanceSummaryPlot"),
+                                                                                                 uiOutput("balanceSummaryPlotCaption"))
+                                                                       ),
                                                                        tabPanel("Systematic error",
                                                                                 plotOutput("systematicErrorPlot"),
                                                                                 div(strong("Figure 4."),"Systematic error. Effect size estimates for the negative controls (true hazard ratio = 1)
                                                                                     and positive controls (true hazard ratio > 1), before and after calibration. Estimates below the diagonal dashed
                                                                                     lines are statistically significant (alpha = 0.05) different from the true effect size. A well-calibrated
                                                                                     estimator should have the true effect size within the 95 percent confidence interval 95 percent of times.")),
+                                                                       tabPanel("Forest plot",
+                                                                                plotOutput("forestPlot"),
+                                                                                uiOutput("forestPlotCaption")),
                                                                        tabPanel("Kaplan-Meier",
                                                                                 plotOutput("kaplanMeierPlot", height = 550),
                                                                                 uiOutput("kaplanMeierPlotPlotCaption"))

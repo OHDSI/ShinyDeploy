@@ -110,16 +110,16 @@ shinyServer(function(input, output, session) {
     if (isMetaAnalysis) {
       hideTab("detailsTabsetPanel", "Attrition")
       hideTab("detailsTabsetPanel", "Population characteristics")
-      hideTab("detailsTabsetPanel", "Propensity scores")
-      hideTab("detailsTabsetPanel", "Covariate balance")
+      # hideTab("detailsTabsetPanel", "Propensity scores")
+      # hideTab("detailsTabsetPanel", "Covariate balance")
       hideTab("detailsTabsetPanel", "Kaplan-Meier")
       showTab("detailsTabsetPanel", "Forest plot")
     } else {
       hideTab("detailsTabsetPanel", "Forest plot")
       showTab("detailsTabsetPanel", "Attrition")
       showTab("detailsTabsetPanel", "Population characteristics")
-      showTab("detailsTabsetPanel", "Propensity scores")
-      showTab("detailsTabsetPanel", "Covariate balance")
+      # showTab("detailsTabsetPanel", "Propensity scores")
+      # showTab("detailsTabsetPanel", "Covariate balance")
       showTab("detailsTabsetPanel", "Kaplan-Meier") 
     }
     return(isMetaAnalysis)
@@ -350,10 +350,16 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      ps <- getPs(connection = connection,
-                  targetIds = row$targetId,
-                  comparatorIds = row$comparatorId,
-                  databaseId = row$databaseId)
+      if (row$databaseId %in% metaAnalysisDbIds) {
+        ps <- getPs(connection = connection,
+                    targetIds = row$targetId,
+                    comparatorIds = row$comparatorId)
+      } else {
+        ps <- getPs(connection = connection,
+                    targetIds = row$targetId,
+                    comparatorIds = row$comparatorId,
+                    databaseId = row$databaseId)
+      }
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
@@ -368,7 +374,9 @@ shinyServer(function(input, output, session) {
       writeLines("Plotting covariate balance")
       plot <- plotCovariateBalanceScatterPlot(balance = bal,
                                               beforeLabel = paste("Before", row$psStrategy),
-                                              afterLabel = paste("After", row$psStrategy))
+                                              afterLabel = paste("After", row$psStrategy),
+                                              showCovariateCountLabel = TRUE,
+                                              showMaxLabel = TRUE)
       return(plot)
     }
   })
@@ -380,7 +388,7 @@ shinyServer(function(input, output, session) {
     } else {
       row <- selectedRow()
       text <- "<strong>Figure 3.</strong> Covariate balance before and after %s. Each dot represents
-      the standardizes difference of means for a single covariate before and after %s on the propensity
+      the standardized difference of means for a single covariate before and after %s on the propensity
       score. Move the mouse arrow over a dot for more details."
       return(HTML(sprintf(text, row$psStrategy, row$psStrategy)))
     }
@@ -506,6 +514,42 @@ shinyServer(function(input, output, session) {
       intervals) comparing %s to %s for the outcome of %s, using %s. Estimates are shown both before and after empirical 
       calibration. The I2 is computed on the uncalibrated estimates."
       return(HTML(sprintf(text, input$target, input$comparator, input$outcome, row$psStrategy)))
+    }
+  })
+  
+  output$balanceSummaryPlot <- renderPlot({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      analysisId <- row$analysisId
+      if (analysisId %in% c(1, 3)) {
+        # Only computed balance for ITT windows
+        analysisId <- analysisId + 1
+      }
+      balanceSummary <- getCovariateBalanceSummary(connection = connection,
+                                                   targetId = row$targetId,
+                                                   comparatorId = row$comparatorId,
+                                                   analysisId = analysisId)
+      plot <- plotCovariateBalanceSummary(balanceSummary,
+                                          threshold = 0.1,
+                                          beforeLabel = paste("Before", row$psStrategy),
+                                          afterLabel = paste("After", row$psStrategy)) 
+      return(plot)
+    }
+  }, res = 100)
+  
+  output$balanceSummaryPlotCaption <- renderUI({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      text <- "<strong>Figure 7.</strong> Covariate balance before and after %s. The y axis represents
+      the standardized difference of mean before and after %s on the propensity
+      score. The whiskers show the minimum and maximum values across covariates. The box represents the 
+      interquartile range, and the middle line represents the median. The dashed lines indicate a standardized
+      difference of 0.1."
+      return(HTML(sprintf(text, row$psStrategy, row$psStrategy)))
     }
   })
   

@@ -352,8 +352,14 @@ prepareTable1 <- function(balance,
 }
 
 plotPs <- function(ps, targetName, comparatorName) {
-  ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, group = targetName),
-              data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, group = comparatorName))
+  if (is.null(ps$databaseId)) {
+    ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, group = targetName),
+                data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, group = comparatorName))
+    
+  } else {
+    ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, databaseId = ps$databaseId, group = targetName),
+                data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, databaseId = ps$databaseId, group = comparatorName))
+  }
   ps$group <- factor(ps$group, levels = c(as.character(targetName), as.character(comparatorName)))
   levels(ps$group) <- paste0(" " , levels(ps$group), " ") # Add space between legend labels
   theme <- ggplot2::element_text(colour = "#000000", size = 12)
@@ -369,10 +375,20 @@ plotPs <- function(ps, targetName, comparatorName) {
     ggplot2::theme(legend.title = ggplot2::element_blank(),
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   strip.background = ggplot2::element_blank(),
+                   strip.text.y = ggplot2::element_text(angle = 180, size = 13),
                    legend.position = "top",
                    legend.text = theme,
-                   axis.text = theme,
-                   axis.title = theme)
+                   axis.text.x = theme,
+                   axis.title.x = theme,
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank())
+  if (!is.null(ps$databaseId)) {
+     plot <- plot + ggplot2::facet_grid(databaseId~., switch = "both") +
+       ggplot2::theme(legend.position = "right")
+  }
   return(plot)
 }
 
@@ -412,7 +428,11 @@ plotAllPs <- function(ps) {
 }
 
 
-plotCovariateBalanceScatterPlot <- function(balance, beforeLabel = "Before stratification", afterLabel = "After stratification") {
+plotCovariateBalanceScatterPlot <- function(balance, 
+                                            beforeLabel = "Before stratification", 
+                                            afterLabel = "After stratification",
+                                            showCovariateCountLabel = FALSE,
+                                            showMaxLabel = FALSE) {
   limits <- c(min(c(balance$absBeforeMatchingStdDiff, balance$absAfterMatchingStdDiff),
                   na.rm = TRUE),
               max(c(balance$absBeforeMatchingStdDiff, balance$absAfterMatchingStdDiff),
@@ -427,6 +447,18 @@ plotCovariateBalanceScatterPlot <- function(balance, beforeLabel = "Before strat
     ggplot2::scale_y_continuous(afterLabel, limits = limits) +
     ggplot2::theme(text = theme)
   
+  if (showCovariateCountLabel || showMaxLabel) {
+    labels <- c()
+    if (showCovariateCountLabel) {
+      labels <- c(labels, sprintf("Number of covariates: %s", format(nrow(balance), big.mark = ",", scientific = FALSE)))
+    }
+    if (showMaxLabel) {
+      labels <- c(labels, sprintf("%s max(absolute): %.2f", afterLabel, max(abs(balance$afterMatchingStdDiff), na.rm = TRUE)))
+    }
+    dummy <- data.frame(text = paste(labels, collapse = "\n"))
+    plot <- plot + ggplot2::geom_label(x = limits[1] + 0.01, y = limits[2], hjust = "left", vjust = "top", alpha = 0.8, ggplot2::aes(label = text), data = dummy, size = 5)
+    
+  }
   return(plot)
 }
 
@@ -1092,5 +1124,89 @@ plotForest <- function(results) {
     ggplot2::labs(x = "", y = "") +
     ggplot2::coord_cartesian(xlim = c(1,4))
   plot <- gridExtra::grid.arrange(dataTable, plot, ncol = 2)
+  return(plot)
+}
+
+plotCovariateBalanceSummary <- function(balanceSummary,
+                                        threshold = 0,
+                                        beforeLabel = "Before matching",
+                                        afterLabel = "After matching") {
+  stringToVars <- function(string) {
+    parts <- as.numeric(unlist(strsplit(gsub("\\{|\\}", "", string), ",")))
+    parts <- as.data.frame(matrix(parts, ncol = 5, byrow = TRUE))
+    colnames(parts) <- c("ymin", "lower", "median", "upper", "ymax")
+    return(parts)
+  }
+  balanceSummary <- balanceSummary[rev(order(balanceSummary$databaseId)), ]
+  balanceSummary$x <- 1:nrow(balanceSummary)
+  vizData <- rbind(cbind(balanceSummary,
+                         stringToVars(balanceSummary$percentilesBefore),
+                         type = beforeLabel),
+                   cbind(balanceSummary,
+                         stringToVars(balanceSummary$percentilesAfter),
+                         type = afterLabel))
+  vizData$type <- factor(vizData$type, levels = c(beforeLabel, afterLabel))
+  
+  plot <- ggplot2::ggplot(vizData, ggplot2::aes(x = x,
+                                                ymin = ymin,
+                                                lower = lower,
+                                                middle = median,
+                                                upper = upper,
+                                                ymax = ymax)) +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymin), size = 1) +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = ymax, ymax = ymax), size = 1) +
+    ggplot2::geom_boxplot(stat = "identity", fill = rgb(0, 0, 0.8, alpha = 0.25), size = 1) +
+    ggplot2::geom_hline(yintercept = 0) +
+    ggplot2::scale_x_continuous(limits = c(0.5, max(vizData$x) + 1.75)) +
+    ggplot2::scale_y_continuous("Standardized difference of mean") +
+    ggplot2::coord_flip() +
+    ggplot2::facet_grid(~type) +
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.minor.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_line(color = "#AAAAAA"),
+                   panel.background = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(size = 11),
+                   axis.title.x = ggplot2::element_text(size = 11),
+                   axis.ticks.x = ggplot2::element_line(color = "#AAAAAA"),
+                   strip.background = ggplot2::element_blank(),
+                   strip.text = ggplot2::element_text(size = 11),
+                   plot.margin = grid::unit(c(0,0,0.1,0), "lines"))
+  
+  if (threshold != 0) {
+    plot <- plot + ggplot2::geom_hline(yintercept = c(threshold, -threshold), linetype = "dotted")
+  }
+  after <- vizData[vizData$type == afterLabel, ]
+  after$max <- pmax(abs(after$ymin), abs(after$ymax))
+  text <- data.frame(y = rep(c(after$x, nrow(after) + 1.25) , 3),
+                     x = rep(c(1,2,3), each = nrow(after) + 1),
+                     label = c(c(as.character(after$databaseId), 
+                                 "Source",
+                                 formatC(after$covariateCount, big.mark = ",", format = "d"), 
+                                 "Covariate\ncount", 
+                                 formatC(after$max,  digits = 2, format = "f"),
+                                 paste(afterLabel, "max(absolute)", sep = "\n"))),
+                     dummy = "")
+  
+  data_table <- ggplot2::ggplot(text, ggplot2::aes(x = x, y = y, label = label)) +
+    ggplot2::geom_text(size = 4, hjust=0, vjust=0.5) +
+    ggplot2::geom_hline(ggplot2::aes(yintercept=nrow(after) + 0.5)) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   legend.position = "none",
+                   panel.border = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(colour="white"),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.ticks = ggplot2::element_line(colour="white"),
+                   strip.background = ggplot2::element_blank(),
+                   plot.margin = grid::unit(c(0,0,0.1,0), "lines")) +
+    ggplot2::labs(x="",y="") +
+    ggplot2::facet_grid(~dummy) +
+    ggplot2::coord_cartesian(xlim=c(1,4), ylim = c(0.5, max(vizData$x) + 1.75))
+  
+  plot <- gridExtra::grid.arrange(data_table, plot, ncol = 2)
   return(plot)
 }
