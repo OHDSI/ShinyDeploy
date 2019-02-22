@@ -3,6 +3,24 @@ library(shiny)
 shinyUI(fluidPage(style = 'width:1000px;',
   titlePanel("Supplementary data for 'Improving reproducibility using high-throughput observational studies with empirical calibration'"),
   tabsetPanel(
+    tabPanel("About",
+             br(),
+             p("Supplementary data for:"),
+             p(HTML("Schuemie MJ, Ryan PB, Hripcsak G, Madigan D, Suchard MA, 
+              <a href = \"https://royalsocietypublishing.org/doi/full/10.1098/rsta.2017.0356\">
+                  Improving reproducibility using high-throughput observational studies with empirical calibration.
+              </a>, Phil. Trans. R. Soc. A, 2018")),
+             p("This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to the manuscript"),
+             h3("Article abstract"),
+             p("Concerns over reproducibility in science extend to research using existing healthcare data; many observational studies investigating the same topic produce conflicting results, even when using the same data. To address this problem, we propose a paradigm shift. The current paradigm centres on generating one estimate at a time using a unique study design with unknown reliability and publishing (or not) one estimate at a time. The new paradigm advocates for high-throughput observational studies using consistent and standardized methods, allowing evaluation, calibration and unbiased dissemination to generate a more reliable and complete evidence base. We demonstrate this new paradigm by comparing all depression treatments for a set of outcomes, producing 17.718 hazard ratios, each using methodology on par with current best practice. We furthermore include control hypotheses to evaluate and calibrate our evidence generation process. Results show good transitivity and consistency between databases, and agree with four out of the five findings from clinical trials. The distribution of effect size estimaetes reported in the literature reveals an absence of small or null effects, with a sharp cut-off at p = 0.05. No such phenomena were observed in our results, suggesting more complete and more reliable evidence."),
+             h3("External links"),
+             HTML("<ul>
+                    <li>Article: <a href = \"https://royalsocietypublishing.org/doi/full/10.1098/rsta.2017.0356\">https://royalsocietypublishing.org/doi/full/10.1098/rsta.2017.0356</a></li>
+                    <li>Protocol: <a href = \"https://github.com/OHDSI/StudyProtocols/raw/master/LargeScalePopEst/extras/OHDSI%20Protocol%20Large-Scale%20Population-Level%20Evidence%20Generation.docx\">https://github.com/OHDSI/StudyProtocols/raw/master/LargeScalePopEst/extras/OHDSI%20Protocol%20Large-Scale%20Population-Level%20Evidence%20Generation.docx</a></li>
+                    <li>Analysis source code: <a href = \"https://github.com/OHDSI/StudyProtocols/tree/master/LargeScalePopEst\">https://github.com/OHDSI/StudyProtocols/tree/master/LargeScalePopEst</a></li>
+                  </ul>")
+             
+    ),
     tabPanel("Systematically generated evidence",
              fluidRow(
                column(3,
@@ -98,13 +116,6 @@ shinyUI(fluidPage(style = 'width:1000px;',
                       uiOutput("abstract")
                       )
                )
-    ),
-    tabPanel("About",
-             br(),
-             p("Supplementary data for:"),
-             p("Schuemie MJ, Ryan PB, Hripcsak G, Madigan D, Suchard MA,", 
-               em("Improving reproducibility using high-throughput observational studies with empirical calibration."), 
-               ", Phil. Trans. R. Soc. A, 2018")
     )
   )
 )

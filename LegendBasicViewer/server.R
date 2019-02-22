@@ -32,7 +32,6 @@ shinyServer(function(input, output, session) {
     DatabaseConnector::disconnect(connection)
   })
 
-  # Specific research questions tab ---------------------------------------------------------------------------
   observe({
     indicationId <- input$indication
     updateSelectInput(session = session,
@@ -43,8 +42,12 @@ shinyServer(function(input, output, session) {
   observe({
     indicationId <- input$indication
     exposureGroup <- input$exposureGroup
+    includeCombis <- input$includeCombis
     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-    filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
+    if (!includeCombis) {
+      filteredExposures <- filteredExposures[filteredExposures$combi == 0, ]
+    }
+    # filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
     updateSelectInput(session = session,
                       inputId = "target",
@@ -107,15 +110,17 @@ shinyServer(function(input, output, session) {
     if (isMetaAnalysis) {
       hideTab("detailsTabsetPanel", "Attrition")
       hideTab("detailsTabsetPanel", "Population characteristics")
-      hideTab("detailsTabsetPanel", "Propensity scores")
-      hideTab("detailsTabsetPanel", "Covariate balance")
+      # hideTab("detailsTabsetPanel", "Propensity scores")
+      # hideTab("detailsTabsetPanel", "Covariate balance")
       hideTab("detailsTabsetPanel", "Kaplan-Meier")
+      showTab("detailsTabsetPanel", "Forest plot")
     } else {
+      hideTab("detailsTabsetPanel", "Forest plot")
       showTab("detailsTabsetPanel", "Attrition")
       showTab("detailsTabsetPanel", "Population characteristics")
-      showTab("detailsTabsetPanel", "Propensity scores")
-      showTab("detailsTabsetPanel", "Covariate balance")
-      showTab("detailsTabsetPanel", "Kaplan-Meier")    
+      # showTab("detailsTabsetPanel", "Propensity scores")
+      # showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier") 
     }
     return(isMetaAnalysis)
   })
@@ -190,19 +195,38 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      table <- preparePowerTable(row, analyses)
-      table$description <- NULL
-      colnames(table) <- c("Target subjects",
-                           "Comparator subjects",
-                           "Target years",
-                           "Comparator years",
-                           "Target events",
-                           "Comparator events",
-                           "Target IR (per 1,000 PY)",
-                           "Comparator IR (per 1,000 PY)",
-                           "MDRR")
       if (row$databaseId %in% metaAnalysisDbIds) {
-        table$i2 <- sprintf("%.2f", as.numeric(row$i2))
+        results <- getMainResults(connection = connection,
+                                  targetIds = row$targetId,
+                                  comparatorIds = row$comparatorId,
+                                  outcomeIds = row$outcomeId,
+                                  analysisIds = row$analysisId)
+        table <- preparePowerTable(results, analyses, showDatabaseId = TRUE)
+        table$description <- NULL
+        table$databaseId[table$databaseId == "Meta-analysis"] <- "Summary"
+        colnames(table) <- c("Source", 
+                             "Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (per 1,000 PY)",
+                             "Comparator IR (per 1,000 PY)",
+                             "MDRR")
+        # table$i2 <- c(rep("", nrow(table) - 1), sprintf("%.2f", as.numeric(row$i2)))
+      } else {
+        table <- preparePowerTable(row, analyses)
+        table$description <- NULL
+        colnames(table) <- c("Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (per 1,000 PY)",
+                             "Comparator IR (per 1,000 PY)",
+                             "MDRR")
       }
       return(table)
     }
@@ -326,10 +350,16 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      ps <- getPs(connection = connection,
-                  targetIds = row$targetId,
-                  comparatorIds = row$comparatorId,
-                  databaseId = row$databaseId)
+      if (row$databaseId %in% metaAnalysisDbIds) {
+        ps <- getPs(connection = connection,
+                    targetIds = row$targetId,
+                    comparatorIds = row$comparatorId)
+      } else {
+        ps <- getPs(connection = connection,
+                    targetIds = row$targetId,
+                    comparatorIds = row$comparatorId,
+                    databaseId = row$databaseId)
+      }
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
@@ -344,7 +374,9 @@ shinyServer(function(input, output, session) {
       writeLines("Plotting covariate balance")
       plot <- plotCovariateBalanceScatterPlot(balance = bal,
                                               beforeLabel = paste("Before", row$psStrategy),
-                                              afterLabel = paste("After", row$psStrategy))
+                                              afterLabel = paste("After", row$psStrategy),
+                                              showCovariateCountLabel = TRUE,
+                                              showMaxLabel = TRUE)
       return(plot)
     }
   })
@@ -356,7 +388,7 @@ shinyServer(function(input, output, session) {
     } else {
       row <- selectedRow()
       text <- "<strong>Figure 3.</strong> Covariate balance before and after %s. Each dot represents
-      the standardizes difference of means for a single covariate before and after %s on the propensity
+      the standardized difference of means for a single covariate before and after %s on the propensity
       score. Move the mouse arrow over a dot for more details."
       return(HTML(sprintf(text, row$psStrategy, row$psStrategy)))
     }
@@ -445,26 +477,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  interactionEffects <- reactive({
-    row <- selectedRow()
-    if (is.null(row)) {
-      return(NULL)
-    } else {
-      analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analyses$description[analyses$analysisId == row$analysisId]), analyses$description)]
-      subgroupResults <- getSubgroupResults(connection = connection,
-                                            targetIds = row$targetId,
-                                            comparatorIds = row$comparatorId,
-                                            outcomeIds = row$outcomeId,
-                                            databaseIds = row$databaseId,
-                                            analysisIds = analysisIds)
-      if (nrow(subgroupResults) == 0) {
-        return(NULL)
-      } else {
-        return(subgroupResults)
-      }
-    }
-  })
-
   output$subgroupTableCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
@@ -477,303 +489,83 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
-
-  output$subgroupTable <- renderDataTable({
+  
+  output$forestPlot <- renderPlot({
     row <- selectedRow()
     if (is.null(row)) {
       return(NULL)
     } else {
-      subgroupResults <- interactionEffects()
-      if (is.null(subgroupResults)) {
-        return(NULL)
-      }
-      subgroupTable <- prepareSubgroupTable(subgroupResults, output = "html")
-      colnames(subgroupTable) <- c("Subgroup",
-                                   "Target subjects",
-                                   "Comparator subjects",
-                                   "HRR",
-                                   "P",
-                                   "Cal.P")
-      options <- list(searching = FALSE,
-                      ordering = FALSE,
-                      paging = FALSE,
-                      bInfo = FALSE)
-      subgroupTable <- datatable(subgroupTable,
-                                 options = options,
-                                 rownames = FALSE,
-                                 escape = FALSE,
-                                 class = "stripe nowrap compact")
-      return(subgroupTable)
+      results <- getMainResults(connection = connection,
+                                targetIds = row$targetId,
+                                comparatorIds = row$comparatorId,
+                                outcomeIds = row$outcomeId,
+                                analysisIds = row$analysisId)
+      plot <- plotForest(results)
+      return(plot)
     }
   })
-
-  # # Main effects tab ---------------------------------------------------------------------------
-  # observe({
-  #   indicationId <- input$meIndication
-  #   if (indicationId == "All") {
-  #     updateSelectInput(session = session,
-  #                       inputId = "meExposureGroup",
-  #                       choices = c("All", unique(exposureGroups$exposureGroup)))
-  #   } else {
-  #     updateSelectInput(session = session,
-  #                       inputId = "meExposureGroup",
-  #                       choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
-  #   }
-  # })
-  # 
-  # observe({
-  #   indicationId <- input$meIndication
-  #   exposureGroup <- input$meExposureGroup
-  #   if (indicationId == "All") {
-  #     filteredExposures <- exposures
-  #     filteredOutcomes <- outcomes
-  #   } else {
-  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-  #   }
-  #   if (exposureGroup == "All") {
-  #     filteredExposures <- filteredExposures
-  #   } else {
-  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   }
-  #   updateSelectInput(session = session,
-  #                     inputId = "meTarget",
-  #                     choices = c("All", unique(filteredExposures$exposureName)))
-  #   updateSelectInput(session = session,
-  #                     inputId = "meComparator",
-  #                     choices = c("All", unique(filteredExposures$exposureName)))
-  #   updateSelectInput(session = session,
-  #                     inputId = "meOutcome",
-  #                     choices = c("All", unique(filteredOutcomes$outcomeName)))
-  # })
-  # 
-  # output$mePlot <- renderPlot({
-  #   indicationId <- input$meIndication
-  #   exposureGroup <- input$meExposureGroup
-  #   if (indicationId == "All") {
-  #     filteredExposures <- exposures
-  #     filteredOutcomes <- outcomes
-  #   } else {
-  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-  #   }
-  #   if (exposureGroup == "All") {
-  #     filteredExposures <- filteredExposures
-  #   } else {
-  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   }
-  #   target <- input$meTarget
-  #   if (target == "All") {
-  #     targetIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
-  #   }
-  #   comparator <- input$meComparator
-  #   if (comparator == "All") {
-  #     comparatorIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
-  #   }
-  #   outcome <- input$meOutcome
-  #   if (outcome == "All") {
-  #     outcomeIds <- unique(filteredOutcomes$outcomeId)
-  #   } else {
-  #     outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeName == outcome])
-  #   }
-  #   database <- input$meDatabase
-  #   if (database == "All") {
-  #     databaseIds <- databases$databaseId
-  #   } else {
-  #     databaseIds <- database
-  #   }
-  #   analysis <- input$meAnalysis
-  #   if (analysis == "All") {
-  #     analysisIds <- 1:4
-  #   } else {
-  #     analysisIds <- analyses$analysisId[analyses$description == analysis]
-  #   }
-  #   writeLines("Fetching main effects")
-  #   mainEffects <- getMainResults(connection = connection,
-  #                                 targetIds = targetIds,
-  #                                 comparatorIds = comparatorIds,
-  #                                 outcomeIds = outcomeIds,
-  #                                 databaseIds = databaseIds,
-  #                                 analysisIds = analysisIds,
-  #                                 estimatesOnly = TRUE)
-  #   mainEffects <- data.frame(logRr = mainEffects$calibratedLogRr,
-  #                             seLogRr = mainEffects$calibratedSeLogRr,
-  #                             ci95Lb = mainEffects$calibratedCi95Lb,
-  #                             ci95Ub = mainEffects$calibratedCi95Ub)
-  #   writeLines("Plotting main effects")
-  #   plot <- plotLargeScatter(mainEffects, "Calibrated hazard ratio")
-  #   return(plot)
-  # }, width = 1000 , height = 500)
-  # 
-  # # Interaction effects tab ---------------------------------------------------------------------------
-  # observe({
-  #   indicationId <- input$ieIndication
-  #   if (indicationId == "All") {
-  #     updateSelectInput(session = session,
-  #                       inputId = "ieExposureGroup",
-  #                       choices = c("All", unique(exposureGroups$exposureGroup)))
-  #   } else {
-  #     updateSelectInput(session = session,
-  #                       inputId = "ieExposureGroup",
-  #                       choices = c("All", unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])))
-  #   }
-  # })
-  # 
-  # observe({
-  #   indicationId <- input$ieIndication
-  #   exposureGroup <- input$ieExposureGroup
-  #   if (indicationId == "All") {
-  #     filteredExposures <- exposures
-  #     filteredOutcomes <- outcomes
-  #   } else {
-  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-  #   }
-  #   if (exposureGroup == "All") {
-  #     filteredExposures <- filteredExposures
-  #   } else {
-  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   }
-  #   updateSelectInput(session = session,
-  #                     inputId = "ieTarget",
-  #                     choices = c("All", unique(filteredExposures$exposureNaie)))
-  #   updateSelectInput(session = session,
-  #                     inputId = "ieComparator",
-  #                     choices = c("All", unique(filteredExposures$exposureNaie)))
-  #   updateSelectInput(session = session,
-  #                     inputId = "ieOutcome",
-  #                     choices = c("All", unique(filteredOutcomes$outcomeNaie)))
-  # })
-  # 
-  # output$iePlot <- renderPlot({
-  #   indicationId <- input$ieIndication
-  #   exposureGroup <- input$ieExposureGroup
-  #   if (indicationId == "All") {
-  #     filteredExposures <- exposures
-  #     filteredOutcomes <- outcomes
-  #   } else {
-  #     filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #     filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-  #   }
-  #   if (exposureGroup == "All") {
-  #     filteredExposures <- filteredExposures
-  #   } else {
-  #     filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   }
-  #   target <- input$ieTarget
-  #   if (target == "All") {
-  #     targetIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == target])
-  #   }
-  #   comparator <- input$ieComparator
-  #   if (comparator == "All") {
-  #     comparatorIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureNaie == comparator])
-  #   }
-  #   outcome <- input$ieComparator
-  #   if (outcome == "All") {
-  #     outcomeIds <- unique(filteredOutcomes$outcomeId)
-  #   } else {
-  #     outcomeIds <- unique(filteredOutcomes$outcomeId[filteredOutcomes$outcomeNaie == outcome])
-  #   }
-  #   database <- input$ieDatabase
-  #   if (database == "All") {
-  #     databaseIds <- databases$databaseId
-  #   } else {
-  #     databaseIds <- database
-  #   }
-  #   analysis <- input$ieAnalysis
-  #   if (analysis == "All") {
-  #     analysisIds <- c()
-  #   } else {
-  #     analysisIds <- analyses$analysisId[grepl(gsub("PS stratification, ", "", analysis), analyses$description)]
-  #   }
-  #   subgroup <- input$ieSubgroup
-  #   if (subgroup == "All") {
-  #     subgroupIds <- subgroups$subgroupId
-  #   } else {
-  #     subgroupIds <- subgroups$subgroupId[subgroups$subgroupName == subgroup]
-  #   }
-  # 
-  #   writeLines("Fetching interaction effects")
-  #   interactionEffects <- getSubgroupResults(connection = connection,
-  #                                            targetIds = targetIds,
-  #                                            comparatorIds = comparatorIds,
-  #                                            outcomeIds = outcomeIds,
-  #                                            databaseIds = databaseIds,
-  #                                            analysisIds = analysisIds,
-  #                                            subgroupIds = subgroupIds,
-  #                                            estimatesOnly = TRUE)
-  #   interactionEffects <- data.frame(logRr = interactionEffects$logRrr,
-  #                                    seLogRr = interactionEffects$seLogRrr,
-  #                                    ci95Lb = interactionEffects$ci95Lb,
-  #                                    ci95Ub = interactionEffects$ci95Ub)
-  #   writeLines("Plotting interaction effects")
-  #   plot <- plotLargeScatter(interactionEffects, "Uncalibrated hazard ratio ratio")
-  #   return(plot)
-  # }, width = 1000 , height = 500)
-  # 
-  # 
-  # # Propensity scores tab ---------------------------------------------------------------------------
-  # observe({
-  #   indicationId <- input$psIndication
-  #   updateSelectInput(session = session,
-  #                       inputId = "psExposureGroup",
-  #                       choices = unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId]))
-  # })
-  # 
-  # observe({
-  #   indicationId <- input$psIndication
-  #   exposureGroup <- input$psExposureGroup
-  #   filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #   filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-  #   filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   updateSelectInput(session = session,
-  #                     inputId = "psTarget",
-  #                     choices = c("All", unique(filteredExposures$exposureName)))
-  #   updateSelectInput(session = session,
-  #                     inputId = "psComparator",
-  #                     choices = c("All", unique(filteredExposures$exposureName)))
-  # })
-  # 
-  # output$psPlot <- renderPlot({
-  #   indicationId <- input$psIndication
-  #   exposureGroup <- input$psExposureGroup
-  #   filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-  #   filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
-  #   target <- input$psTarget
-  #   if (target == "All") {
-  #     targetIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     targetIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == target])
-  #   }
-  #   comparator <- input$psComparator
-  #   if (comparator == "All") {
-  #     comparatorIds <- unique(filteredExposures$exposureId)
-  #   } else {
-  #     comparatorIds <- unique(filteredExposures$exposureId[filteredExposures$exposureName == comparator])
-  #   }
-  #   databaseId <- input$psDatabase
-  #   writeLines("Fetching PS distributions")
-  #   ps <- getPs(connection = connection,
-  #               targetIds = targetIds,
-  #               comparatorIds = comparatorIds,
-  #               databaseId = databaseId)
-  #   if (nrow(ps) == 0) {
-  #     return(NULL)
-  #   }
-  #   ps <- merge(ps, data.frame(targetId = exposures$exposureId,
-  #                              targetName = exposures$exposureName))
-  #   ps <- merge(ps, data.frame(comparatorId = exposures$exposureId,
-  #                              comparatorName = exposures$exposureName))
-  #   writeLines("Plotting PS distributions")
-  #   plot <- plotAllPs(ps)
-  #   return(plot)
-  # }, width = 1000 , height = 600)
+  
+  output$forestPlotCaption <- renderUI({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      text <- "<strong>Figure 6.</strong> Forest plot showing the per-database and summary hazard ratios (and 95 percent confidence
+      intervals) comparing %s to %s for the outcome of %s, using %s. Estimates are shown both before and after empirical 
+      calibration. The I2 is computed on the uncalibrated estimates."
+      return(HTML(sprintf(text, input$target, input$comparator, input$outcome, row$psStrategy)))
+    }
+  })
+  
+  output$balanceSummaryPlot <- renderPlot({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      analysisId <- row$analysisId
+      if (analysisId %in% c(1, 3)) {
+        # Only computed balance for ITT windows
+        analysisId <- analysisId + 1
+      }
+      balanceSummary <- getCovariateBalanceSummary(connection = connection,
+                                                   targetId = row$targetId,
+                                                   comparatorId = row$comparatorId,
+                                                   analysisId = analysisId)
+      plot <- plotCovariateBalanceSummary(balanceSummary,
+                                          threshold = 0.1,
+                                          beforeLabel = paste("Before", row$psStrategy),
+                                          afterLabel = paste("After", row$psStrategy)) 
+      return(plot)
+    }
+  }, res = 100)
+  
+  output$balanceSummaryPlotCaption <- renderUI({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      text <- "<strong>Figure 7.</strong> Covariate balance before and after %s. The y axis represents
+      the standardized difference of mean before and after %s on the propensity
+      score. The whiskers show the minimum and maximum values across covariates. The box represents the 
+      interquartile range, and the middle line represents the median. The dashed lines indicate a standardized
+      difference of 0.1."
+      return(HTML(sprintf(text, row$psStrategy, row$psStrategy)))
+    }
+  })
+  
+  output$systematicErrorSummaryPlot <- renderPlot({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      negativeControls <- getNegativeControlEstimates(connection = connection,
+                                                      targetId = row$targetId,
+                                                      comparatorId = row$comparatorId,
+                                                      analysisId =  row$analysisId)
+      plot <- plotEmpiricalNulls(negativeControls) 
+      return(plot)
+    }
+  }, res = 100)
+  
+  
 })

@@ -50,8 +50,8 @@ getSubgroups <- function(connection) {
 
 getExposures <- function(connection, filterByCmResults = TRUE) {
   sql <- "SELECT * FROM (
-    SELECT exposure_id, exposure_name, indication_id FROM single_exposure_of_interest
-    UNION ALL SELECT exposure_id, exposure_name, indication_id FROM combi_exposure_of_interest
+    SELECT exposure_id, exposure_name, indication_id, 0 AS combi FROM single_exposure_of_interest
+    UNION ALL SELECT exposure_id, exposure_name, indication_id, 1 AS combi FROM combi_exposure_of_interest
   ) exposure
   INNER JOIN exposure_group
   ON exposure.exposure_id = exposure_group.exposure_id
@@ -404,8 +404,9 @@ getCovariateBalance <- function(connection,
   return(balance)
 }
 
-getPs <- function(connection, targetIds, comparatorIds, databaseId) {
-  sql <- "SELECT target_id,
+getPs <- function(connection, targetIds, comparatorIds, databaseId = "") {
+  sql <- "SELECT database_id,
+      target_id,
       comparator_id,
       preference_score,
       target_density,
@@ -413,7 +414,7 @@ getPs <- function(connection, targetIds, comparatorIds, databaseId) {
       FROM preference_score_dist
       WHERE target_id IN (@target_ids)
       AND comparator_id IN (@comparator_ids)
-      AND database_id = '@database_id'"
+      {@database_id != \"\"} ? {AND database_id = '@database_id'};"
   sql <- SqlRender::renderSql(sql,
                               target_ids = targetIds,
                               comparator_ids = comparatorIds,
@@ -421,6 +422,9 @@ getPs <- function(connection, targetIds, comparatorIds, databaseId) {
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   ps <- querySql(connection, sql)
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
+  if (databaseId != "") {
+    ps$databaseId <- NULL
+  }
   return(ps)
 }
 
@@ -503,4 +507,47 @@ getStudyPeriod <- function(connection, targetId, comparatorId, databaseId) {
   studyPeriod <- querySql(connection, sql)
   colnames(studyPeriod) <- SqlRender::snakeCaseToCamelCase(colnames(studyPeriod))
   return(studyPeriod)
+}
+
+getCovariateBalanceSummary <- function(connection, targetId, comparatorId, analysisId) {
+  
+  sql <- "SELECT database_id, 
+    COUNT(*) AS covariate_count,
+    PERCENTILE_DISC(ARRAY[0, 0.25,0.5,0.75,1]) WITHIN GROUP (ORDER BY std_diff_before) AS percentiles_before,
+    PERCENTILE_DISC(ARRAY[0, 0.25,0.5,0.75,1]) WITHIN GROUP (ORDER BY std_diff_after) AS percentiles_after
+  FROM covariate_balance
+  WHERE target_id = @target_id
+    AND comparator_id = @comparator_id
+    AND outcome_id IS NULL
+    AND analysis_id = @analysis_id
+    AND interaction_covariate_id IS NULL
+  GROUP BY database_id;"
+  sql <- SqlRender::renderSql(sql,
+                              target_id = targetId,
+                              comparator_id = comparatorId,
+                              analysis_id = analysisId)$sql
+  sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
+  balanceSummary <- querySql(connection, sql)
+  colnames(balanceSummary) <- SqlRender::snakeCaseToCamelCase(colnames(balanceSummary))
+  return(balanceSummary)
+}
+
+getNegativeControlEstimates <- function(connection, targetId, comparatorId, analysisId) {
+  sql <- "SELECT database_id, 
+    log_rr,
+    se_log_rr
+  FROM cohort_method_result
+  INNER JOIN negative_control_outcome
+  ON cohort_method_result.outcome_id = negative_control_outcome.outcome_id
+  WHERE target_id = @target_id
+    AND comparator_id = @comparator_id
+    AND analysis_id = @analysis_id
+    AND se_log_rr IS NOT NULL;"
+  sql <- SqlRender::renderSql(sql,
+                              target_id = targetId,
+                              comparator_id = comparatorId,
+                              analysis_id = analysisId)$sql
+  results <- querySql(connection, sql)
+  colnames(results) <- SqlRender::snakeCaseToCamelCase(colnames(results))
+  return(results)
 }

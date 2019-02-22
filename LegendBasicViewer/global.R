@@ -45,3 +45,19 @@ subgroups <- subgroups[order(subgroups$subgroupId), ]
 
 writeLines("Closing connection")
 disconnect(connection)
+
+
+
+
+
+
+# targetId = 1
+# comparatorId = 2
+# outcomeId = 62
+# analysisIds = 1
+# results <- getMainResults(connection = connection,
+#                           targetIds = targetId,
+#                           comparatorIds = comparatorId,
+#                           outcomeIds = outcomeId,
+#                           databaseIds = c(),
+#                           analysisIds = analysisIds)
