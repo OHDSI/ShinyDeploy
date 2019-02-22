@@ -1,0 +1,2 @@
+outcomeId,cohortId,modelSettingsId,analysisId,devDatabase,populationSettingId,modelSettingId,covariateSettingId,modelSettingName,addExposureDaysToStart,riskWindowStart,addExposureDaysToEnd,riskWindowEnd,plpDataFolder,studyPopFile,plpResultFolder,cohortName,outcomeName
+1,2,1,1,CCAE,1,1,1,Lasso Logistic Regression,0,1,0,365,T:/,T:/,T:/,People with HRA survey containing smoking info,Self reported smokers
