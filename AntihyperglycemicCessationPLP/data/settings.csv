@@ -1,0 +1,2 @@
+"outcomeId","cohortId","modelSettingsId","analysisId","devDatabase","populationSettingId","modelSettingId","covariateSettingId","modelSettingName","addExposureDaysToStart","riskWindowStart","addExposureDaysToEnd","riskWindowEnd","plpDataFolder","studyPopFile","plpResultFolder","cohortName","outcomeName"
+5877,5878,1,1,"CCAE",1,1,1,"Lasso Logistic Regression",0,0,0,1,"T:/testatResults/PlpData_L1_T5381","T:/testatResults/StudyPop_L1_T5381_O5452.rds","T:/testatResults/Analysis_1","EpiMD LRYGB LSG T2DM Denominator wICD10","EpiMD LRYGB LSG Antihyperglycemic Cessation"
