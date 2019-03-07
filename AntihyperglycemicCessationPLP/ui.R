@@ -68,15 +68,21 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                style = "font-size:70%")),
                                                     
                                                     shiny::tabPanel("Model Settings",
-                                                    shiny::h3('Model Settings: ', shiny::actionLink("modelhelp", "help")),
+                                                    shiny::h3('Model Settings: ', 
+                                                              shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank") 
+                                                              ),
                                                     DT::dataTableOutput('modelTable')),
                                                     
                                                     shiny::tabPanel("Population Settings",
-                                                    shiny::h3('Population Settings: ', shiny::actionLink("pophelp", "help")),
+                                                    shiny::h3('Population Settings: ', 
+                                                              shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/createStudyPopulation.html", target="_blank") 
+                                                             ),
                                                     DT::dataTableOutput('populationTable')),
                                                     
                                                     shiny::tabPanel("Covariate Settings",
-                                                    shiny::h3('Covariate Settings: ', shiny::actionLink("covhelp", "help")),
+                                                    shiny::h3('Covariate Settings: ', 
+                                                              shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank") 
+                                                              ),
                                                     DT::dataTableOutput('covariateTable'))
                                                     )
                                                     
