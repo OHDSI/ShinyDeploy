@@ -30,15 +30,6 @@ shiny::shinyServer(function(input, output, session) {
   ##                                   plpResult= NULL)
 #=============
     
-    shiny::observeEvent(input$covhelp, {
-      test <- ?FeatureExtraction::createCovariateSettings
-      file.show(getRd(test))
-    })
-    shiny::observeEvent(input$pophelp, {
-      test <- ?PatientLevelPrediction::createStudyPopulation
-      file.show(getRd(test))
-    })
-    
     summaryData <- shiny::reactive({
       ind <- 1:nrow(allPerformance)
       if(input$devDatabase!='All'){
