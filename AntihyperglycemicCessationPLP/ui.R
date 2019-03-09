@@ -38,12 +38,21 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
           shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
           shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
           shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
-          shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list"))
+          shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
+          shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
         )
         ),
         
         shinydashboard::dashboardBody(
           shinydashboard::tabItems(
+            
+            # help tab
+            shinydashboard::tabItem(tabName = "Help",
+                                    shiny::h2("Information"),
+                                    shiny::p("Click on a row to explore the results for that model.  When you wish to explore a different model, click on the selected row to unselect and then select the new result row."),
+                                    shiny::a("Demo Video", href = 'https://youtu.be/StpV40yl1UE')
+            ),
+            
             # First tab content
             shinydashboard::tabItem(tabName = "Summary",
                                     
