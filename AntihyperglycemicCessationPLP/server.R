@@ -60,7 +60,7 @@ shiny::shinyServer(function(input, output, session) {
     
     
     output$summaryTable <- DT::renderDataTable(DT::datatable(formatPerformance[summaryData(),!colnames(formatPerformance)%in%c('addExposureDaysToStart','addExposureDaysToEnd')],
-                                                             rownames= FALSE))
+                                                             rownames= FALSE, selection = 'single'))
     
     
     dataofint <- shiny::reactive({

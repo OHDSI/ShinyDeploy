@@ -49,7 +49,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
             # help tab
             shinydashboard::tabItem(tabName = "Help",
                                     shiny::h2("Information"),
-                                    shiny::p("Click on a row to explore the results for that model.  When you wish to explore a different model, click on the selected row to unselect and then select the new result row."),
+                                    shiny::p("Click on a row to explore the results for that model.  When you wish to explore a different model, then select the new result row and the tabs will be updated."),
                                     shiny::a("Demo Video", href = 'https://youtu.be/StpV40yl1UE', target='_blank')
             ),
             
