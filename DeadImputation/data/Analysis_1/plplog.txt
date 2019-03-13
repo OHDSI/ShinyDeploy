@@ -1,0 +1,39 @@
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Patient-Level Prediction Package version 3.0.1
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	AnalysisID:         revisedModel
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	CohortID:           1
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	OutcomeID:          2
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Cohort size:        1000000
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Covariates:         88514
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Population size:    1000000
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Cases:              24531
+2019-03-11 08:37:24	[Main thread]	INFO	PatientLevelPrediction	runPlp	Saving plpData to   S:/EpiProjects/death_prediction/revision2DrugSafety/revisedModel/plpData
+2019-03-11 08:38:16	[Main thread]	INFO	PatientLevelPrediction	runPlp	splitSeed: 6509096
+2019-03-11 08:38:17	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Creating a 25% test and 75% train (into 10 folds) stratified split by person
+2019-03-11 08:38:19	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Data split into 250000 test cases and 750000 train cases (75001, 75001, 75000, 75000, 75000, 75000, 75000, 75000, 74999, 74999)
+2019-03-11 08:38:21	[Main thread]	INFO	PatientLevelPrediction	runPlp	Training Lasso Logistic Regression model
+2019-03-11 08:43:46	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2019-03-11 14:53:25	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2019-03-11 14:53:25	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 6.2 hours
+2019-03-11 14:56:43	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 49.6 secs
+2019-03-11 14:59:02	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 13.9 secs
+2019-03-11 14:59:02	[Main thread]	INFO	PatientLevelPrediction	runPlp	Train set evaluation
+2019-03-11 14:59:09	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                98.86
+2019-03-11 14:59:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              78.97
+2019-03-11 14:59:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-03-11 14:59:58	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.04 intercept:         -0.00
+2019-03-11 15:00:12	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.79
+2019-03-11 15:00:12	[Main thread]	INFO	PatientLevelPrediction	runPlp	Test set evaluation
+2019-03-11 15:00:15	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                98.61
+2019-03-11 15:00:15	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              75.71
+2019-03-11 15:00:15	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-03-11 15:00:55	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.04 intercept:         -0.00
+2019-03-11 15:01:01	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.76
+2019-03-11 15:01:01	[Main thread]	INFO	PatientLevelPrediction	runPlp	Calculating covariate summary @ 2019-03-11 15:01:01
+2019-03-11 15:01:01	[Main thread]	INFO	PatientLevelPrediction	runPlp	This can take a while...
+2019-03-11 15:08:54	[Main thread]	INFO	PatientLevelPrediction	runPlp	Finished covariate summary @ 2019-03-11 15:08:54
+2019-03-11 15:08:56	[Main thread]	WARN	ggplot2	f	Removed 12 rows containing missing values (geom_path).
+2019-03-11 15:08:59	[Main thread]	WARN	ggplot2	warning_wrap	Removed 2853 rows containing missing values (geom_point).
+2019-03-11 15:09:10	[Main thread]	INFO	PatientLevelPrediction	runPlp	Saving PlpResult
+2019-03-11 15:09:19	[Main thread]	INFO	PatientLevelPrediction	runPlp	plpResult saved to ..\S:/EpiProjects/death_prediction/revision2DrugSafety/revisedModel\plpResult
+2019-03-11 15:09:19	[Main thread]	INFO	PatientLevelPrediction	runPlp	Log saved to S:/EpiProjects/death_prediction/revision2DrugSafety/revisedModel/plplog.txt
+2019-03-11 15:09:19	[Main thread]	INFO	PatientLevelPrediction	runPlp	Run finished successfully.

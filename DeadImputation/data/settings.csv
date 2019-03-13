@@ -1,0 +1,2 @@
+"outcomeId","cohortId","modelSettingsId","analysisId","devDatabase","populationSettingId","modelSettingId","covariateSettingId","modelSettingName","addExposureDaysToStart","riskWindowStart","addExposureDaysToEnd","riskWindowEnd","plpDataFolder","studyPopFile","plpResultFolder","cohortName","outcomeName"
+1,2,1,1,"Optum DOD 2011-01-01 to 2012-11-01",1,1,1,"Lasso Logistic Regression",0,-61,0,61,"NA","NA","NA","Patients with an end of observation","Death record"
