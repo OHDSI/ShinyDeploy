@@ -79,11 +79,14 @@ shinyServer(function(input, output) {
   # Does rmarkdown::render() have an option to return the output file as a variable instead of writing it to disk?
   getSummaryRmd <- function(name) {
 
+    # Get temporary directory
+    temp_d <- tempdir()
+    
     # Create name of phenotype file in temp directory
-    temp_f <- paste0(tempdir(), "/", name, ".html")
-
+    temp_f <- file.path(temp_d, paste0(name,".html"))
+    
     # Render correponding document (for speed, pre-rendering could be required in advance, but for simplicity, authors could leave as Rmd)
-    rmarkdown::render("Example_Phenotype_Submission_Template.Rmd",
+    rmarkdown::render(file.path("data","Example_Phenotype_Submission_Template.Rmd"),
       output_file = temp_f
     )
 
@@ -94,12 +97,16 @@ shinyServer(function(input, output) {
   }
 
   getValidationRmd <- function() {
+    
+    # Get temporary directory
+    temp_d <- tempdir()
+    
     name <- "dummy_validation_report"
-
-    temp_f <- paste0(tempdir(), "/", name, ".html")
+    
+    temp_f <- file.path(temp_d, paste0(name,".html"))
 
     # Render correponding document (for speed, this could be required in advance, but for simplicity, authors could leave as Rmd)
-    rmarkdown::render("Example_Validation_Submission_Template.Rmd",
+    rmarkdown::render(file.path("data", "Example_Validation_Submission_Template.Rmd"),
       output_file = temp_f
     )
 
