@@ -1,41 +1,59 @@
----
-title: "Phenotype Validation Example Template"
-author: "Author: Example Author"
-date: "Date: February 26, 2019"
-bibliography: example_bibliography_validation.bib
-output:
-  html_fragment # Must be a fragment in order to be properly embedded into the Shiny app
----
+# Validator Submission Template (Example)
 
-## Phenotype Title
-Rheumatoid Arthritis
+<style>
+  .flat-table {
+    border: 1px solid #1C6EA4;
+    background-color: #EEEEEE;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  td, th{
+    border: 1px solid #AAAAAA;
+    padding: 3px 2px;
+  }
+  thead {
+    background: #ffeabf;
+    background: -moz-linear-gradient(top, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+    background: -webkit-linear-gradient(top, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+    background: linear-gradient(to bottom, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+    border-bottom: 2px solid #444444;
+  }
+  tbody {
+    font-size: 16px;
+    color: #000000;
+  }  
+  tr:nth-child(even) {
+    background: #edfaff;
+  }
+  thead th {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    border-left: 2px solid #D0E4F5;
+  }
+</style>
 
-## Author(s) and Affiliations
-Author 1, Author 2, etc.
-Validated at Example University
-xyz@email.com
+## Summary
+| Characteristic | Entry |
+| ------ | ------ |
+| Phenotype Title | Rheumatoid Arthritis |
+| Hash of Implementation | 7245cf0ee90b52deb5b9965f42a5f32cff585d29 |
+| Validator(s) and Affiliations | Jane Doe, Example University </br> John Doe, Example University |
+| Date of Validation | March 21, 2019 |
 
-## Date Validated:
-February 26, 2019
-
-[//]: # (Below, please include the validation process you used -- if automated, please describe the settings chosen; if manual, please list the questions you used in your chart review.)
-
-## Validation Procedure Description:
-We validated this phenotype via chart review using a panel of 3 expert rheumatologists, with majority consensus used to break ties. We used the following questions in our review:
-
-- Has there been a report of joint pain in the previous 90 days before the index date?
-- Has there been any prior history of rheumatoid arthritis in the past two years?
-- Etc.
-- Etc.
+## Validation Procedure
+e.g. “We used PheValuator with the following settings…” or “There was a team of 3 rheumatologists who independently reviewed charts using a majority vote…”
 
 ## Metrics
-- Total: 400
-- True Positives: 180
-- True Negatives: 170
-- False Positives: 30
-- False Negatives: 20
+| Metric| Value |
+| ------ | ------ |
+| Sample Size | 400 |
+| True Positives | 250 |
+| True Negatives | 100 |
+| False Positives | 25 |
+| False Negatives | 25 |
+| Themis-Certified Dataset? | Yes |
+| Themis Certification Version? | 1.0 |
 
-## Other comments
-e.g. We expected the phenotype to provide more female cases than male cases since rheumatoid arthritis, per [@kvien2006epidemiological], but in our random sample, they were approximately equal, which is perhaps concerning to how this phenotype operates.
-
-# References
+## Additional Validator Comments (if any)
