@@ -77,37 +77,44 @@ shinyServer(function(input, output) {
 
   # TODO: If possible, render "in place" so writing out a temp file isn't needed.
   # Does rmarkdown::render() have an option to return the output file as a variable instead of writing it to disk?
-  getSummaryRmd <- function(name) {
+  # getSummaryRmd <- function(name) {
+  # 
+  #   # Get temporary directory
+  #   temp_d <- tempdir()
+  #   
+  #   # Create name of phenotype file in temp directory
+  #   temp_f <- file.path(temp_d, paste0(name,".html"))
+  #   
+  #   # Render correponding document (for speed, pre-rendering could be required in advance, but for simplicity, authors could leave as Rmd)
+  #   rmarkdown::render(file.path("data","Example_Phenotype_Submission_Template.Rmd"),
+  #     output_file = temp_f
+  #   )
+  # 
+  #   # Then pass back the rendered HTML file
+  #   return(
+  #     HTML(paste(readLines(temp_f), collapse = "\n"))
+  #   )
+  # }
 
-    # Create name of phenotype file in temp directory
-    temp_f <- paste0(tempdir(), "/", name, ".html")
-
-    # Render correponding document (for speed, pre-rendering could be required in advance, but for simplicity, authors could leave as Rmd)
-    rmarkdown::render("Example_Phenotype_Submission_Template.Rmd",
-      output_file = temp_f
-    )
-
-    # Then pass back the rendered HTML file
-    return(
-      HTML(paste(readLines(temp_f), collapse = "\n"))
-    )
-  }
-
-  getValidationRmd <- function() {
-    name <- "dummy_validation_report"
-
-    temp_f <- paste0(tempdir(), "/", name, ".html")
-
-    # Render correponding document (for speed, this could be required in advance, but for simplicity, authors could leave as Rmd)
-    rmarkdown::render("Example_Validation_Submission_Template.Rmd",
-      output_file = temp_f
-    )
-
-    # Then pass back the rendered HTML file
-    return(
-      HTML(paste(readLines(temp_f), collapse = "\n"))
-    )
-  }
+  # getValidationRmd <- function() {
+  #   
+  #   # Get temporary directory
+  #   temp_d <- tempdir()
+  #   
+  #   name <- "dummy_validation_report"
+  #   
+  #   temp_f <- file.path(temp_d, paste0(name,".html"))
+  # 
+  #   # Render correponding document (for speed, this could be required in advance, but for simplicity, authors could leave as Rmd)
+  #   rmarkdown::render(file.path("data", "Example_Validation_Submission_Template.Rmd"),
+  #     output_file = temp_f
+  #   )
+  # 
+  #   # Then pass back the rendered HTML file
+  #   return(
+  #     HTML(paste(readLines(temp_f), collapse = "\n"))
+  #   )
+  # }
 
   ### Menu Items
 
@@ -192,7 +199,8 @@ shinyServer(function(input, output) {
         tabPanel("Summary",
                  icon = icon("clipboard"),
                  
-                 fluidRow(column(12, box(status = "primary", width = NULL, getSummaryRmd(name))))
+                 # fluidRow(column(12, box(status = "primary", width = NULL, getSummaryRmd(name))))
+                 fluidRow(column(12, box(status = "primary", width = NULL, includeMarkdown(file.path("data", "Example_Phenotype_Submission_Template.md")))))
         ),
         
         tabPanel("Validation Sets",
@@ -228,10 +236,8 @@ shinyServer(function(input, output) {
                          numericInput("set_num", "Set Number (of 5):", 1, min = 1, max = 5, step = 1, width = 50)
                        )
                      )),
-                     fluidRow(column(12, box(
-                       status = "primary", width = NULL,
-                       getValidationRmd()
-                     )))
+                     #fluidRow(column(12, box(status = "primary", width = NULL, getValidationRmd())))
+                     fluidRow(column(12, box(status = "primary", width = NULL, includeMarkdown(file.path("data", "Example_Validation_Submission_Template.md")))))
                    )
                  )
         ),
