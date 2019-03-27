@@ -223,6 +223,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     shiny::fluidRow(width=12,
                                       shinydashboard::box(status = 'info', width = 12,
                                                            title = "Model Table", solidHeader = TRUE,
+                                                           shiny::downloadButton("downloadData", "Download Model"),
                                                            DT::dataTableOutput('modelView')))
                                     ),
             

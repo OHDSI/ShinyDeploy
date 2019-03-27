@@ -71,7 +71,7 @@ shiny::shinyServer(function(input, output, session) {
       }
       
       loc <- plpResultLocation[summaryData(),][ind,]$plpResultLocation
-      logLocation <- gsub('validationResult.rds','plplog.txt',gsub('plpResult.rds','plplog.txt', as.character(loc)))
+      logLocation <- gsub('validationResult.rds','plpLog.txt',gsub('plpResult.rds','plpLog.txt', as.character(loc)))
       if(file.exists(logLocation)){
         txt <- readLines(logLocation)
       } else{
@@ -84,6 +84,12 @@ shiny::shinyServer(function(input, output, session) {
      
        if(file.exists(as.character(loc))){
         eval <- readRDS(as.character(loc))
+        # rounding values to 2dp
+        for(coln in c('covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome')){
+          eval$covariateSummary[,coln] <- format(round(eval$covariateSummary[,coln], 2), nsmall = 2)
+          class(eval$covariateSummary[,coln]) <- "numeric"
+          }
+        
       } else{
         eval <- NULL
       }
@@ -244,7 +250,8 @@ shiny::shinyServer(function(input, output, session) {
     output$covariateSummaryMeasure <- plotly::renderPlotly({ covs()$meas })
   
     
-    output$modelView <- DT::renderDataTable(dataofint()$eval$covariateSummary[,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )])
+    output$modelView <- DT::renderDataTable(dataofint()$eval$covariateSummary[,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )],
+                                            colnames = c('Covariate Name', 'Value', 'Outcome Mean', 'Non-outcome Mean'))
   
     
     # dashboard
@@ -290,6 +297,17 @@ shiny::shinyServer(function(input, output, session) {
         color = "black"
       )
     })
+    
+    
+    
+    # Downloadable csv of model ----
+    output$downloadData <- downloadHandler(
+      filename = function(){'model.csv'},
+      content = function(file) {
+        write.csv(dataofint()$eval$covariateSummary[dataofint()$eval$covariateSummary$covariateValue!=0,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
+                  , file, row.names = FALSE)
+      }
+    )
     
    
     
