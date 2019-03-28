@@ -118,7 +118,7 @@ plotCovariateSummary <- function(covariateSummary){
   covariateSummary$annotation <- covariateSummary$covariateName
   
   
-  ind <- covariateSummary$CovariateMeanWithNoOutcome <1 & covariateSummary$CovariateMeanWithOutcome < 1
+  ind <- covariateSummary$CovariateMeanWithNoOutcome <=1 & covariateSummary$CovariateMeanWithOutcome <= 1
   # create two plots -1 or less or g1
   binary <- plotly::plot_ly(x = covariateSummary$CovariateMeanWithNoOutcome[ind],
                             #size = covariateSummary$size[ind],
@@ -143,8 +143,6 @@ plotCovariateSummary <- function(covariateSummary){
                  covariateSummary$CovariateMeanWithOutcome[!ind]), na.rm = T)
     meas <- plotly::plot_ly(x = covariateSummary$CovariateMeanWithNoOutcome[!ind] ) %>%
       plotly::add_markers(y = covariateSummary$CovariateMeanWithOutcome[!ind],
-                          marker = list(size = covariateSummary$size[!ind], 
-                                        color=covariateSummary$color[!ind]),
                           text = paste(covariateSummary$annotation[!ind])) %>%
       plotly::add_trace(x= c(0,maxValue), y = c(0,maxValue),mode = 'lines',
                         line = list(dash = "dash"), color = I('black'),
