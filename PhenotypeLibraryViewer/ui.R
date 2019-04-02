@@ -51,24 +51,23 @@ shinyUI(
 
         # Text at the top of the bar
         tags$head(tags$style(HTML(
-        '.myClass { 
-        font-size: 20px;
-        line-height: 50px;
-        text-align: left;
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-        padding: 0 15px;
-        overflow: hidden;
-        color: white;
-        }'
+          '.myClass { 
+          font-size: 20px;
+          line-height: 50px;
+          text-align: left;
+          font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+          padding: 0 15px;
+          overflow: hidden;
+          color: white;
+          }'
         ))),
         tags$script(HTML('
-        $(document).ready(function() {
-        $("header").find("nav").append(\'<span class="myClass"> OHDSI Gold Standard Phenotype Library </span>\');
-        })'
-        )),
+                         $(document).ready(function() {
+                         $("header").find("nav").append(\'<span class="myClass"> OHDSI Gold Standard Phenotype Library </span>\');
+                         })')),
 
         tags$h2("Under Development -- Do Not Use", style = "color:red", align = "center"),
-        
+
         # Create Find, Phenotype(s) 1-5, and About tabs
         tabItems(
 
@@ -134,33 +133,44 @@ shinyUI(
               )
             ),
 
-            h3("Filter"),
+            h3("Filters"),
             tags$hr(style = "border-color: black;"),
 
-            # Dependency Filter
+            # Validation Filter Metrics
             fluidRow(
+              
+              # Knobs for sensitivity, specificity, PPV, and NPV
               column(
                 width = 6,
                 box(
                   width = NULL, status = "warning",
-                  pickerInput(
-                    inputId = "picker_cdm",
-                    label = h4("Allowable Dependencies:"),
-                    choices = c("Conditions", "Drug Exposures", "Labs", "Notes NLP", "Observations", "Procedures", "Visits"),
-                    selected = c("Conditions", "Drug Exposures", "Labs", "Notes NLP", "Observations", "Procedures", "Visits"),
-                    multiple = TRUE,
-                    options = list(
-                      `actions-box` = TRUE,
-                      size = 7,
-                      `selected-text-format` = "count > 3"
-                    )
+                  h4("Minimum Allowable Metric Percentage:"),
+                  column(width = 12, awesomeRadio("validation_filter_metric",
+                    "Based on Validation:",
+                    choices = c("Min", "Average", "Median", "Max"),
+                    inline = TRUE,
+                    status = "warning"
+                  )),
+
+                  fluidRow(
+                    width = 12,
+                    column(width = 6, knobInput("knob_sensitivity", label = h3("Sensitivity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
+                    column(width = 6, knobInput("knob_specificity", label = h3("Specificity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
+                  ),
+
+                  fluidRow(
+                    width = 12,
+                    column(width = 6, knobInput("knob_ppv", label = h3("Positive Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
+                    column(width = 6, knobInput("knob_npv", label = h3("Negative Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
                   )
                 )
               ),
 
-              # Modality Filter
+              # Dependency and Modality Filters
               column(
                 width = 6,
+                
+                # Modality
                 box(
                   width = NULL, status = "warning",
                   pickerInput(
@@ -175,40 +185,43 @@ shinyUI(
                       `selected-text-format` = "count > 3"
                     )
                   )
-                )
-              )
-            ),
-
-            # Validation Filter Metrics
-            fluidRow(column(
-              width = 12,
-              box(
-                width = NULL, status = "warning",
-                h4("Minimum Allowable Metric Percentage:"),
-                column(width = 12, awesomeRadio("validation_filter_metric",
-                  "Based on Validation:",
-                  choices = c("Average", "Median"),
-                  inline = TRUE,
-                  status = "warning"
-                )),
-
-                fluidRow(
-                  width = 12,
-                  column(width = 3, h4("Sensitivity")),
-                  column(width = 3, h4("Specificity")),
-                  column(width = 3, h4("Positive Predictive Value")),
-                  column(width = 3, h4("Negative Predictive Value"))
                 ),
-
-                fluidRow(
-                  width = 12,
-                  column(width = 3, knobInput("knob_sensitivity", label = NULL, value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "100%")),
-                  column(width = 3, knobInput("knob_specificity", label = NULL, value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "100%")),
-                  column(width = 3, knobInput("knob_ppv", label = NULL, value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "100%")),
-                  column(width = 3, knobInput("knob_npv", label = NULL, value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "100%"))
+                
+                # CDM Dependencies
+                box(
+                  width = NULL, status = "warning",
+                  pickerInput(
+                    inputId = "picker_cdm",
+                    label = h4("Allowable CDM Dependencies:"),
+                    choices = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                    selected = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                    multiple = TRUE,
+                    options = list(
+                      `actions-box` = TRUE,
+                      size = 7,
+                      `selected-text-format` = "count > 3"
+                    )
+                  )
+                ),
+                
+                # Demographic Dependencies
+                box(
+                  width = NULL, status = "warning",
+                  pickerInput(
+                    inputId = "picker_cdm",
+                    label = h4("Allowable Demographic Dependencies:"),
+                    choices = c("Age", "Sex"),
+                    selected = c("Age", "Sex"),
+                    multiple = TRUE,
+                    options = list(
+                      `actions-box` = TRUE,
+                      size = 7,
+                      `selected-text-format` = "count > 3"
+                    )
+                  )
                 )
               )
-            ))
+            )
           ), # End Find
 
           # Inspect
