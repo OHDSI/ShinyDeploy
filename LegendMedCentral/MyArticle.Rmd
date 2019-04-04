@@ -12,7 +12,7 @@ params:
     matchOt: 3
     matchItt: 4
     title: "Acute myocardial infarction risk in new-users of valsartan versus olmesartan for hypertension in the JMDC database"
-    abstract: "We conduct a large-scale study on the incidence of acute myocardial infarction among new users of valsartan and olmesartan from 2006 to 2017 in the JMDC database. Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions. Secondary analyses entertain possible clinically relevant subgroup interaction with the HR. We identify 7316 valsartan and 9744 olmesartan patients for the on-treatment design, totaling 9093 and 9673 patient-years of observation, and 11 and 16 events respectively. We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation. We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values. In terms of acute myocardial infarction, valsartan has a similar risk as compared to olmesartan [HR: 0.88, 95% confidence interval (CI) 0.39 - 2.01]."
+    abstract: "We conduct a large-scale study on the incidence of acute myocardial infarction among new users of valsartan and olmesartan from 2006 to 2017 in the JMDC database. Outcomes of interest are estimates of the hazard ratio (HR) for incident events between comparable new users under on-treatment and intent-to-treat risk window assumptions. We identify 7316 valsartan and 9744 olmesartan patients for the on-treatment design, totaling 9093 and 9673 patient-years of observation, and 11 and 16 events respectively. We control for measured confounding using propensity score trimming and stratification or matching based on an expansive propensity score model that includes all measured patient features before treatment initiation. We account for unmeasured confounding using negative and positive controls to estimate and adjust for residual systematic bias in the study design and data source, providing calibrated confidence intervals and p-values. In terms of acute myocardial infarction, valsartan has a similar risk as compared to olmesartan [HR: 0.88, 95% confidence interval (CI) 0.39 - 2.01]."
     save: NULL
     load: NULL
 
@@ -216,12 +216,6 @@ if (is.null(params$load)) {
                                 databaseIds = params$databaseId,
                                 analysisIds = c(1, 2, 3, 4))
 
-  subgroupResults <- getSubgroupResults(connection = connection,
-                                        targetIds = params$targetId,
-                                        comparatorIds = params$comparatorId,
-                                        outcomeIds = params$outcomeId,
-                                        databaseIds = params$databaseId)
-
   controlResults <- getControlResults(connection = connection,
                                       targetId = params$targetId,
                                       comparatorId = params$comparatorId,
@@ -300,14 +294,14 @@ if (is.null(params$load)) {
 
   if (!is.null(params$save)) {
     save(targetName, comparatorName, outcomeName, analyses, databaseDetails,
-         studyPeriod, mainResults, subgroupResults, controlResults,
+         studyPeriod, mainResults, controlResults,
          attrition, followUpDist, balance, popCharacteristics, ps, kaplanMeier,
          file = params$save)
   }
 
   if (!is.null(params$save)) {
     save(targetName, comparatorName, outcomeName, analyses, databaseDetails,
-         studyPeriod, mainResults, subgroupResults, controlResults,
+         studyPeriod, mainResults, controlResults,
          attrition, followUpDist, balance, popCharacteristics, ps, kaplanMeier,
          originalTargetName, originalComparatorName,
          file = params$save)
@@ -383,8 +377,6 @@ We use an expansive PS model that includes all available patient demographics, d
  Detailed covariate and methods informations are provided in the
  [Supporting Information](#suppinfo).
  We present PS and covariate balance metrics to assess successful confounding control, and provide HR estimates and Kaplan-Meier survival plots for the outcome of `r outcomeName`.
- We additionally estimate HRs for pre-specified subgroups to evaluate interactions with the treatment effect.
-For efficiency reasons, we fit subgroup Cox models using PS stratification only.
 
 Residual study bias from unmeasured and systematic sources can exist in observational studies after controlling for measured confounding \citep{schuemie2014interpreting,schuemie2016robust}
 .
@@ -500,7 +492,7 @@ Figure \ref{fig:balance} plots StdDiff for all `r nrow(balance)` base-line patie
 Before stratification, `r sum(na.omit(balance$beforeMatchingStdDiff) > 0.1)` features have a StdDiff $> 0.1$.  After stratification, the count is `r sum(na.omit(balance$afterMatchingStdDiff) > 0.1)`.
 <!-- (TODO) Add judgement statement about measured confounding control using something like: `r judgePropensityScore(1.1,1.1)` -->
 
-```{r, make_balance, echo=FALSE, warning=FALSE, warning=FALSE, fig.align='center', fig.width=5, fig.height=5, out.width='70%', fig.cap="\\textbf{Patient characteristics balance before and after stratification.} As a rule-of-thum, all values $<0.1$ is generall considered well-balance \\citep{austin2009balance}."}
+```{r, balance, echo=FALSE, warning=FALSE, warning=FALSE, fig.align='center', fig.width=5, fig.height=5, out.width='70%', fig.cap="\\textbf{Patient characteristics balance before and after stratification.} As a rule-of-thum, all values $<0.1$ is generall considered well-balance \\citep{austin2009balance}."}
 plotCovariateBalanceScatterPlot(balance,
                                 beforeLabel = "Before stratification",
                                 afterLabel = "After stratification")
@@ -545,7 +537,6 @@ print(xtable(table, format = "latex"),
 Table \ref{tab:fu} details the time to first `r outcomeName` or censoring distributions for patients in the `r targetName` and `r comparatorName` cohorts.
 We report in Table \ref{tab:hr} estimated HRs comparing `r targetName` to `r comparatorName` for the on-treatment and intent-to-treat designs with stratification or matching.
 Figure \ref{fig:km} plots Kaplan-Meier survival curves for patients under the intent-to-treat design.
-To examine possible subgroup differences in treatment-effect, we include Table{tab:subgroups} that reports HR estimates separately for children (age $<$ 18), the elderly (age $\ge$ 65), female patients, pregnant women, patients with hepatic impairment and patients with renal impairment, using PS stratification.
 
 ```{r, km, echo=FALSE, results='hide', fig.width=6, fig.height=6, fig.align='center', out.width='80%', fig.cap=paste0("\\textbf{Kaplan Meier plot of ", outcomeName, "-free survival.} This plot is adjusted for the propensity score stratification; the ", targetName, " curve shows the actual observed survival. The ", comparatorName, " curve applies reweighting to approximate the counterfactual of what ", targetName, " survival would look like had the ", targetName, " cohort been exposed to ", comparatorName, " instead. The shaded area denotes the 95\\% CI.")}
 plotKm <- plotKaplanMeier(kaplanMeier, targetName, comparatorName)
@@ -589,48 +580,6 @@ print(xtable(table),
 }
 \end{table*}
 
-\begin{table*}
-\caption{
-Subgroup analyses. We report HR estimates, their 95\% CIs and uncalibrated and calibrated (cal) $p$-values to reject the null hypothesis of no difference in five pre-specified patient subgroups.
-}
-\label{tab:subgroups}
-\centering{
-\rowcolors{2}{gray!6}{white}
-\begin{tabular}{lrrrrrrrr}
-\hiderowcolors
-\toprule
-&
-\multicolumn{2}{c}{Subjects} &
-\multicolumn{3}{c}{On-treatment} &
-\multicolumn{3}{c}{Intent-to-treat} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-6} \cmidrule(lr){7-9}
-\multicolumn{1}{c}{Subgroup} &
-\multicolumn{1}{c}{T} &
-\multicolumn{1}{c}{C} &
-\multicolumn{1}{c}{HR (95\% CI)} &
-\multicolumn{1}{c}{$p$} &
-\multicolumn{1}{c}{cal-$p$} &
-\multicolumn{1}{c}{HR (95\% CI)} &
-\multicolumn{1}{c}{$p$} &
-\multicolumn{1}{c}{cal-$p$} \\
-\midrule
-\showrowcolors
-```{r, subgroups, echo=FALSE, results='asis', warning=FALSE}
-if (nrow(subgroupResults) > 0) {
-  table <- prepareSubgroupTable(subgroupResults)
-  print(xtable(table),
-        include.rownames = FALSE,
-        include.colnames = FALSE,
-        hline.after = NULL,
-        only.contents = TRUE,
-        add.to.row = list(pos = list(nrow(table)), command = c("\\bottomrule")),
-        sanitize.text.function = identity)
-}
-```
-\end{tabular}
-}
-\end{table*}
-
 ## Residual systematic error
 
 In the absense of bias, we expect 95\% of negative and positive control estimate 95\% confidence intervals to include their presumed HR.  In the case of negative controls, the presumed HR = 1.  Figure \ref{fig:negatives} describes the negative and positive control estimates under the on-treatment with PS stratification design.
@@ -666,13 +615,13 @@ Here we enumerate the guiding principles of LEGEND and provide linking details o
 \begin{enumerate}[noitemsep]
   \item Evidence will be generated at large-scale.
   \item Dissemination of the evidence will not depend on the estimated effects.
-  \item Evidence will be generated by consistently applying a systematic approach across all research questions.
   \item Evidence will be generated using a pre-specified analysis design.
-  \item Evidence will be generated using open source software that is freely available to all.
-  \item Evidence generation process will be empirically evaluated by including control research questions where the true effect size is known.
+  \item Evidence will be generated by consistently applying a systematic approach across all research questions.
   \item Evidence will be generated using best-practices.
+  \item Evidence generation process will be empirically evaluated by including control research questions where the true effect size is known.
+  \item Evidence will be generated using open source software that is freely available to all.
   \item LEGEND will not be used to evaluate methods.
-  \item Evidence will be updated on a regular basis.
+  \item Evidence will be generated in a network of heterogeneous databases.
   \item No patient-level data will be shared between sites in the network, only aggregated data.
 \end{enumerate}
 

@@ -61,3 +61,14 @@ disconnect(connection)
 #                           outcomeIds = outcomeId,
 #                           databaseIds = c(),
 #                           analysisIds = analysisIds)
+
+# balanceSummary <- getCovariateBalanceSummary(connection = connection,
+#                                                                        targetId = 1,
+#                                                                        comparatorId = 2)
+# 
+# 
+# balance <- getCovariateBalance(connection = connection,
+#                                              targetId = 1,
+#                                              comparatorId = 2,
+#                                databaseId = "CCAE",
+#                                analysisId = 2)

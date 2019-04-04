@@ -8,16 +8,13 @@ shinyUI(fluidPage(style = "width:1000px;",
                              windowTitle = "LegendMed Central"),
                   verticalLayout(
                     div(style = "background-color: #CCCCCC; padding: 8px;", 
-                        radioButtons("queryType", label = NULL, choices = c("Free-text", "Structured"), inline = TRUE),
-                        conditionalPanel("input.queryType == 'Free-text'",
-                                         textInput("query", label = "", placeholder = "Enter your search here", width = "100%"),
-                                         searchButton("textSearchButton", "Search",  structured = FALSE)
-                        ),
+                        radioButtons("queryType", label = NULL, choices = c("Structured", "Free-text"), inline = TRUE),
                         conditionalPanel("input.queryType == 'Structured'",
                                          fluidRow(
                                            # column(4, selectInput("indication", "Indication", c("All", indications$indicationId))),
-                                           column(4, selectInput("exposureGroup", "Exposure group", c("All", unique(exposureGroups$exposureGroup))))
+                                           column(4, selectInput("exposureGroup", "Exposure group", unique(exposureGroups$exposureGroup)))
                                          ),
+                                         checkboxInput("includeCombis", "Include combination exposures", FALSE),
                                          fluidRow(
                                            column(4, selectInput("target", "Target", c("All", unique(exposures$exposureName)))),
                                            column(4, selectInput("comparator", "Comparator", c("All", unique(exposures$exposureName))))
@@ -25,6 +22,10 @@ shinyUI(fluidPage(style = "width:1000px;",
                                          selectInput("outcome", "Outcome", c("All", unique(outcomes$outcomeName))),
                                          selectInput("database", "Database", c("All", databases$databaseId)),
                                          searchButton("structuredSearchButton", "Search", structured = TRUE)
+                        ),
+                        conditionalPanel("input.queryType == 'Free-text'",
+                                         textInput("query", label = "", placeholder = "Enter your search here", width = "100%"),
+                                         searchButton("textSearchButton", "Search",  structured = FALSE)
                         )
                     ),
                     conditionalPanel("output.isSearchResultPage == true", dataTableOutput("searchResults")),
