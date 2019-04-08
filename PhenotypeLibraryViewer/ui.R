@@ -1,15 +1,5 @@
 # OHDSI Gold Standard Phenotype Library Viewer
 
-# Libraries
-library(ggplot2)
-library(knitr)
-library(rmarkdown)
-library(shiny)
-library(shinydashboard)
-library(shinyWidgets)
-
-# TODO: Consider making CSS file for styles (i.e. get rid of most "tags$" expressions)
-
 # UI Definition
 shinyUI(
   fluidPage(
@@ -46,6 +36,8 @@ shinyUI(
           tags$style(HTML(".main-sidebar { font-size: 18px; }"))
         ),
 
+        # TODO: Consider making CSS file for styles (i.e. get rid of most "tags$" expressions)
+        
         # Text at the top of the bar
         tags$head(tags$style(HTML(
           '.myClass { 

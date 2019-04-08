@@ -1,13 +1,5 @@
 # OHDSI Gold Standard Phenotype Library Viewer
 
-# Libraries
-library(ggplot2)
-library(knitr)
-library(rmarkdown)
-library(shiny)
-library(shinydashboard)
-library(shinyWidgets)
-
 # Utility function to build a markdown file based on the template
 buildPhenotypeMarkdown <- function(dat) {
 
