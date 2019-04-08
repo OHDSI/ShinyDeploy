@@ -22,7 +22,7 @@ buildPhenotypeMarkdown <- function(dat) {
 
   # Read template
   md_template <- paste0(
-    readLines("/home/apotvien3/Projects/GSPL/ShinyDeploy/ShinyDeploy/PhenotypeLibraryViewer/data/Phenotype_Submission_Template.md"),
+    readLines(file.path("data", "Phenotype_Submission_Template.md")),
     collapse = "\n"
   )
 
@@ -54,12 +54,11 @@ buildPhenotypeMarkdown <- function(dat) {
 buildValidationMarkdown <- function(dat, phe_title) {
 
   # Read template
-  # md_template <- read.delim(file.path("data", "Example_Phenotype_Submission_Template.md"))
   md_template <- paste0(
-    readLines("/home/apotvien3/Projects/GSPL/ShinyDeploy/ShinyDeploy/PhenotypeLibraryViewer/data/Validation_Submission_Template.md"),
+    readLines(file.path("data", "Validation_Submission_Template.md")),
     collapse = "\n"
   )
-
+  
   # Perform direct substitutions on most variables
   for (term in names(dat)[!(names(dat) %in% c("Title", "Validators_And_Affiliations"))]) {
     md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
