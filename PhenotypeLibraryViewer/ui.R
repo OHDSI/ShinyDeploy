@@ -10,8 +10,14 @@ library(shinyWidgets)
 
 # TODO: Consider making CSS file for styles (i.e. get rid of most "tags$" expressions)
 
-# TODO: Read the index file on load, e.g.
-# phenotypes <- getURL("https://raw.github.com/phenotype/location/index.json")
+# Read the gold standard library index file
+open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
+gold <- readRDS(con)
+close(con)
+
+# Unpack into the phenotype and validation datasets
+phe <- gold$Phenotype
+val <- gold$Validation
 
 # UI Definition
 shinyUI(
@@ -84,84 +90,35 @@ shinyUI(
                 box(
                   width = 12, status = "primary",
                   title = "Search for a phenotype",
-                  selectizeInput("phenotype_search",
-                    label = "Select up to 5 phenotypes for comparison:",
-                    # TODO: Retrieve choices from GSPL Index File with filters applied
-                    # e.g. choices = getFilteredChoices()
-                    choices = sort(c(
-                      "",
-                      # state.name,
-                      "Addison’s disease",
-                      "Asthma",
-                      "Autism",
-                      "Bipolar Mood Disorder",
-                      "Bronchiectasis",
-                      "Cardiac failure",
-                      "Cardiomyopathy",
-                      "Chronic obstructive pulmonary disorder",
-                      "Chronic renal disease",
-                      "Coronary artery disease",
-                      "Crohn’s disease",
-                      "Diabetes insipidus",
-                      "Diabetes Type 1",
-                      "Diabetes Type 2",
-                      "Dysrhythmias",
-                      "Epilepsy",
-                      "Familial Hyperlipidemia",
-                      "Glaucoma",
-                      "Hemophilia",
-                      "Hyperlipidemia",
-                      "Hypertension",
-                      "Hypothyroidism",
-                      "Metastatic Cancer",
-                      "Multiple sclerosis",
-                      "Parkinson’s disease",
-                      "Schizophrenia",
-                      "Systemic lupus erythematosus",
-                      "Ulcerative colitis",
-                      "Rheumatoid arthritis - V1.0",
-                      "Rheumatoid arthritis - V2.0",
-                      "Rheumatoid arthritis - V3.0",
-                      "Rheumatoid arthritis - V4.0",
-                      "Rheumatoid arthritis - V5.0"
-                    )),
-                    selected = "",
-                    multiple = TRUE,
-                    options = list(maxItems = 5)
-                  )
+                  uiOutput("filtered_phenotypes")
                 )
               )
             ),
 
-            h3("Filters"),
+            uiOutput("number_choices"),
             tags$hr(style = "border-color: black;"),
 
             # Validation Filter Metrics
             fluidRow(
-              
+
               # Knobs for sensitivity, specificity, PPV, and NPV
               column(
                 width = 6,
                 box(
                   width = NULL, status = "warning",
-                  h4("Minimum Allowable Metric Percentage:"),
-                  column(width = 12, awesomeRadio("validation_filter_metric",
-                    "Based on Validation:",
-                    choices = c("Min", "Average", "Median", "Max"),
-                    inline = TRUE,
-                    status = "warning"
-                  )),
+                  h4("Minimum Allowable Metrics:"),
+                  h6("This is based on validation set averages, weighted by sample size."),
 
                   fluidRow(
                     width = 12,
-                    column(width = 6, knobInput("knob_sensitivity", label = h3("Sensitivity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
-                    column(width = 6, knobInput("knob_specificity", label = h3("Specificity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
+                    column(width = 6, knobInput("knob_sensitivity", label = h4("Sensitivity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
+                    column(width = 6, knobInput("knob_specificity", label = h4("Specificity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
                   ),
 
                   fluidRow(
                     width = 12,
-                    column(width = 6, knobInput("knob_ppv", label = h3("Positive Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
-                    column(width = 6, knobInput("knob_npv", label = h3("Negative Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
+                    column(width = 6, knobInput("knob_ppv", label = h4("Positive Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
+                    column(width = 6, knobInput("knob_npv", label = h4("Negative Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
                   )
                 )
               ),
@@ -169,7 +126,7 @@ shinyUI(
               # Dependency and Modality Filters
               column(
                 width = 6,
-                
+
                 # Modality
                 box(
                   width = NULL, status = "warning",
@@ -186,7 +143,7 @@ shinyUI(
                     )
                   )
                 ),
-                
+
                 # CDM Dependencies
                 box(
                   width = NULL, status = "warning",
@@ -203,12 +160,12 @@ shinyUI(
                     )
                   )
                 ),
-                
+
                 # Demographic Dependencies
                 box(
                   width = NULL, status = "warning",
                   pickerInput(
-                    inputId = "picker_cdm",
+                    inputId = "picker_demographics",
                     label = h4("Allowable Demographic Dependencies:"),
                     choices = c("Age", "Sex"),
                     selected = c("Age", "Sex"),
