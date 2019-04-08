@@ -10,15 +10,6 @@ library(shinyWidgets)
 
 # TODO: Consider making CSS file for styles (i.e. get rid of most "tags$" expressions)
 
-# Read the gold standard library index file
-open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
-gold <- readRDS(con)
-close(con)
-
-# Unpack into the phenotype and validation datasets
-phe <- gold$Phenotype
-val <- gold$Validation
-
 # UI Definition
 shinyUI(
   fluidPage(
@@ -82,6 +73,7 @@ shinyUI(
             tabName = "find",
 
             h3("Search"),
+            actionButton("refreshButton", "Refresh", icon=icon("refresh")),
             tags$hr(style = "border-color: black;"),
 
             fluidRow(

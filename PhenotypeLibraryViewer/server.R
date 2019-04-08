@@ -8,15 +8,6 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 
-# Read the gold standard library index file
-open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
-gold <- readRDS(con)
-close(con)
-
-# Unpack into the phenotype and validation datasets
-phe <- gold$Phenotype
-val <- gold$Validation
-
 # Utility function to build a markdown file based on the template
 buildPhenotypeMarkdown <- function(dat) {
 
@@ -78,6 +69,15 @@ buildValidationMarkdown <- function(dat, phe_title) {
 
 # Server Definition
 shinyServer(function(input, output) {
+  
+  open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
+  gold <- readRDS(con)
+  close(con)
+
+  #Unpack into the phenotype and validation datasets
+  phe <- gold$Phenotype
+  val <- gold$Validation
+  
   getFilteredChoices <- function() {
 
     # Begin with all phenotypes selected
@@ -310,9 +310,9 @@ shinyServer(function(input, output) {
   makeExampleBox <- function(name) {
 
     # Get row of phenotype and validation data that corresponds to this name
-    phe_data <<- subset(phe, Title == name)
+    phe_data <- subset(phe, Title == name)
     val_data <- subset(val, Hash == phe_data$Hash)
-
+    
     # Make tabsetPanel
     return(
       tabsetPanel(
@@ -417,4 +417,11 @@ shinyServer(function(input, output) {
       return(hr())
     }
   })
+  
+  # TODO: Consider adding refresh button to reset inputs to initial states and repull data
+  
+  # observeEvent(input$refreshButton, {
+  # ...
+  # })
+  
 }) # End shinyServer
