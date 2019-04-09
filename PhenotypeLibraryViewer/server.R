@@ -1,15 +1,162 @@
 # OHDSI Gold Standard Phenotype Library Viewer
 
-# Libraries
-library(ggplot2)
-library(knitr)
-library(rmarkdown)
-library(shiny)
-library(shinydashboard)
-library(shinyWidgets)
+# Utility function to build a markdown file based on the template
+buildPhenotypeMarkdown <- function(dat) {
+
+  # Read template
+  md_template <- paste0(
+    readLines(file.path("data", "Phenotype_Submission_Template.md")),
+    collapse = "\n"
+  )
+
+  # Perform direct substitutions on most variables
+  for (term in names(dat)[!(names(dat) %in% c("Authors_And_Affiliations", "Provenance_Hashes", "Provenance_Reasons"))]) {
+    md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
+  }
+
+  # Authors and Affiliations
+  md_template <- gsub("<Authors_And_Affiliations>", paste(dat$Authors_And_Affiliations[[1]], collapse = "</br> "), md_template)
+
+  # Provenance Table
+  # TODO: Replace placeholders
+  md_template <- gsub(
+    "<Provenance_Hash_Table>",
+    paste0(
+      paste("", "Title Placeholder", "Link Placeholder", dat$Provenance_Hashes[[1]], dat$Provenance_Reasons[[1]], "", sep = "|"),
+      collapse = "\n"
+    ),
+    md_template
+  )
+
+  # Render and return
+  html <- markdown::markdownToHTML(text = paste0(md_template, collapse = "\n"), fragment.only = TRUE)
+  Encoding(html) <- "UTF-8"
+  return(HTML(html))
+}
+
+buildValidationMarkdown <- function(dat, phe_title) {
+
+  # Read template
+  md_template <- paste0(
+    readLines(file.path("data", "Validation_Submission_Template.md")),
+    collapse = "\n"
+  )
+  
+  # Perform direct substitutions on most variables
+  for (term in names(dat)[!(names(dat) %in% c("Title", "Validators_And_Affiliations"))]) {
+    md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
+  }
+
+  # Title
+  md_template <- gsub("<Title>", phe_title, md_template)
+
+  # Validators and Affiliations
+  md_template <- gsub("<Validators_And_Affiliations>", paste(dat$Validators_And_Affiliations[[1]], collapse = "</br> "), md_template)
+
+  # Return rendered md file
+  html <- markdown::markdownToHTML(text = paste0(md_template, collapse = "\n"), fragment.only = TRUE)
+  Encoding(html) <- "UTF-8"
+  return(HTML(html))
+}
 
 # Server Definition
 shinyServer(function(input, output) {
+  
+  open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
+  gold <- readRDS(con)
+  close(con)
+
+  #Unpack into the phenotype and validation datasets
+  phe <- gold$Phenotype
+  val <- gold$Validation
+  
+  getFilteredChoices <- function() {
+
+    # Begin with all phenotypes selected
+    filter_logic <- list(rep(TRUE, nrow(phe)))
+
+    # CDM Dependencies
+    if (!("Conditions" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Conditions != "Yes"))
+    }
+
+    if (!("Drug Exposures" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Drug_Exposures != "Yes"))
+    }
+
+    if (!("Labs" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Labs != "Yes"))
+    }
+
+    if (!("Measurements" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Measurements != "Yes"))
+    }
+
+    if (!("Notes NLP" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Notes_NLP != "Yes"))
+    }
+
+    if (!("Observations" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Observations != "Yes"))
+    }
+
+    if (!("Procedures" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Procedures != "Yes"))
+    }
+
+    if (!("Visits" %in% input$picker_cdm)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Visits != "Yes"))
+    }
+
+    # Demographic Dependencies
+    if (!("Age" %in% input$picker_demographics)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Age_Category != "Yes"))
+    }
+
+    if (!("Sex" %in% input$picker_demographics)) {
+      filter_logic <- c(filter_logic, list(phe$Uses_Gender != "Yes"))
+    }
+
+    # Modalities
+    if (!("Rule-based (Heuristic)" %in% input$picker_modality)) {
+      filter_logic <- c(filter_logic, list(phe$Modality != "Rule-Based"))
+    }
+
+    if (!("Computable (Algorithmic)" %in% input$picker_modality)) {
+      filter_logic <- c(filter_logic, list(phe$Modality != "Computable"))
+    }
+
+    # Validation thresholds
+    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Sensitivity), 0, phe$Avg_Sensitivity) >= input$knob_sensitivity / 100))
+    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Specificity), 0, phe$Avg_Specificity) >= input$knob_specificity / 100))
+    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_PPV), 0, phe$Avg_PPV) >= input$knob_ppv / 100))
+    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_NPV), 0, phe$Avg_NPV) >= input$knob_npv / 100))
+
+    # Combine logic
+    filter_idx <- Reduce("&", filter_logic)
+    phe_sub <- phe[filter_idx, ]
+
+    # Return names of applicable phenotypes
+    return(c("", phe_sub$Title))
+  }
+
+  # Filtered Phenotypes Search Bar
+  output$filtered_phenotypes <- renderUI({
+
+    # Apply filtered phenotypes
+    selectizeInput("phenotype_search",
+      label = "Select up to 5 phenotypes for comparison:",
+      choices = getFilteredChoices(),
+      selected = "",
+      multiple = TRUE,
+      options = list(maxItems = 5)
+    )
+  })
+
+  # TODO: Avoid double call to get FilteredChoices()
+  output$number_choices <- renderUI({
+    h3(paste("Filters:", length(getFilteredChoices()) - 1, "out of", nrow(phe), "phenotypes selected."))
+  })
 
   # Inspect Tab
   output$inspect_tab <- renderUI({
@@ -74,47 +221,6 @@ shinyServer(function(input, output) {
       write.csv(iris, file, na = "")
     }
   )
-
-  # TODO: If possible, render "in place" so writing out a temp file isn't needed.
-  # Does rmarkdown::render() have an option to return the output file as a variable instead of writing it to disk?
-  # getSummaryRmd <- function(name) {
-  # 
-  #   # Get temporary directory
-  #   temp_d <- tempdir()
-  #   
-  #   # Create name of phenotype file in temp directory
-  #   temp_f <- file.path(temp_d, paste0(name,".html"))
-  #   
-  #   # Render correponding document (for speed, pre-rendering could be required in advance, but for simplicity, authors could leave as Rmd)
-  #   rmarkdown::render(file.path("data","Example_Phenotype_Submission_Template.Rmd"),
-  #     output_file = temp_f
-  #   )
-  # 
-  #   # Then pass back the rendered HTML file
-  #   return(
-  #     HTML(paste(readLines(temp_f), collapse = "\n"))
-  #   )
-  # }
-
-  # getValidationRmd <- function() {
-  #   
-  #   # Get temporary directory
-  #   temp_d <- tempdir()
-  #   
-  #   name <- "dummy_validation_report"
-  #   
-  #   temp_f <- file.path(temp_d, paste0(name,".html"))
-  # 
-  #   # Render correponding document (for speed, this could be required in advance, but for simplicity, authors could leave as Rmd)
-  #   rmarkdown::render(file.path("data", "Example_Validation_Submission_Template.Rmd"),
-  #     output_file = temp_f
-  #   )
-  # 
-  #   # Then pass back the rendered HTML file
-  #   return(
-  #     HTML(paste(readLines(temp_f), collapse = "\n"))
-  #   )
-  # }
 
   ### Menu Items
 
@@ -191,55 +297,57 @@ shinyServer(function(input, output) {
   })
 
   ### Tabs
-  
+
   # Create an example tabsetPanel() to populate one phenotype selection
   makeExampleBox <- function(name) {
+
+    # Get row of phenotype and validation data that corresponds to this name
+    phe_data <- subset(phe, Title == name)
+    val_data <- subset(val, Hash == phe_data$Hash)
+    
+    # Make tabsetPanel
     return(
       tabsetPanel(
         tabPanel("Summary",
-                 icon = icon("clipboard"),
-                 
-                 # fluidRow(column(12, box(status = "primary", width = NULL, getSummaryRmd(name))))
-                 fluidRow(column(12, box(status = "primary", width = NULL, includeMarkdown(file.path("data", "Example_Phenotype_Submission_Template.md")))))
+          icon = icon("clipboard"),
+          fluidRow(column(12, box(status = "primary", width = NULL, buildPhenotypeMarkdown(phe_data))))
         ),
-        
+
         tabPanel("Validation Sets",
-                 icon = icon("calculator"),
-                 
-                 tabsetPanel(
-                   tabPanel(
-                     "Overview", h1("Validation Overview"),
-                     fluidRow(column(12, box(
-                       status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
-                       h4("Number of Validation Sets: 5")
-                     ))),
-                     fluidRow(column(12, box(
-                       status = "primary", width = NULL, title = "Metric Distributions", solidHeader = TRUE,
-                       renderPlot(
-                           ggplot(getDummyValidationStats(name), aes(x = Metric, y = Percent)) +
-                           geom_boxplot() +
-                           geom_point(shape = 21, color = "black", fill = "orange", size = 5) +
-                           theme_classic() +
-                           theme(text = element_text(size = 20))
-                       )
-                     )))
-                   ),
-                   tabPanel(
-                     "Individual Sets",
-                     h1("Validation Reports"),
-                     fluidRow(column(
-                       width = 2, offset = 5,
-                       box(
-                         status = "primary", width = NULL,
-                         # TODO: Can a better widget be used to page through validation sets?
-                         # Can we have a "Previous/Next" pager?
-                         numericInput("set_num", "Set Number (of 5):", 1, min = 1, max = 5, step = 1, width = 50)
-                       )
-                     )),
-                     #fluidRow(column(12, box(status = "primary", width = NULL, getValidationRmd())))
-                     fluidRow(column(12, box(status = "primary", width = NULL, includeMarkdown(file.path("data", "Example_Validation_Submission_Template.md")))))
-                   )
-                 )
+          icon = icon("calculator"),
+          tabsetPanel(
+            tabPanel(
+              "Overview", h1("Validation Overview"),
+              fluidRow(column(12, box(
+                status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
+                h4(paste("Number of Validation Sets:", nrow(val_data)))
+              ))),
+              fluidRow(column(12, box(
+                status = "primary", width = NULL, title = "Metric Distributions", solidHeader = TRUE,
+                renderPlot(
+                  ggplot(getDummyValidationStats(name), aes(x = Metric, y = Percent)) +
+                    geom_boxplot() +
+                    geom_point(shape = 21, color = "black", fill = "orange", size = 5) +
+                    theme_classic() +
+                    theme(text = element_text(size = 20))
+                )
+              )))
+            ),
+            tabPanel(
+              "Individual Sets",
+              h1("Validation Reports"),
+              fluidRow(column(
+                width = 2, offset = 5,
+                box(
+                  status = "primary", width = NULL,
+                  # TODO: Can a better widget be used to page through validation sets?
+                  # Can we have a "Previous/Next" pager?
+                  numericInput("set_num", "Set Number (of 5):", 1, min = 1, max = nrow(val_data), step = 1, width = 80)
+                )
+              )),
+              fluidRow(column(12, box(status = "primary", width = NULL, buildValidationMarkdown(val_data[1, ], phe_data$Title))))
+            )
+          )
         ),
         tabPanel(
           title = "Export", icon = icon("download"),
@@ -257,7 +365,7 @@ shinyServer(function(input, output) {
       ) # End tabsetPanel
     ) # End return
   } # End makeExampleBox
-  
+
   # TODO: Wrap similar Tab code in function calls -- Part 3 of 3
 
   output$tab1 <- renderUI({
@@ -301,5 +409,11 @@ shinyServer(function(input, output) {
       return(hr())
     }
   })
-
+  
+  # TODO: Consider adding refresh button to reset inputs to initial states and repull data
+  
+  # observeEvent(input$refreshButton, {
+  # ...
+  # })
+  
 }) # End shinyServer

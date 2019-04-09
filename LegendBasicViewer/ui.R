@@ -82,7 +82,7 @@ shinyUI(
                                                                                     estimator should have the true effect size within the 95 percent confidence interval 95 percent of times."),
                                                                                 conditionalPanel("output.isMetaAnalysis == true",
                                                                                                  plotOutput("systematicErrorSummaryPlot"),
-                                                                                                 div(strong("Figure 8."),"Fitter null distributions per data source."))
+                                                                                                 div(strong("Figure 8."),"Fitted null distributions per data source."))
                                                                        ),
                                                                        tabPanel("Forest plot",
                                                                                 plotOutput("forestPlot"),

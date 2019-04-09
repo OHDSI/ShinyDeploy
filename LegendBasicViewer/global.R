@@ -33,14 +33,12 @@ outcomes <- getOutcomes(connection)
 databases <- getDatabases(connection)
 metaAnalysisDbIds <- databases$databaseId[databases$isMetaAnalysis == 1]
 analyses <- getAnalyses(connection)
-subgroups <- getSubgroups(connection)
 # Sort for display:
 indications <- indications[order(indications$indicationId), ]
 exposures <- exposures[order(exposures$exposureName), ]
 outcomes <- outcomes[order(outcomes$outcomeName), ]
 databases <- databases[order(databases$isMetaAnalysis, databases$databaseId), ]
 analyses <- analyses[order(analyses$analysisId), ]
-subgroups <- subgroups[order(subgroups$subgroupId), ]
 
 
 writeLines("Closing connection")
@@ -61,3 +59,14 @@ disconnect(connection)
 #                           outcomeIds = outcomeId,
 #                           databaseIds = c(),
 #                           analysisIds = analysisIds)
+
+# balanceSummary <- getCovariateBalanceSummary(connection = connection,
+#                                                                        targetId = 1,
+#                                                                        comparatorId = 2)
+# 
+# 
+# balance <- getCovariateBalance(connection = connection,
+#                                              targetId = 1,
+#                                              comparatorId = 2,
+#                                databaseId = "CCAE",
+#                                analysisId = 2)

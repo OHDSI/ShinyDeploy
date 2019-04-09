@@ -25,6 +25,7 @@ shinyServer(function(input, output, session) {
       }
       databaseIds <- databases$databaseId[databases$databaseId == query$database]
       tcoDbs <- getTcoDbs(connection, targetIds = targetIds, comparatorIds = comparatorIds, outcomeIds = outcomeIds, databaseIds = databaseIds, limit = 100)
+      tcoDbs <- tcoDbs[tcoDbs$databaseId != "Meta-analysis", ]
       return(tcoDbs)
     } else if (!is.null(query$term)) {
       parts <- strsplit(query$term, " ")[[1]]
@@ -62,6 +63,7 @@ shinyServer(function(input, output, session) {
         outcomeIds <- outcomes$outcomeId
       }
       tcoDbs <- getTcoDbsStrict(connection, exposureIds = exposureIds, outcomeIds = outcomeIds, databaseIds = databaseIds)
+      tcoDbs <- tcoDbs[tcoDbs$databaseId != "Meta-analysis", ]
       return(tcoDbs)
     } else {
     return(NULL)
@@ -100,38 +102,17 @@ shinyServer(function(input, output, session) {
   })
   outputOptions(output, "isAbstractPage", suspendWhenHidden = FALSE)
   
-  # setExposureGroupChoices <- function(indicationId) {
-  #   if (indicationId == "All") {
-  #     filterExposureGroups <- unique(exposureGroups$exposureGroup)
-  #   } else {
-  #     filterExposureGroups <- unique(exposureGroups$exposureGroup[exposureGroups$indicationId == indicationId])
-  #   }
-  #   if (is.null(currentChoices$exposureGroups) || !isTRUE(all.equal(currentChoices$exposureGroups, filterExposureGroups))) {
-  #     currentChoices$exposureGroups <- filterExposureGroups 
-  #     writeLines(paste("Setting exposure groups to ", paste(filterExposureGroups, collapse = ", ")))
-  #     updateSelectInput(session = session,
-  #                       inputId = "exposureGroup",
-  #                       choices = c("All", filterExposureGroups))
-  #   }
-  # }
-  
-  # setTcoChoices <- function(indicationId, exposureGroup) {
+
   setTcoChoices <- function(exposureGroup) {
-    # if (indicationId == "All") {
-      filteredExposures <- exposures
-      filteredOutcomes <- outcomes
-    # } else {
-    #   filteredExposures <- exposures[exposures$indicationId == indicationId, ]
-    #   filteredOutcomes <- outcomes[outcomes$indicationId == indicationId, ]
-    # }
-    if (exposureGroup == "All") {
-      filteredExposures <- filteredExposures
-    } else {
-      filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+    filteredExposures <- exposures
+    filteredOutcomes <- outcomes
+    filteredExposures <- filteredExposures[filteredExposures$exposureGroup == exposureGroup, ]
+    includeCombis <- input$includeCombis
+    if (!includeCombis) {
+      filteredExposures <- filteredExposures[filteredExposures$combi == 0, ]
     }
     
     if (is.null(currentChoices$exposures) || !isTRUE(all.equal(currentChoices$exposures, filteredExposures$exposureName))) {
-      # writeLines(paste("Setting target to ", paste(filteredExposures$exposureName, collapse = ", "), ", selection to", input$target))
       currentChoices$exposures <- filteredExposures$exposureName
       updateSelectInput(session = session,
                         inputId = "target",
@@ -153,19 +134,12 @@ shinyServer(function(input, output, session) {
     query <- parseQueryString(session$clientData$url_search)
     isolate({
       if (!is.null(query$structured)) {
-        # print("Parsing query string")
         updateRadioButtons(session = session,
                            inputId = "queryType",
                            selected = "Structured")
-        # updateSelectInput(session = session,
-        #                   inputId = "indication",
-        #                   selected = query$indication)
-        # setExposureGroupChoices(query$indication)
-        # writeLines(paste("Setting exposure group selection to ", query$exposureGroup))
         updateSelectInput(session = session,
                           inputId = "exposureGroup",
                           selected = query$exposureGroup)
-        # setTcoChoices(query$indication, query$exposureGroup)
         setTcoChoices(query$exposureGroup)
         updateSelectInput(session = session,
                           inputId = "target",
@@ -179,7 +153,6 @@ shinyServer(function(input, output, session) {
         updateSelectInput(session = session,
                           inputId = "database",
                           selected = query$database)
-        # print("Done parsing query string")
       } else {
         if (!is.null(query$term))
           updateTextInput(session, "query", value = query$term)
@@ -187,17 +160,8 @@ shinyServer(function(input, output, session) {
     })
   }, priority = 0)
   
-  # observe({
-  #   indicationId <- input$indication
-  #   writeLines(paste("Indication has been set to", indicationId))
-  #   setExposureGroupChoices(indicationId)
-  # })
-
   observe({
-    # indicationId <- input$indication
     exposureGroup <- input$exposureGroup
-    # writeLines(paste("Indication has been set to", indicationId, ", exposure group selection has been set to", exposureGroup))
-    # setTcoChoices(indicationId, exposureGroup)
     setTcoChoices(exposureGroup)
   }, priority = 10)
 
@@ -265,30 +229,9 @@ shinyServer(function(input, output, session) {
     if (is.null(tcoDb)) {
       return(NULL)
     } else {
-      
-      # targetName <- uncapitalize(exposures$exposureName[match(tcoDb$targetId, exposures$exposureId)])
-      # comparatorName <- uncapitalize(exposures$exposureName[match(tcoDb$comparatorId, exposures$exposureId)])
-      # outcomeName <- uncapitalize(outcomes$outcomeName[match(tcoDb$outcomeId, outcomes$outcomeId)])
-      # indicationId <- uncapitalize(exposures$indicationId[match(tcoDb$targetId, exposures$exposureId)])
-      # 
-      # results <- getMainResults(connection,
-      #                           targetIds = tcoDb$targetId,
-      #                           comparatorIds = tcoDb$comparatorId,
-      #                           outcomeIds = tcoDb$outcomeId,
-      #                           databaseIds = tcoDb$databaseId)
-      # 
-      # studyPeriod <- getStudyPeriod(connection = connection,
-      #                               targetId = tcoDb$targetId,
-      #                               comparatorId = tcoDb$comparatorId,
-      #                               databaseId = tcoDb$databaseId)      
-      
       authors <- createAuthors()
-      
-      # abstract <- createAbstract(outcomeName, targetName, comparatorName, tcoDb$databaseId, studyPeriod, results)
       abstract <- createAbstract(connection, tcoDb)
-      
       title <- createTitle(tcoDb)
-      
       abstract <- div(em("LEGEND version 1.0"),
                       h2(title),
                       h3("Authors"),

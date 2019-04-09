@@ -19,12 +19,13 @@ exposures$exposureGroup[exposures$exposureGroup == "Drug" | exposures$exposureGr
 exposureGroups <- unique(exposures[, c("indicationId", "exposureGroup")])
 outcomes <- getOutcomes(connection)
 databases <- getDatabases(connection)
+databases <- databases[!databases$isMetaAnalysis, ]
 
 # Sort for display:
 indications <- indications[order(indications$indicationId), ]
 exposures <- exposures[order(exposures$exposureName), ]
 outcomes <- outcomes[order(outcomes$outcomeName), ]
-databases <- databases[order(databases$isMetaAnalysis, databases$databaseId), ]
+databases <- databases[order(databases$databaseId), ]
 
 writeLines("Closing connection")
 disconnect(connection)
