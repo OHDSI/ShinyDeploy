@@ -41,7 +41,7 @@ buildValidationMarkdown <- function(dat, phe_title) {
     readLines(file.path("data", "Validation_Submission_Template.md")),
     collapse = "\n"
   )
-  
+
   # Perform direct substitutions on most variables
   for (term in names(dat)[!(names(dat) %in% c("Title", "Validators_And_Affiliations"))]) {
     md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
@@ -61,15 +61,14 @@ buildValidationMarkdown <- function(dat, phe_title) {
 
 # Server Definition
 shinyServer(function(input, output) {
-  
   open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
   gold <- readRDS(con)
   close(con)
 
-  #Unpack into the phenotype and validation datasets
+  # Unpack into the phenotype and validation datasets
   phe <- gold$Phenotype
   val <- gold$Validation
-  
+
   getFilteredChoices <- function() {
 
     # Begin with all phenotypes selected
@@ -164,7 +163,7 @@ shinyServer(function(input, output) {
       title = "Metric Distributions", status = "warning", solidHeader = TRUE, width = NULL,
       renderPlot(
         ggplot(
-          getDummyValidationPlotData(), aes(x = Metric, y = Values, fill = Name)
+          getDummyValidationPlotData("dummy_name"), aes(x = Metric, y = Values, fill = Name)
         ) +
           geom_boxplot() +
           theme_minimal() +
@@ -179,7 +178,7 @@ shinyServer(function(input, output) {
 
   # Temp function for demo purposes only
   getDummyValidationStats <- function(name) {
-    set.seed(length(name))
+    set.seed(nchar(name))
     return(
       data.frame(
         Percent = runif(20, 0, 100),
@@ -197,7 +196,8 @@ shinyServer(function(input, output) {
   }
 
   # Temp function for demo purposes only
-  getDummyValidationPlotData <- function() {
+  getDummyValidationPlotData <- function(name) {
+    set.seed(nchar(name))
     current_selected <- input$phenotype_search
 
     dummy_data <- data.frame(
@@ -298,13 +298,42 @@ shinyServer(function(input, output) {
 
   ### Tabs
 
+  # Function to make one item of the validation tab in the navbar menu
+  makeValidationSetTabs <- function(val_data, pheTitle) {
+    return(
+      lapply(1:nrow(val_data), function(x) {
+        tabPanel(
+          paste0("Set #", x),
+          fluidRow(column(12, box(
+            status = "primary", width = NULL,
+            buildValidationMarkdown(val_data[x, ], pheTitle)
+          )))
+        )
+      })
+    )
+  }
+
+  makeValidationOverviewTab <- function(val_data, name) {
+    return(
+      tabPanel(
+        title = "Overview", value = paste0("overview_", name),
+        h1("Validation Overview"),
+        fluidRow(column(12, box(
+          status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
+          h4(paste("Number of Validation Sets:", nrow(val_data)))
+        ))),
+        h3("More to come...")
+      )
+    )
+  }
+
   # Create an example tabsetPanel() to populate one phenotype selection
   makeExampleBox <- function(name) {
 
     # Get row of phenotype and validation data that corresponds to this name
     phe_data <- subset(phe, Title == name)
     val_data <- subset(val, Hash == phe_data$Hash)
-    
+
     # Make tabsetPanel
     return(
       tabsetPanel(
@@ -313,41 +342,26 @@ shinyServer(function(input, output) {
           fluidRow(column(12, box(status = "primary", width = NULL, buildPhenotypeMarkdown(phe_data))))
         ),
 
-        tabPanel("Validation Sets",
-          icon = icon("calculator"),
-          tabsetPanel(
-            tabPanel(
-              "Overview", h1("Validation Overview"),
-              fluidRow(column(12, box(
-                status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
-                h4(paste("Number of Validation Sets:", nrow(val_data)))
-              ))),
-              fluidRow(column(12, box(
-                status = "primary", width = NULL, title = "Metric Distributions", solidHeader = TRUE,
-                renderPlot(
-                  ggplot(getDummyValidationStats(name), aes(x = Metric, y = Percent)) +
-                    geom_boxplot() +
-                    geom_point(shape = 21, color = "black", fill = "orange", size = 5) +
-                    theme_classic() +
-                    theme(text = element_text(size = 20))
-                )
-              )))
-            ),
-            tabPanel(
-              "Individual Sets",
-              h1("Validation Reports"),
-              fluidRow(column(
-                width = 2, offset = 5,
-                box(
-                  status = "primary", width = NULL,
-                  # TODO: Can a better widget be used to page through validation sets?
-                  # Can we have a "Previous/Next" pager?
-                  numericInput("set_num", "Set Number (of 5):", 1, min = 1, max = nrow(val_data), step = 1, width = 80)
-                )
-              )),
-              fluidRow(column(12, box(status = "primary", width = NULL, buildValidationMarkdown(val_data[1, ], phe_data$Title))))
+        tabPanel("Validation",
+          # TODO: Avoid checking nrow(val_data) > 0 twice
+          icon = icon(ifelse(nrow(val_data) > 0, "calculator", "exclamation-triangle ")),
+
+          # Check if validation data exists to populate this tab with
+          if (nrow(val_data) > 0) {
+            navbarPage("",
+
+              # Validation overview tab
+              makeValidationOverviewTab(val_data, phe_data$Title),
+
+              # Individual validation set selector
+              do.call("navbarMenu", c(makeValidationSetTabs(val_data, phe_data$Title), list(title = "Validation Sets")))
             )
-          )
+          } else {
+            fluidRow(column(12, box(
+              status = "danger", width = NULL, title = "Not Validated", solidHeader = TRUE,
+              h4("This phenotype has no validation sets associated with it.")
+            )))
+          }
         ),
         tabPanel(
           title = "Export", icon = icon("download"),
@@ -409,11 +423,10 @@ shinyServer(function(input, output) {
       return(hr())
     }
   })
-  
+
   # TODO: Consider adding refresh button to reset inputs to initial states and repull data
-  
+
   # observeEvent(input$refreshButton, {
   # ...
   # })
-  
 }) # End shinyServer
