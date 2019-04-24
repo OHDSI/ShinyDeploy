@@ -1,0 +1,9 @@
+outcomeId,cohortId,modelSettingsId,analysisId,devDatabase,populationSettingId,modelSettingId,covariateSettingId,modelSettingName,addExposureDaysToStart,riskWindowStart,addExposureDaysToEnd,riskWindowEnd,plpDataFolder,studyPopFile,plpResultFolder,cohortName,outcomeName
+5512,5513,1,2,Optum,1,1,1,Lasso Logistic Regression,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,1,CCAE,1,1,1,Lasso Logistic Regression,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,3,MDCR,1,1,1,Lasso Logistic Regression,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,4,MDCD,1,1,1,Lasso Logistic Regression,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,8,NA,1,1,2,Score,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,7,NA,1,1,2,Score,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,6,NA,1,1,2,Score,0,1,0,365,,,,New users of Opioids,Opioid use disorder
+5512,5513,1,5,NA,1,1,2,Score,0,1,0,365,,,,New users of Opioids,Opioid use disorder
