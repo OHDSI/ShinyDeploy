@@ -37,7 +37,7 @@ shinyUI(
         ),
 
         # TODO: Consider making CSS file for styles (i.e. get rid of most "tags$" expressions)
-        
+
         # Text at the top of the bar
         tags$head(tags$style(HTML(
           '.myClass { 
@@ -65,7 +65,7 @@ shinyUI(
             tabName = "find",
 
             h3("Search"),
-            actionButton("refreshButton", "Refresh", icon=icon("refresh")),
+            actionButton("refreshButton", "Refresh", icon = icon("refresh")),
             tags$hr(style = "border-color: black;"),
 
             fluidRow(
@@ -79,89 +79,83 @@ shinyUI(
               )
             ),
 
+            # X out of Y selected
             uiOutput("number_choices"),
             tags$hr(style = "border-color: black;"),
 
-            # Validation Filter Metrics
+            # Filter options
             fluidRow(
+              column(width = 6, box(
+                width = NULL, status = "warning",
 
-              # Knobs for sensitivity, specificity, PPV, and NPV
-              column(
-                width = 6,
-                box(
-                  width = NULL, status = "warning",
-                  h4("Minimum Allowable Metrics:"),
-                  h6("This is based on validation set averages, weighted by sample size."),
-
-                  fluidRow(
-                    width = 12,
-                    column(width = 6, knobInput("knob_sensitivity", label = h4("Sensitivity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
-                    column(width = 6, knobInput("knob_specificity", label = h4("Specificity"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
+                pickerInput(
+                  inputId = "knobFilters",
+                  label = h4("Add Metric Filter:"),
+                  choices = c(
+                    "Sensitivity",
+                    "Specificity",
+                    "Positive Predictive Value",
+                    "Negative Predictive Value",
+                    "Accuracy",
+                    "F1 Score"
                   ),
-
-                  fluidRow(
-                    width = 12,
-                    column(width = 6, knobInput("knob_ppv", label = h4("Positive Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")),
-                    column(width = 6, knobInput("knob_npv", label = h4("Negative Predictive Value"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"))
+                  multiple = TRUE,
+                  options = list(
+                    `actions-box` = TRUE,
+                    size = 6,
+                    `selected-text-format` = "count > 2"
                   )
-                )
-              ),
+                ),
 
-              # Dependency and Modality Filters
-              column(
-                width = 6,
+                uiOutput("filter_bank")
+              )),
+
+              column(width = 6, box(
+                width = NULL, status = "warning",
+                # Dependency and Modality Filters
 
                 # Modality
-                box(
-                  width = NULL, status = "warning",
-                  pickerInput(
-                    inputId = "picker_modality",
-                    label = h4("Allowable Modalities:"),
-                    choices = c("Rule-based (Heuristic)", "Computable (Algorithmic)"),
-                    selected = c("Rule-based (Heuristic)", "Computable (Algorithmic)"),
-                    multiple = TRUE,
-                    options = list(
-                      `actions-box` = TRUE,
-                      size = 2,
-                      `selected-text-format` = "count > 3"
-                    )
+                pickerInput(
+                  inputId = "picker_modality",
+                  label = h4("Allowable Modalities:"),
+                  choices = c("Rule-based (Heuristic)", "Computable (Algorithmic)"),
+                  selected = c("Rule-based (Heuristic)", "Computable (Algorithmic)"),
+                  multiple = TRUE,
+                  options = list(
+                    `actions-box` = TRUE,
+                    size = 2,
+                    `selected-text-format` = "count > 3"
                   )
                 ),
 
                 # CDM Dependencies
-                box(
-                  width = NULL, status = "warning",
-                  pickerInput(
-                    inputId = "picker_cdm",
-                    label = h4("Allowable CDM Dependencies:"),
-                    choices = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
-                    selected = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
-                    multiple = TRUE,
-                    options = list(
-                      `actions-box` = TRUE,
-                      size = 7,
-                      `selected-text-format` = "count > 3"
-                    )
+                pickerInput(
+                  inputId = "picker_cdm",
+                  label = h4("Allowable CDM Dependencies:"),
+                  choices = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                  selected = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                  multiple = TRUE,
+                  options = list(
+                    `actions-box` = TRUE,
+                    size = 7,
+                    `selected-text-format` = "count > 3"
                   )
                 ),
 
                 # Demographic Dependencies
-                box(
-                  width = NULL, status = "warning",
-                  pickerInput(
-                    inputId = "picker_demographics",
-                    label = h4("Allowable Demographic Dependencies:"),
-                    choices = c("Age", "Sex"),
-                    selected = c("Age", "Sex"),
-                    multiple = TRUE,
-                    options = list(
-                      `actions-box` = TRUE,
-                      size = 7,
-                      `selected-text-format` = "count > 3"
-                    )
+                pickerInput(
+                  inputId = "picker_demographics",
+                  label = h4("Allowable Demographic Dependencies:"),
+                  choices = c("Age", "Sex"),
+                  selected = c("Age", "Sex"),
+                  multiple = TRUE,
+                  options = list(
+                    `actions-box` = TRUE,
+                    size = 7,
+                    `selected-text-format` = "count > 3"
                   )
                 )
-              )
+              ))
             )
           ), # End Find
 

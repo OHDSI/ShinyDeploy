@@ -71,6 +71,17 @@ shinyServer(function(input, output) {
 
   getFilteredChoices <- function() {
 
+    # TODO: Fix persistent filter values; if a filter is deselected and others remain, its value persists but should be reset to NULL
+
+    # The following lines print will be useful for debugging this:
+    # print("Getting filtered choices:")
+    # print(input$knob_sensitivity)
+    # print(input$knob_specificity)
+    # print(input$knob_ppv)
+    # print(input$knob_npv)
+    # print(input$knob_accuracy)
+    # print(input$knob_f1score)
+
     # Begin with all phenotypes selected
     filter_logic <- list(rep(TRUE, nrow(phe)))
 
@@ -125,11 +136,32 @@ shinyServer(function(input, output) {
       filter_logic <- c(filter_logic, list(phe$Modality != "Computable"))
     }
 
-    # Validation thresholds
-    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Sensitivity), 0, phe$Avg_Sensitivity) >= input$knob_sensitivity / 100))
-    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Specificity), 0, phe$Avg_Specificity) >= input$knob_specificity / 100))
-    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_PPV), 0, phe$Avg_PPV) >= input$knob_ppv / 100))
-    filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_NPV), 0, phe$Avg_NPV) >= input$knob_npv / 100))
+    # Metric filters, if used
+    if (isTruthy(input$knobFilters)) {
+      if (!is.null(input$knob_sensitivity)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Sensitivity), 0, phe$Avg_Sensitivity) >= input$knob_sensitivity / 100))
+      }
+
+      if (!is.null(input$knob_specificity)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Specificity), 0, phe$Avg_Specificity) >= input$knob_specificity / 100))
+      }
+
+      if (!is.null(input$knob_ppv)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_PPV), 0, phe$Avg_PPV) >= input$knob_ppv / 100))
+      }
+
+      if (!is.null(input$knob_npv)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_NPV), 0, phe$Avg_NPV) >= input$knob_npv / 100))
+      }
+
+      if (!is.null(input$knob_f1score)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_F1score), 0, phe$Avg_F1score) >= input$knob_f1score / 100))
+      }
+
+      if (!is.null(input$knob_accuracy)) {
+        filter_logic <- c(filter_logic, list(ifelse(is.nan(phe$Avg_Accuracy), 0, phe$Avg_Accuracy) >= input$knob_accuracy / 100))
+      }
+    }
 
     # Combine logic
     filter_idx <- Reduce("&", filter_logic)
@@ -155,6 +187,79 @@ shinyServer(function(input, output) {
   # TODO: Avoid double call to get FilteredChoices()
   output$number_choices <- renderUI({
     h3(paste("Filters:", length(getFilteredChoices()) - 1, "out of", nrow(phe), "phenotypes selected."))
+  })
+
+  makeSingleKnobFilter <- function(filter) {
+    switch(filter,
+      "Accuracy" =
+        knobInput("knob_accuracy", label = h4(filter), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"),
+      "F1 Score" =
+        knobInput("knob_f1score", label = h4(filter), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"),
+      "Negative Predictive Value" =
+        knobInput("knob_npv", label = h4("NPV"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"),
+      "Positive Predictive Value" =
+        knobInput("knob_ppv", label = h4("PPV"), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"),
+      "Sensitivity" =
+        knobInput("knob_sensitivity", label = h4(filter), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%"),
+      "Specificity" =
+        knobInput("knob_specificity", label = h4(filter), value = 0, min = 0, max = 100, lineCap = "round", fgColor = "orange", width = "60%")
+    )
+  }
+
+  # Build filter bank
+  output$filter_bank <- renderUI({
+    if (length(input$knobFilters) == 0) {
+      h6("No metric filters are in use.")
+    } else { # Else populate the filter bank with the filters the user selected
+      switch(length(input$knobFilters),
+        fluidRow(
+          column(width = 12, makeSingleKnobFilter(input$knobFilters[1]))
+        ),
+        fluidRow(
+          column(width = 6, makeSingleKnobFilter(input$knobFilters[1])),
+          column(width = 6, makeSingleKnobFilter(input$knobFilters[2]))
+        ),
+        fluidRow(
+          column(width = 4, makeSingleKnobFilter(input$knobFilters[1])),
+          column(width = 4, makeSingleKnobFilter(input$knobFilters[2])),
+          column(width = 4, makeSingleKnobFilter(input$knobFilters[3]))
+        ),
+        fluidPage(
+          fluidRow(
+            column(width = 6, makeSingleKnobFilter(input$knobFilters[1])),
+            column(width = 6, makeSingleKnobFilter(input$knobFilters[2]))
+          ),
+          fluidRow(
+            column(width = 6, makeSingleKnobFilter(input$knobFilters[3])),
+            column(width = 6, makeSingleKnobFilter(input$knobFilters[4]))
+          )
+        ),
+        fluidPage(
+          fluidRow(
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[1])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[2])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[3]))
+          ),
+          fluidRow(
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[4])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[5])),
+            column(width = 4, h1(""))
+          )
+        ),
+        fluidPage(
+          fluidRow(
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[1])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[2])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[3]))
+          ),
+          fluidRow(
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[4])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[5])),
+            column(width = 4, makeSingleKnobFilter(input$knobFilters[6]))
+          )
+        )
+      ) # end switch
+    } # end else
   })
 
   # Inspect Tab
