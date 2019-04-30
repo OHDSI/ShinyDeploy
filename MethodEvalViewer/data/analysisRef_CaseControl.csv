@@ -13,7 +13,7 @@
     ""attr_class"": ""args""
   },
   ""selectControlsArgs"": {
-    ""firstOutcomeOnly"": false,
+    ""firstOutcomeOnly"": true,
     ""washoutPeriod"": 365,
     ""controlsPerCase"": 2,
     ""matchOnAge"": true,
@@ -35,6 +35,7 @@
     ""firstExposureOnly"": false,
     ""riskWindowStart"": 0,
     ""riskWindowEnd"": 0,
+    ""exposureWashoutPeriod"": 365,
     ""attr_class"": ""args""
   },
   ""fitCaseControlModelArgs"": {
@@ -91,7 +92,7 @@
     ""attr_class"": ""args""
   },
   ""selectControlsArgs"": {
-    ""firstOutcomeOnly"": false,
+    ""firstOutcomeOnly"": true,
     ""washoutPeriod"": 365,
     ""controlsPerCase"": 10,
     ""matchOnAge"": true,
@@ -113,6 +114,7 @@
     ""firstExposureOnly"": false,
     ""riskWindowStart"": 0,
     ""riskWindowEnd"": 0,
+    ""exposureWashoutPeriod"": 365,
     ""attr_class"": ""args""
   },
   ""fitCaseControlModelArgs"": {
@@ -169,7 +171,7 @@
     ""attr_class"": ""args""
   },
   ""selectControlsArgs"": {
-    ""firstOutcomeOnly"": false,
+    ""firstOutcomeOnly"": true,
     ""washoutPeriod"": 365,
     ""controlsPerCase"": 2,
     ""matchOnAge"": true,
@@ -191,6 +193,7 @@
     ""firstExposureOnly"": false,
     ""riskWindowStart"": 0,
     ""riskWindowEnd"": 0,
+    ""exposureWashoutPeriod"": 365,
     ""attr_class"": ""args""
   },
   ""fitCaseControlModelArgs"": {
@@ -247,7 +250,7 @@
     ""attr_class"": ""args""
   },
   ""selectControlsArgs"": {
-    ""firstOutcomeOnly"": false,
+    ""firstOutcomeOnly"": true,
     ""washoutPeriod"": 365,
     ""controlsPerCase"": 10,
     ""matchOnAge"": true,
@@ -269,6 +272,7 @@
     ""firstExposureOnly"": false,
     ""riskWindowStart"": 0,
     ""riskWindowEnd"": 0,
+    ""exposureWashoutPeriod"": 365,
     ""attr_class"": ""args""
   },
   ""fitCaseControlModelArgs"": {
