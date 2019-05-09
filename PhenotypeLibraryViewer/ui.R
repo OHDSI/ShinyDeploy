@@ -132,8 +132,8 @@ shinyUI(
                 pickerInput(
                   inputId = "picker_cdm",
                   label = h4("Allowable CDM Dependencies:"),
-                  choices = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
-                  selected = c("Conditions", "Drug Exposures", "Labs", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                  choices = c("Conditions", "Drug Exposures", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
+                  selected = c("Conditions", "Drug Exposures", "Measurements", "Notes NLP", "Observations", "Procedures", "Visits"),
                   multiple = TRUE,
                   options = list(
                     `actions-box` = TRUE,

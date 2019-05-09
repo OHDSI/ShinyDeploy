@@ -94,10 +94,6 @@ shinyServer(function(input, output) {
       filter_logic <- c(filter_logic, list(phe$Uses_Drug_Exposures != "Yes"))
     }
 
-    if (!("Labs" %in% input$picker_cdm)) {
-      filter_logic <- c(filter_logic, list(phe$Uses_Labs != "Yes"))
-    }
-
     if (!("Measurements" %in% input$picker_cdm)) {
       filter_logic <- c(filter_logic, list(phe$Uses_Measurements != "Yes"))
     }
