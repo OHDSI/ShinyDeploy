@@ -177,7 +177,7 @@ shinyServer(function(input, output) {
     # Apply filtered phenotypes
     selectizeInput("phenotype_search",
       label = "Select up to 5 phenotypes for comparison:",
-      choices = getFilteredChoices(),
+      choices = sort(getFilteredChoices()),
       selected = "",
       multiple = TRUE,
       options = list(maxItems = 5)
@@ -431,6 +431,67 @@ shinyServer(function(input, output) {
       )
     )
   }
+  
+  # Build the graph for the connected components of the currently selected phenotype
+  buildVisNetwork <- function(phe_data) {
+    
+    # Pull data for the current cluster only
+    current_cluster <- phe[phe$Hash == phe_data$Hash, "Graph_Cluster"]
+    df_cluster <- phe[phe$Graph_Cluster == current_cluster, c("Hash","Title","Provenance_Reasons","Provenance_Hashes")]
+    
+    # Before unnesting, it's important for empty lists to hold a value, or else it will be dropped from unnest()
+    # TODO: Revisit this workaround when "drop" issue is resolved:
+    # https://github.com/tidyverse/tidyr/issues/358
+    
+    # Terminal Nodes - These disappear when unnesting so must be considered separately
+    isEmpty <- sapply(df_cluster$Provenance_Reasons, function(x) {length(x) == 0})
+    terminal_nodes <- df_cluster[isEmpty,]
+    if (nrow(terminal_nodes) > 0) {
+      terminal_nodes$Provenance_Hashes <- ""
+      terminal_nodes$Provenance_Reasons <- ""
+    }
+    
+    # Get non-terminal nodes
+    connected_nodes <- unnest(df_cluster[!isEmpty,])
+    connected_nodes$Provenance_Hashes <- unlist(connected_nodes$Provenance_Hashes)
+    connected_nodes$Provenance_Reasons <- unlist(connected_nodes$Provenance_Reasons)
+    
+    # Reconnect terminal nodes with non-terminal nodes
+    df_cluster <- as.data.frame(rbind(terminal_nodes, connected_nodes))
+    
+    # Nodes dataset
+    nodes <- unique(data.frame(id = df_cluster$Hash, 
+                               group = "Not_Selected", 
+                               label = df_cluster$Title, 
+                               title = paste0("Hash: \n", df_cluster$Hash),
+                               stringsAsFactors = FALSE)
+    )
+    
+    # Sort to display names in alphabetical order on dropdown menu
+    nodes <- nodes[order(nodes$label),]
+    
+    # Distinguish the selected node from the others via the group property
+    nodes$group[which(nodes$id == phe_data$Hash)] <- "Selected"
+    
+    # Edges dataset
+    edges <- data.frame(from = df_cluster$Provenance_Hashes, 
+                        to = df_cluster$Hash, 
+                        title = df_cluster$Provenance_Reasons)
+    
+    # Create visNetwork
+    visNetwork(nodes, edges, width = "100%") %>%
+      visNodes(shape = "dot") %>%
+      visEdges(arrows ="to") %>%                               
+      visGroups(groupname = "Not_Selected", color = "darkblue") %>%
+      visGroups(groupname = "Selected", color = "red") %>%
+      visOptions(highlightNearest = TRUE, 
+                 nodesIdSelection = TRUE,
+                 selectedBy = "group",
+                 collapse = TRUE) 
+    # These might be useful down the road:
+    # %>% visHierarchicalLayout()
+    # %>% visConfigure()
+  } # End buildVisNetwork
 
   # Create an example tabsetPanel() to populate one phenotype selection
   makeExampleBox <- function(name) {
@@ -468,6 +529,7 @@ shinyServer(function(input, output) {
             )))
           }
         ),
+        # TODO: Possibly remove this tab: Link to actual implementation file should be sufficient
         tabPanel(
           title = "Export", icon = icon("download"),
           fluidRow(
@@ -480,11 +542,22 @@ shinyServer(function(input, output) {
               )
             )
           )
+        ),
+        # Provenance Tab
+        tabPanel(
+          title = "Provenance", icon = icon("project-diagram"),
+          fluidRow(
+            box(title = "Provenance Diagram", status = "primary", width = NULL,
+                renderVisNetwork(
+                  buildVisNetwork(phe_data)
+                )
+            )
+          )
         )
       ) # End tabsetPanel
     ) # End return
   } # End makeExampleBox
-
+  
   # TODO: Wrap similar Tab code in function calls -- Part 3 of 3
 
   output$tab1 <- renderUI({
