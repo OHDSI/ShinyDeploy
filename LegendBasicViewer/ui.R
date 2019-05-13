@@ -39,7 +39,7 @@ shinyUI(
                                           selectInput("comparator", "Comparator", unique(exposures$exposureName), selected = "Beta blockers"),
                                           selectInput("outcome", "Outcome", unique(outcomes$outcomeName)),
                                           checkboxGroupInput("database", "Data source", databases$databaseId, selected = databases$databaseId),
-                                          checkboxGroupInput("analysis", "Analysis", analyses$description[analyses$analysisId <= 4], selected = analyses$description[analyses$analysisId == 1])
+                                          checkboxGroupInput("analysis", "Analysis", analyses$description[analyses$analysisId <= 4], selected = analyses$description[analyses$analysisId %in% c(1,3)])
                                    ),
                                    column(9,
                                           dataTableOutput("mainTable"),
