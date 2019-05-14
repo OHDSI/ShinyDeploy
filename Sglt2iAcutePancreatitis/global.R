@@ -1,5 +1,5 @@
 blind <- FALSE
-dataLocation <- "data"
+dataLocation <- '/data/Sglt2iAcutePancreatitis'
 
 resultsFileNames <- list.files(path = dataLocation, pattern = "resultsHois_.*.rds", full.names = TRUE)
 ncsFileNames <- list.files(path = dataLocation, pattern = "resultsNcs_.*.rds", full.names = TRUE)
