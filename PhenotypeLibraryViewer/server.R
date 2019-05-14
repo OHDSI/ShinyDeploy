@@ -312,27 +312,7 @@ shinyServer(function(input, output) {
     return(dummy_data)
   }
 
-  # Export tab rendering utility function for downloading
-  output$downloadData <- downloadHandler(
-    filename = function() {
-      paste0("Example_Phenotype_Download.json")
-    },
-    content = function(file) {
-      # TODO: Writing iris data for demo purposes -- obviously needs to be hooked up to a real export
-      write.csv(iris, file, na = "")
-    }
-  )
-
   ### Menu Items
-
-  # Creates the export menuItem whenever at least one phenotype was considered for export
-  output$Export_Menu <- renderMenu({
-    if (length(input$phenotype_search) > 0) {
-      return(menuItem("Export", tabName = "export", icon = icon("file-export")))
-    } else {
-      return(h1("")) # Can't be NULL - using h1() to force refresh
-    }
-  })
 
   # Shows the "Compare" menuItem whenever there are at least two phenotypes to compare
   output$getInspectMenu <- renderMenu({
@@ -524,20 +504,6 @@ shinyServer(function(input, output) {
               h4("This phenotype has no validation sets associated with it.")
             )))
           }
-        ),
-        # TODO: Possibly remove this tab: Link to actual implementation file should be sufficient
-        tabPanel(
-          title = "Export", icon = icon("download"),
-          fluidRow(
-            box(
-              title = "Export Phenotype", status = "primary",
-              selectInput("export_type", "Preferred Implementation Method:", choices = c("JSON", "Others...")),
-              downloadButton(
-                outputId = "downloadData", label = "Click to Download Export", icon = icon("download"),
-                style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
-              )
-            )
-          )
         ),
         # Provenance Tab
         tabPanel(
