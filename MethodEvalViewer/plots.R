@@ -136,3 +136,27 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
     ggsave(fileName, plot, width = 5.5, height = 4.5, dpi = 400)
   return(plot)
 }
+
+plotOverview <- function(metrics, metric, strataSubset, calibrated) {
+  yLabel <- paste0(metric, if (calibrated == "Calibrated") " after empirical calibration" else "")
+  point <- scales::format_format(big.mark = " ", decimal.mark = ".", scientific = FALSE)
+  plot <- ggplot2::ggplot(metrics, ggplot2::aes(x = x, y = metric, color = tidyMethod)) +
+    ggplot2::geom_vline(xintercept = 0.5 + 0:(nrow(strataSubset) - 1), linetype = "dashed") +
+    ggplot2::geom_point(size = 4.5, alpha = 0.5, shape = 16) +
+    ggplot2::scale_x_continuous("Stratum", breaks = strataSubset$x, labels = strataSubset$stratum) +
+    ggplot2::facet_grid(database~., scales = "free_y") +
+    ggplot2::theme(panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_rect(fill = "#F0F0F0F0", colour = NA),
+                   panel.grid.major.x = ggplot2::element_blank(),
+                   panel.grid.major.y = ggplot2::element_line(colour = "#CCCCCC"),
+                   axis.ticks = ggplot2::element_blank(),
+                   legend.position = "top",
+                   legend.title = ggplot2::element_blank(),
+                   text = ggplot2::element_text(size = 20))
+  if (metric %in% c("Mean precision (1/SE^2)", "Mean squared error (MSE)")) {
+    plot <- plot + ggplot2::scale_y_log10(yLabel, labels = point)
+  } else {
+    plot <- plot + ggplot2::scale_y_continuous(yLabel, labels = point)
+  }
+  return(plot)
+}

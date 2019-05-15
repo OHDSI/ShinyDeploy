@@ -22,7 +22,26 @@ shinyUI(
                   </ul>")
                        
               ),
-              tabPanel("Method performance metrics",
+              tabPanel("Overview across strata and databases",
+                       fluidRow(
+                         column(2,
+                                selectInput("evalTypeOverview", label = span("Evaluation type", title = "Type of task to evaluate."), choices = c("Effect estimation", "Comparative effect estimation")),
+                                selectInput("calibratedOverview", label = span("Empirical calibration", title = "Should empirical calibration be applied before computing performance metrics?"), choices = c("Uncalibrated", "Calibrated"), selected = "Calibrated"),
+                                selectInput("metric", label = span("Metric", title = "Metric."), choices = c("AUC", "Coverage", "Mean precision (1/SE^2)", "Mean squared error (MSE)", "Type I error", "Type II error", "Non-estimable"), selected = "Mean precision (1/SE^2)"),
+                                selectInput("mdrrOverview", label = span("Minimum Detectable RR", title = "Minimum detectable relative risk used to filter the controls before computing performance metrics."), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25")
+                         ),
+                         column(10,
+                                uiOutput("hoverOverview"),
+                                plotOutput("overviewPlot",
+                                           height = "800px",
+                                           hover = hoverOpts("plotHoverOverview", 
+                                                             delay = 100, 
+                                                             delayType = "debounce")),
+                                uiOutput("overviewPlotCaption")
+                         )
+                       )
+              ),
+              tabPanel("Method performance metrics per stratum and database",
                        fluidRow(
                          column(2,
                                 selectInput("evalType", label = span("Evaluation type", title = "Type of task to evaluate."), choices = c("Effect estimation", "Comparative effect estimation")),
@@ -48,10 +67,10 @@ shinyUI(
                                                                        hover = hoverOpts("plotHoverInfoEstimates", 
                                                                                          delay = 100, 
                                                                                          delayType = "debounce")),
-                                                            div(strong("Figure S.1."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth.")),
+                                                            div(strong("Figure S.2."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth.")),
                                                    tabPanel("ROC curves", 
                                                             plotOutput("rocCurves"),
-                                                            div(strong("Figure S.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))
+                                                            div(strong("Figure S.3."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))
                                                  )
                                 )   
                          )

@@ -251,5 +251,112 @@ shinyServer(function(input, output, session) {
       wellPanel(style = style, p(HTML(text)))
     )
   })
+  
+  overviewData <- reactive({
+    computeMetrics <- function(forEval, metric = "Mean precision") {
+      if (metric == "AUC")
+        y <- round(pROC::auc(pROC::roc(forEval$targetEffectSize > 1, forEval$logRr, algorithm = 3)), 2)
+      else if (metric == "Coverage")
+        y <- round(mean(forEval$ci95Lb < forEval$trueEffectSize & forEval$ci95Ub > forEval$trueEffectSize), 2)
+      else if (metric == "Mean precision (1/SE^2)")
+        y <- round(-1 + exp(mean(log(1 + (1/(forEval$seLogRr^2))))), 2)
+      else if (metric == "Mean squared error (MSE)")
+        y <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
+      else if (metric == "Type I error")
+        y <- round(mean(forEval$p[forEval$targetEffectSize == 1] < 0.05), 2)
+      else if (metric == "Type II error")
+        y <- round(mean(forEval$p[forEval$targetEffectSize > 1] >= 0.05), 2)
+      else if (metric == "Non-estimable")
+        y <- round(mean(forEval$seLogRr >= 99), 2)
+      return(data.frame(database = forEval$database[1],
+                        method = forEval$method[1],
+                        analysisId = forEval$analysisId[1],
+                        stratum = forEval$stratum[1],
+                        metric = y))
+    }
+    if (input$mdrrOverview != "All") {
+      if (input$evalTypeOverview == "Comparative effect estimation") {
+        subset <- estimates[!is.na(estimates$mdrrTarget) & estimates$mdrrTarget <= input$mdrrOverview & estimates$mdrrComparator <= input$mdrrOverview & estimates$comparative == TRUE, ]
+      } else {
+        subset <- estimates[!is.na(estimates$mdrrTarget) & estimates$mdrrTarget <= input$mdrrOverview, ]
+      }
+    } else {
+      subset <- estimates
+    }
+    if (input$calibratedOverview == "Calibrated") {
+      subset$logRr <- subset$calLogRr
+      subset$seLogRr <- subset$calSeLogRr
+      subset$ci95Lb <- subset$calCi95Lb
+      subset$ci95Ub <- subset$calCi95Ub
+      subset$p <- subset$calP
+    }
+    groups <- split(subset, paste(subset$method, subset$analysisId, subset$database, subset$stratum))
+    metrics <- lapply(groups, computeMetrics, metric = input$metric)
+    metrics <- do.call("rbind", metrics)
+    metrics$stratum <- as.character(metrics$stratum)
+    metrics$stratum[metrics$stratum == "Inflammatory Bowel Disease"] <- "IBD"
+    metrics$stratum[metrics$stratum == "Acute pancreatitis"] <- "Acute\npancreatitis"
+    metrics <- merge(metrics, strataSubset)
+    methods <- unique(metrics$method)
+    methods <- methods[order(methods)]
+    n <- length(methods)
+    methods <- data.frame(method = methods,
+                          offsetX = ((1:n / (n + 1)) - ((n + 1) / 2) / (n + 1)))
+    metrics <- merge(metrics, methods)
+    metrics$x <- metrics$x + metrics$offsetX
+    metrics$tidyMethod <- as.character(metrics$method)
+    metrics$tidyMethod[metrics$tidyMethod == "CaseControl"] <- "Case-control"
+    metrics$tidyMethod[metrics$tidyMethod == "CaseCrossover"] <- "Case-crossover"
+    metrics$tidyMethod[metrics$tidyMethod == "CohortMethod"] <- "Cohort method"
+    metrics$tidyMethod[metrics$tidyMethod == "SelfControlledCaseSeries"] <- "Self-controlled case series (SCCS)"
+    metrics$tidyMethod[metrics$tidyMethod == "SelfControlledCohort"] <- "Self-controlled cohort (SCC)"
+    metrics <- metrics[metrics$metric != 0, ]
+  })
+  
+  output$overviewPlot <- renderPlot({
+    data <- overviewData()
+    plotOverview(data, input$metric, strataSubset, input$calibratedOverview)
+  })
+  output$overviewPlotCaption <- renderUI({
+    subset <- filterEstimates()
+    subset <- unique(subset[, c("targetId", "comparatorId", "oldOutcomeId", "targetEffectSize")])
+    ncCount <- sum(subset$targetEffectSize == 1)
+    pcCount <- sum(subset$targetEffectSize != 1)
+    return(HTML(paste0("<strong>Figure S.1</strong> ", input$metric, " per stratum and database. Hover mouse over points for more information.")))
+  })
+  
+  output$hoverOverview <- renderUI({
+    data <- overviewData()
+    if (is.null(data)) {
+      return(NULL)
+    } 
+    hover <- input$plotHoverOverview
+    
+    point <- nearPoints(data, hover, threshold = 50, maxpoints = 1, addDist = TRUE)
+    if (nrow(point) == 0) return(NULL)
+    
+    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left)
+    # Shiny was confused by log y scale used for some:
+    if (input$metric %in% c("Mean precision (1/SE^2)", "Mean squared error (MSE)")) {
+      y <- log10(hover$y)
+    } else {
+      y <- hover$y
+    }
+    top_pct <- (hover$domain$top - y) / (hover$domain$top - hover$domain$bottom)
+    left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
+    top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
+    style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                    "left:", left_px - 251, "px; top:", top_px - 150, "px; width:500px;")
+    analysis <- as.character(analysisRef$description[analysisRef$method == point$method & analysisRef$analysisId == point$analysisId])
+    text <- paste0(sprintf("<b> Method: </b>%s<br/>", point$tidyMethod),
+                   sprintf("<b> Analysis ID: </b>%s<br/>", point$analysisId),
+                   sprintf("<b> Description: </b>%s<br/>", analysis),
+                   sprintf("<b> %s: </b>%s<br/>", input$metric, point$metric))
+    div(
+      style = "position: relative; width: 0; height: 0",
+      wellPanel(style = style, p(HTML(text)))
+    )
+  })
+  
 })
 

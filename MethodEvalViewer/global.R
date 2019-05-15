@@ -29,6 +29,13 @@ methods <- unique(estimates[, c("method", "comparative")])
 strata <- as.character(unique(estimates$stratum))
 strata <- strata[order(strata)]
 strata <- c("All", strata)
+strataSubset <- strata[strata != "All"]
+strataSubset <- data.frame(stratum = strataSubset,
+                           x = 1:length(strataSubset),
+                           stringsAsFactors = FALSE)
+strataSubset$stratum <- as.character(strataSubset$stratum)
+strataSubset$stratum[strataSubset$stratum == "Inflammatory Bowel Disease"] <- "IBD"
+strataSubset$stratum[strataSubset$stratum == "Acute pancreatitis"] <- "Acute\npancreatitis"
 
 files <- list.files(exportFolder, "analysisRef.*csv", full.names = TRUE)
 analysisRef <- lapply(files, read.csv)
