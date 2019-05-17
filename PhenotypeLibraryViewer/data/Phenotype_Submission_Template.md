@@ -68,7 +68,6 @@ This may need to be left to the GitHub page...
 | ------ | ------ |
 |Conditions| <Uses_Conditions> |
 |Drug Exposures| <Uses_Drug_Exposures> |
-|Labs| <Uses_Labs> |
 |Measurements| <Uses_Notes_NLP> |
 |Notes NLP| <Uses_Notes_NLP> |
 |Observations| <Uses_Observations> |
