@@ -57,7 +57,7 @@ shinyServer(function(input, output, session) {
     subset <- unique(subset[, c("targetId", "comparatorId", "oldOutcomeId", "targetEffectSize")])
     ncCount <- sum(subset$targetEffectSize == 1)
     pcCount <- sum(subset$targetEffectSize != 1)
-    return(HTML(paste0("<strong>Table S.1</strong> Metrics based on ", ncCount, " negative and ", pcCount, " positive controls")))
+    return(HTML(paste0("<strong>Table S.1</strong> Metrics based on ", ncCount, " negative and ", pcCount, " positive controls having the required minimum detectable relative risk. Click on a row to view additional details")))
   })
   
   performanceMetrics <- reactive({
@@ -366,5 +366,84 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  observeEvent(input$evalTypeInfo, {
+    showModal(modalDialog(
+      title = "Evaluation type",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(evalTypeInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$calibrationInfo, {
+    showModal(modalDialog(
+      title = "Empirical calibration",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(calibrationInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$mdrrInfo, {
+    showModal(modalDialog(
+      title = "Minimum Detectable RR",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(mdrrInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$databaseInfo, {
+    showModal(modalDialog(
+      title = "Databases",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(databaseInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$stratumInfo, {
+    showModal(modalDialog(
+      title = "Strata",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(stratumInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$trueRrInfo, {
+    showModal(modalDialog(
+      title = "True effect size",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(trueRrInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$methodsInfo, {
+    showModal(modalDialog(
+      title = "Methods",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(methodsInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$metricInfo, {
+    showModal(modalDialog(
+      title = "Metrics",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(metricInfoHtml)
+    ))
+  })
 })
 

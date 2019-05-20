@@ -25,10 +25,10 @@ shinyUI(
               tabPanel("Overview across strata and databases",
                        fluidRow(
                          column(2,
-                                selectInput("evalTypeOverview", label = span("Evaluation type", title = "Type of task to evaluate."), choices = c("Effect estimation", "Comparative effect estimation")),
-                                selectInput("calibratedOverview", label = span("Empirical calibration", title = "Should empirical calibration be applied before computing performance metrics?"), choices = c("Uncalibrated", "Calibrated"), selected = "Calibrated"),
-                                selectInput("metric", label = span("Metric", title = "Metric."), choices = c("AUC", "Coverage", "Mean precision (1/SE^2)", "Mean squared error (MSE)", "Type I error", "Type II error", "Non-estimable"), selected = "Mean precision (1/SE^2)"),
-                                selectInput("mdrrOverview", label = span("Minimum Detectable RR", title = "Minimum detectable relative risk used to filter the controls before computing performance metrics."), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25")
+                                selectInput("evalTypeOverview", label = div("Evaluation type:", actionLink("evalTypeInfo", "", icon = icon("info-circle"))),, choices = c("Effect estimation", "Comparative effect estimation")),
+                                selectInput("calibratedOverview", label = div("Empirical calibration:", actionLink("calibrationInfo", "", icon = icon("info-circle"))), choices = c("Uncalibrated", "Calibrated"), selected = "Calibrated"),
+                                selectInput("metric", label = div("Metric:", actionLink("metricInfo", "", icon = icon("info-circle"))), choices = c("AUC", "Coverage", "Mean precision (1/SE^2)", "Mean squared error (MSE)", "Type I error", "Type II error", "Non-estimable"), selected = "Mean precision (1/SE^2)"),
+                                selectInput("mdrrOverview", label = div("Minimum detectable RR:", actionLink("mdrrInfo", "", icon = icon("info-circle"))), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25")
                          ),
                          column(10,
                                 uiOutput("hoverOverview"),
@@ -44,13 +44,13 @@ shinyUI(
               tabPanel("Method performance metrics per stratum and database",
                        fluidRow(
                          column(2,
-                                selectInput("evalType", label = span("Evaluation type", title = "Type of task to evaluate."), choices = c("Effect estimation", "Comparative effect estimation")),
-                                selectInput("calibrated", label = span("Empirical calibration", title = "Should empirical calibration be applied before computing performance metrics?"), choices = c("Uncalibrated", "Calibrated")),
-                                selectInput("mdrr", label = span("Minimum Detectable RR", title = "Minimum detectable relative risk used to filter the controls before computing performance metrics."), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25"),
-                                selectInput("database", label = span("Database", title = "The database on which the methods were executed"), choices = dbs),
-                                selectInput("stratum", label = span("Stratum", title = "Limiting the performance metrics to a single outcome (for exposure controls) or exposure (for outcome controls)."), choices = strata),
-                                selectInput("trueRr", label = span("True effect size", title = "The true effect size to be considered when computing the performance metrics."), choices = trueRrs),
-                                checkboxGroupInput("method", label = span("Method", title = "Methods to include in the evaluation."), choices = methods$method)
+                                selectInput("evalType", label = div("Evaluation type:", actionLink("evalTypeInfo", "", icon = icon("info-circle"))), choices = c("Effect estimation", "Comparative effect estimation")),
+                                selectInput("calibrated", label = div("Empirical calibration:", actionLink("calibrationInfo", "", icon = icon("info-circle"))), choices = c("Uncalibrated", "Calibrated")),
+                                selectInput("mdrr", label = div("Minimum detectable RR:", actionLink("mdrrInfo", "", icon = icon("info-circle"))), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25"),
+                                selectInput("database", label = div("Database:", actionLink("databaseInfo", "", icon = icon("info-circle"))), choices = dbs),
+                                selectInput("stratum", label = div("Stratum:", actionLink("stratumInfo", "", icon = icon("info-circle"))), choices = strata),
+                                selectInput("trueRr", label = div("True effect size:", actionLink("trueRrInfo", "", icon = icon("info-circle"))), choices = trueRrs),
+                                checkboxGroupInput("method", label =  div("Methods:", actionLink("methodsInfo", "", icon = icon("info-circle"))), choices = methods$method)
                                 
                          ),
                          column(10,
@@ -67,7 +67,7 @@ shinyUI(
                                                                        hover = hoverOpts("plotHoverInfoEstimates", 
                                                                                          delay = 100, 
                                                                                          delayType = "debounce")),
-                                                            div(strong("Figure S.2."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth.")),
+                                                            div(strong("Figure S.2."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth. Hover mouse over point for more information.")),
                                                    tabPanel("ROC curves", 
                                                             plotOutput("rocCurves"),
                                                             div(strong("Figure S.3."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))

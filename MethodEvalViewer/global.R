@@ -45,3 +45,11 @@ trueRrs <- unique(estimates$targetEffectSize)
 trueRrs <- trueRrs[order(trueRrs)]
 trueRrs <- c("Overall", "> 1", trueRrs)
 
+evalTypeInfoHtml <- readChar("evalType.html", file.info("evalType.html")$size)
+calibrationInfoHtml <- readChar("calibration.html", file.info("calibration.html")$size)
+mdrrInfoHtml <- readChar("mdrr.html", file.info("mdrr.html")$size)
+databaseInfoHtml <- readChar("databases.html", file.info("databases.html")$size)
+stratumInfoHtml <- readChar("strata.html", file.info("strata.html")$size)
+trueRrInfoHtml <- readChar("trueRr.html", file.info("trueRr.html")$size)
+methodsInfoHtml <- readChar("methods.html", file.info("methods.html")$size)
+metricInfoHtml <- readChar("metrics.html", file.info("metrics.html")$size)
