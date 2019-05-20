@@ -21,7 +21,6 @@ plotScatter <- function(d) {
   theme <- element_text(colour = "#000000", size = 14)
   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
   themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
-  
   alpha <- 1 - min(0.95*(nrow(d)/nrow(dd)/50000)^0.1, 0.95)
   plot <- ggplot(d, aes(x = logRr, y= seLogRr), environment = environment()) +
     geom_vline(xintercept = log(breaks), colour = "#CCCCCC", lty = 1, size = 0.5) +
@@ -140,10 +139,18 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
 plotOverview <- function(metrics, metric, strataSubset, calibrated) {
   yLabel <- paste0(metric, if (calibrated == "Calibrated") " after empirical calibration" else "")
   point <- scales::format_format(big.mark = " ", decimal.mark = ".", scientific = FALSE)
+  fiveColors <- c(
+    "#781C86",
+    "#83BA70",
+    "#D3AE4E",
+    "#547BD3",
+    "#DF4327"
+  )
   plot <- ggplot2::ggplot(metrics, ggplot2::aes(x = x, y = metric, color = tidyMethod)) +
     ggplot2::geom_vline(xintercept = 0.5 + 0:(nrow(strataSubset) - 1), linetype = "dashed") +
     ggplot2::geom_point(size = 4.5, alpha = 0.5, shape = 16) +
     ggplot2::scale_x_continuous("Stratum", breaks = strataSubset$x, labels = strataSubset$stratum) +
+    ggplot2::scale_colour_manual(values = fiveColors) +
     ggplot2::facet_grid(database~., scales = "free_y") +
     ggplot2::theme(panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_rect(fill = "#F0F0F0F0", colour = NA),

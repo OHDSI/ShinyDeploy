@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
     }
     table <- DT::datatable(data, selection = selection, options = options, rownames = FALSE, escape = FALSE) 
     
-    colors <- c("lightblue", "lightblue", "lightblue", "pink", "pink", "pink", "pink")
+    colors <- c("#b7d3e6", "#b7d3e6", "#b7d3e6", "#f2b4a9", "#f2b4a9", "#f2b4a9", "#f2b4a9")
     mins <- c(0, 0, 0, 0, 0, 0, 0)
     maxs <- c(1, 1, max(data[, 5]), max(data[, 6]), 1, 1, 1)
     for (i in 1:length(colors)) {
