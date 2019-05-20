@@ -43,5 +43,5 @@ analysisRef <- do.call("rbind", analysisRef)
 
 trueRrs <- unique(estimates$targetEffectSize)
 trueRrs <- trueRrs[order(trueRrs)]
-trueRrs <- c("Overall", trueRrs)
+trueRrs <- c("Overall", "> 1", trueRrs)
 

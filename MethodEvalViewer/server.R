@@ -84,7 +84,11 @@ shinyServer(function(input, output, session) {
     } else {
       # trueRr <- input$trueRr
       computeMetrics <- function(i) {
-        forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & subset$targetEffectSize == input$trueRr, ]
+        if (input$trueRr == "> 1") {
+          forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & subset$targetEffectSize > 1, ]
+        } else {
+          forEval <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & subset$targetEffectSize == input$trueRr, ]
+        }
         nonEstimable <- round(mean(forEval$seLogRr >= 99), 2)
         # forEval <- forEval[forEval$seLogRr < 99, ]
         mse <- round(mean((forEval$logRr - log(forEval$trueEffectSize))^2), 2)
@@ -95,7 +99,11 @@ shinyServer(function(input, output, session) {
           type1 <- round(mean(forEval$p < 0.05), 2)  
           type2 <- NA
         } else {
-          negAndPos <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & (subset$targetEffectSize == input$trueRr | subset$targetEffectSize == 1), ]
+          if (input$trueRr == "> 1") {
+            negAndPos <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & (subset$targetEffectSize > 1 | subset$targetEffectSize == 1), ]
+          } else {
+            negAndPos <- subset[subset$method == combis$method[i] & subset$analysisId == combis$analysisId[i] & (subset$targetEffectSize == input$trueRr | subset$targetEffectSize == 1), ]
+          }
           roc <- pROC::roc(negAndPos$targetEffectSize > 1, negAndPos$logRr, algorithm = 3)
           auc <- round(pROC::auc(roc), 2)
           type1 <- NA
