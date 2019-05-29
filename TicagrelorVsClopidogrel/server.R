@@ -54,6 +54,7 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
+    results <- results[order(results$analysisId), ]
     if (blind) {
       results$rr <- rep(NA, nrow(results))
       results$ci95Ub <- rep(NA, nrow(results))
@@ -113,7 +114,7 @@ shinyServer(function(input, output, session) {
     if (is.null(table) || nrow(table) == 0) {
       return(NULL)
     }
-    table <- merge(table, cohortMethodAnalysis)
+    table$description <- cohortMethodAnalysis$description[match(table$analysisId, cohortMethodAnalysis$analysisId)]
     table <- table[, mainColumns]
     table$rr <- prettyHr(table$rr)
     table$ci95Lb <- prettyHr(table$ci95Lb)
