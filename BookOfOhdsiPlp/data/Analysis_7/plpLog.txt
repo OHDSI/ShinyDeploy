@@ -1,0 +1,40 @@
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 3.0.5
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_7
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		CohortID:           3
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          2
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        500000
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		Covariates:         74348
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		Population size:    350460
+2019-06-04 00:56:29	[Main thread]	INFO	PatientLevelPrediction		Cases:              591
+2019-06-04 00:56:30	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Creating a 25% test and 75% train (into 3 folds) stratified split by person
+2019-06-04 00:56:30	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Data split into 87615 test cases and 262845 train cases (87616, 87615, 87614)
+2019-06-04 00:56:31	[Main thread]	INFO	PatientLevelPrediction		Training Random forest model
+2019-06-04 01:13:51	[Main thread]	INFO	PatientLevelPrediction	fitRandomForest	Model with settings: ntrees:500 maxDepth: 4mtry:  obtained AUC of 0.610012224621904
+2019-06-04 01:18:36	[Main thread]	INFO	PatientLevelPrediction	fitRandomForest	Model with settings: ntrees:500 maxDepth: 10mtry:  obtained AUC of 0.616114737226287
+2019-06-04 01:27:10	[Main thread]	INFO	PatientLevelPrediction	fitRandomForest	Model with settings: ntrees:500 maxDepth: 17mtry:  obtained AUC of 0.603570641004481
+2019-06-04 01:30:36	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Mapping covariates...
+2019-06-04 01:30:54	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Executing prediction...
+2019-06-04 01:31:05	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Returning results...
+2019-06-04 01:31:06	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2019-06-04 01:31:06	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                86.14
+2019-06-04 01:31:06	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      83.50
+2019-06-04 01:31:06	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      88.78
+2019-06-04 01:31:07	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              61.18
+2019-06-04 01:31:07	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.00
+2019-06-04 01:31:40	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 4.87 intercept:         -0.01
+2019-06-04 01:31:44	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.61
+2019-06-04 01:31:44	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2019-06-04 01:31:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                64.16
+2019-06-04 01:31:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      59.33
+2019-06-04 01:31:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      69.00
+2019-06-04 01:31:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              2.45
+2019-06-04 01:31:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.00
+2019-06-04 01:32:16	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.39 intercept:         -0.00
+2019-06-04 01:32:18	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.02
+2019-06-04 01:32:18	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2019-06-04 01:32:18
+2019-06-04 01:32:18	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2019-06-04 01:36:38	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2019-06-04 01:36:38
+2019-06-04 01:36:38	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2019-06-04 01:36:43	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\T:/atlasResults/testingDocResults/Analysis_7\plpResult
+2019-06-04 01:36:43	[Main thread]	INFO	PatientLevelPrediction		Log saved to T:/atlasResults/testingDocResults/Analysis_7/plplog.txt
+2019-06-04 01:36:43	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.
