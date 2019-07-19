@@ -1,0 +1,3 @@
+outcomeId,cohortId,modelSettingsId,analysisId,devDatabase,populationSettingId,modelSettingId,covariateSettingId,modelSettingName,addExposureDaysToStart,riskWindowStart,addExposureDaysToEnd,riskWindowEnd,plpDataFolder,studyPopFile,plpResultFolder,cohortName,outcomeName
+5041,5040,1,2,Optum,1,1,1,Lasso Logistic Regression,0,1,0,730,,,,RA severity Target Cohort,RA severity Outcome Cohort 
+5041,5040,1,1,Optum,1,1,1,Lasso Logistic Regression,0,1,0,90,,,,RA severity Target Cohort,RA severity Outcome Cohort 
