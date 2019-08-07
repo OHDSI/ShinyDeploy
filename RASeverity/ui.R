@@ -73,8 +73,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                     shiny::tabsetPanel(
                                                       
                                                       shiny::tabPanel("Results",
+                                                                      shiny::h5('*Please note: the counts for the internal performances (development databases is the same as the validation database) only include the test data, so the complete dataset used for model development is larger. The test set is 25% of data by default. '),
                                                     shiny::div(DT::dataTableOutput('summaryTable'), 
-                                                               style = "font-size:70%")),
+                                                               style = "font-size:70%")
+                                                    ),
                                                     
                                                     shiny::tabPanel("Model Settings",
                                                                     shiny::h3('Model Settings: ', 
