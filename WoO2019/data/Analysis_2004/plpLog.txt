@@ -1,0 +1,38 @@
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 3.0.5
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_2
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		CohortID:           10845
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          10082
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        4574400
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		Covariates:         72459
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		Population size:    4574400
+2019-08-08 05:42:07	[Main thread]	INFO	PatientLevelPrediction		Cases:              57326
+2019-08-08 05:42:11	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Creating a 25% test and 75% train (into 3 folds) stratified split by person
+2019-08-08 05:42:18	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Data split into 1143599 test cases and 3430800 train cases (1143601, 1143600, 1143599)
+2019-08-08 05:42:29	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2019-08-08 07:14:25	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2019-08-08 13:23:32	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2019-08-08 13:23:32	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2019-08-08 13:23:33	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 6.82 hours
+2019-08-08 13:23:33	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Creating variable importance data frame
+2019-08-08 13:23:33	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Getting predictions on train set
+2019-08-08 13:47:31	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 12.5 mins
+2019-08-08 14:08:25	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 3.33 mins
+2019-08-08 14:08:27	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2019-08-08 14:09:05	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                69.73
+2019-08-08 14:09:08	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              6.17
+2019-08-08 14:09:08	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-08-08 14:17:32	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.13 intercept:         -0.00
+2019-08-08 14:18:39	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.06
+2019-08-08 14:18:39	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2019-08-08 14:18:54	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                68.12
+2019-08-08 14:18:54	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              5.47
+2019-08-08 14:18:54	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-08-08 14:24:48	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.04 intercept:         -0.00
+2019-08-08 14:25:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.05
+2019-08-08 14:25:10	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2019-08-08 14:25:10
+2019-08-08 14:25:10	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2019-08-08 15:53:19	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2019-08-08 15:53:19
+2019-08-08 15:53:19	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2019-08-08 15:54:02	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\T:/atlasResults/finalWooResults/Analysis_2\plpResult
+2019-08-08 15:54:02	[Main thread]	INFO	PatientLevelPrediction		Log saved to T:/atlasResults/finalWooResults/Analysis_2/plplog.txt
+2019-08-08 15:54:02	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.
