@@ -70,7 +70,7 @@ createRenderedHtml <- function(filename, targetSql) {
                                                              mathjax = NULL,
                                                              highlight = "pygments",
                                                              css = paste0(getwd(), "/www/rendered.css")))
-  return("/tmp/querylibrary-rendered.Rmd")
+  return("/tmp/querylibrary-rendered.html")
 }
 # r <-
 # getSqlFromMarkdown('inst/shinyApps/QueryLibrary/queries/care_site/CS01_Care_site_place_of_service_counts.Rmd')
