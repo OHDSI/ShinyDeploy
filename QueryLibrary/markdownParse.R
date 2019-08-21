@@ -60,7 +60,7 @@ createRenderedHtml <- function(filename, targetSql) {
       sqlWritten <- TRUE
     }
   }
-  writeLines(output, con <- file(paste0(getwd(), "/tmp/querylibrary-rendered.Rmd")))
+  writeLines(output, con <- file("/tmp/querylibrary-rendered.Rmd"))
   close(con)
   rmarkdown::render(paste0(getwd(), "/tmp/querylibrary-rendered.Rmd"),
                     output_file = "querylibrary-rendered.html",
