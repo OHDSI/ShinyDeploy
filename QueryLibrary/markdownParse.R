@@ -60,17 +60,17 @@ createRenderedHtml <- function(filename, targetSql) {
       sqlWritten <- TRUE
     }
   }
-  writeLines(output, con <- file(paste0(getwd(), "/www/rendered.Rmd")))
+  writeLines(output, con <- file(paste0(getwd(), "/tmp/querylibrary-rendered.Rmd")))
   close(con)
-  rmarkdown::render(paste0(getwd(), "/www/rendered.Rmd"),
-                    output_file = "rendered.html",
-                    output_dir = paste0(getwd(), "/www"),
+  rmarkdown::render(paste0(getwd(), "/tmp/querylibrary-rendered.Rmd"),
+                    output_file = "querylibrary-rendered.html",
+                    output_dir = paste0(getwd(), "/tmp"),
                     quiet = TRUE,
                     output_format = rmarkdown::html_document(theme = NULL,
                                                              mathjax = NULL,
                                                              highlight = "pygments",
                                                              css = paste0(getwd(), "/www/rendered.css")))
-  return("www/rendered.html")
+  return("/tmp/querylibrary-rendered.Rmd")
 }
 # r <-
 # getSqlFromMarkdown('inst/shinyApps/QueryLibrary/queries/care_site/CS01_Care_site_place_of_service_counts.Rmd')
