@@ -79,14 +79,13 @@ resultsHois[resultsHois$comparatorId > 1000000, ]$noCana <- "No comparator expos
 makeNa <- resultsHois$rr > 10000 | resultsHois$rr < 0.0001 | resultsHois$ci95lb < 0.0001 | resultsHois$ci95ub > 10000 | resultsHois$eventsTreated == 0 | resultsHois$eventsComparator == 0
 keeps1 <- resultsHois$analysisId == 2 & resultsHois$comparatorName == "Albiglutide new users, no cana" & resultsHois$database == "Optum"
 keeps2 <- resultsHois$analysisId == 4 & resultsHois$comparatorName == "Acarbose new users, no cana" & resultsHois$database == "Optum"
-keeps3 <- resultsHois$analysisId == 2 & resultsHois$comparatorName == "Bromocriptine new users, no cana" & resultsHois$database == "CCAE"
-resultsHois$rr[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$ci95lb[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$ci95ub[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$logRr[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$seLogRr[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$p[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
-resultsHois$calP[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
+resultsHois$rr[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$ci95lb[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$ci95ub[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$logRr[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$seLogRr[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$p[makeNa & !(keeps1 | keeps2)] <- NA
+resultsHois$calP[makeNa & !(keeps1 | keeps2)] <- NA
 
 resultsNcs <- lapply(ncsFileNames, readRDS)
 resultsNcs <- do.call(rbind, resultsNcs)
