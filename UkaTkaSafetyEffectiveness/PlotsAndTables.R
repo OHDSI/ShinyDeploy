@@ -121,6 +121,20 @@ prepareMainResultsTable <- function(mainResults, analyses) {
   return(table)
 }
 
+prepareMainResultsTable2 <- function(mainResults, analyses) {
+  table <- mainResults
+  table$hr <- sprintf("%.2f (%.2f - %.2f)", mainResults$rr, mainResults$ci95Lb, mainResults$ci95Ub)
+  table$p <- sprintf("%.2f", table$p)
+  table$calHr <- sprintf("%.2f (%.2f - %.2f)",
+                         mainResults$calibratedRr,
+                         mainResults$calibratedCi95Lb,
+                         mainResults$calibratedCi95Ub)
+  table$calibratedP <- sprintf("%.2f", table$calibratedP)
+  table <- table[, c("databaseId", "hr", "p", "calHr", "calibratedP")]
+  colnames(table) <- c("Database", "HR (95% CI)", "P", "Cal. HR (95% CI)", "Cal. p")
+  return(table)
+}
+
 preparePowerTable <- function(mainResults, analyses) {
   table <- merge(mainResults, analyses)
   alpha <- 0.05
@@ -136,6 +150,50 @@ preparePowerTable <- function(mainResults, analyses) {
   table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
   table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
   table <- table[, c("description",
+                     "targetSubjects",
+                     "comparatorSubjects",
+                     "targetYears",
+                     "comparatorYears",
+                     "targetOutcomes",
+                     "comparatorOutcomes",
+                     "targetIr",
+                     "comparatorIr",
+                     "mdrr")]
+  table$targetSubjects <- formatC(table$targetSubjects, big.mark = ",", format = "d")
+  table$comparatorSubjects <- formatC(table$comparatorSubjects, big.mark = ",", format = "d")
+  table$targetYears <- formatC(table$targetYears, big.mark = ",", format = "d")
+  table$comparatorYears <- formatC(table$comparatorYears, big.mark = ",", format = "d")
+  table$targetOutcomes <- formatC(table$targetOutcomes, big.mark = ",", format = "d")
+  table$comparatorOutcomes <- formatC(table$comparatorOutcomes, big.mark = ",", format = "d")
+  table$targetIr <- sprintf("%.2f", table$targetIr)
+  table$comparatorIr <- sprintf("%.2f", table$comparatorIr)
+  table$mdrr <- sprintf("%.2f", table$mdrr)
+  table$targetSubjects <- gsub("^-", "<", table$targetSubjects)
+  table$comparatorSubjects <- gsub("^-", "<", table$comparatorSubjects)
+  table$targetOutcomes <- gsub("^-", "<", table$targetOutcomes)
+  table$comparatorOutcomes <- gsub("^-", "<", table$comparatorOutcomes)
+  table$targetIr <- gsub("^-", "<", table$targetIr)
+  table$comparatorIr <- gsub("^-", "<", table$comparatorIr)
+  idx <- (table$targetOutcomes < 0 | table$comparatorOutcomes < 0)
+  table$mdrr[idx] <- paste0(">", table$mdrr[idx])
+  return(table)
+}
+
+preparePowerTable2 <- function(mainResults, analyses) {
+  table <- merge(mainResults, analyses)
+  alpha <- 0.05
+  power <- 0.8
+  z1MinAlpha <- qnorm(1 - alpha/2)
+  zBeta <- -qnorm(1 - power)
+  pA <- table$targetSubjects/(table$targetSubjects + table$comparatorSubjects)
+  pB <- 1 - pA
+  totalEvents <- abs(table$targetOutcomes) + (table$comparatorOutcomes)
+  table$mdrr <- exp(sqrt((zBeta + z1MinAlpha)^2/(totalEvents * pA * pB)))
+  table$targetYears <- table$targetDays/365.25
+  table$comparatorYears <- table$comparatorDays/365.25
+  table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
+  table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
+  table <- table[, c("databaseId",
                      "targetSubjects",
                      "comparatorSubjects",
                      "targetYears",

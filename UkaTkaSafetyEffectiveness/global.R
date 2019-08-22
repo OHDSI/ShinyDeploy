@@ -6,13 +6,11 @@ dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
 positiveControlOutcome <- NULL
-
 splittableTables <- c("covariate_balance", "preference_score_dist", "kaplan_meier_dist")
-
 files <- list.files(dataFolder, pattern = ".rds")
 
 # Remove data already in global environment:
-tableNames <- gsub("(_t[0-9]+_c[0-9]+)|(_)[^_]*\\.rds", "", files)
+tableNames <- gsub("(_t[0-9]+_c[0-9]+)*\\.rds", "", files)
 camelCaseNames <- SqlRender::snakeCaseToCamelCase(tableNames)
 camelCaseNames <- unique(camelCaseNames)
 camelCaseNames <- camelCaseNames[!(camelCaseNames %in% SqlRender::snakeCaseToCamelCase(splittableTables))]
@@ -24,21 +22,23 @@ relabel <- function(var, oldLabel, newLabel) {
 }
 
 # Load data from data folder:
-loadFile <- function(file) {
-  # file = files[3]
+loadFile <- function(file) { 
   tableName <- gsub("(_t[0-9]+_c[0-9]+)*\\.rds", "", file) 
-  # tableName <- gsub("(_t[0-9]+_c[0-9]+)|(_)[^_]*\\.rds", "", file) 
   camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
   if (!(tableName %in% splittableTables)) {
     newData <- readRDS(file.path(dataFolder, file))
     colnames(newData) <- SqlRender::snakeCaseToCamelCase(colnames(newData))
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
+      if (!is.null(existingData$analysisType)) {
+        existingData$analysisType <- NULL
+      }
       newData <- rbind(existingData, newData)
     }
     if (!is.null(newData$databaseId)) {
       newData$databaseId <- relabel(newData$databaseId, "thin", "THIN")
       newData$databaseId <- relabel(newData$databaseId, "pmtx", "PharMetrics")
+      levels(newData$databaseId) <- c("CCAE", "MDCR", "Optum", "THIN", "PharMetrics", "Meta-analysis")
     }
     assign(camelCaseName, newData, envir = .GlobalEnv)
   }
@@ -55,8 +55,6 @@ targetCohortsInfoHtml <- readChar("TargetCohorts.html", file.info("TargetCohorts
 comparatorCohortsInfoHtml <- readChar("ComparatorCohorts.html", file.info("ComparatorCohorts.html")$size)
 analysesInfoHtml <- readChar("Analyses.html", file.info("Analyses.html")$size)
 
-
-
 # exposures rename
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with unicompartmental knee replacement without limitation on hip-spine-foot pathology", "Unicompartmental knee replacement without hip-spine-foot pathology restriction")
 exposureOfInterest$exposureName <- relabel(exposureOfInterest$exposureName, "[OD4] Patients with unicompartmental knee replacement", "Unicompartmental knee replacement")
@@ -67,6 +65,7 @@ exposureOfInterest$order <- match(exposureOfInterest$exposureName, c("Unicompart
                                                                      "Unicompartmental knee replacement without hip-spine-foot pathology restriction",
                                                                      "Total knee replacement without hip-spine-foot pathology restriction"))
 exposureOfInterest <- exposureOfInterest[order(exposureOfInterest$order), ]
+exposureOfInterest$order <- NULL
 
 # outcomes rename
 outcomeOfInterest$outcomeName <- relabel(outcomeOfInterest$outcomeName, "[OD4] Post operative infection events", "Post-operative infection")
@@ -82,6 +81,7 @@ outcomeOfInterest$order <- match(outcomeOfInterest$outcomeName, c("Venous thromb
                                                                   "Opioid use",
                                                                   "Revision"))
 outcomeOfInterest <- outcomeOfInterest[order(outcomeOfInterest$order), ]
+outcomeOfInterest$order <- NULL
 
 # analyses rename
 cohortMethodAnalysis$description <- relabel(cohortMethodAnalysis$description, "1. PS matching variable ratio No trim TAR 60d", "10:1 variable ratio matching, 60 day time-at-risk")

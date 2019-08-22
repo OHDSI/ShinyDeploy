@@ -284,6 +284,7 @@ getCovariateBalance <- function(connection,
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   levels(balance$databaseId)[levels(balance$databaseId) == "thin"] <- "THIN"
   levels(balance$databaseId)[levels(balance$databaseId) == "pmtx"] <- "PharMetrics"
+  levels(balance$databaseId) <- c("CCAE", "MDCR", "Optum", "THIN", "PharMetrics", "Meta-analysis")
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId & balance$databaseId == databaseId, ]
   balance <- merge(balance, covariate[covariate$databaseId == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
   balance <- balance[ c("covariateId",
@@ -315,6 +316,7 @@ getPs <- function(connection, targetIds, comparatorIds, databaseId) {
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
   levels(ps$databaseId)[levels(ps$databaseId) == "thin"] <- "THIN"
   levels(ps$databaseId)[levels(ps$databaseId) == "pmtx"] <- "PharMetrics"
+  levels(ps$databaseId) <- c("CCAE", "MDCR", "Optum", "THIN", "PharMetrics", "Meta-analysis")
   ps <- ps[ps$databaseId == databaseId, ]
   return(ps)
 }
@@ -325,6 +327,7 @@ getKaplanMeier <- function(connection, targetId, comparatorId, outcomeId, databa
   colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
   levels(km$databaseId)[levels(km$databaseId) == "thin"] <- "THIN"
   levels(km$databaseId)[levels(km$databaseId) == "pmtx"] <- "PharMetrics"
+  levels(km$databaseId) <- c("CCAE", "MDCR", "Optum", "THIN", "PharMetrics", "Meta-analysis")
   km <- km[km$outcomeId == outcomeId &
              km$analysisId == analysisId &
              km$databaseId == databaseId, ]

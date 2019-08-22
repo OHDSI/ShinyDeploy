@@ -64,3 +64,7 @@ The following limitations of Pharmetrics should be noted:
 </ul>
 
 <p>All four databases have been standardized into the Observational Medical Outcomes Partnership (OMOP) Common Data Model (CDM), which includes a standard representation of health care experiences (such as information related to drug utilization and condition occurrence), as well as common vocabularies for coding clinical concepts and enables consistent application of analyses across multiple disparate data sources. Complete specifications for the extract, transform, and load (ETL) process for each database is available at: <a href="https://github.com/OHDSI/ETL-CDMBuilder">https://github.com/OHDSI/ETL-CDMBuilder</a>.</p>
+
+
+<h4>Meta-analysis</h4>
+<p>Meta-analysis across sources may offer increased precision for a pooled estimate and, because of the differences in populations represented by the various data sources, will provide context to the study's external validity. Similarity of estimated associations across data sources will support broad applicability of findings. Heterogeneity of findings across data sources may indicate that associations between exposure and outcome vary according to patient characteristics. The consistency of study results will be quantified using the I2 statistic. Where the degree of heterogeneity was acceptable (I2 &lt;40%) across data sources, random-effects meta-analysis was performed using the DerSimonian and Laird method. Estimates for negative and positive controls were pooled before performing empirical calibration on the pooled estimates.</p>
