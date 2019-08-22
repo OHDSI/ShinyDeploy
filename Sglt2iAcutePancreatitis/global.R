@@ -85,6 +85,8 @@ resultsHois$ci95lb[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
 resultsHois$ci95ub[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
 resultsHois$logRr[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
 resultsHois$seLogRr[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
+resultsHois$p[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
+resultsHois$calP[makeNa & !(keeps1 | keeps2 | keeps3)] <- NA
 
 resultsNcs <- lapply(ncsFileNames, readRDS)
 resultsNcs <- do.call(rbind, resultsNcs)
