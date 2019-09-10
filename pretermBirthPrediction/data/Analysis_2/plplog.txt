@@ -1,0 +1,36 @@
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 3.0.5
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_2
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		CohortID:           11417
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          9913
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        397621
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		Covariates:         59566
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		Population size:    397621
+2019-09-07 19:29:13	[Main thread]	INFO	PatientLevelPrediction		Cases:              4569
+2019-09-07 19:29:14	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Creating a 25% test and 75% train (into 3 folds) stratified split by person
+2019-09-07 19:29:14	[Main thread]	INFO	PatientLevelPrediction	personSplitter	Data split into 99405 test cases and 298216 train cases (99406, 99405, 99405)
+2019-09-07 19:29:15	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2019-09-07 19:32:44	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2019-09-07 19:41:16	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2019-09-07 19:41:16	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2019-09-07 19:41:16	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 9.8 mins
+2019-09-07 19:41:52	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 13.9 secs
+2019-09-07 19:42:42	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 4.58 secs
+2019-09-07 19:42:43	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2019-09-07 19:42:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                69.61
+2019-09-07 19:42:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              3.13
+2019-09-07 19:42:45	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-09-07 19:43:15	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.22 intercept:         -0.00
+2019-09-07 19:43:20	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.03
+2019-09-07 19:43:20	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2019-09-07 19:43:21	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                69.15
+2019-09-07 19:43:21	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              3.25
+2019-09-07 19:43:21	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2019-09-07 19:43:49	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.24 intercept:         -0.00
+2019-09-07 19:43:51	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.03
+2019-09-07 19:43:51	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2019-09-07 19:43:51
+2019-09-07 19:43:51	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2019-09-07 19:48:31	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2019-09-07 19:48:31
+2019-09-07 19:48:31	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2019-09-07 19:48:39	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\./Results/OPTUM/Analysis_2\plpResult
+2019-09-07 19:48:39	[Main thread]	INFO	PatientLevelPrediction		Log saved to ./Results/OPTUM/Analysis_2/plplog.txt
+2019-09-07 19:48:39	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.
