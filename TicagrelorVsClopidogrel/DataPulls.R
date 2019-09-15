@@ -217,9 +217,16 @@ getSubgroupResults <- function(connection,
     idx <- idx & cmInteractionResult$interactionCovariateId %in% subgroupIds
   }
   result <- cmInteractionResult[idx, ]
-  result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
-                                     databaseId = covariate$databaseId,
-                                     covariateName = covariate$covariateName))
+  if (sum(databaseIds %in% unique(covariate$databaseId))){
+    result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
+                                       databaseId = covariate$databaseId,
+                                       covariateName = covariate$covariateName))
+  } else {
+    result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
+                                       covariateName = covariate$covariateName))
+    result<-unique(result)
+  }
+
   result <- result[, c("covariateName",
                        "targetSubjects",
                        "comparatorSubjects",
@@ -304,10 +311,12 @@ getCovariateBalance <- function(connection,
   return(balance)
 }
 
-getPs <- function(connection, targetIds, comparatorIds, databaseId) {
+getPs <- function(connection, targetIds, comparatorIds, #analysisId, 
+                  databaseId) {
   file <- sprintf("preference_score_dist_t%s_c%s_%s.rds", targetIds, comparatorIds, databaseId)
   ps <- readRDS(file.path(dataFolder, file))
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
+  #ps <- ps[ps$analysisId==analysisId,]
   return(ps)
 }
 
