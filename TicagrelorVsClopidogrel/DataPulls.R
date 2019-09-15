@@ -273,7 +273,7 @@ getCmFollowUpDist <- function(connection,
                                  cmFollowUpDist$comparatorId == comparatorId &
                                  cmFollowUpDist$outcomeId == outcomeId &
                                  cmFollowUpDist$analysisId == analysisId &
-                                 cmFollowUpDist$databaseId == databaseId, ]
+                                 as.character(cmFollowUpDist$databaseId) == databaseId, ]
   return(followUpDist)
 }
 
@@ -287,7 +287,7 @@ getCovariateBalance <- function(connection,
   balance <- readRDS(file.path(dataFolder, file))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]
-  balance <- merge(balance, covariate[covariate$databaseId == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
+  balance <- merge(balance, covariate[as.character(covariate$databaseId) == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
   balance <- balance[ c("covariateId",
                         "covariateName",
                         "covariateAnalysisId", 
@@ -335,7 +335,7 @@ getAttrition <- function(connection, targetId, comparatorId, outcomeId, analysis
                         attrition$comparatorId == comparatorId &
                         attrition$outcomeId == outcomeId &
                         attrition$analysisId == analysisId &
-                        attrition$databaseId == databaseId, ]
+                        as.character(attrition$databaseId) == databaseId, ]
   targetAttrition <- result[result$exposureId == targetId, ]
   comparatorAttrition <- result[result$exposureId == comparatorId, ]
   colnames(targetAttrition)[colnames(targetAttrition) == "subjects"] <- "targetPersons"
