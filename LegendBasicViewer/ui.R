@@ -26,8 +26,9 @@ shinyUI(
                              tags$div("Processing...",id = "loadmessage")),
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
-                                 HTML("</BR><P>The Observational Health Data Sciences and Informatics (OHDSI) international collaborative has developed the Large-Scale Evidence Generation and Evaluation across a Network of Databases (LEGEND) research initiative. LEGEND strives to produce reproducible evidence based on observational data and to fill in evidence gaps in medicine.</P>"),
-                                 HTML("</BR><P>This app provides access to all LEGEND study results. To start, click on the 'Specific researc questions' tab.</P>")
+                                 p("The Observational Health Data Sciences and Informatics (OHDSI) international collaborative has developed the Large-Scale Evidence Generation and Evaluation across a Network of Databases (LEGEND) research initiative. LEGEND strives to produce reproducible evidence based on observational data and to fill in evidence gaps in medicine",
+                                   style = "word-wrap: break-word;"),
+                                 p("This app provides access to all LEGEND study results. To start, click on the 'Specific researc questions' tab.")
                         ),
                         tabPanel("Specific research questions",
                                  fluidRow(
