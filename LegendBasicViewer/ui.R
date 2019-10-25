@@ -5,7 +5,7 @@ shinyUI(
   fluidPage(style = "width:1500px;",
             titlePanel(
               title=div(img(src = "logo.png", height = 50, width = 50), 
-                        "LEGEND basic viewer"),
+                        "LEGEND Basic Viewer"),
               windowTitle = "LEGEND basic viewer"),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
@@ -26,10 +26,18 @@ shinyUI(
                              tags$div("Processing...",id = "loadmessage")),
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
-                                 p("The Observational Health Data Sciences and Informatics (OHDSI) international collaborative has developed the Large-Scale Evidence Generation and Evaluation across a Network of Databases (LEGEND) research initiative. LEGEND strives to produce reproducible evidence based on observational data and to fill in evidence gaps in medicine.",
-                                   style = "word-wrap: break-word; white-space: normal; width: 640px"),
-                                 p("This app provides access to all LEGEND study results. To start, click on the 'Specific research questions' tab.",
-                                   style = "word-wrap: break-word; white-space: normal; width: 640px")
+                                 br(),
+                                 p("This web-based application provides an interactive platform to explore all analysis results generated as part of the OHDSI LEGEND study."),
+                                 p("These results are featured in:"),
+                                 p(HTML("Suchard MA, Schuemie MJ, Krumholz H, You SC, Chen RJ, Pratt N, Reich CG, Duke J, Madigan D, Hripcsak G, Ryan PB
+              <a href = \"https://doi.org/10.1016/S0140-6736(19)32317-7\">
+                  Comprehensive comparative effectiveness and safety of first-line antihypertensive drug classes: a systematic, multinational, large-scale analysis.
+              </a>Lancet, 2019")),
+                                 h3("External links"),
+                                 HTML("<ul>
+                    <li>Protocol: <a href = \"https://github.com/OHDSI/Legend/blob/master/Documents/OHDSI%20Legend%20Protocol%20Hypertension%20V03.docx\">https://github.com/OHDSI/Legend/blob/master/Documents/OHDSI%20Legend%20Protocol%20Hypertension%20V03.docx</a></li>
+                    <li>Analysis source code: <a href = \"https://github.com/OHDSI/Legend\">https://github.com/OHDSI/Legend</a></li>
+                  </ul>")
                         ),
                         tabPanel("Specific research questions",
                                  fluidRow(
