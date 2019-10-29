@@ -1152,7 +1152,8 @@ plotCovariateBalanceSummary <- function(balanceSummary,
                                                 lower = lower,
                                                 middle = median,
                                                 upper = upper,
-                                                ymax = ymax)) +
+                                                ymax = ymax,
+                                                group = x)) +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymin), size = 1) +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = ymax, ymax = ymax), size = 1) +
     ggplot2::geom_boxplot(stat = "identity", fill = rgb(0, 0, 0.8, alpha = 0.25), size = 1) +
