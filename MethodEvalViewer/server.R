@@ -376,6 +376,16 @@ shinyServer(function(input, output, session) {
     ))
   })
   
+  observeEvent(input$evalTypeInfo2, {
+    showModal(modalDialog(
+      title = "Evaluation type",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(evalTypeInfoHtml)
+    ))
+  })
+  
   observeEvent(input$calibrationInfo, {
     showModal(modalDialog(
       title = "Empirical calibration",
@@ -386,7 +396,27 @@ shinyServer(function(input, output, session) {
     ))
   })
   
+  observeEvent(input$calibrationInfo2, {
+    showModal(modalDialog(
+      title = "Empirical calibration",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(calibrationInfoHtml)
+    ))
+  })
+  
   observeEvent(input$mdrrInfo, {
+    showModal(modalDialog(
+      title = "Minimum Detectable RR",
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      HTML(mdrrInfoHtml)
+    ))
+  })
+  
+  observeEvent(input$mdrrInfo2, {
     showModal(modalDialog(
       title = "Minimum Detectable RR",
       easyClose = TRUE,

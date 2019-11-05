@@ -44,9 +44,9 @@ shinyUI(
               tabPanel("Method performance metrics per stratum and database",
                        fluidRow(
                          column(2,
-                                selectInput("evalType", label = div("Evaluation type:", actionLink("evalTypeInfo", "", icon = icon("info-circle"))), choices = c("Effect estimation", "Comparative effect estimation")),
-                                selectInput("calibrated", label = div("Empirical calibration:", actionLink("calibrationInfo", "", icon = icon("info-circle"))), choices = c("Uncalibrated", "Calibrated")),
-                                selectInput("mdrr", label = div("Minimum detectable RR:", actionLink("mdrrInfo", "", icon = icon("info-circle"))), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25"),
+                                selectInput("evalType", label = div("Evaluation type:", actionLink("evalTypeInfo2", "", icon = icon("info-circle"))), choices = c("Effect estimation", "Comparative effect estimation")),
+                                selectInput("calibrated", label = div("Empirical calibration:", actionLink("calibrationInfo2", "", icon = icon("info-circle"))), choices = c("Uncalibrated", "Calibrated")),
+                                selectInput("mdrr", label = div("Minimum detectable RR:", actionLink("mdrrInfo2", "", icon = icon("info-circle"))), choices = c("All", "4", "2", "1.5", "1.25"), selected = "1.25"),
                                 selectInput("database", label = div("Database:", actionLink("databaseInfo", "", icon = icon("info-circle"))), choices = dbs),
                                 selectInput("stratum", label = div("Stratum:", actionLink("stratumInfo", "", icon = icon("info-circle"))), choices = strata),
                                 selectInput("trueRr", label = div("True effect size:", actionLink("trueRrInfo", "", icon = icon("info-circle"))), choices = trueRrs),
