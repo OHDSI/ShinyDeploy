@@ -147,7 +147,7 @@ plotOverview <- function(metrics, metric, strataSubset, calibrated) {
     "#DF4327"
   )
   plot <- ggplot2::ggplot(metrics, ggplot2::aes(x = x, y = metric, color = tidyMethod)) +
-    ggplot2::geom_vline(xintercept = 0.5 + 0:(nrow(strataSubset) - 1), linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = 0.5 + 0:nrow(strataSubset), linetype = "dashed") +
     ggplot2::geom_point(size = 4.5, alpha = 0.5, shape = 16) +
     ggplot2::scale_x_continuous("Stratum", breaks = strataSubset$x, labels = strataSubset$stratum) +
     ggplot2::scale_colour_manual(values = fiveColors) +
