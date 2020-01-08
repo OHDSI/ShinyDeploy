@@ -1,0 +1,39 @@
+/* Allows pop-up modal to not be greyed out*/
+.modal-backdrop {
+z-index: 0;
+}
+
+.flat-table {
+  border: 1px solid #1C6EA4;
+  background-color: #EEEEEE;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+td, th{
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+thead {
+  background: #ffeabf;
+  background: -moz-linear-gradient(top, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+  background: -webkit-linear-gradient(top, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+  background: linear-gradient(to bottom, #f9d895 0%, #ffe1a5 66%, #ffeabf 100%);
+  border-bottom: 2px solid #444444;
+}
+tbody {
+  font-size: 16px;
+  color: #000000;
+}
+tr:nth-child(even) {
+  background: #edfaff;
+}
+thead th {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  border-left: 2px solid #D0E4F5;
+}
+.fa {
+  font-size: 20px;
+}
