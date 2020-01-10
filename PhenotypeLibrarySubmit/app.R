@@ -33,7 +33,7 @@ library(tidyr)
 enableBookmarking(store = "server")
 
 # Point to the Auth0 config file
-auth0_config("/data/_auth0.yml")
+options(auth0_config_file = "/data/_auth0.yml")
 
 # Authenticate to allow for data export to Google Drive
 drive_auth(service_token = "/data/phrasal-period-244717-6a06518b8dc0.json")
