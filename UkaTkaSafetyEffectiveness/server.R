@@ -102,7 +102,7 @@ shinyServer(function(input, output, session) {
       hideTab("detailsTabsetPanel", "Covariate balance")
       hideTab("detailsTabsetPanel", "Kaplan-Meier")
     } else {
-      hideTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Attrition")
       showTab("detailsTabsetPanel", "Population characteristics")
       showTab("detailsTabsetPanel", "Propensity scores")
       showTab("detailsTabsetPanel", "Covariate balance")
