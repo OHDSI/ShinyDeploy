@@ -510,7 +510,7 @@ ui <-
               list(
                 tabItem(
                   tabName = "about",
-                  fluidRow(column(8, box(width = NULL, includeMarkdown("about.md"))))
+		  fluidRow(column(8, box(width = NULL, includeMarkdown(file.path("data", "about.md")))))
                 )
               )
             ) # End c
