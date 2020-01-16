@@ -199,8 +199,7 @@ FILE_TYPES <- c(
 )
 
 # Constant: Path on server to where bookmarks are being stored
-# BOOKMARK_PATH <- "/var/lib/shiny-server/bookmarks/shiny/gspl_submit-c9a5fb2e416b1d11f52366fc75d8c415"
-BOOKMARK_PATH <<- "/home/deployed/data/bookmarks"
+BOOKMARK_PATH <<- "/gspl-bookmarks"
 
 # Constant: Dataframe to initialize authors datatables
 AUTHORS_BLANK <- data.frame(
