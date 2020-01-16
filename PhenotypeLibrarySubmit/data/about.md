@@ -58,10 +58,10 @@ This process is illustrated with the following diagram:
 This application exists as one of two applications. For those who are interested only in read-only activities such as viewing, inspecting, and downloading cohort definitions, please use the **viewer application**. For those who are interested in submitting cohort definition, validation, citation, and cohort characterization data to the library, please use this **submission application**.
 
 - The viewer application (Coming soon...):
-https://data.ohdsi.org/GoldStandardPhenotypeLibraryView/
+https://data.ohdsi.org/PhenotypeLibraryView/
 
 - This submission application:
-https://data.ohdsi.org/GoldStandardPhenotypeLibrarySubmit/
+https://data.ohdsi.org/PhenotypeLibrarySubmit/
 
 ## Glossary
 **Phenotype** - A phenotype, as it pertains to observational research using health data, is a pattern of observable characteristics for a set of people for a duration of time. These characteristics can include conditions, procedures, drug exposures, devices, observations, visits, cost information, etc.
