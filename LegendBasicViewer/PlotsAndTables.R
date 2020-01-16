@@ -247,7 +247,7 @@ prepareTable1 <- function(balance,
   
   formatPercent <- function(x) {
     result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
-    result <- gsub("^-", "<", result)
+    result <- gsub("-", "<", result)
     result <- gsub("NA", "", result)
     result <- gsub(" ", space, result)
     return(result)

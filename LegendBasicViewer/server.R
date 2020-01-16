@@ -311,8 +311,9 @@ shinyServer(function(input, output, session) {
                                    databaseId = row$databaseId,
                                    analysisId = row$analysisId)
       table1 <- prepareTable1(balance = chars,
-                             beforeLabel = paste("Before" , row$psStrategy),
-                             afterLabel = paste("After" , row$psStrategy))
+                              beforeLabel = paste("Before" , row$psStrategy),
+                              afterLabel = paste("After" , row$psStrategy),
+                              output = "html")
 
       container <- htmltools::withTags(table(
         class = 'display',
