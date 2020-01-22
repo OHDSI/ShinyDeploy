@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "E:/jweave17/StudyResults/EhdenRaDmardsEstimation/ShinyDataAll", blind = FALSE)
+shinySettings <- list(dataFolder = "/data/EhdenRaDmardsEstimation", blind = FALSE)
 
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
