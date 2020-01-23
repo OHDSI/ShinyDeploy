@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "/data/EhdenRaDmardsEstimation", blind = FALSE)
+shinySettings <- list(dataFolder = "./data", blind = FALSE)
 
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
@@ -71,15 +71,35 @@ colnames(toBlind) <- SqlRender::snakeCaseToCamelCase(colnames(toBlind))
 cohortMethodResult <- merge(cohortMethodResult, toBlind, all.x = TRUE)
 cohortMethodResult$toBlind[is.na(cohortMethodResult$toBlind)] <- 0
 
-cohortMethodResult$rr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$ci95Ub[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$ci95Lb[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$logRr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$seLogRr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$p[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedRr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedCi95Ub[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedCi95Lb[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedLogRr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedSeLogRr[cohortMethodResult$toBlind == 1] <- NA
-cohortMethodResult$calibratedP[cohortMethodResult$toBlind == 1] <- NA
+dbBlinds <- cohortMethodResult$databaseId %in% c("AMBEMR", "BELGIUM", "GERMANY", "LPDFRANCE", "THIN") & cohortMethodResult$analysisId %in% c(1,4,7,9)
+tarBlinds <- cohortMethodResult$targetId == 226
+# create toBlind reference to null KM plots
+
+cohortMethodResult$rr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$ci95Ub[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$ci95Lb[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$logRr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$seLogRr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$p[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedRr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedCi95Ub[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedCi95Lb[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedLogRr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedSeLogRr[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+cohortMethodResult$calibratedP[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
+
+cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
+
+# resultsShare <- cohortMethodResult[cohortMethodResult$outcomeId %in% outcomeOfInterest$outcomeId, ]  # 1690
+# resultsShare <- merge(cohortMethodAnalysis, resultsShare)
+# resultsShare <- merge(outcomeOfInterest, resultsShare)
+# resultsShare <- merge(exposureOfInterest[, 1:2], resultsShare, by.x = "exposureId", by.y = "comparatorId")
+# names(resultsShare)[names(resultsShare) == "exposureName"] <- "comparatorName"
+# names(resultsShare)[names(resultsShare) == "exposureId"] <- "comparatorId"
+# resultsShare <- merge(exposureOfInterest[, 1:2], resultsShare, by.x = "exposureId", by.y = "targetId")
+# names(resultsShare)[names(resultsShare) == "exposureName"] <- "targetName"
+# names(resultsShare)[names(resultsShare) == "exposureId"] <- "targetId"
+# resultsShare <- resultsShare[order(resultsShare$databaseId, resultsShare$targetId, resultsShare$comparatorId, resultsShare$outcomeId, resultsShare$analysisId), ]
+# write.csv(resultsShare, "E:/jweave17/StudyResults/EhdenRaDmardsEstimation/resultsShare.csv", row.names = FALSE)
+
+

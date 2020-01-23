@@ -25,7 +25,7 @@ shinyUI(
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
                                  HTML("<br/>"),
-                                 div(p("These research results are from a retrospective, real-world, observational study to estimate the population-level effects of conventional synthetic disease-modifying antirheumatic drugs among patients with rheumatoid arthritis. This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to abstracts and a full manuscript currently in preparation for submission to scientific conferences and a peer-reviewed journal. During abstract and manuscript preparation and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
+                                 div(p("These research results are from a retrospective, real-world, observational study to estimate the population-level effects of conventional synthetic disease-modifying antirheumatic drugs among patients with rheumatoid arthritis. This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to abstracts and a full manuscript currently in development for submission to scientific conferences and a peer-reviewed journal. During abstract and manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p>Below is the abstract of the manuscript that summarizes the findings:</p>"),
                                  HTML("<p><strong>Backgroud: </strong></p>"),
@@ -56,8 +56,11 @@ shinyUI(
                                                                       tabPanel("Power",
                                                                                uiOutput("powerTableCaption"),
                                                                                tableOutput("powerTable"),
-                                                                               uiOutput("timeAtRiskTableCaption"),
-                                                                               tableOutput("timeAtRiskTable")
+                                                                               conditionalPanel("output.isMetaAnalysis == false",
+                                                                                                uiOutput("timeAtRiskTableCaption"),
+                                                                                                tableOutput("timeAtRiskTable"))
+                                                                               # uiOutput("timeAtRiskTableCaption"),
+                                                                               # tableOutput("timeAtRiskTable")
                                                                       ),
                                                                       tabPanel("Attrition",
                                                                                plotOutput("attritionPlot", width = 600, height = 600),

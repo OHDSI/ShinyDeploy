@@ -2,7 +2,8 @@ library(shiny)
 library(DT)
 
 mainColumns <- c("description", 
-                 "databaseId", 
+                 "databaseId",
+                 "i2",
                  "rr", 
                  "ci95Lb",
                  "ci95Ub",
@@ -10,10 +11,12 @@ mainColumns <- c("description",
                  "calibratedRr", 
                  "calibratedCi95Lb",
                  "calibratedCi95Ub",
-                 "calibratedP")
+                 "calibratedP",
+                 "sources")
 
 mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
-                     "<span title=\"Data source\">Data source</span>", 
+                     "<span title=\"Data source\">Data source</span>",
+                     "<span title=\"Between database heterogeneity\">I2</span>", 
                      "<span title=\"Hazard ratio (uncalibrated)\">HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (uncalibrated)\">LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (uncalibrated)\">UB</span>", 
@@ -21,7 +24,8 @@ mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
                      "<span title=\"Hazard ratio (calibrated)\">Cal.HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (calibrated)\">Cal.LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (calibrated)\">Cal.UB</span>", 
-                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
+                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>",
+                     "<span title=\"Data sources contributing to meta-analysis\">Sources</span>")
 
 shinyServer(function(input, output, session) {
   if (blind) {
@@ -95,6 +99,28 @@ shinyServer(function(input, output, session) {
     return(!is.null(selectedRow()))
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
+  
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- !is.null(row) && (row$database == "Meta-analysis")
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity model")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+      hideTab("detailsTabsetPanel", "Kaplan-Meier")
+    } else {
+      showTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity model")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier")
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
   
   balance <- reactive({
      row <- selectedRow()
