@@ -89,17 +89,3 @@ cohortMethodResult$calibratedSeLogRr[cohortMethodResult$toBlind == 1 | dbBlinds 
 cohortMethodResult$calibratedP[cohortMethodResult$toBlind == 1 | dbBlinds | tarBlinds] <- NA
 
 cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
-
-# resultsShare <- cohortMethodResult[cohortMethodResult$outcomeId %in% outcomeOfInterest$outcomeId, ]  # 1690
-# resultsShare <- merge(cohortMethodAnalysis, resultsShare)
-# resultsShare <- merge(outcomeOfInterest, resultsShare)
-# resultsShare <- merge(exposureOfInterest[, 1:2], resultsShare, by.x = "exposureId", by.y = "comparatorId")
-# names(resultsShare)[names(resultsShare) == "exposureName"] <- "comparatorName"
-# names(resultsShare)[names(resultsShare) == "exposureId"] <- "comparatorId"
-# resultsShare <- merge(exposureOfInterest[, 1:2], resultsShare, by.x = "exposureId", by.y = "targetId")
-# names(resultsShare)[names(resultsShare) == "exposureName"] <- "targetName"
-# names(resultsShare)[names(resultsShare) == "exposureId"] <- "targetId"
-# resultsShare <- resultsShare[order(resultsShare$databaseId, resultsShare$targetId, resultsShare$comparatorId, resultsShare$outcomeId, resultsShare$analysisId), ]
-# write.csv(resultsShare, "E:/jweave17/StudyResults/EhdenRaDmardsEstimation/resultsShare.csv", row.names = FALSE)
-
-
