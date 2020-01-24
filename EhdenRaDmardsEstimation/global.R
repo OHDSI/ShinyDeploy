@@ -71,7 +71,7 @@ colnames(toBlind) <- SqlRender::snakeCaseToCamelCase(colnames(toBlind))
 cohortMethodResult <- merge(cohortMethodResult, toBlind, all.x = TRUE)
 cohortMethodResult$toBlind[is.na(cohortMethodResult$toBlind)] <- 0
 
-dbBlinds <- cohortMethodResult$databaseId %in% c("AMBEMR", "BELGIUM", "GERMANY", "LPDFRANCE", "THIN") & cohortMethodResult$analysisId %in% c(1,4,7,9)
+dbBlinds <- cohortMethodResult$databaseId %in% c("BELGIUM", "GERMANY", "THIN") & cohortMethodResult$analysisId %in% c(1,4,7,9)
 tarBlinds <- cohortMethodResult$targetId == 226 & cohortMethodResult$analysisId %in% c(1,4,7,9)
 # create toBlind reference to null KM plots
 
