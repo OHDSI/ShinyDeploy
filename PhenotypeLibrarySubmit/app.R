@@ -80,6 +80,9 @@ PROPOSED_BOOKS <- PROPOSED_BOOKS[!(PROPOSED_BOOKS %in% ACCEPTED_BOOKS)]
 # Constant: ORCID pattern used to check ORCID ID validity in the author tables
 REGEX_ORCID <- "([0-9]{4})[-]([0-9]{4})[-]([0-9]{4})[-]([0-9X]{4})"
 
+# Constant: Pattern used to check for extraneous characters in form fields
+REGEX_TITLE <- "(^$)|(^(([[:alnum:]])|([,;-_ ]))*$)"
+
 # Constant: Therapeutic areas choice list
 THERAPEUTIC_AREAS <- c(
   "Blood and lymphatic system disorders",
@@ -352,11 +355,12 @@ ui <-
             shinyjs::hidden(div(id = "bookmark_button", bookmarkButton(label = "Save Template", width = "200px", icon = icon("save")))),
             actionButton("bookmark_load_button", label = "Load Template", width = "200px", icon = icon("folder-open")),
             # Modal that comes up when a user attempts to load a template by clicking the above bookmark_load_button actionButton
-            bsModal("modalLoad",
-              "Available Bookmarks",
-              "bookmark_load_button",
-              size = "large",
-              DT::DTOutput("mybookmarktable")
+            bsModal(id = "modalLoad",
+                    title = "Available Bookmarks",
+                    trigger = "bookmark_load_button",
+                    size = "large",
+                    textOutput("caution"),
+                    DT::DTOutput("mybookmarktable")
             ),
             hr(),
             # Main menu items
@@ -405,6 +409,15 @@ ui <-
             shinyjs::hidden(div(id = "conditional_hr", hr())),
             menuItem("About", tabName = "about", icon = icon("info-circle")),
             hr(width = "240px"),
+            actionButton("refresh", label = "Reset All Fields", width = "200px", icon = icon("refresh")),
+            bsModal(id = "refreshmodal",
+                    title = "Reset Confirm",
+                    trigger = "refresh",
+                    size = "large",
+                    textOutput("caution2"),
+                    actionButton("reset_yes", label = "Yes, I want a clean form to work with."),
+                    actionButton("reset_no", label = "No, I want to return to the form I was working on.")
+            ),
             id = "main_sidebar_menu"
           )
         ),
@@ -449,6 +462,16 @@ ui <-
                              font-size: 20px;
                              font-style: italic;
                              }")),
+          
+          tags$head(tags$style("#caution{color: red;
+                             font-size: 20px;
+                             text-align: center;
+                             }")),
+          
+          tags$head(tags$style("#caution2{color: black;
+                             font-size: 20px;
+                             text-align: center;
+                             }")),
 
           # Create Find, Submission, and About tabs
           do.call(
@@ -459,9 +482,9 @@ ui <-
                 tabItem(
                   tabName = "submit",
                   tags$hr(style = "border-color: black;"),
-                  withSpinner(uiOutput("MainMenu"), type = 8, color = "#F0AB19"),
-                  shinyjs::extendShinyjs(text = "shinyjs.refresh = function() { location.reload(); }", functions = c("refresh")),
-                  actionButton("find_refresh", "Refresh")
+                  withSpinner(uiOutput("MainMenu"), type = 8, color = "#F0AB19")
+                  #shinyjs::extendShinyjs(text = "shinyjs.refresh = function() { location.reload(); }", functions = c("refresh")),
+                  #actionButton("find_refresh", "Refresh")
                 )
               ),
 
@@ -943,7 +966,7 @@ makeCharacterizationForm <- function() {
     fluidPage(
       titlePanel("New Cohort Characterization"),
       div(
-        id = "citation_form",
+        id = "characterization_form",
         fluidRow(
 
           # Contributor Information
@@ -1558,7 +1581,6 @@ submitValidationData <- function(input, session, values_val_upload) {
   shinyjs::hide("val_error")
 
   name <- paste0(gsub(" ", "_", authorsv_csv(input)[1, 1]), "_", humanTime())
-  print(name)
   tryCatch({
     if (!(name) %in% drive_ls(path = file.path(
       "OHDSI Gold Standard Phenotype Library",
@@ -1808,8 +1830,9 @@ checkBookInformation <- function(input, message_id) {
   } else {
     if (!(isTruthy(input$coh_book_title))) {
       status_code <- "Book Title"
-    } else if
-    (!(isTruthy(input$coh_book_clinical_description))) {
+    } else if (!(str_detect(input$coh_book_title, REGEX_TITLE))) {
+      status_code <- "Book Title2"
+    } else if (!(isTruthy(input$coh_book_clinical_description))) {
       status_code <- "Clinical Description"
     } else {
       status_code <- NA
@@ -1820,6 +1843,7 @@ checkBookInformation <- function(input, message_id) {
     message <-
       switch(status_code,
         "Book Title" = "Please verify that the Book Title field is complete in the Book Information section.",
+        "Book Title2" = "Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
         "Clinical Description" = "Please verify that the Clinical Description field is complete in the Book Information section."
       )
     showNotification(message,
@@ -1839,6 +1863,8 @@ checkBookInformation <- function(input, message_id) {
 checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
   if (!(isTruthy(input$coh_chapter_title))) {
     status_code <- "Chapter Title"
+  } else if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))) {
+    status_code <- "Chapter Title2"
   } else if (!(isTruthy(input$coh_definition_description))) {
     status_code <- "Definition Description"
   } else if (!(isTruthy(input$coh_development_process))) {
@@ -1855,10 +1881,11 @@ checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
   if (!is.na(status_code)) {
     message <-
       switch(status_code,
-        "Chapter Title" = "Please verify that the Chapter Title field is complete in the Chapter Information section.",
-        "Definition Description" = "Please verify that the Definition Description field is complete in the Chapter Information secton.",
-        "Development Process" = "Please verify that the Development Process field is complete in the Chapter Information section.",
-        "Phenotype File" = "Please verify that the Phenotype File field is complete in the Chapter Information section."
+             "Chapter Title" = "Please verify that the Chapter Title field is complete in the Chapter Information section.",
+             "Chapter Title2" = "Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
+             "Definition Description" = "Please verify that the Definition Description field is complete in the Chapter Information secton.",
+             "Development Process" = "Please verify that the Development Process field is complete in the Chapter Information section.",
+             "Phenotype File" = "Please verify that the Phenotype File field is complete in the Chapter Information section."
       )
     showNotification(message,
       duration = NULL,
@@ -2388,6 +2415,90 @@ server <- function(input, output, session) {
   # Observers
   ##################################################################################################################################
 
+  # Check book for extraneous characters
+  observeEvent(input$coh_book_title, {
+    if (!(str_detect(input$coh_book_title, REGEX_TITLE))){
+      showNotification("Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_btitle", close = F, duration = NULL, type = "error")
+    } else {
+      removeNotification("bad_btitle")
+    }
+  })
+  
+  # Check chapter for extraneous characters
+  observeEvent(input$coh_chapter_title, {
+    if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))){
+      showNotification("Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_ctitle", close = F, duration = NULL, type = "error")
+    } else {
+      removeNotification("bad_ctitle")
+    }
+  })
+  
+  # Modal refresh - No
+  observeEvent(input$reset_no, {
+    toggleModal(session, "refreshmodal", "close")
+  })
+  
+  # Modal refresh - Yes
+  observeEvent(input$reset_yes, {
+    toggleModal(session, "refreshmodal", "close")
+    if (input$main_sidebar_menu == "cohort_definition_submission") {
+      reset("coh_form")
+      output$author_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+      Provenance_DF <<- data.frame("Book" = character(0), "Chapter" = character(0), "Rationale" = character(0))
+      provenance_table(Provenance_DF)
+      prov_check$used <<- FALSE
+      #updateSelectInput(session, "coh_provenance_book", choices = subset(prov_check, used != TRUE)$Book, selected = sample(subset(prov_check, used != TRUE & Book != input$coh_provenance_book)$Book, 1))
+      #updateSelectInput(session, "coh_provenance_chapter", choices = subset(prov_check, used != TRUE)$Chapter)
+      output$provenance_table <- renderDT({
+        datatable(provenance_table(), selection = "single", options = list(dom = "t"))
+      })
+    } else if (input$main_sidebar_menu == "validation_submission") {
+      reset("val_form")
+      output$validator_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else if (input$main_sidebar_menu == "citation_submission") {
+      reset("citation_form")
+      output$citation_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else {
+      reset("characterization_form")
+      output$characterization_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    }
+  })
+  
+  # Load button click - Routes depending on whether any bookmarks exist for the user
+  observeEvent(input$bookmark_load_button, {
+    if (length(list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "_", ".*rds"), full.names = TRUE)) > 0) {
+      shinyjs::hide("caution")
+      shinyjs::show("mybookmarktable")
+    } else {
+      shinyjs::show("caution")
+      shinyjs::hide("mybookmarktable")
+    }
+  })
+  
   # Prevent the book title from colliding with an existing title
   observeEvent(input$coh_book_title, {
     if (input$coh_book_title %in% PROPOSED_BOOKS) {
@@ -2765,6 +2876,67 @@ server <- function(input, output, session) {
 
     # Then go on to restore the state corresponding to this RDS file
 
+    if (loadRDS$main_sidebar_menu == "cohort_defintion_submission") {
+      updateTabItems(session, "main_sidebar_menu", "cohort_definition_submission")
+      shinyjs::show("cohort_definition_menuitem")
+      shinyjs::hide("validation_submission_menuitem")
+      shinyjs::hide("citation_submission_menuitem")
+      shinyjs::hide("characterization_submission_menuitem")
+      shinyjs::hide("submission_complete_menuitem")
+      shinyjs::show("conditional_hr")
+    } else if (loadRDS$main_sidebar_menu == "validation_submission") {
+      updateTabItems(session, "main_sidebar_menu", "validation_submission")
+      shinyjs::show("validation_submission_menuitem")
+      shinyjs::hide("cohort_definition_menuitem")
+      shinyjs::hide("citation_submission_menuitem")
+      shinyjs::hide("characterization_submission_menuitem")
+      shinyjs::hide("submission_complete_menuitem")
+      shinyjs::show("conditional_hr")
+    } else if (loadRDS$main_sidebar_menu == "citation_submission") {
+      updateTabItems(session, "main_sidebar_menu", "citation_submission")
+      shinyjs::show("citation_submission_menuitem")
+      shinyjs::hide("cohort_definition_menuitem")
+      shinyjs::hide("validation_submission_menuitem")
+      shinyjs::hide("characterization_submission_menuitem")
+      shinyjs::hide("submission_complete_menuitem")
+      shinyjs::show("conditional_hr")
+    } else if (loadRDS$main_sidebar_menu == "characterization_submission") {
+      updateTabItems(session, "main_sidebar_menu", "characterization_submission")
+      shinyjs::show("characterization_submission_menuitem")
+      shinyjs::hide("cohort_definition_menuitem")
+      shinyjs::hide("validation_submission_menuitem")
+      shinyjs::hide("citation_submission_menuitem")
+      shinyjs::hide("submission_complete_menuitem")
+      shinyjs::show("conditional_hr")
+    }
+    
+    # New Cohort Definition Variables
+    if (("author_r_table" %in% names(loadRDS)) && loadRDS$author_r_table$data[[1]][[1]] != ""){
+      output$author_r_table <- renderRHandsontable(
+        rhandsontable(data.frame(
+          Name = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[1]]), "", loadRDS$author_r_table$data[[x]][[1]])),
+          Email = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[2]]), "", loadRDS$author_r_table$data[[x]][[2]])),
+          Institution = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[3]]), "", loadRDS$author_r_table$data[[x]][[3]])),
+          Position = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[4]]), "", loadRDS$author_r_table$data[[x]][[4]])),
+          Handle = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[5]]), "", loadRDS$author_r_table$data[[x]][[5]])),
+          ORCID = sapply(seq(to = length(loadRDS$author_r_table$data)), function (x) ifelse(is.null(loadRDS$author_r_table$data[[x]][[6]]), "", loadRDS$author_r_table$data[[x]][[6]])),
+          stringsAsFactors = FALSE
+        ),
+        selectCallback = TRUE,
+        readOnly = FALSE,
+        rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else {
+      output$author_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    }
+    
     # New Cohort Definition Variables
 
     # TODO: Restore contributor information
@@ -2832,6 +3004,7 @@ server <- function(input, output, session) {
     )
 
     # TODO: Definition Upload
+    # https://github.com/rstudio/shiny/issues/1729
 
     # Provenance
 
@@ -2923,8 +3096,31 @@ server <- function(input, output, session) {
     )
 
     # New Validation Set Variables
-
-    # TODO: Restore contributor information
+    if(("validator_r_table" %in% names(loadRDS)) && loadRDS$validator_r_table$data[[1]][[1]] != ""){
+      output$validator_r_table <- renderRHandsontable(
+        rhandsontable(data.frame(
+          Name = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[1]]), "", loadRDS$validator_r_table$data[[x]][[1]])),
+          Email = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[2]]), "", loadRDS$validator_r_table$data[[x]][[2]])),
+          Institution = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[3]]), "", loadRDS$validator_r_table$data[[x]][[3]])),
+          Position = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[4]]), "", loadRDS$validator_r_table$data[[x]][[4]])),
+          Handle = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[5]]), "", loadRDS$validator_r_table$data[[x]][[5]])),
+          ORCID = sapply(seq(to = length(loadRDS$validator_r_table$data)), function (x) ifelse(is.null(loadRDS$validator_r_table$data[[x]][[6]]), "", loadRDS$validator_r_table$data[[x]][[6]])),
+          stringsAsFactors = FALSE
+        ),
+        selectCallback = TRUE,
+        readOnly = FALSE,
+        rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else {
+      output$validator_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    }
 
     # Library Resource
     updateSelectInput(session,
@@ -3000,8 +3196,31 @@ server <- function(input, output, session) {
     )
 
     # Citation Usage
-
-    # TODO: Restore contributor information
+    if(("citation_r_table" %in% names(loadRDS)) && loadRDS$citation_r_table$data[[1]][[1]] != ""){
+      output$citation_r_table <- renderRHandsontable(
+        rhandsontable(data.frame(
+          Name = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[1]]), "", loadRDS$citation_r_table$data[[x]][[1]])),
+          Email = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[2]]), "", loadRDS$citation_r_table$data[[x]][[2]])),
+          Institution = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[3]]), "", loadRDS$citation_r_table$data[[x]][[3]])),
+          Position = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[4]]), "", loadRDS$citation_r_table$data[[x]][[4]])),
+          Handle = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[5]]), "", loadRDS$citation_r_table$data[[x]][[5]])),
+          ORCID = sapply(seq(to = length(loadRDS$citation_r_table$data)), function (x) ifelse(is.null(loadRDS$citation_r_table$data[[x]][[6]]), "", loadRDS$citation_r_table$data[[x]][[6]])),
+          stringsAsFactors = FALSE
+        ),
+        selectCallback = TRUE,
+        readOnly = FALSE,
+        rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else {
+      output$citation_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    }
 
     # Library Resource
     updateSelectInput(session,
@@ -3026,7 +3245,31 @@ server <- function(input, output, session) {
 
     # Cohort Characterization
 
-    # TODO: Restore contributor information
+    if(("characterization_r_table" %in% names(loadRDS)) && loadRDS$characterization_r_table$data[[1]][[1]] != ""){
+      output$characterization_r_table <- renderRHandsontable(
+        rhandsontable(data.frame(
+          Name = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[1]]), "", loadRDS$characterization_r_table$data[[x]][[1]])),
+          Email = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[2]]), "", loadRDS$characterization_r_table$data[[x]][[2]])),
+          Institution = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[3]]), "", loadRDS$characterization_r_table$data[[x]][[3]])),
+          Position = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[4]]), "", loadRDS$characterization_r_table$data[[x]][[4]])),
+          Handle = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[5]]), "", loadRDS$characterization_r_table$data[[x]][[5]])),
+          ORCID = sapply(seq(to = length(loadRDS$characterization_r_table$data)), function (x) ifelse(is.null(loadRDS$characterization_r_table$data[[x]][[6]]), "", loadRDS$characterization_r_table$data[[x]][[6]])),
+          stringsAsFactors = FALSE
+        ),
+        selectCallback = TRUE,
+        readOnly = FALSE,
+        rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    } else {
+      output$characterization_r_table <- renderRHandsontable(
+        rhandsontable(AUTHORS_BLANK,
+                      selectCallback = TRUE,
+                      readOnly = FALSE,
+                      rowHeaders = NULL
+        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+      )
+    }
 
     # Library Resource
     updateSelectInput(session,
@@ -3068,10 +3311,14 @@ server <- function(input, output, session) {
 
   # Bookmark table for loading a bookmark
   output$mybookmarktable <- DT::renderDataTable(datatable(buildBookmarkDF(),
-    selection = "single",
-    rownames = FALSE
+                                                          selection = "single",
+                                                          rownames = FALSE
   ))
-
+  
+  # Bookmarking caution items
+  output$caution <- renderText("No bookmarks currently exist for this user.")
+  output$caution2 <- renderText("Are you sure you want to reset all fields for this form?")
+  
   # Login Credentials and Logout Button
   output$login_info <- renderUI({
     if (USING_AUTH0) {
