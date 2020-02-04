@@ -80,8 +80,8 @@ PROPOSED_BOOKS <- PROPOSED_BOOKS[!(PROPOSED_BOOKS %in% ACCEPTED_BOOKS)]
 # Constant: ORCID pattern used to check ORCID ID validity in the author tables
 REGEX_ORCID <- "([0-9]{4})[-]([0-9]{4})[-]([0-9]{4})[-]([0-9X]{4})"
 
-# Constant: Pattern used to check for extraneous characters in form fields
-REGEX_TITLE <- "(^$)|(^(([[:alnum:]])|([,;-_ ]))*$)"
+# Constant: Pattern used to check for extraneous characters in form fields -- These are the allowable characters
+REGEX_TITLE <- "[^a-zA-Z0-9 ,;_-]"
 
 # Constant: Therapeutic areas choice list
 THERAPEUTIC_AREAS <- c(
@@ -545,6 +545,14 @@ ui <-
 ####################################################################################################################################
 # Utility Functions
 ####################################################################################################################################
+
+# Show a message whenever the user enters invalid characters into a field
+showBadCharNotification <- function() {
+  showNotification("Please only use: alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", 
+                   duration = 3,
+                   closeButton = TRUE,
+                   type = "error")
+}
 
 # Query saved states according to the logged in user's ID and return a dataframe back of the user's state load options
 buildBookmarkDF <- function() {
@@ -1831,8 +1839,6 @@ checkBookInformation <- function(input, message_id) {
   } else {
     if (!(isTruthy(input$coh_book_title))) {
       status_code <- "Book Title"
-    } else if (!(str_detect(input$coh_book_title, REGEX_TITLE))) {
-      status_code <- "Book Title2"
     } else if (!(isTruthy(input$coh_book_clinical_description))) {
       status_code <- "Clinical Description"
     } else {
@@ -1844,7 +1850,6 @@ checkBookInformation <- function(input, message_id) {
     message <-
       switch(status_code,
         "Book Title" = "Please verify that the Book Title field is complete in the Book Information section.",
-        "Book Title2" = "Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
         "Clinical Description" = "Please verify that the Clinical Description field is complete in the Book Information section."
       )
     showNotification(message,
@@ -1864,8 +1869,6 @@ checkBookInformation <- function(input, message_id) {
 checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
   if (!(isTruthy(input$coh_chapter_title))) {
     status_code <- "Chapter Title"
-  } else if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))) {
-    status_code <- "Chapter Title2"
   } else if (!(isTruthy(input$coh_definition_description))) {
     status_code <- "Definition Description"
   } else if (!(isTruthy(input$coh_development_process))) {
@@ -1883,7 +1886,6 @@ checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
     message <-
       switch(status_code,
              "Chapter Title" = "Please verify that the Chapter Title field is complete in the Chapter Information section.",
-             "Chapter Title2" = "Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
              "Definition Description" = "Please verify that the Definition Description field is complete in the Chapter Information secton.",
              "Development Process" = "Please verify that the Development Process field is complete in the Chapter Information section.",
              "Phenotype File" = "Please verify that the Phenotype File field is complete in the Chapter Information section."
@@ -2418,19 +2420,17 @@ server <- function(input, output, session) {
 
   # Check book for extraneous characters
   observeEvent(input$coh_book_title, {
-    if (!(str_detect(input$coh_book_title, REGEX_TITLE))){
-      showNotification("Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_btitle", close = F, duration = NULL, type = "error")
-    } else {
-      removeNotification("bad_btitle")
+    if (grepl(REGEX_TITLE, input$coh_book_title)) {
+      updateTextInput(session, "coh_book_title", value = gsub(REGEX_TITLE, "", input$coh_book_title))
+      showBadCharNotification()
     }
   })
   
   # Check chapter for extraneous characters
   observeEvent(input$coh_chapter_title, {
-    if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))){
-      showNotification("Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_ctitle", close = F, duration = NULL, type = "error")
-    } else {
-      removeNotification("bad_ctitle")
+    if (grepl(REGEX_TITLE, input$coh_chapter_title)) {
+      updateTextInput(session, "coh_chapter_title", value = gsub(REGEX_TITLE, "", input$coh_chapter_title))
+      showBadCharNotification()
     }
   })
   
