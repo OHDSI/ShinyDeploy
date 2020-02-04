@@ -1812,7 +1812,7 @@ checkContributorTable <- function(df, message_id) {
         )
       showNotification(message,
         duration = NULL,
-        closeButton = FALSE,
+        closeButton = TRUE,
         type = "error",
         id = message_id
       )
@@ -1849,7 +1849,7 @@ checkBookInformation <- function(input, message_id) {
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -1890,7 +1890,7 @@ checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -1957,7 +1957,7 @@ checkValidationInformation <- function(input, message_id, values_coh_validation)
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -2023,7 +2023,7 @@ checkValidationValInformation <- function(input, message_id, values_val_check, v
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -2049,7 +2049,7 @@ checkCitationInformation <- function(input, message_id) {
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -2086,7 +2086,7 @@ checkCharacterizationInformation <- function(input, message_id, values_cha_featu
       )
     showNotification(message,
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "error",
       id = message_id
     )
@@ -2168,7 +2168,7 @@ server <- function(input, output, session) {
               enable("coh_submit")
               showNotification("Click to submit your definition to the librarians.",
                 duration = NULL,
-                closeButton = FALSE,
+                closeButton = TRUE,
                 type = "message",
                 id = "author_table_warning"
               )
@@ -2207,7 +2207,7 @@ server <- function(input, output, session) {
           enable("val_submit")
           showNotification("Click to submit your validation set to the librarians.",
             duration = NULL,
-            closeButton = FALSE,
+            closeButton = TRUE,
             type = "message",
             id = "validator_table_warning"
           )
@@ -2243,7 +2243,7 @@ server <- function(input, output, session) {
           enable("citation_submit")
           showNotification("Click to submit your definition to the librarians.",
             duration = NULL,
-            closeButton = FALSE,
+            closeButton = TRUE,
             type = "message",
             id = "author_table_warning"
           )
@@ -2279,7 +2279,7 @@ server <- function(input, output, session) {
           enable("char_submit")
           showNotification("Click to submit your definition to the librarians.",
             duration = NULL,
-            closeButton = FALSE,
+            closeButton = TRUE,
             type = "message",
             id = "author_table_warning"
           )
@@ -2304,7 +2304,7 @@ server <- function(input, output, session) {
     "new_cohort_button",
     showNotification("Submit a new book (phenotype) and/or chapter (cohort definition) to the library.",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "message",
       id = "new_cohort_button_notification"
     )
@@ -2327,7 +2327,7 @@ server <- function(input, output, session) {
     "new_validation_button",
     showNotification("Submit validation data for an existing chapter (cohort definition).",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "message",
       id = "new_validation_button_notification"
     )
@@ -2349,7 +2349,7 @@ server <- function(input, output, session) {
     "new_citation_button",
     showNotification("Submit a published use of an existing chapter (cohort definition).",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "message",
       id = "new_citation_button_notification"
     )
@@ -2371,7 +2371,7 @@ server <- function(input, output, session) {
     "new_characterization_button",
     showNotification("Submit characterization of a cohort obtained after having applied a library cohort definition.",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "message",
       id = "new_characterization_button_notification"
     )
@@ -2745,7 +2745,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = F,
+      closeButton = FALSE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2784,7 +2784,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = F,
+      closeButton = FALSE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2812,7 +2812,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = F,
+      closeButton = FALSE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2835,7 +2835,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = F,
+      closeButton = FALSE,
       type = "warning",
       id = "submission_in_progress"
     )
