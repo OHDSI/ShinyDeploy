@@ -721,7 +721,7 @@ makeCohortDefinitionForm <- function() {
         fluidRow(div(
           id = "coh_validation_anchor", box(
             title = "Validation", status = "primary",
-            radioButtons("coh_previous_validation", "Have you validated this cohort definition at your institution?",
+            radioButtons("coh_previous_validation", "Do you have validation data for this cohort definition?",
               choiceNames = c("Yes", "No"),
               choiceValues = c(TRUE, FALSE),
               selected = TRUE
