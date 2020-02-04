@@ -742,6 +742,7 @@ makeCohortDefinitionForm <- function() {
               accept = FILE_TYPES,
               multiple = TRUE
             ),
+            h5("Note: You may ctrl-click to upload multiple files."),
             actionButton("coh_support_delete", "Remove Uploaded Files", class = "btn-default", icon = icon("times"))
           ),
           actionBttn("help_supporting_documentation", label = "?", style = "jelly", size = "sm", color = "primary"),
