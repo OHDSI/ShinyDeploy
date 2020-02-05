@@ -263,22 +263,22 @@ Provenance_DF <- data.frame("Book" = character(0), "Chapter" = character(0), "Ra
 
 # Override of Shiny's save function to save ID as a global so it can be retrieved internally
 saveShinySaveState <- function(state) {
-  id <- paste(u_uid, createUniqueId(12), sep = "_")
-
+  id <- paste(u_uid, createUniqueId(12), cur_savename, sep = "%")
+  
   # A function for saving the state object to disk, given a directory to save to.
   saveState <- function(stateDir) {
-
+    
     # Allow user-supplied onSave function to do things like add state$values, or
     # save data to state dir.
     if (!is.null(state$onSave)) {
       isolate(state$onSave(state))
     }
-
+    
     # Serialize values, possibly saving some extra data to stateDir
     exclude <- c(state$exclude, "._bookmark_")
     inputValues <- serializeReactiveValues(state$input, exclude, state$dir)
     saveRDS(inputValues, file.path(BOOKMARK_PATH, paste0(id, ".rds")))
-
+    
     # If values were added, save them also.
     if (length(state$values) != 0) {
       saveRDS(state$values, file.path(stateDir, "values.rds"))
@@ -352,7 +352,7 @@ ui <-
             uiOutput("login_info"),
             hr(),
             # Save/Load block
-            shinyjs::hidden(div(id = "bookmark_button", bookmarkButton(label = "Save Template", width = "200px", icon = icon("save")))),
+            shinyjs::hidden(div(id = "bookmark_button", actionButton("bookmark_save_button", label = "Save Template", width = "200px", icon = icon("save")))),
             actionButton("bookmark_load_button", label = "Load Template", width = "200px", icon = icon("folder-open")),
             # Modal that comes up when a user attempts to load a template by clicking the above bookmark_load_button actionButton
             bsModal(id = "modalLoad",
@@ -546,6 +546,20 @@ ui <-
 # Utility Functions
 ####################################################################################################################################
 
+# The modal that appears when the "save template" button is clicked
+saveDataModal <- function(failed = FALSE) {
+  modalDialog(
+    textInput("savename", "Please enter a name below for your saved state:"),
+    span('When you load your state, you may find it by this name. Please only use alphanumeric characters and/or underscores (no spaces).'),
+    if (failed)
+      div(tags$b("Please enter a valid name: Use alphanumeric characters and substitute spaces with underscores.", style = "color: red;")),
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("ok_save", "OK")
+    )
+  )
+}
+
 # Show a message whenever the user enters invalid characters into a field
 showBadCharNotification <- function() {
   showNotification("Please only use: alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", 
@@ -556,24 +570,27 @@ showBadCharNotification <- function() {
 
 # Query saved states according to the logged in user's ID and return a dataframe back of the user's state load options
 buildBookmarkDF <- function() {
-
-  # Target bookmarks that pertain to the user
-  user_bookmarks <- list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "_", ".*rds"), full.names = TRUE)
-
-  # Locate keys and creation times
-  bookmark_keys <- sapply(user_bookmarks, function(x) {
-    str_extract(x, "[A-Za-z0-9]+(?=\\.rds)")
-  })
+  # Split on the "%" separator in the saved filename
+  user_bookmarks <- list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "%", ".*rds"), full.names = FALSE)
+  bookmark_matrix <- str_split_fixed(user_bookmarks, "%", 3)
+  
+  # Identify the time the file was created
   bookmark_create_times <- sapply(user_bookmarks, function(x) {
-    as.character(file.info(x)$ctime)
+    as.character(file.info(file.path(BOOKMARK_PATH,x))$ctime)
   })
-
+  
   # Make a dataframe that can be displayed as a popup for the user to select from
   df_bookmarks <- data.frame(
-    key = bookmark_keys,
+    key = bookmark_matrix[,2],
+    name = gsub(".rds", "", bookmark_matrix[,3], fixed = TRUE),
     time = bookmark_create_times,
     row.names = NULL
   )
+  
+  # Sort in reverse chronological order
+  df_bookmarks <- df_bookmarks[order(df_bookmarks$time, decreasing = TRUE),]
+  
+  # Return
   return(df_bookmarks)
 }
 
@@ -2418,6 +2435,30 @@ server <- function(input, output, session) {
   # Observers
   ##################################################################################################################################
 
+  # Guide the user to enter a valid save name by substituting out disallowed characters when typed
+  observeEvent(input$savename, {
+    updateTextInput(session, "savename", value = gsub("[^a-zA-Z0-9_]", "", input$savename))
+  })
+  
+  # When OK button is pressed from the save modal, check the text
+  # If ok, then proceed with saving and notify the user
+  # Else, loop back in on the modal with a set failed flag
+  observeEvent(input$ok_save, {
+    if (!is.null(input$savename) && nzchar(input$savename) && !grepl("[^a-zA-Z0-9_]",input$savename)) {
+      cur_savename <<- input$savename
+      session$doBookmark()
+      showNotification(paste0("Saved state as: ", cur_savename), closeButton = TRUE, duration = 5, type = "message")
+      removeModal()
+    } else {
+      showModal(saveDataModal(failed = TRUE))
+    }
+  })
+  
+  # On save click, transfer the save logic to the saveDataModal() function
+  observeEvent(input$bookmark_save_button, {
+    showModal(saveDataModal())
+  })
+  
   # Check book for extraneous characters
   observeEvent(input$coh_book_title, {
     if (grepl(REGEX_TITLE, input$coh_book_title)) {
@@ -2491,7 +2532,7 @@ server <- function(input, output, session) {
   
   # Load button click - Routes depending on whether any bookmarks exist for the user
   observeEvent(input$bookmark_load_button, {
-    if (length(list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "_", ".*rds"), full.names = TRUE)) > 0) {
+    if (length(list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "%", ".*rds"), full.names = TRUE)) > 0) {
       shinyjs::hide("caution")
       shinyjs::show("mybookmarktable")
     } else {
@@ -2864,15 +2905,18 @@ server <- function(input, output, session) {
 
   # When a row is selected, restore the app in the state of that selected row
   observeEvent(input$mybookmarktable_rows_selected, {
-
+    
     # First, close the modal
     toggleModal(session, "modalLoad", "close")
-
+    
     # Locate the key of the corresponding selected row
     load_key <- as.character(buildBookmarkDF()[input$mybookmarktable_rows_selected, "key"])
-
+    
+    # Locate the save name of the corresponding selected row
+    load_name <- as.character(buildBookmarkDF()[input$mybookmarktable_rows_selected, "name"])
+    
     # # Load RDS file corresponding to the row the user selected in the table
-    fn <- paste0(u_uid, "_", load_key, ".rds")
+    fn <- paste0(u_uid, "%", load_key, "%", load_name, ".rds")
     loadRDS <- readRDS(file.path(BOOKMARK_PATH, fn))
 
     # Then go on to restore the state corresponding to this RDS file
