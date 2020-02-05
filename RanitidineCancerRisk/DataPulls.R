@@ -217,9 +217,16 @@ getSubgroupResults <- function(connection,
     idx <- idx & cmInteractionResult$interactionCovariateId %in% subgroupIds
   }
   result <- cmInteractionResult[idx, ]
-  result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
-                                     databaseId = covariate$databaseId,
-                                     covariateName = covariate$covariateName))
+  if (sum(databaseIds %in% unique(covariate$databaseId))){
+    result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
+                                       databaseId = covariate$databaseId,
+                                       covariateName = covariate$covariateName))
+  } else {
+    result <- merge(result, data.frame(interactionCovariateId = covariate$covariateId,
+                                       covariateName = covariate$covariateName))
+    result<-unique(result)
+  }
+
   result <- result[, c("covariateName",
                        "targetSubjects",
                        "comparatorSubjects",
@@ -266,7 +273,7 @@ getCmFollowUpDist <- function(connection,
                                  cmFollowUpDist$comparatorId == comparatorId &
                                  cmFollowUpDist$outcomeId == outcomeId &
                                  cmFollowUpDist$analysisId == analysisId &
-                                 cmFollowUpDist$databaseId == databaseId, ]
+                                 as.character(cmFollowUpDist$databaseId) == databaseId, ]
   return(followUpDist)
 }
 
@@ -280,7 +287,7 @@ getCovariateBalance <- function(connection,
   balance <- readRDS(file.path(dataFolder, file))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]
-  balance <- merge(balance, covariate[covariate$databaseId == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
+  balance <- merge(balance, covariate[as.character(covariate$databaseId) == databaseId, c("covariateId", "covariateAnalysisId", "covariateName")])
   balance <- balance[ c("covariateId",
                         "covariateName",
                         "covariateAnalysisId", 
@@ -304,10 +311,12 @@ getCovariateBalance <- function(connection,
   return(balance)
 }
 
-getPs <- function(connection, targetIds, comparatorIds, databaseId) {
+getPs <- function(connection, targetIds, comparatorIds, #analysisId, 
+                  databaseId) {
   file <- sprintf("preference_score_dist_t%s_c%s_%s.rds", targetIds, comparatorIds, databaseId)
   ps <- readRDS(file.path(dataFolder, file))
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
+  #ps <- ps[ps$analysisId==analysisId,]
   return(ps)
 }
 
@@ -326,7 +335,7 @@ getAttrition <- function(connection, targetId, comparatorId, outcomeId, analysis
                         attrition$comparatorId == comparatorId &
                         attrition$outcomeId == outcomeId &
                         attrition$analysisId == analysisId &
-                        attrition$databaseId == databaseId, ]
+                        as.character(attrition$databaseId) == databaseId, ]
   targetAttrition <- result[result$exposureId == targetId, ]
   comparatorAttrition <- result[result$exposureId == comparatorId, ]
   colnames(targetAttrition)[colnames(targetAttrition) == "subjects"] <- "targetPersons"

@@ -54,6 +54,7 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
+    results <- results[order(results$analysisId), ]
     if (blind) {
       results$rr <- rep(NA, nrow(results))
       results$ci95Ub <- rep(NA, nrow(results))
@@ -90,14 +91,34 @@ shinyServer(function(input, output, session) {
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
   
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- !is.null(row) && (row$database == "Meta-analysis")
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+      hideTab("detailsTabsetPanel", "Kaplan-Meier")
+    } else {
+      hideTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier")
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
+  
   balance <- reactive({
      row <- selectedRow()
      if (is.null(row)) {
        return(NULL)
      } else {
-       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
-       comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
-       outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
+       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target][1]
+       comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator][1]
+       outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome][1]
        balance <- getCovariateBalance(connection = connection,
                                       targetId = targetId,
                                       comparatorId = comparatorId,
@@ -113,7 +134,7 @@ shinyServer(function(input, output, session) {
     if (is.null(table) || nrow(table) == 0) {
       return(NULL)
     }
-    table <- merge(table, cohortMethodAnalysis)
+    table$description <- cohortMethodAnalysis$description[match(table$analysisId, cohortMethodAnalysis$analysisId)]
     table <- table[, mainColumns]
     table$rr <- prettyHr(table$rr)
     table$ci95Lb <- prettyHr(table$ci95Lb)
@@ -226,18 +247,11 @@ shinyServer(function(input, output, session) {
     return(attritionPlot())
   })
   
-  output$downloadAttritionPlotPng <- downloadHandler(filename = "Attrition.png", 
-                                                     contentType = "image/png", 
-                                                     content = function(file) {
-    ggplot2::ggsave(file, plot = attritionPlot(), width = 6, height = 7, dpi = 400)
+  output$downloadAttritionPlot <- downloadHandler(filename = "Attrition.png", contentType = "image/png", content = function(file) {
+    device <- function(..., width, height) grDevices::png(..., width = width, height = height, res = 300, units = "in")
+    ggplot2::ggsave(file, plot = attritionPlot(), width = 6, height = 7, dpi = 400, device = device)
   })
 
-  output$downloadAttritionPlotPdf <- downloadHandler(filename = "Attrition.pdf", 
-                                                     contentType = "application/pdf", 
-                                                     content = function(file) {
-    ggplot2::ggsave(file = file, plot = attritionPlot(), width = 6, height = 7)
-  })
-  
   output$attritionPlotCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
@@ -316,7 +330,9 @@ shinyServer(function(input, output, session) {
       ps <- getPs(connection = connection,
                   targetId = targetId,
                   comparatorId = comparatorId,
+                  #analysisId = row$analysisId,
                   databaseId = row$databaseId)
+      #str(ps)
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
@@ -326,17 +342,10 @@ shinyServer(function(input, output, session) {
     return(psDistPlot())
   })
   
-  output$downloadPsDistPlotPng <- downloadHandler(filename = "Ps.png", 
-                                                  contentType = "image/png", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file, plot = psDistPlot(), width = 5, height = 3.5, dpi = 400)
-                                                  })
-  
-  output$downloadPsDistPlotPdf <- downloadHandler(filename = "Ps.pdf", 
-                                                  contentType = "application/pdf", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file = file, plot = psDistPlot(), width = 5, height = 3.5)
-                                                  })
+  output$downloadPsDistPlot <- downloadHandler(filename = "Ps.png", contentType = "image/png", content = function(file) {
+    device <- function(..., width, height) grDevices::png(..., width = width, height = height, res = 300, units = "in")
+    ggplot2::ggsave(file, plot = psDistPlot(), width = 5, height = 3.5, dpi = 400, device = device)
+  })
 
   balancePlot <- reactive({
     bal <- balance()
@@ -356,18 +365,11 @@ shinyServer(function(input, output, session) {
     return(balancePlot())
   })
   
-  output$downloadBalancePlotPng <- downloadHandler(filename = "Balance.png", 
-                                                  contentType = "image/png", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file, plot = balancePlot(), width = 4, height = 4, dpi = 400)
-                                                  })
-  
-  output$downloadBalancePlotPdf <- downloadHandler(filename = "Balance.pdf", 
-                                                  contentType = "application/pdf", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file = file, plot = balancePlot(), width = 4, height = 4)
-                                                  })
-  
+  output$downloadBalancePlot <- downloadHandler(filename = "Balance.png", contentType = "image/png", content = function(file) {
+    device <- function(..., width, height) grDevices::png(..., width = width, height = height, res = 300, units = "in")
+    ggplot2::ggsave(file, plot = balancePlot(), width = 4, height = 4, dpi = 400, device = device)
+  })
+
   output$balancePlotCaption <- renderUI({
     bal <- balance()
     if (is.null(bal) || nrow(bal) == 0) {
@@ -421,8 +423,8 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
-      comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
+      targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target][1]
+      comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator][1]
       controlResults <- getControlResults(connection = connection,
                                           targetId = targetId,
                                           comparatorId = comparatorId,
@@ -438,17 +440,10 @@ shinyServer(function(input, output, session) {
     return(systematicErrorPlot())
   })
   
-  output$downloadSystematicErrorPlotPng <- downloadHandler(filename = "SystematicError.png", 
-                                                   contentType = "image/png", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file, plot = systematicErrorPlot(), width = 12, height = 5.5, dpi = 400)
-                                                   })
-  
-  output$downloadSystematicErrorPlotPdf <- downloadHandler(filename = "SystematicError.pdf", 
-                                                   contentType = "application/pdf", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file = file, plot = systematicErrorPlot(), width = 12, height = 5.5)
-                                                   })
+  output$downloadSystematicErrorPlot <- downloadHandler(filename = "SystematicError.png", contentType = "image/png", content = function(file) {
+    device <- function(..., width, height) grDevices::png(..., width = width, height = height, res = 300, units = "in")
+    ggplot2::ggsave(file, plot = systematicErrorPlot(), width = 12, height = 5.5, dpi = 400, device = device)
+  })
 
   kaplanMeierPlot <- reactive({
     row <- selectedRow()
@@ -475,18 +470,11 @@ shinyServer(function(input, output, session) {
     return(kaplanMeierPlot())
   }, res = 100)
   
-  output$downloadKaplanMeierPlotPng <- downloadHandler(filename = "KaplanMeier.png", 
-                                                   contentType = "image/png", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file, plot = kaplanMeierPlot(), width = 7, height = 5, dpi = 400)
-                                                   })
-  
-  output$downloadKaplanMeierPlotPdf <- downloadHandler(filename = "KaplanMeier.pdf", 
-                                                   contentType = "application/pdf", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file = file, plot = kaplanMeierPlot(), width = 7, height = 5)
-                                                   })
-  
+  output$downloadKaplanMeierPlot <- downloadHandler(filename = "KaplanMeier.png", contentType = "image/png", content = function(file) {
+    device <- function(..., width, height) grDevices::png(..., width = width, height = height, res = 300, units = "in")
+    ggplot2::ggsave(file, plot = kaplanMeierPlot(), width = 7, height = 5, dpi = 400, device = device)
+  })
+
   output$kaplanMeierPlotPlotCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
