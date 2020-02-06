@@ -11,8 +11,7 @@ mainColumns <- c("description",
                  "calibratedRr", 
                  "calibratedCi95Lb",
                  "calibratedCi95Ub",
-                 "calibratedP",
-                 "sources")
+                 "calibratedP")
 
 mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
                      "<span title=\"Data source\">Data source</span>",
@@ -24,8 +23,7 @@ mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
                      "<span title=\"Hazard ratio (calibrated)\">Cal.HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (calibrated)\">Cal.LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (calibrated)\">Cal.UB</span>", 
-                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>",
-                     "<span title=\"Data sources contributing to meta-analysis\">Sources</span>")
+                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
 
 shinyServer(function(input, output, session) {
   if (blind) {
@@ -110,6 +108,7 @@ shinyServer(function(input, output, session) {
       hideTab("detailsTabsetPanel", "Propensity scores")
       hideTab("detailsTabsetPanel", "Covariate balance")
       hideTab("detailsTabsetPanel", "Kaplan-Meier")
+      showTab("detailsTabsetPanel", "Forest plot")
     } else {
       showTab("detailsTabsetPanel", "Attrition")
       showTab("detailsTabsetPanel", "Population characteristics")
@@ -117,6 +116,7 @@ shinyServer(function(input, output, session) {
       showTab("detailsTabsetPanel", "Propensity scores")
       showTab("detailsTabsetPanel", "Covariate balance")
       showTab("detailsTabsetPanel", "Kaplan-Meier")
+      hideTab("detailsTabsetPanel", "Forest plot")
     }
     return(isMetaAnalysis)
   })
@@ -565,6 +565,91 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
+  
+  
+  forestPlotData <- reactive({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else if (row$databaseId != "Meta-analysis") {
+      return(NULL)
+    } else {
+      targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
+      comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
+      outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
+      databaseIds <- c(unlist(strsplit(row$sources, split = ", ")), "Meta-analysis")
+      results <- getMainResults(connection = connection,
+                                targetIds = targetId,
+                                comparatorIds = comparatorId,
+                                outcomeIds = outcomeId,
+                                databaseIds = databaseIds,
+                                analysisIds = row$analysisId)
+      return(results)
+    }
+  })
+  
+  forestPlot <- reactive({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else if (row$databaseId != "Meta-analysis") {
+      return(NULL)
+    } else {
+      results <- forestPlotData()
+      plot <- plotForest(results, input$target, input$comparator)
+      return(plot)
+    }
+  })
+  
+  output$forestPlot <- renderPlot({
+    return(forestPlot())
+  }, res = 100)
+  
+  output$forestPlotCaption <- renderUI({
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else if (row$databaseId != "Meta-analysis") {
+      return(NULL)
+    } else {
+      text <- "<strong>Figure 6.</strong> Forest plot showing the per-database and summary calibrated hazard ratios (and 95 percent confidence intervals) 
+      comparing <em>%s</em> to <em>%s</em> for the outcome of <em>%s</em>. Summary estimate is not reported where I2 > 0.4."
+      return(HTML(sprintf(text, input$target, input$comparator, input$outcome)))
+    }
+  })
+  
+  output$hoverInfoForestPlot <- renderUI({
+    forestData <- forestPlotData()
+    if (is.null(forestData)) {
+      return(NULL)
+    } else {
+      hover <- input$plotHoverForestPlot
+      point <- nearPoints(forestData, hover, xvar = "calibratedRr", yvar = "databaseId", threshold = 5, maxpoints = 1, addDist = TRUE)
+      if (nrow(point) == 0) {
+        return(NULL)
+      }
+      left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left)
+      top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom)
+      left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
+      top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
+      style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                      "left:",
+                      left_px - 300,
+                      "px; top:",
+                      top_px - 50,
+                      "px; width:400px;")
+      hr <- sprintf("%.2f (%.2f - %.2f)", point$calibratedRr, point$calibratedCi95Lb, point$calibratedCi95Ub)
+      div(
+        style="position: relative; width: 0; height: 0",
+        wellPanel(
+          style = style,
+          p(HTML(paste0("<b> Database: </b>", point$databaseId, "<br/>",
+                        "<b> Calibrated harard ratio (95% CI): </b>", hr, "<br/>")))
+        )
+      )
+    }
+  })
+  
 
   interactionEffects <- reactive({
     row <- selectedRow()

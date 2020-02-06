@@ -42,14 +42,14 @@ shinyUI(
                         tabPanel("Explore results",
                                 
                                  fluidRow(
-                                  column(3,
-                                         selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
-                                         selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[4]),
-                                         selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                                         checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                         checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)
+                                  column(4,
+                                         selectInput("target", "Target", unique(exposureOfInterest$exposureName)[1:3], selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                         selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName)[4], selected = unique(exposureOfInterest$exposureName)[4], width = '100%'),
+                                         selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
+                                         checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[15], width = '100%'),
+                                         checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[c(1, 2, 5, 6, 9)], width = '100%')
                                   ),
-                                  column(9,
+                                  column(8,
                                          dataTableOutput("mainTable"),
                                          conditionalPanel("output.rowIsSelected == true",
                                                           tabsetPanel(id = "detailsTabsetPanel",
@@ -59,8 +59,6 @@ shinyUI(
                                                                                conditionalPanel("output.isMetaAnalysis == false",
                                                                                                 uiOutput("timeAtRiskTableCaption"),
                                                                                                 tableOutput("timeAtRiskTable"))
-                                                                               # uiOutput("timeAtRiskTableCaption"),
-                                                                               # tableOutput("timeAtRiskTable")
                                                                       ),
                                                                       tabPanel("Attrition",
                                                                                plotOutput("attritionPlot", width = 600, height = 600),
@@ -111,6 +109,13 @@ shinyUI(
                                                                                    downloadButton("downloadKaplanMeierPlotPng", label = "Download plot as PNG"),
                                                                                    downloadButton("downloadKaplanMeierPlotPdf", label = "Download plot as PDF")
                                                                                )),
+                                                                      tabPanel("Forest plot",
+                                                                               uiOutput("hoverInfoForestPlot"),
+                                                                               plotOutput("forestPlot", height = 450, 
+                                                                                          hover = hoverOpts("plotHoverForestPlot", delay = 100, delayType = "debounce")),
+                                                                               uiOutput("forestPlotCaption"),
+                                                                               div(style = "display: inline-block;vertical-align:top;")
+                                                                               ),
                                                                       tabPanel("Subgroups",
                                                                                uiOutput("subgroupTableCaption"),
                                                                                dataTableOutput("subgroupTable")
