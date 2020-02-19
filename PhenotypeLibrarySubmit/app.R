@@ -33,10 +33,10 @@ library(tidyr)
 enableBookmarking(store = "server")
 
 # Point to the Auth0 config file
-options(auth0_config_file = "/data/_auth0.yml")
+auth0_config("./_auth0.yml")
 
 # Authenticate to allow for data export to Google Drive
-drive_auth(service_token = "/data/phrasal-period-244717-6a06518b8dc0.json")
+drive_auth(service_token = "phrasal-period-244717-6a06518b8dc0.json")
 
 # Query GitHub to retrieve official books and chapters
 # TODO: In the future, this can be replaced by directly loading the Index file residing on the server.
@@ -81,6 +81,9 @@ PROPOSED_BOOKS <- PROPOSED_BOOKS[!(PROPOSED_BOOKS %in% ACCEPTED_BOOKS)]
 REGEX_ORCID <- "([0-9]{4})[-]([0-9]{4})[-]([0-9]{4})[-]([0-9X]{4})"
 
 # Constant: Pattern used to check for extraneous characters in form fields -- These are the allowable characters
+#REGEX_TITLE <- "(^$)|(^(([[:alnum:]])|([,;-_ ]))*$)"
+#REGEX_TITLE <- "(^$)|([^a-zA-Z0-9 ,;_-])"
+#REGEX_TITLE <- "|[^a-zA-Z0-9 ]"
 REGEX_TITLE <- "[^a-zA-Z0-9 ,;_-]"
 
 # Constant: Therapeutic areas choice list
@@ -124,7 +127,7 @@ COH_FIELDS_ALL <- c(
   "coh_definition_description",
   "coh_development_process",
   "coh_phenotype_modality",
-  "coh_therapeutic_areas_chapter",
+  # "coh_therapeutic_areas_chapter",
   "coh_tags_chapter",
   "coh_provenance",
   "coh_previous_validation",
@@ -202,7 +205,8 @@ FILE_TYPES <- c(
 )
 
 # Constant: Path on server to where bookmarks are being stored
-BOOKMARK_PATH <<- "/gspl-bookmarks"
+# BOOKMARK_PATH <- "/var/lib/shiny-server/bookmarks/shiny/gspl_submit-c9a5fb2e416b1d11f52366fc75d8c415"
+BOOKMARK_PATH <<- "/home/deployed/data/bookmarks"
 
 # Constant: Dataframe to initialize authors datatables
 AUTHORS_BLANK <- data.frame(
@@ -264,21 +268,21 @@ Provenance_DF <- data.frame("Book" = character(0), "Chapter" = character(0), "Ra
 # Override of Shiny's save function to save ID as a global so it can be retrieved internally
 saveShinySaveState <- function(state) {
   id <- paste(u_uid, createUniqueId(12), cur_savename, sep = "%")
-  
+
   # A function for saving the state object to disk, given a directory to save to.
   saveState <- function(stateDir) {
-    
+
     # Allow user-supplied onSave function to do things like add state$values, or
     # save data to state dir.
     if (!is.null(state$onSave)) {
       isolate(state$onSave(state))
     }
-    
+
     # Serialize values, possibly saving some extra data to stateDir
     exclude <- c(state$exclude, "._bookmark_")
     inputValues <- serializeReactiveValues(state$input, exclude, state$dir)
     saveRDS(inputValues, file.path(BOOKMARK_PATH, paste0(id, ".rds")))
-    
+
     # If values were added, save them also.
     if (length(state$values) != 0) {
       saveRDS(state$values, file.path(stateDir, "values.rds"))
@@ -329,9 +333,13 @@ ui <-
 
       # shinyjs must be initialized with a call to useShinyjs() in the app's ui.
       shinyjs::useShinyjs(),
-
+      
       # CSS for app style settings
       includeCSS("www/styles.css"),
+      
+      # Potential fix to avoid crash on refresh with auth0, but seems to cause issues when employed
+      # See: https://github.com/curso-r/auth0/issues/54
+      #tags$script(JS("setTimeout(function(){history.pushState({}, 'Page Title', '/');},2000);")),
 
       # Dashboard Page
       dashboardPage(
@@ -352,15 +360,17 @@ ui <-
             uiOutput("login_info"),
             hr(),
             # Save/Load block
+            # shinyjs::hidden(div(id = "bookmark_button", bookmarkButton(label = "Save Template", width = "200px", icon = icon("save")))),
+            #shinyjs::hidden(div(id = "bookmark_button", bookmarkButton(label = "Save Template", width = "200px", icon = icon("save"), id = "bookmark_save_button"))),
             shinyjs::hidden(div(id = "bookmark_button", actionButton("bookmark_save_button", label = "Save Template", width = "200px", icon = icon("save")))),
             actionButton("bookmark_load_button", label = "Load Template", width = "200px", icon = icon("folder-open")),
             # Modal that comes up when a user attempts to load a template by clicking the above bookmark_load_button actionButton
             bsModal(id = "modalLoad",
-                    title = "Available Bookmarks",
-                    trigger = "bookmark_load_button",
-                    size = "large",
-                    textOutput("caution"),
-                    DT::DTOutput("mybookmarktable")
+              title = "Available Bookmarks",
+              trigger = "bookmark_load_button",
+              size = "large",
+              textOutput("caution"),
+              DT::DTOutput("mybookmarktable")
             ),
             hr(),
             # Main menu items
@@ -424,6 +434,36 @@ ui <-
 
         # Dashboard Body
         dashboardBody(
+          
+          #tags$script("
+          #            Shiny.addCustomMessageHandler('new_cohort_button_check', function(value) {
+          #            Shiny.setInputValue('new_cohort_button_check', value);
+          #            });
+          #            "),
+          
+          #tags$script("
+          #            Shiny.addCustomMessageHandler('new_validation_button_check', function(value) {
+          #            Shiny.setInputValue('new_validation_button_check', value);
+          #            });
+          #            "),
+          
+          #tags$script("
+          #            Shiny.addCustomMessageHandler('new_citation_button_check', function(value) {
+          #            Shiny.setInputValue('new_citation_button_check', value);
+          #            });
+          #            "),
+          
+          #tags$script("
+          #            Shiny.addCustomMessageHandler('new_characterization_button_check', function(value) {
+          #            Shiny.setInputValue('new_characterization_button_check', value);
+          #            });
+          #            "),
+          
+          #tags$script("
+          #            Shiny.addCustomMessageHandler('load_go', function(value) {
+          #            Shiny.setInputValue('load_go', value);
+          #            });
+          #            "),
 
           # Sidebar text size - Change to 18
           tags$head(
@@ -532,7 +572,7 @@ ui <-
               list(
                 tabItem(
                   tabName = "about",
-		  fluidRow(column(8, box(width = NULL, includeMarkdown(file.path("data", "about.md")))))
+                  fluidRow(column(8, box(width = NULL, includeMarkdown(file.path("data", "about.md")))))
                 )
               )
             ) # End c
@@ -546,21 +586,7 @@ ui <-
 # Utility Functions
 ####################################################################################################################################
 
-# The modal that appears when the "save template" button is clicked
-saveDataModal <- function(failed = FALSE) {
-  modalDialog(
-    textInput("savename", "Please enter a name below for your saved state:"),
-    span('When you load your state, you may find it by this name. Please only use alphanumeric characters and/or underscores (no spaces).'),
-    if (failed)
-      div(tags$b("Please enter a valid name: Use alphanumeric characters and substitute spaces with underscores.", style = "color: red;")),
-    footer = tagList(
-      modalButton("Cancel"),
-      actionButton("ok_save", "OK")
-    )
-  )
-}
-
-# Show a message whenever the user enters invalid characters into a field
+# Show a message whenever the user enters invalid characters (which will in turn have been corrected at the time this displays)
 showBadCharNotification <- function() {
   showNotification("Please only use: alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", 
                    duration = 3,
@@ -569,6 +595,28 @@ showBadCharNotification <- function() {
 }
 
 # Query saved states according to the logged in user's ID and return a dataframe back of the user's state load options
+# buildBookmarkDF <- function() {
+# 
+#   # Target bookmarks that pertain to the user
+#   user_bookmarks <- list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "_", ".*rds"), full.names = TRUE)
+# 
+#   # Locate keys and creation times
+#   bookmark_keys <- sapply(user_bookmarks, function(x) {
+#     str_extract(x, "[A-Za-z0-9]+(?=\\.rds)")
+#   })
+#   bookmark_create_times <- sapply(user_bookmarks, function(x) {
+#     as.character(file.info(x)$ctime)
+#   })
+# 
+#   # Make a dataframe that can be displayed as a popup for the user to select from
+#   df_bookmarks <- data.frame(
+#     key = bookmark_keys,
+#     time = bookmark_create_times,
+#     row.names = NULL
+#   )
+#   return(df_bookmarks)
+# }
+
 buildBookmarkDF <- function() {
   # Split on the "%" separator in the saved filename
   user_bookmarks <- list.files(BOOKMARK_PATH, pattern = paste0(u_uid, "%", ".*rds"), full.names = FALSE)
@@ -700,11 +748,11 @@ makeCohortDefinitionForm <- function() {
               "Phenotype Modality",
               c("Rule-Based/Heuristic", "Computable/Probabilistic")
             ),
-            selectInput("coh_therapeutic_areas_chapter",
-              "Please select the therapeutic area(s) that pertain to this chapter, if any.",
-              multiple = TRUE,
-              choices = THERAPEUTIC_AREAS
-            ),
+            # selectInput("coh_therapeutic_areas_chapter",
+            #   "Please select the therapeutic area(s) that pertain to this chapter, if any.",
+            #   multiple = TRUE,
+            #   choices = THERAPEUTIC_AREAS
+            # ),
             # TODO: Leverage the index file to pre-load tags other members have made
             selectizeInput("coh_tags_chapter",
               "Tag(s), if any (Type to add new tags)",
@@ -1642,16 +1690,16 @@ submitValidationData <- function(input, session, values_val_upload) {
       )
     })
 
-    shinyjs::reset("val_form")
-    shinyjs::hide("val_form")
+    #shinyjs::reset("val_form")
+    #shinyjs::hide("val_form")
   })
-  error <- function(err) {
-    shinyjs::html("val_error_msg", err$val_message)
-    shinyjs::show(id = "val_error", anim = TRUE, animType = "fade")
-  }
-  finally <- {
-    shinyjs::enable("val_submit")
-  }
+  #error <- function(err) {
+  #  shinyjs::html("val_error_msg", err$val_message)
+  #  shinyjs::show(id = "val_error", anim = TRUE, animType = "fade")
+  #}
+  #finally <- {
+  #  shinyjs::enable("val_submit")
+  #}
 }
 
 # Function that writes the cohort definition data to Drive
@@ -1856,7 +1904,11 @@ checkBookInformation <- function(input, message_id) {
   } else {
     if (!(isTruthy(input$coh_book_title))) {
       status_code <- "Book Title"
-    } else if (!(isTruthy(input$coh_book_clinical_description))) {
+    } 
+    #else if (!(str_detect(input$coh_book_title, REGEX_TITLE))) {
+    #status_code <- "Book Title2"
+    #} 
+    else if (!(isTruthy(input$coh_book_clinical_description))) {
       status_code <- "Clinical Description"
     } else {
       status_code <- NA
@@ -1867,6 +1919,7 @@ checkBookInformation <- function(input, message_id) {
     message <-
       switch(status_code,
         "Book Title" = "Please verify that the Book Title field is complete in the Book Information section.",
+        #"Book Title2" = "Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
         "Clinical Description" = "Please verify that the Clinical Description field is complete in the Book Information section."
       )
     showNotification(message,
@@ -1886,7 +1939,11 @@ checkBookInformation <- function(input, message_id) {
 checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
   if (!(isTruthy(input$coh_chapter_title))) {
     status_code <- "Chapter Title"
-  } else if (!(isTruthy(input$coh_definition_description))) {
+  } 
+  #else if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))) {
+    #status_code <- "Chapter Title2"
+  #}
+    else if (!(isTruthy(input$coh_definition_description))) {
     status_code <- "Definition Description"
   } else if (!(isTruthy(input$coh_development_process))) {
     status_code <- "Development Process"
@@ -1902,10 +1959,11 @@ checkChapterInformation <- function(input, message_id, values_coh_phenotype) {
   if (!is.na(status_code)) {
     message <-
       switch(status_code,
-             "Chapter Title" = "Please verify that the Chapter Title field is complete in the Chapter Information section.",
-             "Definition Description" = "Please verify that the Definition Description field is complete in the Chapter Information secton.",
-             "Development Process" = "Please verify that the Development Process field is complete in the Chapter Information section.",
-             "Phenotype File" = "Please verify that the Phenotype File field is complete in the Chapter Information section."
+        "Chapter Title" = "Please verify that the Chapter Title field is complete in the Chapter Information section.",
+        #"Chapter Title2" = "Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.",
+        "Definition Description" = "Please verify that the Definition Description field is complete in the Chapter Information secton.",
+        "Development Process" = "Please verify that the Development Process field is complete in the Chapter Information section.",
+        "Phenotype File" = "Please verify that the Phenotype File field is complete in the Chapter Information section."
       )
     showNotification(message,
       duration = NULL,
@@ -2116,6 +2174,51 @@ checkCharacterizationInformation <- function(input, message_id, values_cha_featu
   }
 }
 
+reset_func <- function(input, output, session) {
+  if (input$main_sidebar_menu == "cohort_definition_submission") {
+    reset("coh_form")
+    output$author_r_table <- renderRHandsontable(
+      rhandsontable(AUTHORS_BLANK,
+                    selectCallback = TRUE,
+                    readOnly = FALSE,
+                    rowHeaders = NULL
+      ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+    )
+    Provenance_DF <<- data.frame("Book" = character(0), "Chapter" = character(0), "Rationale" = character(0))
+    prov_check$used <<- FALSE
+    output$provenance_table <- renderDT({
+      datatable(Provenance_DF, selection = "single", options = list(dom = "t"))
+    })
+  } else if (input$main_sidebar_menu == "validation_submission") {
+    reset("val_form")
+    output$validator_r_table <- renderRHandsontable(
+      rhandsontable(AUTHORS_BLANK,
+                    selectCallback = TRUE,
+                    readOnly = FALSE,
+                    rowHeaders = NULL
+      ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+    )
+  } else if (input$main_sidebar_menu == "citation_submission") {
+    reset("citation_form")
+    output$citation_r_table <- renderRHandsontable(
+      rhandsontable(AUTHORS_BLANK,
+                    selectCallback = TRUE,
+                    readOnly = FALSE,
+                    rowHeaders = NULL
+      ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+    )
+  } else {
+    reset("characterization_form")
+    output$characterization_r_table <- renderRHandsontable(
+      rhandsontable(AUTHORS_BLANK,
+                    selectCallback = TRUE,
+                    readOnly = FALSE,
+                    rowHeaders = NULL
+      ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
+    )
+  }
+}
+
 ####################################################################################################################################
 # Server Definition
 ####################################################################################################################################
@@ -2132,6 +2235,12 @@ server <- function(input, output, session) {
   values_val_upload <- reactiveValues(upload_state = NULL)
   values_cha_features <- reactiveValues(upload_state = NULL)
   provenance_table <- reactiveVal()
+  book_exist <- reactiveVal(TRUE)
+  book_create <- reactiveVal(FALSE)
+  book_title <- reactiveVal()
+  book_cd <- reactiveVal()
+  book_ta <- reactiveVal()
+  book_tag <- reactiveVal()
 
   # Capture the user ID so it can be referenced later at the time of submission
   # If Auth0 isn't being used, then "No ID" will be assigned in the ID's place
@@ -2434,15 +2543,57 @@ server <- function(input, output, session) {
   ##################################################################################################################################
   # Observers
   ##################################################################################################################################
-
-  # Guide the user to enter a valid save name by substituting out disallowed characters when typed
+  
+  # The modal that appears when the "save template" button is clicked
+  saveDataModal <- function(failed = FALSE) {
+    modalDialog(
+      textInput("savename", "Please enter a name below for your saved state:"),
+      span('When you load your state, you may find it by this name. Please only use alphanumeric characters and/or underscores (no spaces).'),
+      if (failed)
+        div(tags$b("Please enter a valid name: Use alphanumeric characters and substitute spaces with underscores.", style = "color: red;")),
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("ok_save", "OK")
+      )
+    )
+  }
+  
+  #observeEvent(input$new_cohort_button, {
+  #  session$sendCustomMessage("new_cohort_button_check", 1)
+  #  session$sendCustomMessage("new_validation_button_check", 0)
+  #  session$sendCustomMessage("new_citation_button_check", 0)
+  #  session$sendCustomMessage("new_characterization_button_check", 0)
+  #})
+  
+  #observeEvent(input$new_validation_button, {
+  #  session$sendCustomMessage("new_cohort_button_check", 0)
+  #  session$sendCustomMessage("new_validation_button_check", 1)
+  #  session$sendCustomMessage("new_citation_button_check", 0)
+  #  session$sendCustomMessage("new_characterization_button_check", 0)
+  #})
+  
+  #observeEvent(input$new_citation_button, {
+  #  session$sendCustomMessage("new_cohort_button_check", 0)
+  #  session$sendCustomMessage("new_validation_button_check", 0)
+  #  session$sendCustomMessage("new_citation_button_check", 1)
+  #  session$sendCustomMessage("new_characterization_button_check", 0)
+  #})
+  
+  #observeEvent(input$new_characterization_button, {
+  #  session$sendCustomMessage("new_cohort_button_check", 0)
+  #  session$sendCustomMessage("new_validation_button_check", 0)
+  #  session$sendCustomMessage("new_citation_button_check", 0)
+  #  session$sendCustomMessage("new_characterization_button_check", 1)
+  #})
+  
+  # Try to guide the user to enter a valid save name by substituting out disallowed characters as they type
   observeEvent(input$savename, {
     updateTextInput(session, "savename", value = gsub("[^a-zA-Z0-9_]", "", input$savename))
   })
   
   # When OK button is pressed from the save modal, check the text
-  # If ok, then proceed with saving and notify the user
-  # Else, loop back in on the modal with a set failed flag
+  # If ok, then proceed with saving and notifying the user
+  # Else, loop back on the modal with the failed flag set
   observeEvent(input$ok_save, {
     if (!is.null(input$savename) && nzchar(input$savename) && !grepl("[^a-zA-Z0-9_]",input$savename)) {
       cur_savename <<- input$savename
@@ -2460,14 +2611,28 @@ server <- function(input, output, session) {
   })
   
   # Check book for extraneous characters
+  # observeEvent(input$coh_book_title, {
+  #   if (!(str_detect(input$coh_book_title, REGEX_TITLE))){
+  #     showNotification("Your book title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_btitle", close = F, duration = NULL, type = "error")
+  #   } else {
+  #     removeNotification("bad_btitle")
+  #   }
+  # })
   observeEvent(input$coh_book_title, {
     if (grepl(REGEX_TITLE, input$coh_book_title)) {
       updateTextInput(session, "coh_book_title", value = gsub(REGEX_TITLE, "", input$coh_book_title))
       showBadCharNotification()
     }
   })
-  
+    
   # Check chapter for extraneous characters
+  # observeEvent(input$coh_chapter_title, {
+  #   if (!(str_detect(input$coh_chapter_title, REGEX_TITLE))){
+  #     showNotification("Your chapter title can only contain alphanumeric characters, spaces, commas, semicolons, dashes, or underscores.", id = "bad_ctitle", close = F, duration = NULL, type = "error")
+  #   } else {
+  #     removeNotification("bad_ctitle")
+  #   }
+  # })
   observeEvent(input$coh_chapter_title, {
     if (grepl(REGEX_TITLE, input$coh_chapter_title)) {
       updateTextInput(session, "coh_chapter_title", value = gsub(REGEX_TITLE, "", input$coh_chapter_title))
@@ -2482,52 +2647,10 @@ server <- function(input, output, session) {
   
   # Modal refresh - Yes
   observeEvent(input$reset_yes, {
+    #book_exist(TRUE)
+    #book_create(FALSE)
     toggleModal(session, "refreshmodal", "close")
-    if (input$main_sidebar_menu == "cohort_definition_submission") {
-      reset("coh_form")
-      output$author_r_table <- renderRHandsontable(
-        rhandsontable(AUTHORS_BLANK,
-                      selectCallback = TRUE,
-                      readOnly = FALSE,
-                      rowHeaders = NULL
-        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
-      )
-      Provenance_DF <<- data.frame("Book" = character(0), "Chapter" = character(0), "Rationale" = character(0))
-      provenance_table(Provenance_DF)
-      prov_check$used <<- FALSE
-      #updateSelectInput(session, "coh_provenance_book", choices = subset(prov_check, used != TRUE)$Book, selected = sample(subset(prov_check, used != TRUE & Book != input$coh_provenance_book)$Book, 1))
-      #updateSelectInput(session, "coh_provenance_chapter", choices = subset(prov_check, used != TRUE)$Chapter)
-      output$provenance_table <- renderDT({
-        datatable(provenance_table(), selection = "single", options = list(dom = "t"))
-      })
-    } else if (input$main_sidebar_menu == "validation_submission") {
-      reset("val_form")
-      output$validator_r_table <- renderRHandsontable(
-        rhandsontable(AUTHORS_BLANK,
-                      selectCallback = TRUE,
-                      readOnly = FALSE,
-                      rowHeaders = NULL
-        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
-      )
-    } else if (input$main_sidebar_menu == "citation_submission") {
-      reset("citation_form")
-      output$citation_r_table <- renderRHandsontable(
-        rhandsontable(AUTHORS_BLANK,
-                      selectCallback = TRUE,
-                      readOnly = FALSE,
-                      rowHeaders = NULL
-        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
-      )
-    } else {
-      reset("characterization_form")
-      output$characterization_r_table <- renderRHandsontable(
-        rhandsontable(AUTHORS_BLANK,
-                      selectCallback = TRUE,
-                      readOnly = FALSE,
-                      rowHeaders = NULL
-        ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
-      )
-    }
+    reset_func(input, output, session)
   })
   
   # Load button click - Routes depending on whether any bookmarks exist for the user
@@ -2786,7 +2909,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2799,6 +2922,8 @@ server <- function(input, output, session) {
     shinyjs::show("submission_complete_menuitem")
     shinyjs::hide("cohort_definition_menuitem")
     updateTabItems(session, "main_sidebar_menu", "submission_complete")
+    
+    reset_func(input, output, session)
   })
 
   observeEvent(input$coh_submit_another, {
@@ -2825,7 +2950,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2838,6 +2963,8 @@ server <- function(input, output, session) {
     shinyjs::show("submission_complete_menuitem")
     shinyjs::hide("validation_submission_menuitem")
     updateTabItems(session, "main_sidebar_menu", "submission_complete")
+    
+    reset_func(input, output, session)
   })
 
   # refresh of validation form
@@ -2853,7 +2980,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2866,6 +2993,8 @@ server <- function(input, output, session) {
     shinyjs::show("submission_complete_menuitem")
     shinyjs::hide("validation_submission_menuitem")
     updateTabItems(session, "main_sidebar_menu", "submission_complete")
+    
+    reset_func(input, output, session)
   })
 
   observeEvent(input$char_submit, {
@@ -2876,7 +3005,7 @@ server <- function(input, output, session) {
     # Notify that submission is in progress
     showNotification("Your form is in the saving process. Please wait...",
       duration = NULL,
-      closeButton = FALSE,
+      closeButton = TRUE,
       type = "warning",
       id = "submission_in_progress"
     )
@@ -2889,6 +3018,8 @@ server <- function(input, output, session) {
     shinyjs::show("submission_complete_menuitem")
     shinyjs::hide("validation_submission_menuitem")
     updateTabItems(session, "main_sidebar_menu", "submission_complete")
+    
+    reset_func(input, output, session)
   })
 
   # Observe logout button click
@@ -2902,13 +3033,14 @@ server <- function(input, output, session) {
       '
     )
   })
+  
 
   # When a row is selected, restore the app in the state of that selected row
   observeEvent(input$mybookmarktable_rows_selected, {
-    
+
     # First, close the modal
     toggleModal(session, "modalLoad", "close")
-    
+
     # Locate the key of the corresponding selected row
     load_key <- as.character(buildBookmarkDF()[input$mybookmarktable_rows_selected, "key"])
     
@@ -2916,46 +3048,10 @@ server <- function(input, output, session) {
     load_name <- as.character(buildBookmarkDF()[input$mybookmarktable_rows_selected, "name"])
     
     # # Load RDS file corresponding to the row the user selected in the table
+    # fn <- paste0(u_uid, "_", load_key, ".rds")
     fn <- paste0(u_uid, "%", load_key, "%", load_name, ".rds")
     loadRDS <- readRDS(file.path(BOOKMARK_PATH, fn))
-
-    # Then go on to restore the state corresponding to this RDS file
-
-    if (loadRDS$main_sidebar_menu == "cohort_defintion_submission") {
-      updateTabItems(session, "main_sidebar_menu", "cohort_definition_submission")
-      shinyjs::show("cohort_definition_menuitem")
-      shinyjs::hide("validation_submission_menuitem")
-      shinyjs::hide("citation_submission_menuitem")
-      shinyjs::hide("characterization_submission_menuitem")
-      shinyjs::hide("submission_complete_menuitem")
-      shinyjs::show("conditional_hr")
-    } else if (loadRDS$main_sidebar_menu == "validation_submission") {
-      updateTabItems(session, "main_sidebar_menu", "validation_submission")
-      shinyjs::show("validation_submission_menuitem")
-      shinyjs::hide("cohort_definition_menuitem")
-      shinyjs::hide("citation_submission_menuitem")
-      shinyjs::hide("characterization_submission_menuitem")
-      shinyjs::hide("submission_complete_menuitem")
-      shinyjs::show("conditional_hr")
-    } else if (loadRDS$main_sidebar_menu == "citation_submission") {
-      updateTabItems(session, "main_sidebar_menu", "citation_submission")
-      shinyjs::show("citation_submission_menuitem")
-      shinyjs::hide("cohort_definition_menuitem")
-      shinyjs::hide("validation_submission_menuitem")
-      shinyjs::hide("characterization_submission_menuitem")
-      shinyjs::hide("submission_complete_menuitem")
-      shinyjs::show("conditional_hr")
-    } else if (loadRDS$main_sidebar_menu == "characterization_submission") {
-      updateTabItems(session, "main_sidebar_menu", "characterization_submission")
-      shinyjs::show("characterization_submission_menuitem")
-      shinyjs::hide("cohort_definition_menuitem")
-      shinyjs::hide("validation_submission_menuitem")
-      shinyjs::hide("citation_submission_menuitem")
-      shinyjs::hide("submission_complete_menuitem")
-      shinyjs::show("conditional_hr")
-    }
     
-    # New Cohort Definition Variables
     if (("author_r_table" %in% names(loadRDS)) && loadRDS$author_r_table$data[[1]][[1]] != ""){
       output$author_r_table <- renderRHandsontable(
         rhandsontable(data.frame(
@@ -2982,165 +3078,205 @@ server <- function(input, output, session) {
       )
     }
     
-    # New Cohort Definition Variables
-
-    # TODO: Restore contributor information
-
     updateRadioButtons(session,
-      inputId = "coh_book_exist",
-      selected = loadRDS$coh_book_exist
+                       inputId = "coh_book_exist",
+                       selected = loadRDS$coh_book_exist
+    )
+    
+    updateSelectInput(session,
+                      inputId = "coh_existing_books",
+                      selected = loadRDS$coh_existing_books
     )
 
+    if (loadRDS$coh_book_exist != "Yes"){
+      book_exist(FALSE)
+      book_create(TRUE)
+      book_title(loadRDS$coh_book_title)
+      book_cd(loadRDS$coh_book_clinical_description)
+      book_ta(loadRDS$coh_therapeutic_areas_book)
+      book_tag(loadRDS$coh_tags_book)
+      #show("SubmissionBookMenu")
+      #output$SubmissionBookMenu <- renderUI({
+      #  fluidRow(
+      #    box(
+      #      status = "warning",
+      #      selectInput("coh_existing_books", "Add my Chapter (Cohort Definition) to:",
+      #                  choices = list(
+      #                    "Accepted" = ACCEPTED_BOOKS,
+      #                    "Proposed" = PROPOSED_BOOKS
+      #                  )
+      #      )
+      #    )
+      #  )
+    #})
+    } #else {
+      #output$SubmissionBookMenu <- renderUI({
+      #  fluidRow(
+      #    box(
+      #      status = "warning", title = "New Book",
+      #      textInput("coh_book_title", "Book (Phenotype) Title"),
+      #      textAreaInput("coh_book_clinical_description", "Clinical Description", resize = "vertical"),
+      #      selectInput("coh_therapeutic_areas_book", "Therapeutic Area(s), if any",
+      #                  multiple = TRUE,
+      #                  choices = THERAPEUTIC_AREAS
+      #      ),
+            # TODO: Leverage the index file to pre-load tags other members have made
+      #      selectizeInput("coh_tags_book",
+      #                     "Tag(s), if any (Type to add new tags)",
+      #                     choices = c("Claims", "EMR", "Sensitive", "Specific"),
+      #                     selected = NULL,
+      #                     multiple = TRUE,
+      #                     options = list(create = TRUE)
+      #      )
+      #    )
+      #  )
+      #})
+    #}
+    
     updateTextInput(session,
-      inputId = "coh_book_title",
-      value = loadRDS$coh_book_title
+                    inputId = "coh_book_title",
+                    value = loadRDS$coh_book_title
     )
-
+    
     updateTextAreaInput(session,
-      inputId = "coh_book_clinical_description",
-      value = loadRDS$coh_book_clinical_description
+                        inputId = "coh_book_clinical_description",
+                        value = loadRDS$coh_book_clinical_description
     )
-
+    
     updateSelectInput(session,
-      inputId = "coh_therapeutic_areas_book",
-      selected = loadRDS$coh_therapeutic_areas_book
+                      inputId = "coh_therapeutic_areas_book",
+                      selected = loadRDS$coh_therapeutic_areas_book
     )
-
+    
     updateSelectInput(session,
-      inputId = "coh_tags_book",
-      selected = loadRDS$coh_tags_book
+                      inputId = "coh_tags_book",
+                      selected = loadRDS$coh_tags_book
     )
-
-    updateSelectInput(session,
-      inputId = "coh_existing_books",
-      selected = loadRDS$coh_existing_books
-    )
-
+    
     # Chapter Information
-
+    
     updateTextInput(session,
-      inputId = "coh_chapter_title",
-      value = loadRDS$coh_chapter_title
+                    inputId = "coh_chapter_title",
+                    value = loadRDS$coh_chapter_title
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_definition_description",
-      value = loadRDS$coh_definition_description
+                    inputId = "coh_definition_description",
+                    value = loadRDS$coh_definition_description
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_development_process",
-      value = loadRDS$coh_development_process
+                    inputId = "coh_development_process",
+                    value = loadRDS$coh_development_process
     )
-
+    
     updateRadioButtons(session,
-      inputId = "coh_phenotype_modality",
-      selected = loadRDS$coh_phenotype_modality
+                       inputId = "coh_phenotype_modality",
+                       selected = loadRDS$coh_phenotype_modality
     )
-
+    
+    # updateSelectInput(session,
+    #   inputId = "coh_therapeutic_areas_chapter",
+    #   selected = loadRDS$coh_therapeutic_areas_chapter
+    # )
+    
     updateSelectInput(session,
-      inputId = "coh_therapeutic_areas_chapter",
-      selected = loadRDS$coh_therapeutic_areas_chapter
+                      inputId = "coh_tags_chapter",
+                      selected = loadRDS$coh_tags_chapter
     )
-
-    updateSelectInput(session,
-      inputId = "coh_tags_chapter",
-      selected = loadRDS$coh_tags_chapter
-    )
-
+    
     # TODO: Definition Upload
     # https://github.com/rstudio/shiny/issues/1729
-
+    
     # Provenance
-
+    
     updateRadioButtons(session,
-      inputId = "coh_provenance",
-      selected = loadRDS$coh_provenance
+                       inputId = "coh_provenance",
+                       selected = loadRDS$coh_provenance
     )
-
+    
     updateSelectInput(session,
-      inputId = "coh_provenance_book",
-      selected = loadRDS$coh_provenance_book
+                      inputId = "coh_provenance_book",
+                      selected = loadRDS$coh_provenance_book
     )
-
+    
     updateSelectInput(session,
-      inputId = "coh_provenance_chapter",
-      selected = loadRDS$coh_provenance_chapter
+                      inputId = "coh_provenance_chapter",
+                      selected = loadRDS$coh_provenance_chapter
     )
-
+    
     updateTextAreaInput(session,
-      inputId = "coh_provenance_rationale",
-      value = loadRDS$coh_provenance_rationale
+                        inputId = "coh_provenance_rationale",
+                        value = loadRDS$coh_provenance_rationale
     )
-
+    
     # TODO: Restore Provenance Table
-
+    
     # Validation
-
+    
     updateRadioButtons(session,
-      inputId = "coh_previous_validation",
-      selected = loadRDS$coh_previous_validation
+                       inputId = "coh_previous_validation",
+                       selected = loadRDS$coh_previous_validation
     )
-
+    
     updateTextAreaInput(session,
-      inputId = "coh_valid_proc_desc",
-      value = loadRDS$coh_valid_proc_desc
+                        inputId = "coh_valid_proc_desc",
+                        value = loadRDS$coh_valid_proc_desc
     )
-
+    
     updateTextAreaInput(session,
-      inputId = "coh_valid_data_desc",
-      value = loadRDS$coh_valid_data_desc
+                        inputId = "coh_valid_data_desc",
+                        value = loadRDS$coh_valid_data_desc
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_cdm_version",
-      value = loadRDS$coh_cdm_version
+                    inputId = "coh_cdm_version",
+                    value = loadRDS$coh_cdm_version
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_vocab_version",
-      value = loadRDS$coh_vocab_version
+                    inputId = "coh_vocab_version",
+                    value = loadRDS$coh_vocab_version
     )
-
+    
     updateRadioButtons(session,
-      inputId = "coh_validation_modality",
-      selected = loadRDS$coh_validation_modality
+                       inputId = "coh_validation_modality",
+                       selected = loadRDS$coh_validation_modality
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_true_pos",
-      value = loadRDS$coh_true_pos
+                    inputId = "coh_true_pos",
+                    value = loadRDS$coh_true_pos
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_true_neg",
-      value = loadRDS$coh_true_neg
+                    inputId = "coh_true_neg",
+                    value = loadRDS$coh_true_neg
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_false_pos",
-      value = loadRDS$coh_false_pos
+                    inputId = "coh_false_pos",
+                    value = loadRDS$coh_false_pos
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_false_neg",
-      value = loadRDS$coh_false_neg
+                    inputId = "coh_false_neg",
+                    value = loadRDS$coh_false_neg
     )
-
+    
     updateTextInput(session,
-      inputId = "coh_inconclusive",
-      value = loadRDS$coh_inconclusive
+                    inputId = "coh_inconclusive",
+                    value = loadRDS$coh_inconclusive
     )
-
+    
     # TODO: Supporting Documentation Upload
-
+    
     # Additional Comments
     updateTextAreaInput(session,
-      inputId = "coh_add_comms",
-      value = loadRDS$coh_add_comms
+                        inputId = "coh_add_comms",
+                        value = loadRDS$coh_add_comms
     )
-
-    # New Validation Set Variables
+    
     if(("validator_r_table" %in% names(loadRDS)) && loadRDS$validator_r_table$data[[1]][[1]] != ""){
       output$validator_r_table <- renderRHandsontable(
         rhandsontable(data.frame(
@@ -3166,81 +3302,80 @@ server <- function(input, output, session) {
         ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
       )
     }
-
+    
     # Library Resource
     updateSelectInput(session,
-      inputId = "validation_book_selection",
-      selected = loadRDS$validation_book_selection
+                      inputId = "validation_book_selection",
+                      selected = loadRDS$validation_book_selection
     )
-
+    
     updateSelectInput(session,
-      inputId = "validation_chapter_selection",
-      selected = loadRDS$validation_chapter_selection
+                      inputId = "validation_chapter_selection",
+                      selected = loadRDS$validation_chapter_selection
     )
-
+    
     # TODO: Restore validation file upload
-
+    
     # Validation Procedure
     updateTextAreaInput(session,
-      inputId = "val_valid_proc_desc",
-      value = loadRDS$val_valid_proc_desc
+                        inputId = "val_valid_proc_desc",
+                        value = loadRDS$val_valid_proc_desc
     )
-
+    
     # Validation Dataset
     updateTextAreaInput(session,
-      inputId = "val_valid_data_desc",
-      value = loadRDS$val_valid_data_desc
+                        inputId = "val_valid_data_desc",
+                        value = loadRDS$val_valid_data_desc
     )
-
+    
     updateTextInput(session,
-      inputId = "val_cdm_version",
-      value = loadRDS$val_cdm_version
+                    inputId = "val_cdm_version",
+                    value = loadRDS$val_cdm_version
     )
-
+    
     updateTextInput(session,
-      inputId = "val_vocab_version",
-      value = loadRDS$val_vocab_version
+                    inputId = "val_vocab_version",
+                    value = loadRDS$val_vocab_version
     )
-
+    
     # Performance Metrics
-
+    
     updateRadioButtons(session,
-      inputId = "val_validation_modality",
-      selected = loadRDS$val_validation_modality
+                       inputId = "val_validation_modality",
+                       selected = loadRDS$val_validation_modality
     )
-
+    
     updateTextInput(session,
-      inputId = "val_true_pos",
-      value = loadRDS$val_true_pos
+                    inputId = "val_true_pos",
+                    value = loadRDS$val_true_pos
     )
-
+    
     updateTextInput(session,
-      inputId = "val_true_neg",
-      value = loadRDS$val_true_neg
+                    inputId = "val_true_neg",
+                    value = loadRDS$val_true_neg
     )
-
+    
     updateTextInput(session,
-      inputId = "val_false_pos",
-      value = loadRDS$val_false_pos
+                    inputId = "val_false_pos",
+                    value = loadRDS$val_false_pos
     )
-
+    
     updateTextInput(session,
-      inputId = "val_false_neg",
-      value = loadRDS$val_false_neg
+                    inputId = "val_false_neg",
+                    value = loadRDS$val_false_neg
     )
-
+    
     updateTextInput(session,
-      inputId = "val_inconclusive",
-      value = loadRDS$val_inconclusive
+                    inputId = "val_inconclusive",
+                    value = loadRDS$val_inconclusive
     )
-
+    
     # Additional Comments
     updateTextAreaInput(session,
-      inputId = "val_add_comms",
-      value = loadRDS$val_add_comms
+                        inputId = "val_add_comms",
+                        value = loadRDS$val_add_comms
     )
-
-    # Citation Usage
+    
     if(("citation_r_table" %in% names(loadRDS)) && loadRDS$citation_r_table$data[[1]][[1]] != ""){
       output$citation_r_table <- renderRHandsontable(
         rhandsontable(data.frame(
@@ -3266,30 +3401,28 @@ server <- function(input, output, session) {
         ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
       )
     }
-
+    
     # Library Resource
     updateSelectInput(session,
-      inputId = "citation_book_selection",
-      selected = loadRDS$citation_book_selection
+                      inputId = "citation_book_selection",
+                      selected = loadRDS$citation_book_selection
     )
-
+    
     updateSelectInput(session,
-      inputId = "citation_chapter_selection",
-      selected = loadRDS$citation_chapter_selection
+                      inputId = "citation_chapter_selection",
+                      selected = loadRDS$citation_chapter_selection
     )
-
+    
     updateRadioButtons(session,
-      inputId = "citation_select",
-      selected = loadRDS$citation_select
+                       inputId = "citation_select",
+                       selected = loadRDS$citation_select
     )
-
+    
     updateTextInput(session,
-      inputId = "citation_data",
-      value = loadRDS$citation_data
+                    inputId = "citation_data",
+                    value = loadRDS$citation_data
     )
-
-    # Cohort Characterization
-
+    
     if(("characterization_r_table" %in% names(loadRDS)) && loadRDS$characterization_r_table$data[[1]][[1]] != ""){
       output$characterization_r_table <- renderRHandsontable(
         rhandsontable(data.frame(
@@ -3315,45 +3448,54 @@ server <- function(input, output, session) {
         ) %>% hot_table(highlightCol = TRUE, highlightRow = TRUE, stretchH = "all")
       )
     }
-
+    
     # Library Resource
     updateSelectInput(session,
-      inputId = "characterization_book_selection",
-      selected = loadRDS$characterization_book_selection
+                      inputId = "characterization_book_selection",
+                      selected = loadRDS$characterization_book_selection
     )
-
+    
     updateSelectInput(session,
-      inputId = "characterization_chapter_selection",
-      selected = loadRDS$characterization_chapter_selection
+                      inputId = "characterization_chapter_selection",
+                      selected = loadRDS$characterization_chapter_selection
     )
-
+    
     # Data Description
     updateTextAreaInput(session,
-      inputId = "characterization_data_description",
-      value = loadRDS$characterization_data_description
+                        inputId = "characterization_data_description",
+                        value = loadRDS$characterization_data_description
     )
-
+    
     updateTextInput(session,
-      inputId = "char_cdm_version",
-      value = loadRDS$char_cdm_version
+                    inputId = "char_cdm_version",
+                    value = loadRDS$char_cdm_version
     )
-
+    
     updateTextInput(session,
-      inputId = "char_vocab_version",
-      value = loadRDS$char_vocab_version
+                    inputId = "char_vocab_version",
+                    value = loadRDS$char_vocab_version
     )
-
+    
     # TODO: Restore phenotype stability upload
-
+    
     # TODO: Restore feature extraction upload
 
-    showNotification("State Loaded.", duration = 1, type = "message", closeButton = FALSE)
+ # observeEvent(input$load_go, {
+    # Then go on to restore the state corresponding to this RDS file
+    #showNotification(input$load_go)
+    # New Cohort Definition Variables
+    #if(input$load_go  == "cohort"){
+    #  
+    #}
+    
+    showNotification("State Loaded.", duration = 1, type = "message", closeButton = TRUE)
+    
   })
 
   ##################################################################################################################################
   # output$X Expressions
   ##################################################################################################################################
-
+  
   # Bookmark table for loading a bookmark
   output$mybookmarktable <- DT::renderDataTable(datatable(buildBookmarkDF(),
                                                           selection = "single",
@@ -3587,37 +3729,62 @@ server <- function(input, output, session) {
   # Show the list of books or allow for creation of a new book
   output$SubmissionBookMenu <- renderUI({
     if (input$coh_book_exist == "Yes") {
-      fluidRow(
-        box(
-          status = "warning",
-          selectInput("coh_existing_books", "Add my Chapter (Cohort Definition) to:",
-            choices = list(
-              "Accepted" = ACCEPTED_BOOKS,
-              "Proposed" = PROPOSED_BOOKS
+      if(book_exist()){
+        fluidRow(
+          box(
+            status = "warning",
+            selectInput("coh_existing_books", "Add my Chapter (Cohort Definition) to:",
+                        choices = list(
+                          "Accepted" = ACCEPTED_BOOKS,
+                          "Proposed" = PROPOSED_BOOKS
+                        )
             )
           )
         )
-      )
+      }
     } else {
-      fluidRow(
-        box(
-          status = "warning", title = "New Book",
-          textInput("coh_book_title", "Book (Phenotype) Title"),
-          textAreaInput("coh_book_clinical_description", "Clinical Description", resize = "vertical"),
-          selectInput("coh_therapeutic_areas_book", "Therapeutic Area(s), if any",
-            multiple = TRUE,
-            choices = THERAPEUTIC_AREAS
-          ),
-          # TODO: Leverage the index file to pre-load tags other members have made
-          selectizeInput("coh_tags_book",
-            "Tag(s), if any (Type to add new tags)",
-            choices = c("Claims", "EMR", "Sensitive", "Specific"),
-            selected = NULL,
-            multiple = TRUE,
-            options = list(create = TRUE)
+      if(book_create()){
+        fluidRow(
+          box(
+            status = "warning", title = "New Book",
+            textInput("coh_book_title", "Book (Phenotype) Title", book_title()),
+            textAreaInput("coh_book_clinical_description", "Clinical Description", book_cd(), resize = "vertical"),
+            selectInput("coh_therapeutic_areas_book", "Therapeutic Area(s), if any",
+                        selected = book_ta(),
+                        multiple = TRUE,
+                        choices = THERAPEUTIC_AREAS
+            ),
+            # TODO: Leverage the index file to pre-load tags other members have made
+            selectizeInput("coh_tags_book",
+                           "Tag(s), if any (Type to add new tags)",
+                           choices = c("Claims", "EMR", "Sensitive", "Specific"),
+                           selected = book_tag(),
+                           multiple = TRUE,
+                           options = list(create = TRUE)
+            )
           )
         )
-      )
+      } else {
+        fluidRow(
+          box(
+            status = "warning", title = "New Book",
+            textInput("coh_book_title", "Book (Phenotype) Title"),
+            textAreaInput("coh_book_clinical_description", "Clinical Description", resize = "vertical"),
+            selectInput("coh_therapeutic_areas_book", "Therapeutic Area(s), if any",
+                        multiple = TRUE,
+                        choices = THERAPEUTIC_AREAS
+            ),
+            # TODO: Leverage the index file to pre-load tags other members have made
+            selectizeInput("coh_tags_book",
+                           "Tag(s), if any (Type to add new tags)",
+                           choices = c("Claims", "EMR", "Sensitive", "Specific"),
+                           selected = NULL,
+                           multiple = TRUE,
+                           options = list(create = TRUE)
+            )
+          )
+        )
+      }
     }
   })
 
@@ -3706,7 +3873,7 @@ server <- function(input, output, session) {
 
   # For after having completed a submission tab
   output$Submission_Complete <- renderUI({
-    makeSubmissionCompleteForm()
+    makeSubmissionCompleteForm() 
   })
 } # End server
 
