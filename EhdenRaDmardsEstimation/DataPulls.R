@@ -277,7 +277,6 @@ getCovariateBalance <- function(connection,
                                 analysisId,
                                 outcomeId = NULL) {
   file <- sprintf("covariate_balance_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
-  print(file)
   balance <- readRDS(file.path(dataFolder, file))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]

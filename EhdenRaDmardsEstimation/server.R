@@ -76,7 +76,7 @@ shinyServer(function(input, output, session) {
       results$calibratedSeLogRr <- rep(NA, nrow(results))
       results$calibratedP <- rep(NA, nrow(results))
     }
-   return(results)
+    return(results)
   })
 
   selectedRow <- reactive({
@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
   
   output$isMetaAnalysis <- reactive({
     row <- selectedRow()
-    isMetaAnalysis <- !is.null(row) && (row$database == "Meta-analysis")
+    isMetaAnalysis <- !is.null(row) && (row$databaseId == "Meta-analysis")
     if (isMetaAnalysis) {
       hideTab("detailsTabsetPanel", "Attrition")
       hideTab("detailsTabsetPanel", "Population characteristics")
@@ -189,17 +189,52 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      table <- preparePowerTable(row, cohortMethodAnalysis)
-      table$description <- NULL
-      colnames(table) <- c("Target subjects",
-                           "Comparator subjects",
-                           "Target years",
-                           "Comparator years",
-                           "Target events",
-                           "Comparator events",
-                           "Target IR (per 1,000 PY)",
-                           "Comparator IR (per 1,000 PY)",
-                           "MDRR")
+      isMetaAnalysis <- row$databaseId == "Meta-analysis"
+      if (isMetaAnalysis) {
+        isHeterogeneous <- row$i2 > 0.4
+        targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
+        comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
+        outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
+        databaseIds <- c(unlist(strsplit(row$sources, split = ", ")), "Meta-analysis")
+        rows <- getMainResults(connection = connection,
+                                  targetIds = targetId,
+                                  comparatorIds = comparatorId,
+                                  outcomeIds = outcomeId,
+                                  databaseIds = databaseIds,
+                                  analysisIds = row$analysisId)
+        table <- preparePowerTable(rows, cohortMethodAnalysis)
+        table$description <- NULL
+        table$order <- match(table$databaseId, c(table$databaseId[table$databaseId != "Meta-analysis"], "Meta-analysis"))
+        table <- table[order(table$order), ]
+        table$order <- NULL
+        
+        if (isHeterogeneous) {
+          table <- table[table$databaseId != "Meta-analysis", ]
+        }
+        
+        colnames(table) <- c("Source",
+                             "Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (/1,000 PY)",
+                             "Comparator IR (/1,000 PY)",
+                             "MDRR")
+      } else {
+        table <- preparePowerTable(row, cohortMethodAnalysis)
+        table$description <- NULL
+        colnames(table) <- c("Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (/1,000 PY)",
+                             "Comparator IR (/1,000 PY)",
+                             "MDRR")
+      }
       return(table)
     }
   })
@@ -517,7 +552,7 @@ shinyServer(function(input, output, session) {
 
   kaplanMeierPlot <- reactive({
     row <- selectedRow()
-    if (is.null(row)) {
+    if (is.null(row) || is.na(row$rr)) {
       return(NULL)
     } else {
       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
@@ -554,7 +589,7 @@ shinyServer(function(input, output, session) {
   
   output$kaplanMeierPlotPlotCaption <- renderUI({
     row <- selectedRow()
-    if (is.null(row)) {
+    if (is.null(row) || is.na(row$rr)) {
       return(NULL)
     } else {
       text <- "<strong>Figure 5.</strong> Kaplan Meier plot, showing survival as a function of time. This plot

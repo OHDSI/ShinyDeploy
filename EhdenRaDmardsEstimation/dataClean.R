@@ -1,3 +1,65 @@
+outcomeOfInterest$definition <- NULL
+outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
+
+exposureOfInterest$definition <- NULL
+exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
+
+cohortMethodAnalysis$definition <- NULL
+cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
+
+keeps <- ((cohortMethodResult$outcomeId %in% c(187, 193, 197, 203, 253) & cohortMethodResult$analysisId %in% c(7:10)) | # infections, leukopenia, pancytopenia
+            (cohortMethodResult$outcomeId %in% c(182:185) & cohortMethodResult$analysisId %in% c(1, 2, 4, 5)) | # cardiovacular
+            (cohortMethodResult$outcomeId %in% c(212, 223, 216, 218, 201) & cohortMethodResult$analysisId %in% c(3, 6)) | # oncology
+            cohortMethodResult$outcomeId %in% negativeControlOutcome$outcomeId) & # controls
+  cohortMethodResult$comparatorId == 219 # keep only methotrexate as comparator
+cohortMethodResult <- cohortMethodResult[keeps, ]
+
+toBlind <- readRDS(file.path(dataFolder, "to_blind.rds"))
+toBlind <- toBlind[, c("database_id", "analysis_id", "target_id", "comparator_id")] 
+toBlind$to_blind <- 1
+colnames(toBlind) <- SqlRender::snakeCaseToCamelCase(colnames(toBlind))
+
+cohortMethodResult <- merge(cohortMethodResult, toBlind, all.x = TRUE)
+cohortMethodResult$toBlind[is.na(cohortMethodResult$toBlind)] <- 0
+
+dbBlinds <- cohortMethodResult$databaseId %in% c("DABelgium", "DAGermany", "THIN", "PanTher", "IPCI") & cohortMethodResult$analysisId %in% c(1,4,7,9)
+
+cohortMethodResult$rr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$ci95Ub[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$ci95Lb[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$logRr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$seLogRr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$p[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedRr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedCi95Ub[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedCi95Lb[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedLogRr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedSeLogRr[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+cohortMethodResult$calibratedP[cohortMethodResult$toBlind == 1 | dbBlinds] <- NA
+
+cohortMethodResult$targetDays[dbBlinds] <- NA
+cohortMethodResult$comparatorDays[dbBlinds] <- NA
+cohortMethodResult$targetOutcomes[dbBlinds] <- NA
+cohortMethodResult$comparatorOutcomes[dbBlinds] <- NA
+
+dbBlinds <- cmFollowUpDist$databaseId %in% c("DABelgium", "DAGermany", "THIN", "PanTher", "IPCI") & cmFollowUpDist$analysisId %in% c(1,4,7,9)
+cmFollowUpDist$targetMinDays[dbBlinds] <- NA
+cmFollowUpDist$targetP10Days[dbBlinds] <- NA
+cmFollowUpDist$targetP25Days[dbBlinds] <- NA
+cmFollowUpDist$targetMedianDays[dbBlinds] <- NA
+cmFollowUpDist$targetP75Days[dbBlinds] <- NA
+cmFollowUpDist$targetP90Days[dbBlinds] <- NA
+cmFollowUpDist$targetMaxDays[dbBlinds] <- NA
+cmFollowUpDist$comparatorMinDays[dbBlinds] <- NA
+cmFollowUpDist$comparatorP10Days[dbBlinds] <- NA
+cmFollowUpDist$comparatorP25Days[dbBlinds] <- NA
+cmFollowUpDist$comparatorMedianDays[dbBlinds] <- NA
+cmFollowUpDist$comparatorP75Days[dbBlinds] <- NA
+cmFollowUpDist$comparatorP90Days[dbBlinds] <- NA
+cmFollowUpDist$comparatorMaxDays[dbBlinds] <- NA
+
+cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
+
 exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[EHDEN RA] New users of hydroxychloroquine monotherapy"] <- "Hydroxychloroquine"
 exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[EHDEN RA] New users of leflunomide monotherapy"] <- "Leflunomide"
 exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[EHDEN RA] New users of sulfasalazine monotherapy"] <- "Sulfasalazine"
@@ -18,17 +80,17 @@ outcomeOfInterest$outcomeName[outcomeOfInterest$outcomeName == "Opportunistic In
 outcomeOfInterest$outcomeName[outcomeOfInterest$outcomeName == "Serious Infection  events"] <- "Serious Infection"
 outcomeOfInterest$outcomeName[outcomeOfInterest$outcomeName == "Serious Infection, opportunistic infections and other infections of interest event"] <- "Serious, opporunistic, or other infection"
 
-outcomeOfInterest$order <- match(outcomeOfInterest$outcomeName, c("Acute myocardial infarction (any visit)",
+outcomeOfInterest$order <- match(outcomeOfInterest$outcomeName, c("Leukopenia",
+                                                                  "Pancytopenia",
+                                                                  "Serious Infection",
+                                                                  "Opportunistic Infection",
+                                                                  "Serious, opporunistic, or other infection",
+                                                                  "Acute myocardial infarction (any visit)",
                                                                   "Acute myocardial infarction (IP/ER visit)",
                                                                   "Ischemic or hemorrhagic stroke (any visit)",
                                                                   "Ischemic or hemorrhagic stroke (IP/ER visit)",
-                                                                  "Opportunistic Infection",
-                                                                  "Serious Infection",
-                                                                  "Serious, opporunistic, or other infection",
-                                                                  "Leukopenia",
-                                                                  "Pancytopenia",
-                                                                  "Leukemia",
                                                                   "Any cancer other than non-melanoma skin cancer",
+                                                                  "Leukemia",
                                                                   "Lymphoma",
                                                                   "Colorectal cancer",
                                                                   "Lung cancer"))
