@@ -9,7 +9,7 @@ cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), 
 
 keeps <- ((cohortMethodResult$outcomeId %in% c(187, 193, 197, 203, 253) & cohortMethodResult$analysisId %in% c(7:10)) | # infections, leukopenia, pancytopenia
             (cohortMethodResult$outcomeId %in% c(182:185) & cohortMethodResult$analysisId %in% c(1, 2, 4, 5)) | # cardiovacular
-            (cohortMethodResult$outcomeId %in% c(212, 223, 216, 218, 201) & cohortMethodResult$analysisId %in% c(3, 6)) | # oncology
+            (cohortMethodResult$outcomeId %in% c(212, 223, 216, 218) & cohortMethodResult$analysisId %in% c(3, 6)) | # oncology except lung cancer
             cohortMethodResult$outcomeId %in% negativeControlOutcome$outcomeId) & # controls
   cohortMethodResult$comparatorId == 219 # keep only methotrexate as comparator
 cohortMethodResult <- cohortMethodResult[keeps, ]
@@ -100,6 +100,7 @@ outcomeOfInterest$order <- NULL
 database$order <- match(database$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
 database <- database[order(database$order), ]
 database$order <- NULL
+outcomeOfInterest <- outcomeOfInterest[outcomeOfInterest$outcomeId != 201, ]
 
 cohortMethodAnalysis$description[cohortMethodAnalysis$description == "01. No prior outcome in last 365d, on-treatment with 14d surveillance window, 5 PS strata, conditional Cox PH"] <- "No prior outcome (365d), On-treatment +14d, 5 PS strata"
 cohortMethodAnalysis$description[cohortMethodAnalysis$description == "02. No prior outcome in last 365d, intent-to-treat to 1826d, 5 PS strata, conditional Cox PH"] <- "No prior outcome (365d), Intent-to-treat 5y, 5 PS strata" 
