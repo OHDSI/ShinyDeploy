@@ -89,7 +89,7 @@ parseReadmes <- function(repoTable) {
         return("")
       }
     }
-    
+    readme <- gsub("\r", "", readme)
     description <- trimws(gsub("\n([^\n]*\n=+\n|#).*", "",  gsub(".*Results explorer:[^\n]*\n *\n", "", readme)))
     status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readme))
     result <- data.frame(title = trimws(gsub("\n==.*", "", readme)),
