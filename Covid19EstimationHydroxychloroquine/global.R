@@ -2,6 +2,11 @@ source("DataPulls.R")
 source("PlotsAndTables.R")
 
 shinySettings <- list(dataFolder = "./data", blind = FALSE)
+
+#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine/CCAE/shinyData", blind = FALSE)
+
+
+
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
@@ -48,3 +53,6 @@ for (removePart in removeParts) {
 
 tcos <- unique(cohortMethodResult[, c("targetId", "comparatorId", "outcomeId")])
 tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
+
+outcomeOfInterest$definition <- NULL
+outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
