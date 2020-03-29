@@ -1,0 +1,44 @@
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 3.0.15
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_1
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		CohortID:           5895
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          5889
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        101316
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		Covariates:         32201
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		Population size:    101133
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		Cases:              463
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction		splitSeed: -5795921
+2020-03-29 00:29:37	[Main thread]	WARN	PatientLevelPrediction	personSplitter	This function is deprecated. Use 'randomSplitter' instead.
+2020-03-29 00:29:37	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Creating a 25% test and 75% train (into 3 folds) random stratified split by class
+2020-03-29 00:29:38	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Data split into 25282 test cases and 75851 train cases (25284, 25284, 25283)
+2020-03-29 00:29:38	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2020-03-29 00:30:31	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2020-03-29 00:34:03	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2020-03-29 00:34:03	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2020-03-29 00:34:03	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 3.83 mins
+2020-03-29 00:34:03	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Creating variable importance data frame
+2020-03-29 00:34:03	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Getting predictions on train set
+2020-03-29 00:34:12	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 3.03 secs
+2020-03-29 00:34:24	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 1.04 secs
+2020-03-29 00:34:24	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2020-03-29 00:34:25	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                86.01
+2020-03-29 00:34:25	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      83.95
+2020-03-29 00:34:25	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      88.07
+2020-03-29 00:34:25	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              11.11
+2020-03-29 00:34:25	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.00
+2020-03-29 00:34:34	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 1.25 intercept:         -0.00
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.11
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                75.22
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      70.07
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      80.36
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              3.29
+2020-03-29 00:34:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.00
+2020-03-29 00:34:44	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 0.88 intercept:         0.00
+2020-03-29 00:34:44	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.04
+2020-03-29 00:34:44	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2020-03-29 00:34:44
+2020-03-29 00:34:44	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2020-03-29 00:35:52	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2020-03-29 00:35:52
+2020-03-29 00:35:52	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2020-03-29 00:35:54	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\T:/covid19Studies/covid19Results/HospitalizationInSentHomePatientsResults/optumDod/Analysis_1\plpResult
+2020-03-29 00:35:54	[Main thread]	INFO	PatientLevelPrediction		Log saved to T:/covid19Studies/covid19Results/HospitalizationInSentHomePatientsResults/optumDod/Analysis_1/plplog.txt
+2020-03-29 00:35:54	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.

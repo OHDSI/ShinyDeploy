@@ -135,16 +135,30 @@ preparePowerTable <- function(mainResults, analyses) {
   table$comparatorYears <- table$comparatorDays/365.25
   table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
   table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
-  table <- table[, c("description",
-                     "targetSubjects",
-                     "comparatorSubjects",
-                     "targetYears",
-                     "comparatorYears",
-                     "targetOutcomes",
-                     "comparatorOutcomes",
-                     "targetIr",
-                     "comparatorIr",
-                     "mdrr")]
+  
+  if (nrow(table) > 1) {
+    table <- table[, c("databaseId",
+                       "targetSubjects",
+                       "comparatorSubjects",
+                       "targetYears",
+                       "comparatorYears",
+                       "targetOutcomes",
+                       "comparatorOutcomes",
+                       "targetIr",
+                       "comparatorIr",
+                       "mdrr")]
+  } else {
+    table <- table[, c("description",
+                       "targetSubjects",
+                       "comparatorSubjects",
+                       "targetYears",
+                       "comparatorYears",
+                       "targetOutcomes",
+                       "comparatorOutcomes",
+                       "targetIr",
+                       "comparatorIr",
+                       "mdrr")]
+  }
   table$targetSubjects <- formatC(table$targetSubjects, big.mark = ",", format = "d")
   table$comparatorSubjects <- formatC(table$comparatorSubjects, big.mark = ",", format = "d")
   table$targetYears <- formatC(table$targetYears, big.mark = ",", format = "d")
@@ -499,6 +513,46 @@ plotKaplanMeier <- function(kaplanMeier, targetName, comparatorName) {
   plot <- gridExtra::grid.arrange(grobs[[1]], grobs[[2]], heights = c(400, 100))
   return(plot)
 }
+
+plotForest <- function(forestData, targetName, comparatorName) {
+  breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
+  labels <- c(0.1, 0.25, paste("0.5\nFavors", targetName), 1, paste("2\nFavors", comparatorName), 4, 6, 8, 10)
+  limits <- c(forestData$database[forestData$database != "Meta-analysis"], "Meta-analysis")
+  data <- data.frame(logRr = forestData$calibratedLogRr,
+                     logLb = forestData$calibratedLogRr + qnorm(0.025) * forestData$calibratedSeLogRr,
+                     logUb = forestData$calibratedLogRr + qnorm(0.975) * forestData$calibratedSeLogRr,
+                     database = as.factor(forestData$databaseId), # might need to make factor?
+                     type = as.factor(ifelse(forestData$database == "Meta-analysis", "ma", "db")))
+  plot <- ggplot2::ggplot(data,
+                          ggplot2::aes(x = exp(logRr),
+                                       y = database,
+                                       xmin = exp(logLb),
+                                       xmax = exp(logUb),
+                                       colour = type),
+                          environment = environment()) +
+    ggplot2::geom_vline(xintercept = breaks, colour = "#AAAAAA", lty = 1, size = 0.1) +
+    ggplot2::geom_vline(xintercept = 1, colour = "#000000", lty = 1, size = 1) +
+    ggplot2::geom_errorbarh(height = 0, size = 2, alpha = 0.7) +
+    ggplot2::geom_point(shape = 18, size = 6, alpha = 0.7, ggplot2::aes(fill = type)) +
+    ggplot2::scale_colour_manual(breaks = data$type,
+                                 values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
+    ggplot2::scale_y_discrete(limits = rev(limits)) +
+    ggplot2::scale_x_continuous("Calibrated hazard ratio", trans = "log10", breaks = breaks, labels = labels) +
+    ggplot2::xlab("Calibrated hazard ratio") +
+    ggplot2::theme(text = ggplot2::element_text(size = 12),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_rect(fill = "#FAFAFA",colour = NA),
+                   panel.grid.major = ggplot2::element_line(colour = "#EEEEEE"),
+                   axis.ticks = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   #axis.title.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_text(size = 12),
+                   axis.text.x = ggplot2::element_text(size = 12),
+                   legend.position = "none")
+  return(plot)
+}
+
+
 
 judgeCoverage <- function(values) {
   ifelse(any(values < 0.9), "poor", "acceptable")

@@ -29,10 +29,15 @@ shinyUI(
                                  br(),
                                  p("This web-based application provides an interactive platform to explore all analysis results generated as part of the OHDSI LEGEND study."),
                                  p("These results are featured in:"),
-                                 p(HTML("Suchard MA, Schuemie MJ, Krumholz H, You SC, Chen RJ, Pratt N, Reich CG, Duke J, Madigan D, Hripcsak G, Ryan PB
+                                 tags$ul(
+                                   tags$li(HTML("Suchard MA, Schuemie MJ, Krumholz H, You SC, Chen RJ, Pratt N, Reich CG, Duke J, Madigan D, Hripcsak G, Ryan PB,
               <a href = \"https://doi.org/10.1016/S0140-6736(19)32317-7\">
                   Comprehensive comparative effectiveness and safety of first-line antihypertensive drug classes: a systematic, multinational, large-scale analysis.
               </a>Lancet, 2019")),
+                                   tags$li(HTML("Hripcsak G, Suchard MA, Shea S, Chen RJ, You SC, Pratt N, Madigan D, Krumholz H, Ryan PB, Schuemie MJ, <a href = \"https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2760777\">
+                  Comparison of Cardiovascular and Safety Outcomes of Chlorthalidone vs Hydrochlorothiazide to Treat Hypertension.
+              </a>JAMA Internal Medicine, 2019"))
+                                 ),
                                  h3("External links"),
                                  HTML("<ul>
                     <li>Protocol: <a href = \"https://github.com/OHDSI/Legend/blob/master/Documents/OHDSI%20Legend%20Protocol%20Hypertension%20V03.docx\">https://github.com/OHDSI/Legend/blob/master/Documents/OHDSI%20Legend%20Protocol%20Hypertension%20V03.docx</a></li>

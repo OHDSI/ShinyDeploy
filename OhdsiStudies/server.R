@@ -24,7 +24,7 @@ server <- function(input, output) {
       return type === 'display' && data != null && data.length > %s ?\n
         '<span title=\"' + data + '\">' + data.substr(0, %s) + '...</span>' : data;\n
      }"
-    options = list(pageLength = 25,
+    options = list(pageLength = 15,
                    searching = TRUE,
                    lengthChange = TRUE,
                    ordering = TRUE,

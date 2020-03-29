@@ -70,7 +70,7 @@ https://data.ohdsi.org/PhenotypeLibrarySubmit/
 
 **Cohort** - A cohort instance or phenotype instance is a set of patients for a duration of time which result from the execution of phenotype algorithm instructions against health data.
 
-**Concept Set** - A list of codes used to find records in the Common Data Model.
+**Concept Set** - A list of codes used to find records in the Common Data Model. A single phenotype algorithm or cohort definition may draw upon multiple different concept sets.
 
 **Gold Standard Phenotype Algorithm** -  A "Gold Standard" phenotype algorithm is one that is designed, evaluated, and documented with best practices. The notion of “best practice” refers to the idea that the phenotype algorithm was held to specific standards of design and evaluation and meets all of the requirements OHDSI deems necessary in order to be included into the Gold Standard Phenotype Library (these requirements are under development).
 
