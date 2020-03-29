@@ -5,8 +5,8 @@ shinyServer(function(input, output, session) {
   
   # Fixed effects ---------------------------------------------------
   
-  pivotDataFixed <- function(simParam, subset) {
-    if (length(unique(subset[, simParam])) == 1) {
+  pivotDataFixed <- function(simParam, subset, dropIfUnique = TRUE) {
+    if (dropIfUnique && length(unique(subset[, simParam])) == 1) {
       return(NULL)
     } else {
       temp <- subset
@@ -36,20 +36,76 @@ shinyServer(function(input, output, session) {
     return(vizData)
   })
   
+  filteredViolinPivotedResultsFixed <- reactive({
+    subset <- filteredResultsFixed()
+    vizData <- pivotDataFixed(input$simParamFixedRadioButton, subset, dropIfUnique = FALSE)
+    return(vizData)
+  })
+  
+  getReferenceValues <- function(metrics) {
+    ref <- data.frame()
+    if ("bias" %in% metrics) {
+      ref <- rbind(ref, data.frame(value = 0,
+                                   metric = "bias")) 
+    }
+    if ("coverage" %in% metrics) {
+      ref <- rbind(ref, data.frame(value = 0.95,
+                                   metric = "coverage")) 
+    }
+    if ("mse" %in% metrics) {
+      ref <- rbind(ref, data.frame(value = 0,
+                                   metric = "mse")) 
+    }
+    if ("nonEstimable" %in% metrics) {
+      ref <- rbind(ref, data.frame(value = 0,
+                                   metric = "nonEstimable")) 
+    }
+    return(ref)
+  }
+  
   output$mainPlotFixed  <- renderPlot({
     subset <- filteredPivotedResultsFixed()
     if (nrow(subset) == 0) {
       return(NULL)
     } else {
+      ref <- getReferenceValues(subset$metric)
       subset$type <- gsub(" ", "\n", subset$type)
-      plot <- ggplot2::ggplot(subset, ggplot2::aes(x = jitter, y = value, group = type, color = type)) +
-        ggplot2::geom_point(alpha = 0.4) +
+      plot <- ggplot2::ggplot(subset, ggplot2::aes(x = jitter, y = value, group = type, color = type)) 
+      if (nrow(ref) > 0) {
+        plot <- plot + geom_hline(aes(yintercept = value), data = ref, linetype = "dashed")
+      }
+      plot <- plot + ggplot2::geom_point(alpha = 0.4) +
         ggplot2::facet_grid(metric~simParam, scales = "free", switch = "both") +
         ggplot2::theme(legend.position = "top",
                        legend.title = ggplot2::element_blank(),
                        axis.title = ggplot2::element_blank(),
                        strip.placement = "outside",
                        strip.background = ggplot2::element_blank())
+      return(plot)
+    }
+  },
+  res = 125,
+  height = 800)
+  
+  output$mainViolinPlotFixed  <- renderPlot({
+    subset <- filteredViolinPivotedResultsFixed()
+    if (nrow(subset) == 0) {
+      return(NULL)
+    } else {
+      ref <- getReferenceValues(subset$metric)
+      subset$type <- gsub(" ", "\n", subset$type)
+      # subset <- subset[subset$simParam == input$simParamFixedRadioButton, ]
+      plot <- ggplot(subset, aes(x = factor(parameterValue), y = value, fill = type)) 
+      if (nrow(ref) > 0) {
+        plot <- plot + geom_hline(aes(yintercept = value), data = ref, linetype = "dashed")
+      }
+      plot <- plot + geom_violin(position = position_dodge(0.9), scale = "width", alpha = 0.4) +
+        facet_grid(metric~., scales = "free", switch = "both") +
+        theme(legend.position = "top",
+              legend.title = element_blank(),
+              axis.title = element_blank(),
+              strip.placement = "outside",
+              strip.background = element_blank())
       return(plot)
     }
   },
@@ -99,9 +155,20 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
     count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
-    HTML(sprintf("<strong>Figure S1.1. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
+    HTML(sprintf("<strong>Figure S1.2. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent the various simulation parameters. Color indicates the various tested
                  meta-analysis algorithms.", count))
+  })
+  
+  output$mainViolinCaptionFixed <- renderUI({
+    subset <- filteredPivotedResultsFixed()
+    if (nrow(subset) == 0) {
+      return(NULL)
+    }
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    HTML(sprintf("<strong>Figure S1.1. </strong>Violin plots showing the performance accross the %s selected simulation scenarios. The y-axes represent the various metrics 
+    as estimated over 1,000 iterations per scenario, and the x-axes represent %s. Color indicates the various tested
+                 meta-analysis algorithms.", count, input$simParamFixedRadioButton))
   })
   
   output$rankPlotFixed  <- renderPlot({
@@ -150,7 +217,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    text <- "<strong>Figure S1.2. </strong>Histograms of algorithm ranks. Each bar represents the number of simulation scenarios where the algorithm on the 
+    text <- "<strong>Figure S1.3. </strong>Histograms of algorithm ranks. Each bar represents the number of simulation scenarios where the algorithm on the 
     right achieved that rank on the metric at the top, compared to the other selected algorithms."
     if (any(grepl("coverage", subset$metric))) {
       text <- paste(text, "For coverage, algorithms were ranked by absolute difference between the estimated coverage and 95 percent.") 
@@ -160,8 +227,8 @@ shinyServer(function(input, output, session) {
   
   # Random Fx ------------------------------------------------------------------
   
-  pivotDataRandom <- function(simParam, subset) {
-    if (length(unique(subset[, simParam])) == 1) {
+  pivotDataRandom <- function(simParam, subset, dropIfUnique = TRUE) {
+    if (dropIfUnique && length(unique(subset[, simParam])) == 1) {
       return(NULL)
     } else {
       temp <- subset
@@ -191,6 +258,12 @@ shinyServer(function(input, output, session) {
     return(vizData)
   })
   
+  filteredViolinPivotedResultsRandom <- reactive({
+    subset <- filteredResultsRandom()
+    vizData <- pivotDataRandom(input$simParamRandomRadioButton, subset, dropIfUnique = FALSE)
+    return(vizData)
+  })
+  
   output$mainPlotRandom  <- renderPlot({
     subset <- filteredPivotedResultsRandom()
     if (nrow(subset) == 0) {
@@ -209,6 +282,30 @@ shinyServer(function(input, output, session) {
     }
   },
   res = 150,
+  height = 800)
+  
+  output$mainViolinPlotRandom  <- renderPlot({
+    subset <- filteredViolinPivotedResultsRandom()
+    if (nrow(subset) == 0) {
+      return(NULL)
+    } else {
+      ref <- getReferenceValues(subset$metric)
+      subset$type <- gsub(" ", "\n", subset$type)
+      plot <- ggplot(subset, aes(x = factor(parameterValue), y = value, fill = type)) 
+      if (nrow(ref) > 0) {
+        plot <- plot + geom_hline(aes(yintercept = value), data = ref, linetype = "dashed")
+      }
+      plot <- plot + geom_violin(position = position_dodge(0.9), scale = "width", alpha = 0.4) +
+        facet_grid(metric~., scales = "free", switch = "both") +
+        theme(legend.position = "top",
+              legend.title = element_blank(),
+              axis.title = element_blank(),
+              strip.placement = "outside",
+              strip.background = element_blank())
+      return(plot)
+    }
+  },
+  res = 125,
   height = 800)
   
   output$hoverInfoPlotRandom <- renderUI({
@@ -254,9 +351,20 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
     count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
-    HTML(sprintf("<strong>Figure S2.1. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
+    HTML(sprintf("<strong>Figure S2.2. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent the various simulation parameters. Color indicates the various tested
                  meta-analysis algorithms.", count))
+  })
+  
+  output$mainViolinCaptionRandom <- renderUI({
+    subset <- filteredPivotedResultsRandom()
+    if (nrow(subset) == 0) {
+      return(NULL)
+    }
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    HTML(sprintf("<strong>Figure S2.1. </strong>Violin plots showing the performance accross the %s selected simulation scenarios. The y-axes represent the various metrics 
+    as estimated over 1,000 iterations per scenario, and the x-axes represent %s. Color indicates the various tested
+                 meta-analysis algorithms.", count, input$simParamRandomRadioButton))
   })
   
   output$rankPlotRandom  <- renderPlot({
@@ -299,13 +407,13 @@ shinyServer(function(input, output, session) {
   },
   res = 110,
   height = 800)
-
+  
   output$rankCaptionRandom <- renderUI({
     subset <- filteredPivotedResultsRandom()
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    text <- "<strong>Figure S2.2. </strong>Histograms of algorithm ranks. Each bar represents the number of simulation scenarios where the algorithm on the 
+    text <- "<strong>Figure S2.3. </strong>Histograms of algorithm ranks. Each bar represents the number of simulation scenarios where the algorithm on the 
     right achieved that rank on the metric at the top, compared to the other selected algorithms."
     if (any(grepl("coverage", subset$metric))) {
       text <- paste(text, "For coverage, algorithms were ranked by absolute difference between the estimated coverage and 95 percent.") 
