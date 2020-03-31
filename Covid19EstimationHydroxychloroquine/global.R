@@ -52,6 +52,8 @@ tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
 
 outcomeOfInterest$definition <- NULL
 outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
+drops <- outcomeOfInterest$outcomeId %in% c(4, 5, 26, 27)
+outcomeOfInterest <- outcomeOfInterest[!drops, ]
 
 exposureOfInterest$definition <- NULL
 exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
