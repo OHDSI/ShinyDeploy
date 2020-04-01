@@ -431,6 +431,9 @@ shinyServer(function(input, output, session) {
                   comparatorIds = comparatorId,
                   analysisId = row$analysisId,
                   databaseId = row$databaseId)
+      if (is.null(ps)) {
+        return(NULL)
+      }
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
