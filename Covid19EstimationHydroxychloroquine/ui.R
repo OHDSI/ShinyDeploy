@@ -35,8 +35,8 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
-                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
+                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine</a></li>"),
+                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents</a></li>"),
                                  HTML("</ul>")
                         ),
                         tabPanel("Explore results",
