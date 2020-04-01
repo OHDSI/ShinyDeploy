@@ -69,6 +69,7 @@ shinyUI(
                                                               ),
                                                               tabPanel("Population characteristics",
                                                                        uiOutput("table1Caption"),
+                                                                       radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
                                                                        dataTableOutput("table1Table")),
                                                               tabPanel("Propensity model",
                                                                        div(strong("Table 3."),"Fitted propensity model, listing all coviates with non-zero coefficients. Positive coefficients indicate predictive of the target exposure."),

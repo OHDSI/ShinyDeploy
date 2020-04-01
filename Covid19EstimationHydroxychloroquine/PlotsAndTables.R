@@ -347,6 +347,52 @@ prepareTable1 <- function(balance,
   return(resultsTable)
 }
 
+prepareRawTable1 <- function(balance,
+                             percentDigits = 1,
+                             stdDiffDigits = 2,
+                             output = "latex") { 
+  if (output == "latex") {
+    space <- " "
+  } else {
+    space <- "&nbsp;"
+  }
+  
+  formatPercent <- function(x) {
+    result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
+    result <- gsub("^-", "<", result)
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  formatStdDiff <- function(x) {
+    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  resultsTable <- balance[, c("covariateName", "analysisId",
+                              "beforeMatchingMeanTreated", "beforeMatchingMeanComparator", "beforeMatchingStdDiff",
+                              "afterMatchingMeanTreated", "afterMatchingMeanComparator", "afterMatchingStdDiff")]
+  resultsTable$covariateName <- stringi::stri_trans_general(resultsTable$covariateName, "Latin-ASCII")
+  resultsTable <- resultsTable[order(abs(resultsTable$afterMatchingStdDiff), decreasing = TRUE), ]
+  
+  resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingStdDiff <- formatStdDiff(resultsTable$beforeMatchingStdDiff)
+  
+  resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
+  resultsTable <- resultsTable[-2]
+  
+  resultsTable <- rbind(c("", "Target", "", "", "Comparator", "", ""),
+                        c("Characteristic", "%", "%", "Std. diff.", "%", "%", "Std. diff"),
+                        resultsTable)
+  return(resultsTable)
+}
+
 plotPs <- function(ps, targetName, comparatorName) {
   ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, group = targetName),
               data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, group = comparatorName))
