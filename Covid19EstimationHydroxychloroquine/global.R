@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-# shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/shinyData", blind = TRUE)
+#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/PanTher/shinyData", blind = TRUE)
 shinySettings <- list(dataFolder = "./data", blind = TRUE)
 
 dataFolder <- shinySettings$dataFolder
@@ -59,3 +59,5 @@ exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
 
 cohortMethodAnalysis$definition <- NULL
 cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
+
+#source("dataClean.R")

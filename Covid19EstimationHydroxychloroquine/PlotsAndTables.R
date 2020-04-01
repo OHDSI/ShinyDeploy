@@ -387,7 +387,7 @@ prepareRawTable1 <- function(balance,
   resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
   resultsTable <- resultsTable[-2]
   
-  resultsTable <- rbind(c("", "Target", "", "", "Comparator", "", ""),
+  resultsTable <- rbind(c("", "T", "C", "", "T", "C", ""),
                         c("Characteristic", "%", "%", "Std. diff.", "%", "%", "Std. diff"),
                         resultsTable)
   return(resultsTable)
