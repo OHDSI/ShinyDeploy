@@ -21,7 +21,8 @@ database$order <- NULL
 blinds <-
   (cohortMethodResult$databaseId == "CPRD" & cohortMethodResult$targetId == 137) |
   (cohortMethodResult$databaseId == "JMDC" & cohortMethodResult$targetId == 2) |
-  (cohortMethodResult$databaseId == "DA_GERMANY" & cohortMethodResult$targetId == 137)
+  (cohortMethodResult$databaseId == "DA_GERMANY" & cohortMethodResult$targetId == 137) |
+  (cohortMethodResult$databaseId == "IMRD" & cohortMethodResult$targetId == 137)
 
 cohortMethodResult$rr[blinds] <- NA
 cohortMethodResult$ci95Ub[blinds] <- NA
