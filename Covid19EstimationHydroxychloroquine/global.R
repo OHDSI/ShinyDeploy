@@ -1,7 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "./data", blind = FALSE)
+#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/DA_GERMANY/shinyData", blind = TRUE)
+shinySettings <- list(dataFolder = "./data", blind = TRUE)
 
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
@@ -52,11 +53,11 @@ tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
 
 outcomeOfInterest$definition <- NULL
 outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
-drops <- outcomeOfInterest$outcomeId %in% c(4, 5, 26, 27)
-outcomeOfInterest <- outcomeOfInterest[!drops, ]
 
 exposureOfInterest$definition <- NULL
 exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
 
 cohortMethodAnalysis$definition <- NULL
 cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
+
+#source("dataClean.R")

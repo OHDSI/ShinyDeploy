@@ -308,7 +308,11 @@ getCovariateBalance <- function(connection,
 
 getPs <- function(connection, targetIds, comparatorIds, analysisId, databaseId) {
   file <- sprintf("preference_score_dist_t%s_c%s_%s.rds", targetIds, comparatorIds, databaseId)
-  ps <- readRDS(file.path(dataFolder, file))
+  filePath <- file.path(dataFolder, file)
+  if (!file.exists(filePath)) {
+    return(NULL)
+  }
+  ps <- readRDS(filePath)
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
   ps <- ps[ps$analysisId == analysisId, ]
   return(ps)
