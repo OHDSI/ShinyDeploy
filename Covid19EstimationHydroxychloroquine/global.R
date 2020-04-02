@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-# shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/IMRD/shinyData", blind = TRUE)
+# shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/premergedShinyData", blind = TRUE)
 shinySettings <- list(dataFolder = "./data", blind = FALSE)
 
 dataFolder <- shinySettings$dataFolder
@@ -41,7 +41,8 @@ loadFile <- function(file, removePart) {
     }
     colnames(newData) <- SqlRender::snakeCaseToCamelCase(colnames(newData))
     if ("databaseId" %in% colnames(newData)) {
-      newData$databaseId[newData$databaseId == "DA GERMANY"] <- "DA_GERMANY"
+      newData$databaseId[newData$databaseId == "DA GERMANY"] <- "DAGermany"
+      newData$databaseId[newData$databaseId == "Open Claims"] <- "OpenClaims"
     }
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)

@@ -187,6 +187,11 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
   })
+  
+  targetId <- 137
+  comparatorId <- 143
+  outcomeId <- 6
+  databases <- 
 
   output$powerTable <- renderTable({
     row <- selectedRow()
