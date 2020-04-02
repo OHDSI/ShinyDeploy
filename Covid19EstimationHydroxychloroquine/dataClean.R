@@ -11,7 +11,7 @@ cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
 
 drops <- 
   (cohortMethodResult$databaseId == "PanTher" & cohortMethodResult$analysisId == 1) | # panther on-treatment
-  (cohortMethodResult$databaseId %in% c("CCAE", "DA_GERMANY", "JMDC", "MDCD", "MDCR", "PanTher", "VA-OMOP") & cohortMethodResult$outcomeId %in% c(18, 19)) # death, what about VA?
+  (cohortMethodResult$databaseId %in% c("CCAE", "DA_GERMANY", "JMDC", "MDCD", "MDCR", "PanTher") & cohortMethodResult$outcomeId %in% c(18, 19)) # death
 cohortMethodResult <- cohortMethodResult[!drops, ]
 
 database$order <- match(database$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
