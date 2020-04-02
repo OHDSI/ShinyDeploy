@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/DA_GERMANY/shinyData", blind = TRUE)
+#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/VA-OMOP/shinyData", blind = TRUE)
 shinySettings <- list(dataFolder = "./data", blind = TRUE)
 
 dataFolder <- shinySettings$dataFolder
@@ -34,7 +34,15 @@ loadFile <- function(file, removePart) {
   camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
   if (!(tableName %in% splittableTables)) {
     newData <- readRDS(file.path(dataFolder, file))
+    if (camelCaseName == "cohortMethodResult") {
+      if (removePart != "_Meta-analysis.rds$") {
+         newData$sources <- rep("", nrow(newData))
+      }
+    }
     colnames(newData) <- SqlRender::snakeCaseToCamelCase(colnames(newData))
+    if ("databaseId" %in% colnames(newData)) {
+      newData$databaseId[newData$databaseId == "DA GERMANY"] <- "DA_GERMANY"
+    }
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
       newData <- rbind(existingData, newData)
@@ -51,13 +59,4 @@ for (removePart in removeParts) {
 tcos <- unique(cohortMethodResult[, c("targetId", "comparatorId", "outcomeId")])
 tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
 
-outcomeOfInterest$definition <- NULL
-outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
-
-exposureOfInterest$definition <- NULL
-exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
-
-cohortMethodAnalysis$definition <- NULL
-cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
-
-#source("dataClean.R")
+source("dataClean.R")

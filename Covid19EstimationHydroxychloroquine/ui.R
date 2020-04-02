@@ -47,7 +47,7 @@ shinyUI(
                                  selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[3]),
                                  selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
                                  checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)
+                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1])
                           ),
                           column(9,
                                  dataTableOutput("mainTable"),
@@ -56,8 +56,9 @@ shinyUI(
                                                               tabPanel("Power",
                                                                        uiOutput("powerTableCaption"),
                                                                        tableOutput("powerTable"),
-                                                                       uiOutput("timeAtRiskTableCaption"),
-                                                                       tableOutput("timeAtRiskTable")
+                                                                       conditionalPanel("output.isMetaAnalysis == false",
+                                                                                        uiOutput("timeAtRiskTableCaption"),
+                                                                                        tableOutput("timeAtRiskTable"))
                                                               ),
                                                               tabPanel("Attrition",
                                                                        plotOutput("attritionPlot", width = 600, height = 600),

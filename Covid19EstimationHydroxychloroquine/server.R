@@ -2,7 +2,8 @@ library(shiny)
 library(DT)
 
 mainColumns <- c("description", 
-                 "databaseId", 
+                 "databaseId",
+                 "i2",
                  "rr", 
                  "ci95Lb",
                  "ci95Ub",
@@ -14,6 +15,7 @@ mainColumns <- c("description",
 
 mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
                      "<span title=\"Data source\">Data source</span>", 
+                     "<span title=\"Between database heterogeneity\">I2</span>",
                      "<span title=\"Hazard ratio (uncalibrated)\">HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (uncalibrated)\">LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (uncalibrated)\">UB</span>", 
@@ -59,7 +61,11 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
+    results$order <- match(results$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
+    results <- results[order(results$order), ]
+    results$order <- NULL
     results <- results[order(results$analysisId), ]
+    
     if (blind) {
       results$rr <- rep(NA, nrow(results))
       results$ci95Ub <- rep(NA, nrow(results))
@@ -95,6 +101,30 @@ shinyServer(function(input, output, session) {
     return(!is.null(selectedRow()))
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
+  
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- !is.null(row) && (row$databaseId == "Meta-analysis")
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity model")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+      hideTab("detailsTabsetPanel", "Kaplan-Meier")
+      #showTab("detailsTabsetPanel", "Forest plot")
+    } else {
+      showTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity model")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Covariate balance")
+      showTab("detailsTabsetPanel", "Kaplan-Meier")
+      #hideTab("detailsTabsetPanel", "Forest plot")
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
   
   balance <- reactive({
      row <- selectedRow()
@@ -163,21 +193,56 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      table <- preparePowerTable(row, cohortMethodAnalysis)
-      table$description <- NULL
-      colnames(table) <- c("Target subjects",
-                           "Comparator subjects",
-                           "Target years",
-                           "Comparator years",
-                           "Target events",
-                           "Comparator events",
-                           "Target IR (per 1,000 PY)",
-                           "Comparator IR (per 1,000 PY)",
-                           "MDRR")
+      isMetaAnalysis <- row$databaseId == "Meta-analysis"
+      if (isMetaAnalysis) {
+        isHeterogeneous <- row$i2 > 0.4
+        targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
+        comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
+        outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
+        databaseIds <- c(unlist(strsplit(row$sources, split = ", ")), "Meta-analysis")
+        rows <- getMainResults(connection = connection,
+                               targetIds = targetId,
+                               comparatorIds = comparatorId,
+                               outcomeIds = outcomeId,
+                               databaseIds = databaseIds,
+                               analysisIds = row$analysisId)
+        table <- preparePowerTable(rows, cohortMethodAnalysis)
+        table$description <- NULL
+        table$order <- match(table$databaseId, c(table$databaseId[table$databaseId != "Meta-analysis"], "Meta-analysis"))
+        table <- table[order(table$order), ]
+        table$order <- NULL
+        
+        if (isHeterogeneous) {
+          table <- table[table$databaseId != "Meta-analysis", ]
+        }
+        
+        colnames(table) <- c("Source",
+                             "Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (/1,000 PY)",
+                             "Comparator IR (/1,000 PY)",
+                             "MDRR")
+      } else {
+        table <- preparePowerTable(row, cohortMethodAnalysis)
+        table$description <- NULL
+        colnames(table) <- c("Target subjects",
+                             "Comparator subjects",
+                             "Target years",
+                             "Comparator years",
+                             "Target events",
+                             "Comparator events",
+                             "Target IR (/1,000 PY)",
+                             "Comparator IR (/1,000 PY)",
+                             "MDRR")
+      }
       return(table)
     }
   })
-
+  
   output$timeAtRiskTableCaption <- renderUI({
     row <- selectedRow()
     if (!is.null(row)) {
@@ -267,50 +332,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # output$table1Table <- renderDataTable({
-  #   row <- selectedRow()
-  #   if (is.null(row)) {
-  #     return(NULL)
-  #   } else {
-  #     bal <- balance()
-  #     if (nrow(bal) == 0) {
-  #       return(NULL)
-  #     }
-  #     table1 <- prepareTable1(balance = bal,
-  #                             beforeLabel = paste("Before PS adjustment"),
-  #                             afterLabel = paste("After PS adjustment"))
-  # 
-  #     container <- htmltools::withTags(table(
-  #       class = 'display',
-  #       thead(
-  #         tr(
-  #           th(rowspan = 3, "Characteristic"),
-  #           th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
-  #           th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
-  #         ),
-  #         tr(
-  #           lapply(table1[1, 2:ncol(table1)], th)
-  #         ),
-  #         tr(
-  #           lapply(table1[2, 2:ncol(table1)], th)
-  #         )
-  #       )
-  #     ))
-  #     options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
-  #                     searching = FALSE,
-  #                     ordering = FALSE,
-  #                     paging = FALSE,
-  #                     bInfo = FALSE)
-  #     table1 <- datatable(table1[3:nrow(table1), ],
-  #                         options = options,
-  #                         rownames = FALSE,
-  #                         escape = FALSE,
-  #                         container = container,
-  #                         class = "stripe nowrap compact")
-  #     return(table1)
-  #   }
-  # })
-  
   output$table1Table <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -569,7 +590,7 @@ shinyServer(function(input, output, session) {
 
   kaplanMeierPlot <- reactive({
     row <- selectedRow()
-    if (is.null(row)) {
+    if (is.null(row) || is.na(row$rr)) {
       return(NULL)
     } else {
       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
