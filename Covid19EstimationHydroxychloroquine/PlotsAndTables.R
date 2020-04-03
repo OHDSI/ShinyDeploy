@@ -135,16 +135,30 @@ preparePowerTable <- function(mainResults, analyses) {
   table$comparatorYears <- table$comparatorDays/365.25
   table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
   table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
-  table <- table[, c("description",
-                     "targetSubjects",
-                     "comparatorSubjects",
-                     "targetYears",
-                     "comparatorYears",
-                     "targetOutcomes",
-                     "comparatorOutcomes",
-                     "targetIr",
-                     "comparatorIr",
-                     "mdrr")]
+  
+  if (nrow(table) > 1) {
+    table <- table[, c("databaseId",
+                       "targetSubjects",
+                       "comparatorSubjects",
+                       "targetYears",
+                       "comparatorYears",
+                       "targetOutcomes",
+                       "comparatorOutcomes",
+                       "targetIr",
+                       "comparatorIr",
+                       "mdrr")]
+  } else {
+    table <- table[, c("description",
+                       "targetSubjects",
+                       "comparatorSubjects",
+                       "targetYears",
+                       "comparatorYears",
+                       "targetOutcomes",
+                       "comparatorOutcomes",
+                       "targetIr",
+                       "comparatorIr",
+                       "mdrr")]
+  }
   table$targetSubjects <- formatC(table$targetSubjects, big.mark = ",", format = "d")
   table$comparatorSubjects <- formatC(table$comparatorSubjects, big.mark = ",", format = "d")
   table$targetYears <- formatC(table$targetYears, big.mark = ",", format = "d")
@@ -344,6 +358,52 @@ prepareTable1 <- function(balance,
   colnames(resultsTable) <- rep("", ncol(resultsTable))
   colnames(resultsTable)[2] <- beforeLabel
   colnames(resultsTable)[5] <- afterLabel
+  return(resultsTable)
+}
+
+prepareRawTable1 <- function(balance,
+                             percentDigits = 1,
+                             stdDiffDigits = 2,
+                             output = "latex") { 
+  if (output == "latex") {
+    space <- " "
+  } else {
+    space <- "&nbsp;"
+  }
+  
+  formatPercent <- function(x) {
+    result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
+    result <- gsub("^-", "<", result)
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  formatStdDiff <- function(x) {
+    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  resultsTable <- balance[, c("covariateName", "analysisId",
+                              "beforeMatchingMeanTreated", "beforeMatchingMeanComparator", "beforeMatchingStdDiff",
+                              "afterMatchingMeanTreated", "afterMatchingMeanComparator", "afterMatchingStdDiff")]
+  resultsTable$covariateName <- stringi::stri_trans_general(resultsTable$covariateName, "Latin-ASCII")
+  resultsTable <- resultsTable[order(abs(resultsTable$afterMatchingStdDiff), decreasing = TRUE), ]
+  
+  resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingStdDiff <- formatStdDiff(resultsTable$beforeMatchingStdDiff)
+  
+  resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
+  resultsTable <- resultsTable[-2]
+  
+  resultsTable <- rbind(c("", "T", "C", "", "T", "C", ""),
+                        c("Characteristic", "%", "%", "Std. diff.", "%", "%", "Std. diff"),
+                        resultsTable)
   return(resultsTable)
 }
 
@@ -825,6 +885,45 @@ drawAttritionDiagram <- function(attrition,
 
   return(p)
 }
+
+plotForest <- function(forestData, targetName, comparatorName) {
+  targetName <- "target"
+  comparatorName <- "comparator" # change when cohort names shortened
+  breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
+  labels <- c(0.1, 0.25, paste("0.5\nFavors", targetName), 1, paste("2\nFavors", comparatorName), 4, 6, 8, 10)
+  limits <- c(forestData$databaseId[forestData$databaseId != "Meta-analysis"], "Meta-analysis")
+  data <- data.frame(logRr = forestData$calibratedLogRr,
+                     logLb = forestData$calibratedLogRr + qnorm(0.025) * forestData$calibratedSeLogRr,
+                     logUb = forestData$calibratedLogRr + qnorm(0.975) * forestData$calibratedSeLogRr,
+                     databaseId = as.factor(forestData$databaseId),
+                     type = as.factor(ifelse(forestData$databaseId == "Meta-analysis", "ma", "db")))
+  plot <- ggplot2::ggplot(data,
+                          ggplot2::aes(x = exp(logRr),
+                                       y = databaseId,
+                                       xmin = exp(logLb),
+                                       xmax = exp(logUb),
+                                       colour = type),
+                          environment = environment()) +
+    ggplot2::geom_vline(xintercept = breaks, colour = "#AAAAAA", lty = 1, size = 0.1) +
+    ggplot2::geom_vline(xintercept = 1, colour = "#000000", lty = 1, size = 1) +
+    ggplot2::geom_errorbarh(height = 0, size = 2, alpha = 0.7) +
+    ggplot2::geom_point(shape = 18, size = 6, alpha = 0.8, ggplot2::aes(fill = type)) +
+    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
+    ggplot2::scale_y_discrete(limits = rev(limits)) +
+    ggplot2::scale_x_continuous("Calibrated hazard ratio", trans = "log10", breaks = breaks, labels = labels) +
+    ggplot2::xlab("Calibrated hazard ratio") +
+    ggplot2::theme(text = ggplot2::element_text(size = 12),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_rect(fill = "#FAFAFA",colour = NA),
+                   panel.grid.major = ggplot2::element_line(colour = "#EEEEEE"),
+                   axis.ticks = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_text(size = 12),
+                   axis.text.x = ggplot2::element_text(size = 12),
+                   legend.position = "none")
+  return(plot)
+}
+
 
 judgeHazardRatio <- function(hrLower, hrUpper) {
   nonZeroHazardRatio(hrLower, hrUpper, c("lower", "higher", "similar"))

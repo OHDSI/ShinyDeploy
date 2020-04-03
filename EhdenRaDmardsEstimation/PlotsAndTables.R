@@ -534,8 +534,7 @@ plotForest <- function(forestData, targetName, comparatorName) {
     ggplot2::geom_vline(xintercept = 1, colour = "#000000", lty = 1, size = 1) +
     ggplot2::geom_errorbarh(height = 0, size = 2, alpha = 0.7) +
     ggplot2::geom_point(shape = 18, size = 6, alpha = 0.7, ggplot2::aes(fill = type)) +
-    ggplot2::scale_colour_manual(breaks = data$type,
-                                 values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
+    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
     ggplot2::scale_y_discrete(limits = rev(limits)) +
     ggplot2::scale_x_continuous("Calibrated hazard ratio", trans = "log10", breaks = breaks, labels = labels) +
     ggplot2::xlab("Calibrated hazard ratio") +
@@ -1028,3 +1027,48 @@ preparePropensityModelTable <- function(model) {
   return(table)
 }
 
+prepareRawTable1 <- function(balance,
+                             percentDigits = 1,
+                             stdDiffDigits = 2,
+                             output = "latex") { 
+  if (output == "latex") {
+    space <- " "
+  } else {
+    space <- "&nbsp;"
+  }
+  
+  formatPercent <- function(x) {
+    result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
+    result <- gsub("^-", "<", result)
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  formatStdDiff <- function(x) {
+    result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
+    result <- gsub("NA", "", result)
+    result <- gsub(" ", space, result)
+    return(result)
+  }
+  
+  resultsTable <- balance[, c("covariateName", "analysisId",
+                              "beforeMatchingMeanTreated", "beforeMatchingMeanComparator", "beforeMatchingStdDiff",
+                              "afterMatchingMeanTreated", "afterMatchingMeanComparator", "afterMatchingStdDiff")]
+  resultsTable$covariateName <- stringi::stri_trans_general(resultsTable$covariateName, "Latin-ASCII")
+  resultsTable <- resultsTable[order(abs(resultsTable$afterMatchingStdDiff), decreasing = TRUE), ]
+  
+  resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$beforeMatchingStdDiff <- formatStdDiff(resultsTable$beforeMatchingStdDiff)
+  
+  resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800])
+  resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
+  resultsTable <- resultsTable[-2]
+  
+  resultsTable <- rbind(c("", "Target", "", "", "Comparator", "", ""),
+                        c("Characteristic", "%", "%", "Std. diff.", "%", "%", "Std. diff"),
+                        resultsTable)
+  return(resultsTable)
+}
