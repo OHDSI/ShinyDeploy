@@ -43,11 +43,11 @@ shinyUI(
 
                         fluidRow(
                           column(3,
-                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName)),
-                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[3]),
-                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1])
+                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
+                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
+                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId, width = '100%'),
+                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1], width = '100%')
                           ),
                           column(9,
                                  dataTableOutput("mainTable"),
