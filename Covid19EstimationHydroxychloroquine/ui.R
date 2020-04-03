@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("OHDSI COVID-19 Studyathon: Hydroxychloroquine population-level effect estimation", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Hydroxychloroquine safety as an antiviral prophylaxis in light of potential wide-spread use in COVID-19: a multinational, large-scale network cohort study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
