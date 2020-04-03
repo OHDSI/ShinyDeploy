@@ -11,7 +11,7 @@ cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
 
 drops <- 
   (cohortMethodResult$databaseId == "PanTher" & cohortMethodResult$analysisId == 1) | # panther on-treatment
-  (cohortMethodResult$databaseId %in% c("CCAE", "DAGermany", "JMDC", "MDCD", "MDCR", "PanTher", "OpenClaims") & cohortMethodResult$outcomeId %in% c(18, 19)) # death
+  (cohortMethodResult$databaseId %in% c("CCAE", "DAGermany", "JMDC", "MDCD", "MDCR", "PanTher", "OpenClaims", "AmbEMR") & cohortMethodResult$outcomeId %in% c(18, 19)) # death
   # drop outcomes in databases with no IP here
 cohortMethodResult <- cohortMethodResult[!drops, ]
 
