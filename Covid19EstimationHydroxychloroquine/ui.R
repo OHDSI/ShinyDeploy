@@ -110,6 +110,13 @@ shinyUI(
                                                                            downloadButton("downloadKaplanMeierPlotPng", label = "Download plot as PNG"),
                                                                            downloadButton("downloadKaplanMeierPlotPdf", label = "Download plot as PDF")
                                                                        )),
+                                                              tabPanel("Forest plot",
+                                                                       uiOutput("hoverInfoForestPlot"),
+                                                                       plotOutput("forestPlot", height = 450, 
+                                                                                  hover = hoverOpts("plotHoverForestPlot", delay = 100, delayType = "debounce")),
+                                                                       uiOutput("forestPlotCaption"),
+                                                                       div(style = "display: inline-block;vertical-align:top;")
+                                                              ),
                                                               tabPanel("Subgroups",
                                                                        uiOutput("subgroupTableCaption"),
                                                                        dataTableOutput("subgroupTable")

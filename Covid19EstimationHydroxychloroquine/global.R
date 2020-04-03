@@ -1,7 +1,7 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-# shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/premergedShinyData", blind = TRUE)
+# shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/SIDIAP/shinyData", blind = TRUE)
 shinySettings <- list(dataFolder = "./data", blind = FALSE)
 
 dataFolder <- shinySettings$dataFolder
@@ -43,6 +43,8 @@ loadFile <- function(file, removePart) {
     if ("databaseId" %in% colnames(newData)) {
       newData$databaseId[newData$databaseId == "DA GERMANY"] <- "DAGermany"
       newData$databaseId[newData$databaseId == "Open Claims"] <- "OpenClaims"
+      newData$databaseId[newData$databaseId == "sidiap17"] <- "SIDIAP"
+      newData$databaseId[newData$databaseId == "VA-OMOP"] <- "VA"
     }
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)

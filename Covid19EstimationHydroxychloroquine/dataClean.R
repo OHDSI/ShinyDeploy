@@ -12,6 +12,7 @@ cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
 drops <- 
   (cohortMethodResult$databaseId == "PanTher" & cohortMethodResult$analysisId == 1) | # panther on-treatment
   (cohortMethodResult$databaseId %in% c("CCAE", "DAGermany", "JMDC", "MDCD", "MDCR", "PanTher", "OpenClaims") & cohortMethodResult$outcomeId %in% c(18, 19)) # death
+  # drop outcomes in databases with no IP here
 cohortMethodResult <- cohortMethodResult[!drops, ]
 
 database$order <- match(database$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
@@ -22,7 +23,8 @@ blinds <-
   (cohortMethodResult$databaseId == "CPRD" & cohortMethodResult$targetId == 137) |
   (cohortMethodResult$databaseId == "JMDC" & cohortMethodResult$targetId == 2) |
   (cohortMethodResult$databaseId == "DAGermany" & cohortMethodResult$targetId == 137) |
-  (cohortMethodResult$databaseId == "IMRD" & cohortMethodResult$targetId == 137)
+  (cohortMethodResult$databaseId == "IMRD" & cohortMethodResult$targetId == 137) |
+  (cohortMethodResult$databaseId == "SIDIAP" & cohortMethodResult$targetId %in% c(137, 2))
 
 cohortMethodResult$rr[blinds] <- NA
 cohortMethodResult$ci95Ub[blinds] <- NA
