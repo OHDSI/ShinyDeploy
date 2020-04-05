@@ -35,6 +35,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
+                                        shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")),
                                         shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
@@ -54,6 +55,11 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         ),
                                         
                                         # First tab content
+                                        shinydashboard::tabItem(tabName = "Description",
+                                                                shiny::includeMarkdown(path = "./www/shinyDescription.md")
+                                                                
+                                        ),
+                                        
                                         shinydashboard::tabItem(tabName = "Summary",
                                                                 
                                                                 shiny::fluidRow(
@@ -137,9 +143,9 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                                                                 $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
                                                                                                                                                 }, 50);})
                                                                                                                                                 "))
-                                                                                                                 )
+                                                                                             )
                                                                                              
-                                                                                             ),
+                                                                               ),
                                                                                
                                                                                
                                                                                shiny::column(width = 8,
@@ -161,10 +167,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                                  #infoBoxOutput("performanceBox"),
                                                                                              )
                                                                                )
-                                                                               )
+                                                                             )
                                                                              
                                                                              
-                                                                               ),
+                                                                    ),
                                                                     tabPanel("Discrimination", 
                                                                              
                                                                              shiny::fluidRow(
@@ -207,7 +213,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('demo')))
                                                                              )
                                                                     )
-                                                                                             ))),
+                                                                  ))),
                                         
                                         # 3rd tab
                                         shinydashboard::tabItem(tabName = "Model", 
@@ -236,6 +242,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         )
                                         
                                         
-                                                                )
+                                      )
                                     )
-                                    )
+)

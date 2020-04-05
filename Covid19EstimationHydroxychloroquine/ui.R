@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("OHDSI COVID-19 Studyathon: Hydroxychloroquine population-level effect estimation", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Hydroxychloroquine safety as an antiviral prophylaxis in light of potential wide-spread use in COVID-19: a multinational, large-scale network cohort study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -35,19 +35,19 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
-                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
+                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine</a></li>"),
+                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents</a></li>"),
                                  HTML("</ul>")
                         ),
                         tabPanel("Explore results",
 
                         fluidRow(
                           column(3,
-                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName)),
-                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[3]),
-                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)
+                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
+                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
+                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId, width = '100%'),
+                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1], width = '100%')
                           ),
                           column(9,
                                  dataTableOutput("mainTable"),
@@ -56,8 +56,9 @@ shinyUI(
                                                               tabPanel("Power",
                                                                        uiOutput("powerTableCaption"),
                                                                        tableOutput("powerTable"),
-                                                                       uiOutput("timeAtRiskTableCaption"),
-                                                                       tableOutput("timeAtRiskTable")
+                                                                       conditionalPanel("output.isMetaAnalysis == false",
+                                                                                        uiOutput("timeAtRiskTableCaption"),
+                                                                                        tableOutput("timeAtRiskTable"))
                                                               ),
                                                               tabPanel("Attrition",
                                                                        plotOutput("attritionPlot", width = 600, height = 600),
@@ -69,6 +70,7 @@ shinyUI(
                                                               ),
                                                               tabPanel("Population characteristics",
                                                                        uiOutput("table1Caption"),
+                                                                       radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
                                                                        dataTableOutput("table1Table")),
                                                               tabPanel("Propensity model",
                                                                        div(strong("Table 3."),"Fitted propensity model, listing all coviates with non-zero coefficients. Positive coefficients indicate predictive of the target exposure."),
@@ -108,6 +110,13 @@ shinyUI(
                                                                            downloadButton("downloadKaplanMeierPlotPng", label = "Download plot as PNG"),
                                                                            downloadButton("downloadKaplanMeierPlotPdf", label = "Download plot as PDF")
                                                                        )),
+                                                              tabPanel("Forest plot",
+                                                                       uiOutput("hoverInfoForestPlot"),
+                                                                       plotOutput("forestPlot", height = 450, 
+                                                                                  hover = hoverOpts("plotHoverForestPlot", delay = 100, delayType = "debounce")),
+                                                                       uiOutput("forestPlotCaption"),
+                                                                       div(style = "display: inline-block;vertical-align:top;")
+                                                              ),
                                                               tabPanel("Subgroups",
                                                                        uiOutput("subgroupTableCaption"),
                                                                        dataTableOutput("subgroupTable")
