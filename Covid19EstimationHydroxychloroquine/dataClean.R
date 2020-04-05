@@ -25,6 +25,7 @@ blinds <-
   (cohortMethodResult$databaseId == "DAGermany" & cohortMethodResult$targetId == 137) |
   (cohortMethodResult$databaseId == "IMRD" & cohortMethodResult$targetId == 137) |
   (cohortMethodResult$databaseId == "SIDIAP" & cohortMethodResult$targetId %in% c(137, 2))
+  (cohortMethodResult$databaseId == "ICPI" & cohortMethodResult$targetId %in% c(137, 2))
 
 cohortMethodResult$rr[blinds] <- NA
 cohortMethodResult$ci95Ub[blinds] <- NA

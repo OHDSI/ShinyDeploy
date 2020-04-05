@@ -1,7 +1,6 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-#shinySettings <- list(dataFolder = "G:/StudyResults/Covid19EstimationHydroxychloroquine_2/IPCI/shinyData", blind = TRUE)
 shinySettings <- list(dataFolder = "./data", blind = FALSE)
 
 dataFolder <- shinySettings$dataFolder
