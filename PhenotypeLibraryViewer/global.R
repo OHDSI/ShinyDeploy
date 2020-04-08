@@ -13,9 +13,10 @@ library(tidyr)
 library(visNetwork)
 
 # Read index file
-open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
-gold <- readRDS(con)
-close(con)
+#open(con <- url("https://raw.githubusercontent.com/OHDSI/PhenotypeLibrary/master/Gold%20Standard/Index.rds"))
+#gold <- readRDS(con)
+#close(con)
+gold <- readRDS(file.path("data","Index.rds"))
 
 # Unpack into the phenotype and validation datasets
 phe <- gold$Phenotype

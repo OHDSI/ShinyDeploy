@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Safety of hydroxychloroquine, alone and in combination with azithromycin, in light of rapid wide-spread use for COVID-19: a multinational, network cohort and self-controlled case series study", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Safety of hydroxychloroquine with azythromycin: a multi-national study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
