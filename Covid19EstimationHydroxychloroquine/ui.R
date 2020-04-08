@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("OHDSI COVID-19 Studyathon: Hydroxychloroquine population-level effect estimation", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Safety of hydroxychloroquine with azythromycin: a multi-national study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -25,13 +25,13 @@ shinyUI(
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
                                  HTML("<br/>"),
-                                 div(p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic. The preliminary research results on this web-based application are from a retrospective, real-world, observational study in support of this activity and will subsequently be submitted to a peer-reviewed, scientific journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
+                                 div(p("The Observational Health Data Sciences and Informatics (OHDSI) international community hosted a COVID-19 virtual study-a-thon over March 26-29, 2020 to collaboratively generate evidence to inform healthcare decision-making in response to the current global pandemic. The preliminary research results on this web-based application are from a retrospective, real-world, observational study in support of this activity and will subsequently be submitted to a peer-reviewed, scientific journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p>Below is the abstract of the manuscript that summarizes the findings:</p>"),
-                                 HTML("<p><strong>Background: </strong></p>"),
-                                 HTML("<p><strong>Methods: </strong></p>"),
-                                 HTML("<p><strong>Results: </strong></p>"),
-                                 HTML("<p><strong>Discussion: </strong></p>"),
+                                 HTML("<p><strong>Background:</strong> Hydroxychloroquine has recently received Emergency Use Authorization by the FDA and is currently prescribed in combination with azithromycin for COVID-19 pneumonia. We studied the safety of hydroxychloroquine, alone and in combination with azithromycin.</strong></p>"),
+                                 HTML("<p><strong>Methods:</strong> New user cohort studies were conducted including 16 severe adverse events (SAEs). Rheumatoid arthritis patients aged 18+ and initiating hydroxychloroquine were compared to those initiating sulfasalazine and followed up over 30 days. Self-controlled case series (SCCS) were conducted to further establish safety in wider populations. Separately, SAEs associated  with hydroxychloroquine-azithromycin (compared to hydroxychloroquine-amoxicillin) were studied. Data comprised 14 sources of claims data or electronic medical records from Germany, Japan, Netherlands, Spain, UK, and USA. Propensity score stratification and calibration using negative control outcomes were used to address confounding. Cox models were fitted to estimate calibrated hazard ratios (CalHRs) according to drug use. Estimates were pooled where I2<40%.</p>"),
+                                 HTML("<p><strong>Results:</strong> Overall, 956,374 and 310,350 users of hydroxychloroquine and sulfasalazine, and 323,122 and 351,956 users of hydroxychloroquine-azithromycin and hydroxychloroquine-amoxicillin were included. No excess risk of SAEs was identified when 30-day hydroxychloroquine and sulfasalazine use were compared. SCCS confirmed these findings. However, when azithromycin was added to hydroxychloroquine, we observed an increased risk of 30-day cardiovascular mortality (CalHR 2.19 [95% CI 1.22-3.94]), chest pain/angina (CalHR 1.15 [95% CI 1.05-1.26]), and heart failure (CalHR 1.22 [95% CI 1.02-1.45]).</p>"),
+                                 HTML("<p><strong>Conclusions:</strong> Short-term hydroxychloroquine treatment is safe, but addition of azithromycin may induce heart failure and cardiovascular mortality, potentially due to synergistic effects on QT length. We call for caution if such combination is to be used in the management of Covid-19.</p>"),
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
@@ -43,11 +43,11 @@ shinyUI(
 
                         fluidRow(
                           column(3,
-                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName)),
-                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[3]),
-                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1])
+                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
+                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
+                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId, width = '100%'),
+                                 checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1], width = '100%')
                           ),
                           column(9,
                                  dataTableOutput("mainTable"),

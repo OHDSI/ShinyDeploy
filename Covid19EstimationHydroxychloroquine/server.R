@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
     results$order <- match(results$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
     results <- results[order(results$order), ]
     results$order <- NULL
-    results <- results[order(results$analysisId), ]
+    results <- results[order(results$analysisId, decreasing = TRUE), ]
     
     if (blind) {
       results$rr <- rep(NA, nrow(results))
@@ -188,11 +188,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  targetId <- 137
-  comparatorId <- 143
-  outcomeId <- 6
-  databases <- 
-
   output$powerTable <- renderTable({
     row <- selectedRow()
     if (is.null(row)) {

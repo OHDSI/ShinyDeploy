@@ -48,3 +48,15 @@ for (removePart in removeParts) {
 
 tcos <- unique(cohortMethodResult[, c("targetId", "comparatorId", "outcomeId")])
 tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
+
+outcomeOfInterest$definition <- NULL
+outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
+outcomeOfInterest <- outcomeOfInterest[!(outcomeOfInterest$outcomeId %in% c(4, 26, 27)), ]
+
+exposureOfInterest$definition <- NULL
+exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
+
+cohortMethodAnalysis$definition <- NULL
+cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
+
+

@@ -135,7 +135,6 @@ preparePowerTable <- function(mainResults, analyses) {
   table$comparatorYears <- table$comparatorDays/365.25
   table$targetIr <- 1000 * table$targetOutcomes/table$targetYears
   table$comparatorIr <- 1000 * table$comparatorOutcomes/table$comparatorYears
-  
   if (nrow(table) > 1) {
     table <- table[, c("databaseId",
                        "targetSubjects",
@@ -1069,4 +1068,5 @@ preparePropensityModelTable <- function(model) {
   colnames(table) <- c("Beta", "Covariate")
   return(table)
 }
+
 
