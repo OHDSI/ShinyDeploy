@@ -1,11 +1,10 @@
 #============  DYNAMIC PLOTS ======================
 #++++++++++++++++++++++++++++++++++++++++++++++++++
 
-plotShiny <- function(eval, pointOfInterest){
+plotShiny <- function(eval){
   
   data <- eval$thresholdSummary[eval$thresholdSummary$Eval%in%c('test','validation'),]
-  # pointOfInterest # this is a threshold
-  pointOfInterest <- data[pointOfInterest,]
+
   rocobject <- plotly::plot_ly(x = 1-c(0,data$specificity,1)) %>%
     plotly::add_lines(y = c(1,data$sensitivity,0),name = "hv", 
                       text = paste('Risk Threshold:',c(0,data$predictionThreshold,1)),
@@ -15,12 +14,6 @@ plotShiny <- function(eval, pointOfInterest){
     plotly::add_trace(x= c(0,1), y = c(0,1),mode = 'lines',
                       line = list(dash = "dash"), color = I('black'),
                       type='scatter') %>%
-    plotly::add_trace(x= 1-pointOfInterest$specificity, y=pointOfInterest$sensitivity, 
-                      mode = 'markers', symbols='x') %>%  # change the colour of this!
-    plotly::add_lines(x=c(1-pointOfInterest$specificity, 1-pointOfInterest$specificity),
-                      y = c(0,1),
-                      line = list(dash ='solid',
-                                  color = 'black')) %>%
     plotly::layout(title = "ROC Plot",
                    xaxis = list(title = "1-specificity"),
                    yaxis = list (title = "Sensitivity"),
@@ -36,13 +29,7 @@ plotShiny <- function(eval, pointOfInterest){
     plotly::add_trace(x= c(0,1), y = c(popAv,popAv),mode = 'lines',
                       line = list(dash = "dash"), color = I('red'),
                       type='scatter') %>%
-    plotly::add_trace(x= pointOfInterest$sensitivity, y=pointOfInterest$positivePredictiveValue, 
-                      mode = 'markers', symbols='x') %>%  
-    plotly::add_lines(x=c(pointOfInterest$sensitivity, pointOfInterest$sensitivity),
-                      y = c(0,1),
-                      line = list(dash ='solid',
-                                  color = 'black')) %>%
-    plotly::layout(title = "PR Plot",
+   plotly::layout(title = "PR Plot",
                    xaxis = list(title = "Recall"),
                    yaxis = list (title = "Precision"),
                    showlegend = FALSE)
@@ -54,28 +41,28 @@ plotShiny <- function(eval, pointOfInterest){
                       line = list(shape = "hv",
                                   color = 'rgb(22, 96, 167)'),
                       fill = 'tozeroy') %>%
-    plotly::add_trace(x= pointOfInterest$predictionThreshold, y=pointOfInterest$f1Score, 
-                      mode = 'markers', symbols='x') %>%  
-    plotly::add_lines(x=c(pointOfInterest$predictionThreshold, pointOfInterest$predictionThreshold),
-                      y = c(0,1),
-                      line = list(dash ='solid',
-                                  color = 'black')) %>%
     plotly::layout(title = "F1-Score Plot",
                    xaxis = list(title = "Prediction Threshold"),
                    yaxis = list (title = "F1-Score"),
                    showlegend = FALSE)
-  # create 2x2 table with TP, FP, TN, FN and threshold
+  
+  return(list(roc = rocobject,
+              pr = probject,
+              f1score = f1object))
+}
+
+getORC <- function(eval, pointOfInterest){
+  
+  data <- eval$thresholdSummary[eval$thresholdSummary$Eval%in%c('test','validation'),]
+  pointOfInterest <- data[pointOfInterest,]
+  
   threshold <- pointOfInterest$predictionThreshold
   TP <- pointOfInterest$truePositiveCount
   TN <- pointOfInterest$trueNegativeCount
   FP <- pointOfInterest$falsePositiveCount
   FN <- pointOfInterest$falseNegativeCount
   preferenceThreshold <- pointOfInterest$preferenceThreshold
-  
-  return(list(roc = rocobject,
-              pr = probject,
-              f1score = f1object,
-              threshold = threshold, prefthreshold=preferenceThreshold,
+  return(list(threshold = threshold, prefthreshold=preferenceThreshold,
               TP = TP, TN=TN,
               FP= FP, FN=FN))
 }
@@ -105,6 +92,10 @@ plotCovariateSummary <- function(covariateSummary){
   # color based on analysis id
   covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ' ')[[1]][1]))
   
+  covariateSummary$times <- sapply(sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), 'during day ')[[1]][2])),function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][1]))
+  covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][2]))
+  
+  
   l <- list(x = 0.01, y = 1,
             font = list(
               family = "sans-serif",
@@ -114,10 +105,6 @@ plotCovariateSummary <- function(covariateSummary){
             bordercolor = "#FFFFFF",
             borderwidth = 1)
   
-  #covariateSummary$annotation <- sapply(covariateSummary$covariateName, getName)
-  covariateSummary$annotation <- covariateSummary$covariateName
-  
-  
   ind <- covariateSummary$CovariateMeanWithNoOutcome <=1 & covariateSummary$CovariateMeanWithOutcome <= 1
   # create two plots -1 or less or g1
   binary <- plotly::plot_ly(x = covariateSummary$CovariateMeanWithNoOutcome[ind],
@@ -125,7 +112,10 @@ plotCovariateSummary <- function(covariateSummary){
                             showlegend = F) %>%
     plotly::add_markers(y = covariateSummary$CovariateMeanWithOutcome[ind],
                         color=factor(covariateSummary$color[ind]),
-                        text = paste(covariateSummary$annotation[ind]),
+                        hoverinfo = 'text',
+                        text = ~paste('</br> Type: ', covariateSummary$color[ind],
+                                      '</br> Time: ', covariateSummary$times[ind],
+                                      '</br> Name: ', covariateSummary$desc[ind]),
                         showlegend = T
     ) %>%
     plotly::add_trace(x= c(0,1), y = c(0,1),mode = 'lines',
@@ -136,14 +126,18 @@ plotCovariateSummary <- function(covariateSummary){
                    range = c(0, 1)),
       yaxis = list(title = "Prevalance in persons with outcome",
                    range = c(0, 1)),
-      legend = l, showlegend = T)
+      #legend = l, showlegend = T,
+      legend = list(orientation = 'h', y = -0.3), showlegend = T)
   
   if(sum(!ind)>0){
     maxValue <- max(c(covariateSummary$CovariateMeanWithNoOutcome[!ind],
                       covariateSummary$CovariateMeanWithOutcome[!ind]), na.rm = T)
     meas <- plotly::plot_ly(x = covariateSummary$CovariateMeanWithNoOutcome[!ind] ) %>%
       plotly::add_markers(y = covariateSummary$CovariateMeanWithOutcome[!ind],
-                          text = paste(covariateSummary$annotation[!ind])) %>%
+                          hoverinfo = 'text',
+                          text = ~paste('</br> Type: ', covariateSummary$color[!ind],
+                                        '</br> Time: ', covariateSummary$times[!ind],
+                                        '</br> Name: ', covariateSummary$desc[!ind])) %>%
       plotly::add_trace(x= c(0,maxValue), y = c(0,maxValue),mode = 'lines',
                         line = list(dash = "dash"), color = I('black'),
                         type='scatter', showlegend = FALSE) %>%
@@ -163,8 +157,12 @@ plotCovariateSummary <- function(covariateSummary){
 
 
 
+# adding plots from PLP temporarily as shiny deploy doesnt have PatientLevelPrediction
 
 plotPredictedPDF <- function(evaluation, type='test', fileName=NULL){
+  if(is.null(evaluation$thresholdSummary$Eval)){
+    evaluation$thresholdSummary$Eval <- type
+  }
   ind <- evaluation$thresholdSummary$Eval==type
   
   x<- evaluation$thresholdSummary[ind,c('predictionThreshold','truePositiveCount','trueNegativeCount',
@@ -195,10 +193,10 @@ plotPredictedPDF <- function(evaluation, type='test', fileName=NULL){
              data.frame(variable=rep('No outcome',length(vals2)), value=vals2)
   )
   
-  plot <- ggplot2::ggplot(x, ggplot2::aes(x=x$value,
-                                          group=x$variable,
-                                          fill=x$variable)) +
-    ggplot2::geom_density(ggplot2::aes(x=x$value, fill=x$variable), alpha=.3) +
+  plot <- ggplot2::ggplot(x, ggplot2::aes(x=value,
+                                          group=variable,
+                                          fill=variable)) +
+    ggplot2::geom_density(ggplot2::aes(x=value, fill=variable), alpha=.3) +
     ggplot2::scale_x_continuous("Prediction Threshold")+#, limits=c(0,1)) +
     ggplot2::scale_y_continuous("Density") + 
     ggplot2::guides(fill=ggplot2::guide_legend(title="Class"))
@@ -209,7 +207,12 @@ plotPredictedPDF <- function(evaluation, type='test', fileName=NULL){
 }
 
 
+
+
 plotPreferencePDF <- function(evaluation, type='test', fileName=NULL){
+  if(is.null(evaluation$thresholdSummary$Eval)){
+    evaluation$thresholdSummary$Eval <- type
+  }
   ind <- evaluation$thresholdSummary$Eval==type
   
   x<- evaluation$thresholdSummary[ind,c('preferenceThreshold','truePositiveCount','trueNegativeCount',
@@ -240,10 +243,10 @@ plotPreferencePDF <- function(evaluation, type='test', fileName=NULL){
              data.frame(variable=rep('No outcome',length(vals2)), value=vals2)
   )
   
-  plot <- ggplot2::ggplot(x, ggplot2::aes(x=x$value,
-                                          group=x$variable,
-                                          fill=x$variable)) +
-    ggplot2::geom_density(ggplot2::aes(x=x$value, fill=x$variable), alpha=.3) +
+  plot <- ggplot2::ggplot(x, ggplot2::aes(x=value,
+                                          group=variable,
+                                          fill=variable)) +
+    ggplot2::geom_density(ggplot2::aes(x=value, fill=variable), alpha=.3) +
     ggplot2::scale_x_continuous("Preference Threshold")+#, limits=c(0,1)) +
     ggplot2::scale_y_continuous("Density") + 
     ggplot2::guides(fill=ggplot2::guide_legend(title="Class"))
@@ -254,20 +257,22 @@ plotPreferencePDF <- function(evaluation, type='test', fileName=NULL){
 }
 
 
-
-
 plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
   if (!all(is.na(evaluation$demographicSummary$averagePredictedProbability))){
+    if(is.null(evaluation$demographicSummary$Eval)){
+      evaluation$demographicSummary$Eval <- type
+    }
     ind <- evaluation$demographicSummary$Eval==type
     x<- evaluation$demographicSummary[ind,colnames(evaluation$demographicSummary)%in%c('ageGroup','genGroup','averagePredictedProbability',
                                                                                        'PersonCountAtRisk', 'PersonCountWithOutcome')]
     
+    
     # remove -1 values:
+    x$averagePredictedProbability[is.na(x$averagePredictedProbability)] <- 0
     x <- x[x$PersonCountWithOutcome != -1,]
     if(nrow(x)==0){
       return(NULL)
     }
-    # end remove -1 values
     
     x$observed <- x$PersonCountWithOutcome/x$PersonCountAtRisk
     
@@ -288,7 +293,7 @@ plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
     x <- reshape2::melt(x, id.vars=c('ageGroup','genGroup'))
     
     # 1.96*StDevPredictedProbability
-    ci <- evaluation$demographicSummary[,colnames(evaluation$demographicSummary)%in%c('ageGroup','genGroup','averagePredictedProbability','StDevPredictedProbability')]
+    ci <- evaluation$demographicSummary[ind,colnames(evaluation$demographicSummary)%in%c('ageGroup','genGroup','averagePredictedProbability','StDevPredictedProbability')]
     ci$StDevPredictedProbability[is.na(ci$StDevPredictedProbability)] <- 1
     ci$lower <- ci$averagePredictedProbability-1.96*ci$StDevPredictedProbability
     ci$lower[ci$lower <0] <- 0
@@ -301,10 +306,14 @@ plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
                                    " 45-49"," 50-54"," 55-59"," 60-64"," 65-69"," 70-74",
                                    " 75-79"," 80-84"," 85-89"," 90-94"," 95-99","-1"),ordered=TRUE)
     
+    
+    
     x <- merge(x, ci[,c('ageGroup','genGroup','lower','upper')], by=c('ageGroup','genGroup'))
+    x <- x[!is.na(x$value),]
     
     plot <- ggplot2::ggplot(data=x, 
-                            ggplot2::aes(x=age, group=variable*genGroup)) +
+                            ggplot2::aes(x=age, 
+                                         group=interaction(variable,genGroup))) +
       
       ggplot2::geom_line(ggplot2::aes(y=value, group=variable,
                                       color=variable,
@@ -312,7 +321,7 @@ plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
       ggplot2::geom_ribbon(data=x[x$variable!='observed',],
                            ggplot2::aes(ymin=lower, ymax=upper
                                         , group=genGroup), 
-                           fill="blue", alpha="0.2") +
+                           fill="blue", alpha=0.2) +
       ggplot2::facet_grid(.~ genGroup, scales = "free") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
       #ggplot2::coord_flip() +
@@ -331,88 +340,11 @@ plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
 }
 
 
-#=============
-# CALIBRATIONSUMMARY PLOTS 
-#=============
-#' Plot the calibration
-#'
-#' @details
-#' Create a plot showing the calibration
-#' #'
-#' @param evaluation            A prediction object as generated using the
-#'                              \code{\link{runPlp}} function.
-#' @param type                  options: 'train' or test'
-#' @param fileName              Name of the file where the plot should be saved, for example
-#'                              'plot.png'. See the function \code{ggsave} in the ggplot2 package for
-#'                              supported file formats.
-#'
-#' @return
-#' A ggplot object. Use the \code{\link[ggplot2]{ggsave}} function to save to file in a different
-#' format.
-#'
-#' @export
-plotSparseCalibration <- function(evaluation, type='test', fileName=NULL){
-  ind <- evaluation$calibrationSummary$Eval==type
-  
-  x<- evaluation$calibrationSummary[ind,c('averagePredictedProbability','observedIncidence')]
-  maxVal <- max(x$averagePredictedProbability,x$observedIncidence)
-  model <- stats::lm(observedIncidence~averagePredictedProbability, data=x)
-  res <- model$coefficients
-  names(res) <- c('Intercept','Gradient')
-  
-  # confidence int
-  interceptConf <- stats::confint(model)[1,]
-  gradientConf <- stats::confint(model)[2,]
-  
-  cis <- data.frame(lci = interceptConf[1]+seq(0,1,length.out = nrow(x))*gradientConf[1],
-                    uci = interceptConf[2]+seq(0,1,length.out = nrow(x))*gradientConf[2],
-                    x=seq(0,1,length.out = nrow(x)))
-  
-  x <- cbind(x, cis)
-  # TODO: CHECK INPUT
-  plot <- ggplot2::ggplot(data=x,
-                          ggplot2::aes(x=averagePredictedProbability, y=observedIncidence
-                          )) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=lci,ymax=uci, x=x), 
-                         fill="blue", alpha="0.2") +
-    ggplot2::geom_point(size=1, color='darkblue') +
-    ggplot2::coord_cartesian(ylim = c(0, maxVal), xlim =c(0,maxVal)) +
-    ggplot2::geom_abline(intercept = 0, slope = 1, linetype = 2, size=1,
-                         show.legend = TRUE) +
-    ggplot2::geom_abline(intercept = res['Intercept'], slope = res['Gradient'],
-                         linetype = 1,show.legend = TRUE,
-                         color='darkblue') +
-    ggplot2::scale_x_continuous("Average Predicted Probability") +
-    ggplot2::scale_y_continuous("Observed Fraction With Outcome")
-  
-  
-  
-  if (!is.null(fileName))
-    ggplot2::ggsave(fileName, plot, width = 5, height = 3.5, dpi = 400)
-  return(plot)
-}
 
-#=============
-# CALIBRATIONSUMMARY PLOTS 2
-#=============
-#' Plot the conventional calibration
-#'
-#' @details
-#' Create a plot showing the calibration
-#' #'
-#' @param evaluation            A prediction object as generated using the
-#'                              \code{\link{runPlp}} function.
-#' @param type                  options: 'train' or test'
-#' @param fileName              Name of the file where the plot should be saved, for example
-#'                              'plot.png'. See the function \code{ggsave} in the ggplot2 package for
-#'                              supported file formats.
-#'
-#' @return
-#' A ggplot object. Use the \code{\link[ggplot2]{ggsave}} function to save to file in a different
-#' format.
-#'
-#' @export
 plotSparseCalibration2 <- function(evaluation, type='test', fileName=NULL){
+  if(is.null(evaluation$calibrationSummary$Eval)){
+    evaluation$calibrationSummary$Eval <- type
+  }
   ind <- evaluation$calibrationSummary$Eval==type
   
   x<- evaluation$calibrationSummary[ind,c('averagePredictedProbability','observedIncidence', 'PersonCountAtRisk')]
@@ -424,8 +356,8 @@ plotSparseCalibration2 <- function(evaluation, type='test', fileName=NULL){
   
   maxes <- max(max(x$averagePredictedProbability), max(x$observedIncidence))*1.1
   
-  # TODO: CHECK INPUT
-  limits <- ggplot2::aes(ymax = x$uci, ymin= x$lci)
+  # limits <- ggplot2::aes(ymax = x$uci, ymin= x$lci)
+  limits <- ggplot2::aes(ymax = uci, ymin= lci)
   
   plot <- ggplot2::ggplot(data=x,
                           ggplot2::aes(x=averagePredictedProbability, y=observedIncidence
@@ -446,11 +378,21 @@ plotSparseCalibration2 <- function(evaluation, type='test', fileName=NULL){
   return(plot)
 }
 
+
 plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
+  if(is.null(evaluation$predictionDistribution$Eval)){
+    evaluation$predictionDistribution$Eval <- type
+  }
   ind <- evaluation$predictionDistribution$Eval==type
   x<- evaluation$predictionDistribution[ind,]
   
   #(x=Class, y=predictedProbabllity sequence:  min->P05->P25->Median->P75->P95->max)
+  
+  
+  non05 <- x$P05PredictedProbability[x$class==0]
+  non95 <- x$P95PredictedProbability[x$class==0]
+  one05 <- x$P05PredictedProbability[x$class==1]
+  one95 <- x$P95PredictedProbability[x$class==1]
   
   plot <-   ggplot2::ggplot(x, ggplot2::aes(x=as.factor(class),
                                             ymin=MinPredictedProbability,
@@ -464,17 +406,18 @@ plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
     ggplot2::scale_x_discrete("Class") + 
     ggplot2::scale_y_continuous("Predicted Probability") + 
     ggplot2::theme(legend.position="none") +
-    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = x$P05PredictedProbability[x$class==0], 
-                                       xend = 1.1, yend = x$P05PredictedProbability[x$class==0]), color='red') +
-    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = x$P95PredictedProbability[x$class==0], 
-                                       xend = 1.1, yend = x$P95PredictedProbability[x$class==0]), color='red') +
-    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = x$P05PredictedProbability[x$class==1], 
-                                       xend = 2.1, yend = x$P05PredictedProbability[x$class==1])) +
-    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = x$P95PredictedProbability[x$class==1], 
-                                       xend = 2.1, yend = x$P95PredictedProbability[x$class==1]))
+    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = non05, 
+                                       xend = 1.1, yend = non05), color='red') +
+    ggplot2::geom_segment(ggplot2::aes(x = 0.9, y = non95, 
+                                       xend = 1.1, yend = non95), color='red') +
+    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = one05, 
+                                       xend = 2.1, yend = one05)) +
+    ggplot2::geom_segment(ggplot2::aes(x = 1.9, y = one95, 
+                                       xend = 2.1, yend = one95))
   
   
   if (!is.null(fileName))
     ggplot2::ggsave(fileName, plot, width = 5, height = 4.5, dpi = 400)
   return(plot)
 }
+
