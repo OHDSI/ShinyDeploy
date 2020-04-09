@@ -35,7 +35,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
-                                        shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")),
                                         shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
@@ -55,24 +54,18 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         ),
                                         
                                         # First tab content
-                                        shinydashboard::tabItem(tabName = "Description",
-                                                                shiny::includeMarkdown(path = "./www/shinyDescription.md")
-                                                                
-                                                                         ),
-                                        
-                                        # First tab content
                                         shinydashboard::tabItem(tabName = "Summary",
                                                                 
                                                                 shiny::fluidRow(
                                                                   shiny::column(2, 
                                                                                 shiny::h4('Filters'),
-                                                                                shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(allPerformance$devDatabase)))),
-                                                                                shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(allPerformance$valDatabase)))),
-                                                                                shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(allPerformance$cohortName)))),
-                                                                                shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(allPerformance$outcomeName)))),
-                                                                                shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(allPerformance$riskWindowStart))),
-                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(allPerformance$riskWindowEnd)))),
-                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(allPerformance$modelSettingName))))
+                                                                                shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
+                                                                                shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
+                                                                                shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
+                                                                                shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
+                                                                                shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(as.character(summaryTable$`TAR start`)))),
+                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`)))),
+                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model))))
                                                                   ),  
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 
@@ -226,7 +219,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                       title = "Measurements", solidHeader = TRUE,
                                                                                       side = "right",
                                                                                       shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryMeasure')))),
-                                                                
+                                                                shiny::fluidRow(width=12,
+                                                                                shinydashboard::box(status = 'info', width = 12,
+                                                                                                    title = "Covariates", solidHeader = TRUE,
+                                                                                                    DT::dataTableOutput('modelCovariateInfo'))),
                                                                 shiny::fluidRow(width=12,
                                                                                 shinydashboard::box(status = 'info', width = 12,
                                                                                                     title = "Model Table", solidHeader = TRUE,
