@@ -111,7 +111,18 @@ dashboardPage(
               dataTableOutput("breakdownTable")
       ),
       tabItem(tabName = "cohortCharacterization",
-              radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
+              tags$table(style = "width: 100%",
+                         tags$tr(
+                           tags$td(valign = "bottom",
+                              radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
+                           ),
+                           tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;")),
+                              tags$td(valign = "bottom", style = "text-align: right",
+                                  conditionalPanel(condition = "input.charType=='Raw'", 
+                                      radioButtons("rawCharSubType", "", c("Binary", "Continuous"), selected = "Binary", inline = TRUE)
+                                  ),
+                           )
+                         )),
               dataTableOutput("characterizationTable")
       ),
       tabItem(tabName = "cohortOverlap",
@@ -125,7 +136,18 @@ dashboardPage(
               )
       ),
       tabItem(tabName = "compareCohortCharacterization",
-              radioButtons("charCompareType", "", c("Pretty table", "Raw table", "Plot"), selected = "Pretty table", inline = TRUE),
+              tags$table(style = "width: 100%",
+                         tags$tr(
+                           tags$td(valign = "bottom",
+                                   radioButtons("charCompareType", "", c("Pretty table", "Raw table", "Plot"), selected = "Pretty table", inline = TRUE),
+                           ),
+                           tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;")),
+                           tags$td(valign = "bottom", style = "text-align: right",
+                                   conditionalPanel(condition = "input.charCompareType=='Raw table'", 
+                                                    radioButtons("rawCharCompareSubType", "", c("Binary", "Continuous"), selected = "Binary", inline = TRUE)
+                                   ),
+                           )
+                         )),
               conditionalPanel(condition = "input.charCompareType=='Pretty table' | input.charCompareType=='Raw table'",
                                dataTableOutput("charCompareTable")
               ),
