@@ -3,6 +3,9 @@ library(shinydashboard)
 library(DT)
 source("PlotsAndTables.R")
 
+continuousAnalysisIds <- c(901)
+includedAnalysisIds <- c(1:11,209:216,409:416)
+
 truncateStringDef <- function(columns, maxChars) {
   list(
     targets = columns,
@@ -13,12 +16,19 @@ truncateStringDef <- function(columns, maxChars) {
   )
 }
 
-isCovariateContinuous <- function(covariteId) {
-  # This is a hack to identify if the covariate is continuous in order
-  # to determine how to best format it.
-  continuousAnalysisIds <- c(901:904,926)
-  analysisId <- substr(covariteId, nchar(covariteId)-2, nchar(covariteId))
+getAnalysisIdFromCovariateId <- function(covariateId) {
+  analysisId <- substr(covariateId, nchar(covariateId)-2, nchar(covariateId))
+  return(as.integer(analysisId))  
+}
+
+isCovariateContinuous <- function(covariateId) {
+  analysisId <- getAnalysisIdFromCovariateId(covariateId)
   return(!is.na(match(analysisId, continuousAnalysisIds)))
+}
+
+isIncludedBinaryCovariate <- function(covariateId) {
+  analysisId <- getAnalysisIdFromCovariateId(covariateId)
+  return(!is.na(match(analysisId, includedAnalysisIds)))
 }
 
 minCellCountDef <- function(columns) {
@@ -510,10 +520,17 @@ shinyServer(function(input, output, session) {
       }
       if (input$rawCharSubType == "Continuous") {
         table <- table[isCovariateContinuous(table$covariateId) == TRUE, ]
-        formatFn <- minCellRealDef
+        columnDefs <- list(
+          truncateStringDef(0, 150),
+          formatFn <- minCellRealDef(1:(2*length(databaseIds)))
+        )
       } else {
-        table <- table[isCovariateContinuous(table$covariateId) == FALSE, ]
-        formatFn <- minCellPercentDef
+        table <- table[isIncludedBinaryCovariate(table$covariateId) == TRUE, ]
+        columnDefs <- list(
+          truncateStringDef(0, 150),
+          minCellPercentDef(seq(1, by = 2, length = length(databaseIds))),
+          minCellRealDef(seq(2, by = 2, length = length(databaseIds)), 2)
+        )
       }
       table <- merge(covariate, table)    
       table$covariateAnalysisId <- NULL
@@ -524,10 +541,7 @@ shinyServer(function(input, output, session) {
                      lengthChange = TRUE,
                      ordering = TRUE,
                      paging = TRUE,
-                     columnDefs = list(
-                       truncateStringDef(0, 150),
-                       formatFn(1:(2*length(databaseIds)))
-                     )
+                     columnDefs = columnDefs
       )
       sketch <- htmltools::withTags(table(
         class = 'display',
@@ -679,11 +693,18 @@ shinyServer(function(input, output, session) {
     } else {
       if (input$rawCharCompareSubType == "Continuous") {
         balance <- balance[isCovariateContinuous(balance$covariateId) == TRUE, ]
-        formatFn <- minCellRealDef(c(1,3), 2)
+        columnDefs <- list(
+          truncateStringDef(0, 150),
+          minCellRealDef(c(1,3), 2)
+        )
       } else {
-        balance <- balance[isCovariateContinuous(balance$covariateId) == FALSE, ]
-        formatFn <- minCellPercentDef(c(1,3))
-      }
+        balance <- balance[isIncludedBinaryCovariate(balance$covariateId) == TRUE, ]
+        columnDefs <- list(
+          truncateStringDef(0, 150),
+          minCellPercentDef(c(1,3)),
+          minCellRealDef(c(2,4), 2)
+        )
+      }      
       table <- balance
       table <- table[order(table$covariateName), ]
       table <- table[, c("covariateName", "mean1", "sd1", "mean2", "sd2", "stdDiff")]
@@ -694,10 +715,7 @@ shinyServer(function(input, output, session) {
                      lengthChange = TRUE,
                      ordering = TRUE,
                      paging = TRUE,
-                     columnDefs = list(
-                       truncateStringDef(0, 150),
-                       formatFn
-                     )
+                     columnDefs = columnDefs
       )
       table <- datatable(table,
                          options = options,
