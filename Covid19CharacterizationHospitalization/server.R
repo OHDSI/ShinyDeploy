@@ -13,6 +13,14 @@ truncateStringDef <- function(columns, maxChars) {
   )
 }
 
+isCovariateContinuous <- function(covariteId) {
+  # This is a hack to identify if the covariate is continuous in order
+  # to determine how to best format it.
+  continuousAnalysisIds <- c(901:904,926)
+  analysisId <- substr(covariteId, nchar(covariteId)-2, nchar(covariteId))
+  return(!is.na(match(analysisId, continuousAnalysisIds)))
+}
+
 minCellCountDef <- function(columns) {
   list(
     targets = columns,
@@ -500,6 +508,13 @@ shinyServer(function(input, output, session) {
           table <- merge(table, temp, all = TRUE)
         }
       }
+      if (input$rawCharSubType == "Continuous") {
+        table <- table[isCovariateContinuous(table$covariateId) == TRUE, ]
+        formatFn <- minCellRealDef
+      } else {
+        table <- table[isCovariateContinuous(table$covariateId) == FALSE, ]
+        formatFn <- minCellPercentDef
+      }
       table <- merge(covariate, table)    
       table$covariateAnalysisId <- NULL
       table$covariateId <- NULL
@@ -511,7 +526,7 @@ shinyServer(function(input, output, session) {
                      paging = TRUE,
                      columnDefs = list(
                        truncateStringDef(0, 150),
-                       minCellRealDef(1:(2*length(databaseIds)))
+                       formatFn(1:(2*length(databaseIds)))
                      )
       )
       sketch <- htmltools::withTags(table(
@@ -662,6 +677,13 @@ shinyServer(function(input, output, session) {
                            backgroundPosition = "center")
       table <- formatRound(table, 4, digits = 2)
     } else {
+      if (input$rawCharCompareSubType == "Continuous") {
+        balance <- balance[isCovariateContinuous(balance$covariateId) == TRUE, ]
+        formatFn <- minCellRealDef(c(1,3), 2)
+      } else {
+        balance <- balance[isCovariateContinuous(balance$covariateId) == FALSE, ]
+        formatFn <- minCellPercentDef(c(1,3))
+      }
       table <- balance
       table <- table[order(table$covariateName), ]
       table <- table[, c("covariateName", "mean1", "sd1", "mean2", "sd2", "stdDiff")]
@@ -674,7 +696,7 @@ shinyServer(function(input, output, session) {
                      paging = TRUE,
                      columnDefs = list(
                        truncateStringDef(0, 150),
-                       minCellRealDef(c(1,3), 2)
+                       formatFn
                      )
       )
       table <- datatable(table,
