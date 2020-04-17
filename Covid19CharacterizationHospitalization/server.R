@@ -3,6 +3,18 @@ library(shinydashboard)
 library(DT)
 source("PlotsAndTables.R")
 
+continuousAnalysisIds <- c(901:926)
+
+getAnalysisIdFromCovariateId <- function(covariateId) {
+  analysisId <- substr(covariateId, nchar(covariateId)-2, nchar(covariateId))
+  return(as.integer(analysisId))  
+}
+
+isCovariateContinuous <- function(covariateId) {
+  analysisId <- getAnalysisIdFromCovariateId(covariateId)
+  return(!is.na(match(analysisId, continuousAnalysisIds)))
+}
+
 truncateStringDef <- function(columns, maxChars) {
   list(
     targets = columns,
@@ -501,11 +513,13 @@ shinyServer(function(input, output, session) {
         }
       }
       if (input$rawCharSubType == "Continuous") {
+        table <- table[isCovariateContinuous(table$covariateId) == TRUE, ]
         columnDefs <- list(
           truncateStringDef(0, 150),
           formatFn <- minCellRealDef(1:(2*length(databaseIds)))
         )
       } else {
+        table <- table[isCovariateContinuous(table$covariateId) == FALSE, ]
         columnDefs <- list(
           truncateStringDef(0, 150),
           minCellPercentDef(seq(1, by = 2, length = length(databaseIds))),
@@ -672,11 +686,13 @@ shinyServer(function(input, output, session) {
       table <- formatRound(table, 4, digits = 2)
     } else {
       if (input$rawCharCompareSubType == "Continuous") {
+        balance <- balance[isCovariateContinuous(balance$covariateId) == TRUE, ]
         columnDefs <- list(
           truncateStringDef(0, 150),
           minCellRealDef(c(1,3), 2)
         )
       } else {
+        balance <- balance[isCovariateContinuous(balance$covariateId) == FALSE, ]
         columnDefs <- list(
           truncateStringDef(0, 150),
           minCellPercentDef(c(1,3)),
