@@ -3,18 +3,6 @@ library(shinydashboard)
 library(DT)
 source("PlotsAndTables.R")
 
-continuousAnalysisIds <- c(901:926)
-
-getAnalysisIdFromCovariateId <- function(covariateId) {
-  analysisId <- substr(covariateId, nchar(covariateId)-2, nchar(covariateId))
-  return(as.integer(analysisId))  
-}
-
-isCovariateContinuous <- function(covariateId) {
-  analysisId <- getAnalysisIdFromCovariateId(covariateId)
-  return(!is.na(match(analysisId, continuousAnalysisIds)))
-}
-
 truncateStringDef <- function(columns, maxChars) {
   list(
     targets = columns,
@@ -98,7 +86,6 @@ shinyServer(function(input, output, session) {
     table <- merge(cohort, table, all.x = TRUE)
     table$cohortId <- NULL
     table$cohortName <- NULL
-
     
     sketch <- htmltools::withTags(table(
       class = 'display',
@@ -451,7 +438,7 @@ shinyServer(function(input, output, session) {
     data <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId %in% input$databases, ]
     data$cohortId <- NULL
     databaseIds <- unique(data$databaseId)
-
+    
     if (input$charType == "Pretty") {
       data <- merge(data, covariate)
       table <- data[data$databaseId == databaseIds[1], ]
@@ -512,20 +499,6 @@ shinyServer(function(input, output, session) {
           table <- merge(table, temp, all = TRUE)
         }
       }
-      if (input$rawCharSubType == "Continuous") {
-        table <- table[isCovariateContinuous(table$covariateId) == TRUE, ]
-        columnDefs <- list(
-          truncateStringDef(0, 150),
-          formatFn <- minCellRealDef(1:(2*length(databaseIds)))
-        )
-      } else {
-        table <- table[isCovariateContinuous(table$covariateId) == FALSE, ]
-        columnDefs <- list(
-          truncateStringDef(0, 150),
-          minCellPercentDef(seq(1, by = 2, length = length(databaseIds))),
-          minCellRealDef(seq(2, by = 2, length = length(databaseIds)), 2)
-        )
-      }
       table <- merge(covariate, table)    
       table$covariateAnalysisId <- NULL
       table$covariateId <- NULL
@@ -535,7 +508,10 @@ shinyServer(function(input, output, session) {
                      lengthChange = TRUE,
                      ordering = TRUE,
                      paging = TRUE,
-                     columnDefs = columnDefs
+                     columnDefs = list(
+                       truncateStringDef(0, 150),
+                       minCellRealDef(1:(2*length(databaseIds)))
+                     )
       )
       sketch <- htmltools::withTags(table(
         class = 'display',
@@ -685,20 +661,6 @@ shinyServer(function(input, output, session) {
                            backgroundPosition = "center")
       table <- formatRound(table, 4, digits = 2)
     } else {
-      if (input$rawCharCompareSubType == "Continuous") {
-        balance <- balance[isCovariateContinuous(balance$covariateId) == TRUE, ]
-        columnDefs <- list(
-          truncateStringDef(0, 150),
-          minCellRealDef(c(1,3), 2)
-        )
-      } else {
-        balance <- balance[isCovariateContinuous(balance$covariateId) == FALSE, ]
-        columnDefs <- list(
-          truncateStringDef(0, 150),
-          minCellPercentDef(c(1,3)),
-          minCellRealDef(c(2,4), 2)
-        )
-      }      
       table <- balance
       table <- table[order(table$covariateName), ]
       table <- table[, c("covariateName", "mean1", "sd1", "mean2", "sd2", "stdDiff")]
@@ -709,7 +671,10 @@ shinyServer(function(input, output, session) {
                      lengthChange = TRUE,
                      ordering = TRUE,
                      paging = TRUE,
-                     columnDefs = columnDefs
+                     columnDefs = list(
+                       truncateStringDef(0, 150),
+                       minCellRealDef(c(1,3), 2)
+                     )
       )
       table <- datatable(table,
                          options = options,
@@ -741,7 +706,7 @@ shinyServer(function(input, output, session) {
     balance$mean1[is.na(balance$mean1)] <- 0
     balance$mean2[is.na(balance$mean2)] <- 0
     plot <- ggplot2::ggplot(balance, ggplot2::aes(x = mean1, y = mean2, color = absStdDiff)) +
-      ggplot2::geom_point(shape = 16, alpha = 0.3, size = 2) +
+      ggplot2::geom_point(alpha = 0.3, shape = 16, size = 2) +
       ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
       ggplot2::geom_hline(yintercept = 0) +
       ggplot2::geom_vline(xintercept = 0) +             
@@ -792,6 +757,33 @@ shinyServer(function(input, output, session) {
     }
   }) 
   
+  # output$databaseInformationPanel <- renderUI({
+  #   row <- database[database$databaseId == input$database, ]
+  #   text <- div(tags$p(tags$h3("ID"), wellPanel(row$databaseId)),
+  #               tags$p(tags$h3("Name"), wellPanel(row$databaseName)),
+  #               tags$p(tags$h3("Description"), wellPanel(row$description)))
+  #   return(text)
+  # })
+  
+  output$databaseInformationTable <- renderDataTable({
+
+    table <- database[, c("databaseId", "databaseName", "description")]
+    options = list(pageLength = 25,
+                   searching = TRUE,
+                   lengthChange = FALSE,
+                   ordering = TRUE,
+                   paging = FALSE,
+                   columnDefs = list(list(width = '30%', targets = 1),
+                                     list(width = '60%', targets = 2))
+    )
+    table <- datatable(table,
+                       options = options,
+                       colnames = c("ID", "Name", "Description"),
+                       rownames = FALSE,
+                       class = "stripe compact")
+    return(table)
+  })
+
   showInfoBox <- function(title, htmlFileName) {
     showModal(modalDialog(
       title = title,
@@ -801,14 +793,6 @@ shinyServer(function(input, output, session) {
       HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
     ))
   }
-
-  observeEvent(input$aboutInfo, {
-    showInfoBox("About", "html/about.html")
-  })
-  
-  observeEvent(input$databaseInfo, {
-    showInfoBox("Database Information", "html/databasesInfo.html")
-  })
   
   observeEvent(input$cohortCountsInfo, {
     showInfoBox("Cohort Counts", "html/cohortCounts.html")
