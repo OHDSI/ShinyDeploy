@@ -372,6 +372,81 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # output$table1Table <- renderDataTable({
+  #   row <- selectedRow()
+  #   if (is.null(row)) {
+  #     return(NULL)
+  #   } else {
+  #     bal <- balance()
+  #     if (nrow(bal) == 0) {
+  #       return(NULL)
+  #     }
+  #     if (input$charType == "Pretty") {
+  #       table1 <- prepareTable1(balance = bal,
+  #                               beforeLabel = paste("Before PS adjustment"),
+  #                               afterLabel = paste("After PS adjustment"))
+  #       
+  #       container <- htmltools::withTags(table(
+  #         class = 'display',
+  #         thead(
+  #           tr(
+  #             th(rowspan = 3, "Characteristic"),
+  #             th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
+  #             th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
+  #           ),
+  #           tr(
+  #             lapply(table1[1, 2:ncol(table1)], th)
+  #           ),
+  #           tr(
+  #             lapply(table1[2, 2:ncol(table1)], th)
+  #           )
+  #         )
+  #       ))
+  #       options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
+  #                       searching = FALSE,
+  #                       ordering = FALSE,
+  #                       paging = FALSE,
+  #                       bInfo = FALSE)
+  #       table1 <- datatable(table1[3:nrow(table1), ],
+  #                           options = options,
+  #                           rownames = FALSE,
+  #                           escape = FALSE,
+  #                           container = container,
+  #                           class = "stripe nowrap compact")
+  #     } else {
+  #       table1 <- prepareRawTable1(bal)
+  #       container <- htmltools::withTags(table(
+  #         class = 'display',
+  #         thead(
+  #           tr(
+  #             th(rowspan = 3, "Characteristic"),
+  #             th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
+  #             th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
+  #           ),
+  #           tr(
+  #             lapply(table1[1, 2:ncol(table1)], th)
+  #           ),
+  #           tr(
+  #             lapply(table1[2, 2:ncol(table1)], th)
+  #           )
+  #         )
+  #       ))
+  #       options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
+  #                       searching = TRUE,
+  #                       ordering = TRUE,
+  #                       paging = TRUE,
+  #                       bInfo = TRUE)
+  #       table1 <- datatable(table1[3:nrow(table1), ],
+  #                           options = options,
+  #                           rownames = FALSE,
+  #                           escape = FALSE,
+  #                           container = container,
+  #                           class = "stripe compact")
+  #     }
+  #     return(table1)
+  #   }
+  # })
+  
   output$propensityModelTable <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
