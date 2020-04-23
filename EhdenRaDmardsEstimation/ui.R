@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("The comparative safety of first-line disease-modifying antirheumatic drugs in rheumatoid arthritis: a multinational cohort network study", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("The comparative safety of first-line disease-modifying antirheumatic drugs in rheumatoid arthritis: a multinational network cohort study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -28,14 +28,14 @@ shinyUI(
                                  div(p("These research results are from a retrospective, real-world, observational study to estimate the population-level effects of conventional synthetic disease-modifying antirheumatic drugs among patients with rheumatoid arthritis. This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to abstracts and a full manuscript currently in development for submission to scientific conferences and a peer-reviewed journal. During abstract and manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p>Below is the abstract of the manuscript that summarizes the findings:</p>"),
-                                 HTML("<p><strong>Objective: </strong>Recent systematic reviews and guidelines acknowledge a lack of data on the comparative safety of disease modifying antirheumatic drugs (DMARDs). We assessed the comparative risk/s associated with first-line disease modifying antirheumatic drugs (DMARDs) in rheumatoid arthritis (RA).</p>"),
-                                 HTML("<p><strong>Design: </strong>Multinational network cohort and meta-analysis. </p>"),
-                                 HTML("<p><strong>Settings: </strong>Routine health data from 8 databases (5 US, 1 UK, 1 Germany, and 1 Spain) mapped to a common data model.</p>"),
-								 HTML("<p><strong>Participants: </strong>New users of monotherapy DMARD after RA diagnosis at age 18+.</p>"),
-								 HTML("<p><strong>Interventions: </strong>The four most commonly used first-line DMARDs: Methotrexate (MTX), Hydroxychloroquine (HCQ), Sulfasalazine (SSZ), and Leflunomide (LEF).</p>"),
-								 HTML("<p><strong>Main outcome measures: </strong>Adverse events of interest included leuko/pancytopenia, infection, myocardial infarction, stroke, and cancer. Cox regression after propensity score stratification was used to estimate hazard ratios (HRs) for the risk of each event according to drug use, with MTX as reference. Negative control outcomes were used to estimate confounding-free calibrated HR (cHR). Findings were meta-analysed where I<sup>2</sup><40%.</p>"),
-								 HTML("<p><strong>Results: </strong>In total, 247,511 participants were included: 141,647 (57%) MTX, 73,286 (30%) HCQ, 16,521 (7%) SSZ, and 16,057 (6%) LEF. LEF appeared associated with reduced risk of leukopenia (cHR 0.68 95% CI 0.41-1.13) and pancytopenia (0.51, 0.24-1.06), and with reduced risk of cancer (0.77, 0.53-1.12) compared to MTX. SSZ may be associated with increased risk of leukopenia (1.43, 0.96-2.15), but with a lower infection risk (cHR 0.76, 0.58-0.97 for serious, cHR 0.73, 0.62-0.86 for any). HCQ was associated with a reduced risk of stroke (0.88, 0.79-0.98).</p>"),
-                                 HTML("<p><strong>Conclusions: </strong>Compared to MTX, leukopenia is 40% more common with SSZ, and 30% less with LEF. Infections (both serious and overall) appear to be about 25% less frequent in users of SSZ. HCQ in turn is associated with a 12% reduction in risk of stroke. These findings will inform personalized first-line treatment for newly diagnosed RA patients worldwide.</p>"),
+                                 HTML("<p><strong>Objective: </strong>There is a lack of evidence on the comparative safety of conventional synthetic disease modifying antirheumatic drugs (csDMARDs). We assessed the comparative risks associated with first line csDMARDs in rheumatoid arthritis (RA).</p>"),
+                                 HTML("<p><strong>Design: </strong>Multinational network cohort study with meta-analysis.</p>"),
+                                 HTML("<p><strong>Setting: </strong>Routine health data from 8 databases (5 US, 1 UK, 1 Germany, and 1 Spain) mapped to a common data model.</p>"),
+                								 HTML("<p><strong>Participants: </strong>New users of monotherapy csDMARD after RA diagnosis at age 18+ from 2005-2019.</p>"),
+                								 HTML("<p><strong>Interventions: </strong>The four most commonly used first line csDMARDs for RA: methotrexate (MTX), hydroxychloroquine (HCQ), sulfasalazine (SSZ), and leflunomide (LEF). MTX was the reference drug for comparisons.</p>"),
+                								 HTML("<p><strong>Main outcome measures: </strong>Adverse events of interest included leuko/pancytopenia, infection, myocardial infarction, stroke, and cancer. Cox regression after propensity score stratification was used to estimate hazard ratios (HRs) for the risk of each event according to drug use, with MTX as reference. Negative control outcomes were used to estimate calibrated HRs (cHRs). Findings were meta-analysed where I<sup>2</sup><40%.</p>"),
+                								 HTML("<p><strong>Results: </strong>In total, 247,511 participants were included: 141,647 (57%) MTX, 73,286 (30%) HCQ, 16,521 (7%) SSZ, and 16,057 (6%) LEF. Compared to MTX, SSZ was associated with a lower risk of infection: pooled cHRs 0.74 (95% confidence interval: 0.55-1.00) for serious infections, and 0.72 (0.57-0.90) for any infection. SSZ may also confer a reduced risk of myocardial infarction (0.86, 0.62-1.18) and stroke (0.82, 0.61-1.12), but also an increased risk of leukopenia (1.41, 0.91-2.18). While not significant in meta-analyses, risk estimates implied LEF may be associated with reduced risk of leukopenia (0.68, 0.42-1.11), pancytopenia (0.51, 0.24-1.07), any infection (0.74, 0.51-1.06), and cancer (0.77, 0.53-1.11) compared to MTX. Meanwhile, HCQ appeared associated with a reduced risk of myocardial infarction (0.93, 0.83-1.04) and stroke (0.88, 0.78-0.98).</p>"),
+                                 HTML("<p><strong>Conclusions: </strong>There are differential risks associated with each of the studied csDMARDs. These findings will inform personalized treatment for newly diagnosed RA patients.</p>"),
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
@@ -74,6 +74,7 @@ shinyUI(
                                                                       ),
                                                                       tabPanel("Population characteristics",
                                                                                uiOutput("table1Caption"),
+                                                                               #radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
                                                                                dataTableOutput("table1Table")),
                                                                       tabPanel("Propensity model",
                                                                                div(strong("Table 3."),"Fitted propensity model, listing all coviates with non-zero coefficients. Positive coefficients indicate predictive of the target exposure."),

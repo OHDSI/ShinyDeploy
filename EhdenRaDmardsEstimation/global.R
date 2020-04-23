@@ -40,10 +40,14 @@ loadFile <- function(file, removePart) {
       newData$databaseId[newData$databaseId == "GERMANY"] <- "DAGermany"
       newData$databaseId[newData$databaseId == "IPCI-HI-LARIOUS-RA"] <- "ICPI"
       newData$databaseId[newData$databaseId == "LPDFRANCE"] <- "LPDFrance"
+      newData$databaseId[newData$databaseId == "Optum"] <- "ClinFormatics"
+      newData$databaseId[newData$databaseId == "PanTher"] <- "OptumEHR"
     }
     if ("sources" %in% colnames(newData)) {
       newData$sources <- gsub("Amb_EMR", "AmbEMR", newData$sources)
       newData$sources <- gsub("GERMANY", "DAGermany", newData$sources)
+      newData$sources <- gsub("Optum", "ClinFormatics", newData$sources)
+      newData$sources <- gsub("PanTher", "OptumEHR", newData$sources)
     }
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
