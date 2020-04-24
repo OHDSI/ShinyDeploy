@@ -82,7 +82,7 @@ shinyUI(
                     h5('A library "Book" represents a desired health state.'),
                     selectizeInput("book_search",
                       label = "",
-                      choices = sort(unique(phe$Broad_Category_Name)),
+                      choices = sort(unique(books)),
                       selected = NULL,
                       multiple = FALSE,
                       options = list(

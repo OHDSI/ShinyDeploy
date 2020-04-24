@@ -12,25 +12,30 @@ buildPhenotypeMarkdown <- function(dat) {
     readLines(file.path("data", "Phenotype_Submission_Template.md")),
     collapse = "\n"
   )
+  
+  md_template <- gsub(pattern = "<Title>", replacement = dat$coh_chapter_title, x = md_template)
+  md_template <- gsub("<Authors_And_Affiliations>", dat$Authors_And_Affiliations, md_template)
+  md_template <- gsub("<Date_Of_Submission>", as.Date(strsplit(dat[["timestamp"]], "-")[[1]][1], "%Y%m%d"), md_template)
+  md_template <- gsub("<Modality>", dat[["coh_phenotype_modality"]], md_template)
 
   # Perform direct substitutions on most variables
-  for (term in names(dat)[!(names(dat) %in% c("Authors_And_Affiliations", "Provenance_Hashes", "Provenance_Reasons"))]) {
-    md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
-  }
+  #for (term in names(dat)[!(names(dat) %in% c("Authors_And_Affiliations", "Provenance_Hashes", "Provenance_Reasons"))]) {
+  #  md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
+  #}
 
   # Authors and Affiliations
-  md_template <- gsub("<Authors_And_Affiliations>", paste(dat$Authors_And_Affiliations[[1]], collapse = "</br> "), md_template)
+  #md_template <- gsub("<Authors_And_Affiliations>", paste(dat$Authors_And_Affiliations[[1]], collapse = "</br> "), md_template)
 
   # Provenance Table
   # TODO: Replace placeholders
-  md_template <- gsub(
-    "<Provenance_Hash_Table>",
-    paste0(
-      paste("", "Title Placeholder", "Link Placeholder", dat$Provenance_Hashes[[1]], dat$Provenance_Reasons[[1]], "", sep = "|"),
-      collapse = "\n"
-    ),
-    md_template
-  )
+  #md_template <- gsub(
+  #  "<Provenance_Hash_Table>",
+  #  paste0(
+  #    paste("", "Title Placeholder", "Link Placeholder", dat$Provenance_Hashes[[1]], dat$Provenance_Reasons[[1]], "", sep = "|"),
+  #    collapse = "\n"
+  #  ),
+  #  md_template
+  #)
 
   # Render and return
   html <- markdown::markdownToHTML(text = paste0(md_template, collapse = "\n"), fragment.only = TRUE)
@@ -48,15 +53,15 @@ buildValidationMarkdown <- function(dat, phe_title) {
   )
 
   # Perform direct substitutions on most variables
-  for (term in names(dat)[!(names(dat) %in% c("Title", "Validators_And_Affiliations"))]) {
-    md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
-  }
+  #for (term in names(dat)[!(names(dat) %in% c("Title", "Validators_And_Affiliations"))]) {
+  #  md_template <- gsub(paste0("<", term, ">"), dat[[term]], md_template)
+  #}
 
   # Title
-  md_template <- gsub("<Title>", phe_title, md_template)
+  #md_template <- gsub("<Title>", phe_title, md_template)
 
   # Validators and Affiliations
-  md_template <- gsub("<Validators_And_Affiliations>", paste(dat$Validators_And_Affiliations[[1]], collapse = "</br> "), md_template)
+  #md_template <- gsub("<Validators_And_Affiliations>", paste(dat$Validators_And_Affiliations[[1]], collapse = "</br> "), md_template)
 
   # Return rendered md file
   html <- markdown::markdownToHTML(text = paste0(md_template, collapse = "\n"), fragment.only = TRUE)
@@ -117,37 +122,55 @@ makeValidationOverviewTab <- function(val_data, name) {
 buildVisNetwork <- function(phe_data) {
 
   # Pull data for the current cluster only
-  current_cluster <- phe[phe$Hash == phe_data$Hash, "Graph_Cluster"]
-  df_cluster <- phe[phe$Graph_Cluster == current_cluster, c("Hash", "Title", "Provenance_Reasons", "Provenance_Hashes")]
+  current_cluster <- phe[phe$coh_chapter_title == phe_data$coh_chapter_title, "Graph_Cluster"]
+  df_cluster <- phe[phe$Graph_Cluster == current_cluster, c("coh_chapter_title", "provenance_book", "provenance_chapter", "provenance_rationale")]
 
   # Before unnesting, it's important for empty lists to hold a value, or else it will be dropped from unnest()
   # TODO: Revisit this workaround when "drop" issue is resolved:
   # https://github.com/tidyverse/tidyr/issues/358
 
   # Terminal Nodes - These disappear when unnesting so must be considered separately
-  isEmpty <- sapply(df_cluster$Provenance_Reasons, function(x) {
-    length(x) == 0
-  })
-  terminal_nodes <- df_cluster[isEmpty, ]
-  if (nrow(terminal_nodes) > 0) {
-    terminal_nodes$Provenance_Hashes <- ""
-    terminal_nodes$Provenance_Reasons <- ""
+  #isEmpty <- sapply(df_cluster$Provenance_Reasons, function(x) {
+  #  length(x) == 0
+  #})
+  #terminal_nodes <- df_cluster[isEmpty, ]
+  #if (nrow(terminal_nodes) > 0) {
+  #  terminal_nodes$Provenance_Hashes <- ""
+  #  terminal_nodes$Provenance_Reasons <- ""
+  #}
+  bool <- c()
+  for (i in 1:nrow(df_cluster)){
+    if(is.na(df_cluster[i,"provenance_book"])){
+      bool <- c(bool,TRUE)
+      df_cluster[i,"provenance_book"] <- ""
+      df_cluster[i,"provenance_chapter"] <- ""
+      df_cluster[i,"provenance_rationale"] <- ""
+    } else {
+      bool <- c(bool,FALSE)
+    }
   }
+  
+  terminal_nodes <- df_cluster[bool,]
 
   # Get non-terminal nodes
-  connected_nodes <- unnest(df_cluster[!isEmpty, ])
-  connected_nodes$Provenance_Hashes <- unlist(connected_nodes$Provenance_Hashes)
-  connected_nodes$Provenance_Reasons <- unlist(connected_nodes$Provenance_Reasons)
+  connected_nodes <- unnest(df_cluster[!bool, ])
+  connected_nodes$provenance_chapter <- unlist(connected_nodes$provenance_chapter)
+  connected_nodes$provenance_rationale <- unlist(connected_nodes$provenance_rationale)
 
   # Reconnect terminal nodes with non-terminal nodes
   df_cluster <- as.data.frame(rbind(terminal_nodes, connected_nodes))
+  
+  df_cluster$coh_chapter_title <- unlist(df_cluster$coh_chapter_title)
+  df_cluster$provenance_book <- unlist(df_cluster$provenance_book)
+  df_cluster$provenance_chapter <- unlist(df_cluster$provenance_chapter)
+  df_cluster$provenance_rationale <- unlist(df_cluster$provenance_rationale)
 
   # Nodes dataset
   nodes <- unique(data.frame(
-    id = df_cluster$Hash,
+    id = df_cluster$coh_chapter_title,
     group = "Not_Selected",
-    label = df_cluster$Title,
-    title = paste0("Hash: \n", df_cluster$Hash),
+    label = df_cluster$coh_chapter_title,
+    title = paste0("Title: \n", df_cluster$coh_chapter_title),
     stringsAsFactors = FALSE
   ))
 
@@ -155,13 +178,13 @@ buildVisNetwork <- function(phe_data) {
   nodes <- nodes[order(nodes$label), ]
 
   # Distinguish the selected node from the others via the group property
-  nodes$group[which(nodes$id == phe_data$Hash)] <- "Selected"
+  nodes$group[which(nodes$id == phe_data$coh_chapter_title)] <- "Selected"
 
   # Edges dataset
   edges <- data.frame(
-    from = df_cluster$Provenance_Hashes,
-    to = df_cluster$Hash,
-    title = df_cluster$Provenance_Reasons
+    from = df_cluster$provenance_chapter,
+    to = df_cluster$coh_chapter_title,
+    title = df_cluster$provenance_rationale
   )
 
   # Create visNetwork
@@ -183,10 +206,12 @@ buildVisNetwork <- function(phe_data) {
 
 # Create a tabsetPanel() that contains all of the details for the selected chapter
 makeChapterPage <- function(name) {
+  
+  x <- name
 
   # Subset data to the selected chapter
-  phe_data <- subset(phe, Title == name)
-  val_data <- subset(val, Hash == phe_data$Hash)
+  phe_data <- subset(phe, coh_chapter_title == x)
+  val_data <- subset(val, validation_chapter_selection == x)
 
   # Make tabsetPanel
   return(
@@ -196,6 +221,19 @@ makeChapterPage <- function(name) {
       tabPanel("Summary",
         icon = icon("clipboard"),
         fluidRow(column(12, box(status = "primary", width = NULL, buildPhenotypeMarkdown(phe_data))))
+      ),
+      
+      # Provenance Tab
+      tabPanel(
+        title = "Provenance", icon = icon("project-diagram"),
+        fluidRow(
+          box(
+            title = "Provenance Diagram", status = "primary", width = NULL,
+            renderVisNetwork(
+              buildVisNetwork(phe_data)
+            )
+          )
+        )
       ),
 
       # Validation Tab
@@ -209,10 +247,10 @@ makeChapterPage <- function(name) {
             "",
 
             # Validation overview tab
-            makeValidationOverviewTab(val_data, phe_data$Title),
+            makeValidationOverviewTab(val_data, phe_data$coh_chapter_title),
 
             # Individual validation set selector
-            do.call("navbarMenu", c(makeValidationSetTabs(val_data, phe_data$Title), list(title = "Validation Sets")))
+            do.call("navbarMenu", c(makeValidationSetTabs(val_data, phe_data$coh_chapter_title), list(title = "Validation Sets")))
           )
         } else {
           fluidRow(column(12, box(
@@ -220,20 +258,8 @@ makeChapterPage <- function(name) {
             h4("This phenotype has no validation sets associated with it.")
           )))
         }
-      ),
-
-      # Provenance Tab
-      tabPanel(
-        title = "Provenance", icon = icon("project-diagram"),
-        fluidRow(
-          box(
-            title = "Provenance Diagram", status = "primary", width = NULL,
-            renderVisNetwork(
-              buildVisNetwork(phe_data)
-            )
-          )
-        )
       )
+
     ) # End tabsetPanel
   ) # End return
 } # End makeChapterPage
@@ -251,7 +277,7 @@ shinyServer(function(input, output, session) {
 
       # Only display if there are an appropriate number of chapters selected and a book selected
       if (length(rows_selected) >= x & isTruthy(input$book_search)) {
-        chapterData <- subset(phe, Broad_Category_Name == input$book_search, select = "Title")
+        chapterData <- subset(phe, Book == input$book_search, select = "coh_chapter_title")
         menuItem(chapterData[rows_selected[x], ], tabName = paste0("tab", x), icon = icon("square"))
       } else {
         h1("") # Can't be NULL - using h1() to force refresh
@@ -265,7 +291,7 @@ shinyServer(function(input, output, session) {
       # Only render if the appropriate number of selections has been made
       rows_selected <- input$chapterTable_rows_selected
       if (length(rows_selected) >= x) {
-        chapterData <- subset(phe, Broad_Category_Name == input$book_search, select = "Title")
+        chapterData <- subset(phe, Book == input$book_search, select = "coh_chapter_title")
         makeChapterPage(chapterData[rows_selected[x], ])
       }
     })
@@ -308,16 +334,18 @@ shinyServer(function(input, output, session) {
     # All checked boxes will be used to determine the columns in the datatable
     # At a minimum, Title is always present - This data elements is not selectable
     selectedColumns <- c(
-      "Title",
+      "coh_chapter_title",
       input$metadata_boxes,
-      input$times_validated_boxes,
-      input$metric_boxes,
-      input$source_data_boxes,
-      input$demographic_boxes
+      input$frequency_boxes,
+      input$owner_metric_boxes
+      #input$outside_val_boxes
+      #input$metric_boxes,
+      #input$source_data_boxes,
+      #input$demographic_boxes
     )
 
     chapterData <- subset(phe,
-      Broad_Category_Name == input$book_search,
+      Book == input$book_search,
       select = selectedColumns
     )
 
@@ -344,16 +372,18 @@ shinyServer(function(input, output, session) {
             prettyCheckboxGroup("metadata_boxes",
               "Chapter Metadata",
               choiceNames = c(
-                "Hash",
-                "Author(s)",
+                "Author and Affiliation(s)",
                 "Date of Submission",
-                "Algorithm Modality"
+                "Algorithm Modality",
+                "OHDSI Forum Handle",
+                "ORCID"
               ),
               choiceValues = c(
-                "Hash",
                 "Authors_And_Affiliations",
-                "Date_Of_Submission",
-                "Modality"
+                "timestamp",
+                "coh_phenotype_modality",
+                "ohdsi_forum_handle",
+                "orcid"
               ),
               status = "info",
               shape = "square",
@@ -367,10 +397,18 @@ shinyServer(function(input, output, session) {
             width = 4,
 
             # Validation Frequency (Selected by default)
-            prettyCheckboxGroup("times_validated_boxes",
-              "Validation Frequency:",
-              choiceNames = "Times Validated",
-              choiceValues = "Times_Validated",
+            prettyCheckboxGroup("frequency_boxes",
+              "Frequency of Use:",
+              choiceNames = c(
+                "Times Validated",
+                "Times Cited",
+                "Times Characterized"
+              ),
+              choiceValues = c(
+                "Times_Validated",
+                "Times_Cited",
+                "Times_Characterized"
+              ),
               selected = "Times_Validated",
               status = "info",
               shape = "square",
@@ -380,23 +418,31 @@ shinyServer(function(input, output, session) {
             ),
 
             # Validation Metrics
-            prettyCheckboxGroup("metric_boxes",
-              "Validation Metrics:",
+            prettyCheckboxGroup("owner_metric_boxes",
+              "Owner Validation Metrics:",
               choiceNames = c(
+                "CDM Version",
+                "Vocabulary Version",
+                "Validation Modality",
                 "Sensitivity",
                 "Specificity",
-                "Positive Predictive Value",
-                "Negative Predictive Value",
+                "PPV",
+                "NPV",
                 "Accuracy",
-                "F1 Score"
+                "F1 Score",
+                "Inconclusive"
               ),
               choiceValues = c(
-                "Avg_Sensitivity",
-                "Avg_Specificity",
-                "Avg_PPV",
-                "Avg_NPV",
-                "Avg_Accuracy",
-                "Avg_F1score"
+                "coh_cdm_version",
+                "coh_vocab_version",
+                "coh_validation_modality",
+                "coh_sensitivity",
+                "coh_specificity",
+                "coh_ppv",
+                "coh_npv",
+                "coh_accuracy",
+                "coh_f1",
+                "coh_inconclusive"
               ),
               status = "info",
               shape = "square",
@@ -409,25 +455,25 @@ shinyServer(function(input, output, session) {
           # Data Dependencies
           column(
             width = 4,
-            prettyCheckboxGroup("source_data_boxes",
-              "Data Dependencies:",
+            prettyCheckboxGroup("outside_val_boxes",
+              "Outside Validation Metrics:",
               choiceNames = c(
-                "Conditions",
-                "Drugs Exposures",
-                "Measurements",
-                "Notes NLP",
-                "Observations",
-                "Procedures",
-                "Visits"
+                "Sensitivity",
+                "Specificity",
+                "PPV",
+                "NPV",
+                "Accuracy",
+                "F1 Score",
+                "Inconclusive"
               ),
               choiceValues = c(
-                "Uses_Conditions",
-                "Uses_Drug_Exposures",
-                "Uses_Measurements",
-                "Uses_Notes_NLP",
-                "Uses_Observations",
-                "Uses_Procedures",
-                "Uses_Visits"
+                "avg_sensitivity",
+                "avg_specificity",
+                "avg_ppv",
+                "avg_npv",
+                "avg_acc",
+                "avg_f1",
+                "avg_inc"
               ),
               status = "info",
               shape = "square",
@@ -435,24 +481,6 @@ shinyServer(function(input, output, session) {
               thick = TRUE,
               animation = "tada"
             ),
-
-            # Demographic Dependencies
-            prettyCheckboxGroup("demographic_boxes",
-              "Demographic Dependencies:",
-              choiceNames = c(
-                "Gender",
-                "Age"
-              ),
-              choiceValues = c(
-                "Uses_Gender",
-                "Uses_Age_Category"
-              ),
-              status = "info",
-              shape = "square",
-              outline = TRUE,
-              thick = TRUE,
-              animation = "tada"
-            )
           )
         )
       ))
