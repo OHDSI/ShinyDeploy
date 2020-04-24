@@ -163,10 +163,10 @@ keep <- c("name", "email", "position", "institution", "ohdsi_forum_handle",
           "orcid", "provenance_book", "provenance_chapter", 
           "provenance_rationale", "coh_therapeutic_areas_book", 
           "coh_tags_book", "coh_tags_chapter")
-undo_p <- setdiff(names(phe), test)
-undo_v <- setdiff(names(val), test)
-undo_ci <- setdiff(names(cit), test)
-undo_ch <- setdiff(names(cha), test)
+undo_p <- setdiff(names(phe), keep)
+undo_v <- setdiff(names(val), keep)
+undo_ci <- setdiff(names(cit), keep)
+undo_ch <- setdiff(names(cha), keep)
 
 for (i in undo_p){
   phe[,i] <- unlist(phe[,i])
