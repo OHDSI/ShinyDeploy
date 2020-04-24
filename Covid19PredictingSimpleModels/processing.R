@@ -118,8 +118,8 @@ summaryPlpAnalyses <- function(analysesLocation){
       valSettings <- settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
                                  'populationSettingId','modelSettingName','addExposureDaysToStart',
                                  'riskWindowStart', 'addExposureDaysToEnd',
-                                 'riskWindowEnd')]
-      valSettings$devDatabase <- settings$devDatabase[1]  
+                                 'riskWindowEnd','devDatabase')]
+      #valSettings$devDatabase <- settings$devDatabase[1]  
       valPerformance <- merge(valSettings,
                               valPerformance, by='analysisId')
       valPerformance <- valPerformance[,colnames(devPerformance)] # make sure same order
