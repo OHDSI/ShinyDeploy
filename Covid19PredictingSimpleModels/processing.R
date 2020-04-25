@@ -21,6 +21,12 @@ getSummary  <- function(result,inputType,validation){
     sumTab <- summaryPlpAnalyses(result)
   } 
   
+  #remove empty rows
+  emptyInd <- is.na(sumTab[,'AUC'])
+  if(sum(emptyInd)>0){
+    sumTab <- sumTab[!emptyInd,]
+  }
+  
   sumTab <- sumTab[,c('analysisId','devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','riskWindowStart', 'riskWindowEnd', 'AUC','AUPRC', 'populationSize','outcomeCount','incidence',
                       'addExposureDaysToStart','addExposureDaysToEnd','plpResultLocation', 'plpResultLoad')]
   colnames(sumTab) <- c('Analysis','Dev', 'Val', 'T', 'O','Model', 'TAR start', 'TAR end', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')
