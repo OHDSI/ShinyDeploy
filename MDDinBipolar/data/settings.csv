@@ -1,0 +1,2 @@
+outcomeId,cohortId,modelSettingsId,analysisId,devDatabase,populationSettingId,modelSettingId,covariateSettingId,modelSettingName,addExposureDaysToStart,riskWindowStart,addExposureDaysToEnd,riskWindowEnd,plpDataFolder,studyPopFile,plpResultFolder,cohortName,outcomeName
+7746,12292,1,1,mdcd_ccae_optum,1,1,1,Simple Model,0,1,0,365,'NA','NA','NA',First MDD aged 10 or older,Persons newly diagnosed with bipolar disorder
