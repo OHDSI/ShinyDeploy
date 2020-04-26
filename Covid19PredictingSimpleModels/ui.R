@@ -35,6 +35,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
+                                        shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")),
                                         shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
@@ -54,6 +55,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         ),
                                         
                                         # First tab content
+                                        shinydashboard::tabItem(tabName = "Description",
+                                                                shiny::includeMarkdown(path = "./www/shinyDescription.md")
+                                                                
+                                        ),
                                         shinydashboard::tabItem(tabName = "Summary",
                                                                 
                                                                 shiny::fluidRow(
