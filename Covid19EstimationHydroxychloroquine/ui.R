@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Safety of hydroxychloroquine alone and in combination with azithromycin: a multi-national study", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Risk of hydroxychloroquine, alone and in combination with azithromycin: a multi-national study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -35,8 +35,9 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine</a></li>"),
-                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents</a></li>"),
+                                 HTML("<li>This study was registered at ENCePP (EU PAS Register number EUPAS34497): <a href=\"http://www.encepp.eu/encepp/viewResource.htm?id=34498\">http://www.encepp.eu/encepp/viewResource.htm?id=34498</a></li>"),
+                                 HTML("<li>The full study protocol is available at:  <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine/tree/master/documents</a></li>"),
+                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine\">https://github.com/ohdsi-studies/Covid19EstimationHydroxychloroquine</a></li>"),
                                  HTML("</ul>")
                         ),
                         tabPanel("Explore results",
