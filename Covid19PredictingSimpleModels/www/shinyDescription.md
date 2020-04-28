@@ -1,10 +1,19 @@
-***OHDSI Covid-19 Simple Models Results ***
+***OHDSI Covid-19 Simple Models Results***
+
 This shiny application contains the results of the simple models that were developed to assess the performance loss that occurs on various OHDSI COVID19 prediction problems.
 
 During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors.
 
 ### Development Status: Under Development
+Study lead: **Jenna Reps, Ross Williams, Peter Rijnbeek**
+Study lead forums tag: **[jreps](https://forums.ohdsi.org/u/jreps), [RossW](https://forums.ohdsi.org/u/RossW), [Rijnbeek](https://forums.ohdsi.org/u/Rijnbeek)**
 
+
+Database Information:
+
+Development Database: OptumDoD, MDCR 
+
+Validation Databases: AUSOM, CCAE, MDCD, MDCR, JMDC, IPCI, optumEhr, optumDoD
 Below is the abstract of the manuscript that summarizes the findings:
 
 Background:
