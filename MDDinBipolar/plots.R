@@ -90,12 +90,10 @@ plotCovariateSummary <- function(covariateSummary){
   covariateSummary$size <- 4+4*covariateSummary$size/max(covariateSummary$size)
   
   # color based on analysis id
-  covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ' ')[[1]][1]))
-  
-  covariateSummary$times <- sapply(sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), 'during day ')[[1]][2])),function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][1]))
-  covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][2]))
-  
-  
+   covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, 'Age','Condition'))
+   covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) strsplit(as.character(x),'days before:')[[1]][1])
+   covariateSummary$times <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, '', paste0('days before:', strsplit(as.character(x), 'days before:')[[1]][2])))
+   
   l <- list(x = 0.01, y = 1,
             font = list(
               family = "sans-serif",
