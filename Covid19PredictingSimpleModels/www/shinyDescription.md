@@ -6,6 +6,7 @@ During manuscript development and the subsequent review period, these results ar
 
 ### Development Status: Under Development
 Study lead: **Jenna Reps, Ross Williams, Peter Rijnbeek**
+
 Study lead forums tag: **[jreps](https://forums.ohdsi.org/u/jreps), [RossW](https://forums.ohdsi.org/u/RossW), [Rijnbeek](https://forums.ohdsi.org/u/Rijnbeek)**
 
 
