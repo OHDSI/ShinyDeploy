@@ -30,7 +30,7 @@ server <- shiny::shinyServer(function(input, output, session) {
   print(summaryTable)
   
   # need to remove over columns:
-  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
+  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad','Dev')],
                                                            rownames= FALSE, selection = 'single'))
   
   selectedRow <- shiny::reactive({

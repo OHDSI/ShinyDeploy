@@ -59,7 +59,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 shiny::fluidRow(
                                                                   shiny::column(2, 
                                                                                 shiny::h4('Filters'),
-                                                                                shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
                                                                                 shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
                                                                                 shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
                                                                                 shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
