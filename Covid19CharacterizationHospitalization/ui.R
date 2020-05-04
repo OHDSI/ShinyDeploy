@@ -1,5 +1,5 @@
 library(shiny)
-library(shinydashboard)
+library(shinydashboard) 
 library(DT)
 
 addInfo <- function(item, infoId) {
@@ -14,27 +14,35 @@ addInfo <- function(item, infoId) {
 
 dashboardPage(
   dashboardHeader(
-      title = "OHDSI COVID and Influenza Hospitalization Characterization",
-      titleWidth = 450,
+      title = "OHDSI characterisation of hospitalised adults with COVID-19 and influenza",
+      titleWidth = 850,
       tags$li(div(img(src = 'logo.png',
-                      title = "OHDSI COVID Characterization", height = "40px", width = "40px"),
+                      title = "OHDSI characterisation of hospitalised adults with COVID-19 and influenza", 
+                      height = "40px", 
+                      width = "40px"),
                   style = "padding-top:0px; padding-bottom:0px;"),
               class = "dropdown")    
   ),
   dashboardSidebar(
     sidebarMenu(id = "tabs",
-                addInfo(menuItem("About", tabName = "about"), "aboutInfo"),
-                addInfo(menuItem("Databases", tabName = "databases"), "databaseInfo"),
-                if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
+                menuItem("About", tabName = "about"),
+                #addInfo(menuItem("About", tabName = "about"), "aboutInfo"),
+                menuItem("Databases", tabName = "databases"), 
+                #addInfo(menuItem("Databases", tabName = "databases"), "databaseInfo"),
+                menuItem("Cohorts", tabName = "cohortDescriptions"),                
+                menuItem("Cohort Counts", tabName = "cohortCounts"),
+               # if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 #if (exists("incidenceRate")) addInfo(menuItem("Incidence Rate", tabName = "incidenceRate"), "incidenceRateInfo"),
                 #if (exists("timeDistribution")) addInfo(menuItem("Time Distributions", tabName = "timeDistribution"), "timeDistributionInfo"),
                 #if (exists("includedSourceConcept")) addInfo(menuItem("Included (Source) Concepts", tabName = "includedConcepts"), "includedConceptsInfo"),
                 #if (exists("orphanConcept")) addInfo(menuItem("Orphan (Source) Concepts", tabName = "orphanConcepts"), "orphanConceptsInfo"),
                 #if (exists("inclusionRuleStats")) addInfo(menuItem("Inclusion Rule Statistics", tabName = "inclusionRuleStats"), "inclusionRuleStatsInfo"),
                 #if (exists("indexEventBreakdown")) addInfo(menuItem("Index Event Breakdown", tabName = "indexEventBreakdown"), "indexEventBreakdownInfo"),
-                if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
+              if (exists("covariateValue")) menuItem("Cohort Characteristics", tabName = "cohortCharacterization"), 
+               #if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
                 #if (exists("cohortOverlap")) addInfo(menuItem("Cohort Overlap", tabName = "cohortOverlap"), "cohortOverlapInfo"),
-                if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
+              if (exists("covariateValue")) menuItem("Compare Cohort Characteristics", tabName = "compareCohortCharacterization"),
+        #       if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
                 conditionalPanel(condition = "input.tabs!='incidenceRate' & input.tabs!='timeDistribution' & input.tabs!='cohortCharacterization' & input.tabs!='cohortCounts' & input.tabs!='indexEventBreakdown'",
                                  selectInput("database", "Database", database$databaseId, selectize = FALSE)
                 ),
@@ -62,6 +70,9 @@ dashboardPage(
       tabItem(
         tabName = "databases",
         includeHTML("./html/databasesInfo.html")
+      ),
+      tabItem(tabName = "cohortDescriptions",
+        includeHTML("./html/cohortDescriptions.html")
       ),
       tabItem(tabName = "cohortCounts",
               dataTableOutput("cohortCountsTable")
@@ -114,13 +125,14 @@ dashboardPage(
               tags$table(style = "width: 100%",
                          tags$tr(
                            tags$td(valign = "bottom",
-                              radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
+                              radioButtons("charType", "", c("Summary table", "All covariates"), 
+                                           selected = "Summary table", inline = TRUE)
                            ),
                            tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;")),
                               tags$td(valign = "bottom", style = "text-align: right",
-                                  conditionalPanel(condition = "input.charType=='Raw'", 
+                                  conditionalPanel(condition = "input.charType=='All covariates'", 
                                       radioButtons("rawCharSubType", "", c("Binary", "Continuous"), selected = "Binary", inline = TRUE)
-                                  ),
+                                  )
                            )
                          )),
               dataTableOutput("characterizationTable")
@@ -139,25 +151,25 @@ dashboardPage(
               tags$table(style = "width: 100%",
                          tags$tr(
                            tags$td(valign = "bottom",
-                                   radioButtons("charCompareType", "", c("Pretty table", "Raw table", "Plot"), selected = "Pretty table", inline = TRUE),
+                                   radioButtons("charCompareType", "", c("Summary table", "All covariates", "Plot"), selected = "Summary table", inline = TRUE)
                            ),
                            tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;")),
                            tags$td(valign = "bottom", style = "text-align: right",
-                                   conditionalPanel(condition = "input.charCompareType=='Raw table'", 
+                                   conditionalPanel(condition = "input.charCompareType=='All covariates'", 
                                                     radioButtons("rawCharCompareSubType", "", c("Binary", "Continuous"), selected = "Binary", inline = TRUE)
-                                   ),
+                                   )
                            )
                          )),
-              conditionalPanel(condition = "input.charCompareType=='Pretty table' | input.charCompareType=='Raw table'",
+              conditionalPanel(condition = "input.charCompareType=='Summary table' | input.charCompareType=='All covariates'",
                                dataTableOutput("charCompareTable")
               ),
               conditionalPanel(condition = "input.charCompareType=='Plot'",
                                box(
-                                 title = "Compare Cohort Characterization", width = NULL, status = "primary",
+                                 width = NULL, status = "primary",
                                  htmlOutput("hoverInfoCharComparePlot"),
-                                 plotOutput("charComparePlot", height = 700, hover = hoverOpts("plotHoverCharCompare", delay = 100, delayType = "debounce"))
+                                 plotOutput("charComparePlot", height = 700, hover = hoverOpts("plotHoverCharCompare", delay = 100, delayType = "debounce")) 
                                )
-              )
+              ) 
       )
     )
   )
