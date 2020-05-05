@@ -13,10 +13,24 @@ buildPhenotypeMarkdown <- function(dat) {
     collapse = "\n"
   )
   
+  # Define variables to be replaced. If NA, then replace with string NA
+  Book_Description <- dat$coh_book_clinical_description ; Book_Description <- ifelse(is.na(Book_Description), "NA", Book_Description)
+  
+  # For tracking the data elements at the time of call
+  df_debug <<- dat
+  
+  md_template <- gsub(pattern = "<Phenotype_Title>", replacement = dat$Book, x = md_template)
+  md_template <- gsub(pattern = "<Phenotype_Description>", replacement = Book_Description, x = md_template)
+  
+  md_template <- gsub(pattern = "<Phenotype_Title_Link>", replacement = gsub(" ", "%20", dat$Book, fixed = TRUE), x = md_template)
+  md_template <- gsub(pattern = "<Cohort_Definition_Title_Link>", replacement = gsub(" ", "%20", dat$coh_chapter_title, fixed = TRUE), x = md_template)
+  
   md_template <- gsub(pattern = "<Title>", replacement = dat$coh_chapter_title, x = md_template)
-  md_template <- gsub("<Authors_And_Affiliations>", dat$Authors_And_Affiliations, md_template)
-  md_template <- gsub("<Date_Of_Submission>", as.Date(strsplit(dat[["timestamp"]], "-")[[1]][1], "%Y%m%d"), md_template)
-  md_template <- gsub("<Modality>", dat[["coh_phenotype_modality"]], md_template)
+  md_template <- gsub("<Authors_And_Affiliations>", dat$Authors_And_Affiliations, x = md_template)
+  md_template <- gsub("<Date_Of_Submission>", as.Date(strsplit(dat[["timestamp"]], "-")[[1]][1], "%Y%m%d"), x = md_template)
+  md_template <- gsub("<Modality>", dat[["coh_phenotype_modality"]], x = md_template)
+  
+  md_template <- gsub(pattern = "<Development_Methodology>", replacement = dat$coh_development_process, x = md_template)
 
   # Perform direct substitutions on most variables
   #for (term in names(dat)[!(names(dat) %in% c("Authors_And_Affiliations", "Provenance_Hashes", "Provenance_Reasons"))]) {
@@ -204,14 +218,12 @@ buildVisNetwork <- function(phe_data) {
   # %>% visConfigure()
 } # End buildVisNetwork
 
-# Create a tabsetPanel() that contains all of the details for the selected chapter
-makeChapterPage <- function(name) {
+# Create a tabsetPanel() that contains all of the details for the selected book/chapter
+makeChapterPage <- function(selected_book, selected_chapter){
   
-  x <- name
-
   # Subset data to the selected chapter
-  phe_data <- subset(phe, coh_chapter_title == x)
-  val_data <- subset(val, validation_chapter_selection == x)
+  phe_data <- subset(phe, (Book == selected_book) & (coh_chapter_title == selected_chapter))
+  val_data <- subset(val, (validation_book_selection == selected_book) & (validation_chapter_selection == selected_chapter))
 
   # Make tabsetPanel
   return(
@@ -276,9 +288,10 @@ shinyServer(function(input, output, session) {
       rows_selected <- input$chapterTable_rows_selected
 
       # Only display if there are an appropriate number of chapters selected and a book selected
-      if (length(rows_selected) >= x & isTruthy(input$book_search)) {
-        chapterData <- subset(phe, Book == input$book_search, select = "coh_chapter_title")
-        menuItem(chapterData[rows_selected[x], ], tabName = paste0("tab", x), icon = icon("square"))
+      if (length(rows_selected) >= x) { 
+        
+        selectedChapterData <- phe[rows_selected[x], ]
+        menuItem(selectedChapterData$coh_chapter_title, tabName = paste0("tab", x), icon = icon("square"))
       } else {
         h1("") # Can't be NULL - using h1() to force refresh
       }
@@ -290,9 +303,10 @@ shinyServer(function(input, output, session) {
     output[[paste0("tab", x)]] <- renderUI({
       # Only render if the appropriate number of selections has been made
       rows_selected <- input$chapterTable_rows_selected
+      selectedChapterData <- phe[rows_selected[x], ]
+      
       if (length(rows_selected) >= x) {
-        chapterData <- subset(phe, Book == input$book_search, select = "coh_chapter_title")
-        makeChapterPage(chapterData[rows_selected[x], ])
+        makeChapterPage(selectedChapterData$Book, selectedChapterData$coh_chapter_title)
       }
     })
   })
@@ -334,183 +348,164 @@ shinyServer(function(input, output, session) {
     # All checked boxes will be used to determine the columns in the datatable
     # At a minimum, Title is always present - This data elements is not selectable
     selectedColumns <- c(
+      "Book",
       "coh_chapter_title",
       input$metadata_boxes,
       input$frequency_boxes,
       input$owner_metric_boxes
-      #input$outside_val_boxes
-      #input$metric_boxes,
-      #input$source_data_boxes,
-      #input$demographic_boxes
     )
 
     chapterData <- subset(phe,
-      Book == input$book_search,
-      select = selectedColumns
-    )
+                          select = selectedColumns)
+    names(chapterData)[1:2] <- c("Phenotype", "Cohort Definition")
 
     return(chapterData)
   }
 
-  # Make a box of filters to allow for custom datatable build
+  # Make a dropdownButton of filters to allow for custom datatable build
   output$chapterFilters <- renderUI({
-
-    # Render only if a book has been selected
-    if (isTruthy(input$book_search)) {
-      fluidRow(column(
-        width = 12,
-        box(
-          title = "Select Table Features here",
-          width = 6,
-          status = "primary",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          column(
-            width = 4,
-
-            # Metadata
-            prettyCheckboxGroup("metadata_boxes",
-              "Chapter Metadata",
-              choiceNames = c(
-                "Author and Affiliation(s)",
-                "Date of Submission",
-                "Algorithm Modality",
-                "OHDSI Forum Handle",
-                "ORCID"
-              ),
-              choiceValues = c(
-                "Authors_And_Affiliations",
-                "timestamp",
-                "coh_phenotype_modality",
-                "ohdsi_forum_handle",
-                "orcid"
-              ),
-              status = "info",
-              shape = "square",
-              outline = TRUE,
-              thick = TRUE,
-              animation = "tada"
-            )
+    
+    dropdownButton(
+      
+      fluidRow(
+        column(
+          width = 4,
+          
+          # Metadata
+          prettyCheckboxGroup("metadata_boxes",
+                              "Chapter Metadata",
+                              choiceNames = c(
+                                "Author and Affiliation(s)",
+                                "Date of Submission",
+                                "Algorithm Modality",
+                                "OHDSI Forum Handle",
+                                "ORCID"
+                              ),
+                              choiceValues = c(
+                                "Authors_And_Affiliations",
+                                "timestamp",
+                                "coh_phenotype_modality",
+                                "ohdsi_forum_handle",
+                                "orcid"
+                              ),
+                              status = "info",
+                              shape = "square",
+                              outline = TRUE,
+                              thick = TRUE,
+                              animation = "tada"
+          )
+        ),
+        
+        column(
+          width = 4,
+          
+          # Validation Frequency (Selected by default)
+          prettyCheckboxGroup("frequency_boxes",
+                              "Frequency of Use:",
+                              choiceNames = c(
+                                "Times Validated",
+                                "Times Cited",
+                                "Times Characterized"
+                              ),
+                              choiceValues = c(
+                                "Times_Validated",
+                                "Times_Cited",
+                                "Times_Characterized"
+                              ),
+                              selected = "Times_Validated",
+                              status = "info",
+                              shape = "square",
+                              outline = TRUE,
+                              thick = TRUE,
+                              animation = "tada"
           ),
-
-          column(
-            width = 4,
-
-            # Validation Frequency (Selected by default)
-            prettyCheckboxGroup("frequency_boxes",
-              "Frequency of Use:",
-              choiceNames = c(
-                "Times Validated",
-                "Times Cited",
-                "Times Characterized"
-              ),
-              choiceValues = c(
-                "Times_Validated",
-                "Times_Cited",
-                "Times_Characterized"
-              ),
-              selected = "Times_Validated",
-              status = "info",
-              shape = "square",
-              outline = TRUE,
-              thick = TRUE,
-              animation = "tada"
-            ),
-
-            # Validation Metrics
-            prettyCheckboxGroup("owner_metric_boxes",
-              "Owner Validation Metrics:",
-              choiceNames = c(
-                "CDM Version",
-                "Vocabulary Version",
-                "Validation Modality",
-                "Sensitivity",
-                "Specificity",
-                "PPV",
-                "NPV",
-                "Accuracy",
-                "F1 Score",
-                "Inconclusive"
-              ),
-              choiceValues = c(
-                "coh_cdm_version",
-                "coh_vocab_version",
-                "coh_validation_modality",
-                "coh_sensitivity",
-                "coh_specificity",
-                "coh_ppv",
-                "coh_npv",
-                "coh_accuracy",
-                "coh_f1",
-                "coh_inconclusive"
-              ),
-              status = "info",
-              shape = "square",
-              outline = TRUE,
-              thick = TRUE,
-              animation = "tada"
-            )
-          ),
-
-          # Data Dependencies
-          column(
-            width = 4,
-            prettyCheckboxGroup("outside_val_boxes",
-              "Outside Validation Metrics:",
-              choiceNames = c(
-                "Sensitivity",
-                "Specificity",
-                "PPV",
-                "NPV",
-                "Accuracy",
-                "F1 Score",
-                "Inconclusive"
-              ),
-              choiceValues = c(
-                "avg_sensitivity",
-                "avg_specificity",
-                "avg_ppv",
-                "avg_npv",
-                "avg_acc",
-                "avg_f1",
-                "avg_inc"
-              ),
-              status = "info",
-              shape = "square",
-              outline = TRUE,
-              thick = TRUE,
-              animation = "tada"
-            ),
+          
+          # Validation Metrics
+          prettyCheckboxGroup("owner_metric_boxes",
+                              "Owner Validation Metrics:",
+                              choiceNames = c(
+                                "CDM Version",
+                                "Vocabulary Version",
+                                "Validation Modality",
+                                "Sensitivity",
+                                "Specificity",
+                                "PPV",
+                                "NPV",
+                                "Accuracy",
+                                "F1 Score",
+                                "Inconclusive"
+                              ),
+                              choiceValues = c(
+                                "coh_cdm_version",
+                                "coh_vocab_version",
+                                "coh_validation_modality",
+                                "coh_sensitivity",
+                                "coh_specificity",
+                                "coh_ppv",
+                                "coh_npv",
+                                "coh_accuracy",
+                                "coh_f1",
+                                "coh_inconclusive"
+                              ),
+                              status = "info",
+                              shape = "square",
+                              outline = TRUE,
+                              thick = TRUE,
+                              animation = "tada"
+          )
+        ),
+        
+        # Data Dependencies
+        column(
+          width = 4,
+          prettyCheckboxGroup("outside_val_boxes",
+                              "Outside Validation Metrics:",
+                              choiceNames = c(
+                                "Sensitivity",
+                                "Specificity",
+                                "PPV",
+                                "NPV",
+                                "Accuracy",
+                                "F1 Score",
+                                "Inconclusive"
+                              ),
+                              choiceValues = c(
+                                "avg_sensitivity",
+                                "avg_specificity",
+                                "avg_ppv",
+                                "avg_npv",
+                                "avg_acc",
+                                "avg_f1",
+                                "avg_inc"
+                              ),
+                              status = "info",
+                              shape = "square",
+                              outline = TRUE,
+                              thick = TRUE,
+                              animation = "tada"
           )
         )
-      ))
-    }
-  }) # End chapterFilters
+      )
+      
+      , circle = TRUE, 
+      status = "danger", 
+      icon = icon("gear"), 
+      width = "1000px",
+      tooltip = tooltipOptions(title = "Add/Remove Features")
+    )
+    
+  })
 
   # Render datatable of chapter selections
   output$chapterSelect <- renderUI({
 
-    # Render the chapter menu only if a book has first been selected
-    if (isTruthy(input$book_search)) {
-
       # Acquire chapter data given the currently selected book
       chapterData <- getChapterData()
-
-      # Display datatable
+            
       fluidRow(
-        column(
-          width = 12,
-          box(
-            title = NULL,
-            width = NULL,
-            status = "warning",
-            h3("Select one or more Chapters from the Book."),
-            h5('A "Chapter" is a cohort definition (and associated metadata) intended to approximate the above health state (book).'),
-            h5("Selected chapters will appear on the left. Click to view chapter details."),
-            datatable(
+        datatable(
               data = chapterData,
-              # If there's only one entry, then disable the filter
-              filter = ifelse(nrow(chapterData) > 1, "top", "none"),
+              filter = "top",
               elementId = "chapterTable",
               class = "hover",
               rownames = FALSE,
@@ -522,9 +517,6 @@ shinyServer(function(input, output, session) {
                 autoWidth = FALSE
               )
             )
-          )
-        )
       )
-    }
   }) # End chapterSelect
 }) # End shinyServer
