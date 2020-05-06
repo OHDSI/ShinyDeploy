@@ -86,63 +86,72 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
     databaseIds <- unique(data$databaseId)
-    table <- data[data$databaseId == databaseIds[1], c("cohortId", "cohortEntries", "cohortSubjects")]
-    colnames(table)[2:3] <- paste(colnames(table)[2:3], databaseIds[1], sep = "_")
+    table <- data[data$databaseId == databaseIds[1], c("cohortId","cohortSubjects")]
+    colnames(table)[2] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
     if (length(databaseIds) > 1) {
       for (i in 2:length(databaseIds)) {
-        temp <- data[data$databaseId == databaseIds[i], c("cohortId", "cohortEntries", "cohortSubjects")]
-        colnames(temp)[2:3] <- paste(colnames(temp)[2:3], databaseIds[i], sep = "_")
+        temp <- data[data$databaseId == databaseIds[i], c("cohortId", "cohortSubjects")]
+        colnames(temp)[2] <- paste(colnames(temp)[2], databaseIds[i], sep = "_")
         table <- merge(table, temp, all = TRUE)
       }
     }
     table <- merge(cohort, table, all.x = TRUE)
     table$cohortId <- NULL
     table$cohortName <- NULL
-
     
+    table <- with(table,  table[order(table$cohortFullName) , ])
+
+
     sketch <- htmltools::withTags(table(
       class = 'display',
       thead(
         tr(
           th(rowspan = 2, 'Cohort'),
-          lapply(databaseIds, th, colspan = 2, class = "dt-center")
+          lapply(databaseIds, th, colspan = 1, class = "dt-center")
         ),
         tr(
-          lapply(rep(c("Entries", "Subjects"), length(databaseIds)), th)
+          lapply(rep(c("Subjects"), length(databaseIds)), th)
         )
       )
     ))
-    
-    options = list(pageLength = 25,
-                   searching = TRUE,
+
+    options = list(#pageLength = 25,
+                   lengthChange=FALSE,
+                   searching = FALSE,
                    lengthChange = TRUE,
                    ordering = TRUE,
-                   paging = TRUE,
-                   info = TRUE,
-                   columnDefs = list(minCellCountDef(2:(2*length(databaseIds) - 1))))
-    
+                   paging = FALSE,
+                   info = FALSE,
+                   columnDefs = list(minCellCountDef(1:(length(databaseIds) - 1))))
+
     dataTable <- datatable(table,
                            options = options,
                            rownames = FALSE,
-                           container = sketch, 
+                           container = sketch,
                            escape = FALSE,
                            class = "stripe nowrap compact")
+    
     for (i in 1:length(databaseIds)) {
       dataTable <- formatStyle(table = dataTable,
-                               columns = i*2,
-                               background = styleColorBar(c(0, max(table[, i*2], na.rm = TRUE)), "lightblue"),
+                               columns = i+1,
+                               background = styleColorBar(c(0, max(table[, i+1], na.rm = TRUE)), "lightblue"),
                                backgroundSize = "98% 88%",
                                backgroundRepeat = "no-repeat",
                                backgroundPosition = "center")
       dataTable <- formatStyle(table = dataTable,
-                               columns = i*2 + 1,
-                               background = styleColorBar(c(0, max(table[, i*2 + 1], na.rm = TRUE)), "#ffd699"),
+                               columns = i + 1,
+                               background = styleColorBar(c(0, max(table[, i + 1], na.rm = TRUE)), "#ffd699"),
                                backgroundSize = "98% 88%",
                                backgroundRepeat = "no-repeat",
                                backgroundPosition = "center")
     }
     return(dataTable)
   })
+  
+  
+
+  
+  
   
   filteredIncidenceRates <- reactive({
     data <- incidenceRate[incidenceRate$cohortId == cohortId() & 
@@ -452,7 +461,7 @@ shinyServer(function(input, output, session) {
     data$cohortId <- NULL
     databaseIds <- unique(data$databaseId)
 
-    if (input$charType == "Pretty") {
+    if (input$charType == "Summary table") {
       data <- merge(data, covariate)
       table <- data[data$databaseId == databaseIds[1], ]
       table <- prepareTable1(table)
@@ -656,7 +665,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
 
-    if (input$charCompareType == "Pretty table") {
+    if (input$charCompareType == "Summary table") {
       balance <- merge(balance, covariate[, c("covariateId", "covariateAnalysisId")])
       table <- prepareTable1Comp(balance)
       options = list(pageLength = 999,
@@ -747,7 +756,8 @@ shinyServer(function(input, output, session) {
       ggplot2::geom_vline(xintercept = 0) +             
       ggplot2::scale_x_continuous("Mean Target", limits = c(0, 1)) +
       ggplot2::scale_y_continuous("Mean Comparator", limits = c(0, 1)) +
-      ggplot2::scale_color_gradient("Absolute\nStd. Diff.", low = "blue", high = "red", space = "Lab", na.value = "red")
+      ggplot2::scale_color_gradient("Absolute\nStd. Diff.", low = "blue", high = "red", space = "Lab", na.value = "red")+
+      ggplot2::theme_minimal()
     return(plot)
   }, res = 100)
   

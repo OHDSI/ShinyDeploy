@@ -74,35 +74,41 @@ shinyUI(
                 fluidRow(column(
                   width = 12,
                   box(
-                    title = NULL,
-                    width = NULL,
+                    title = "Select a Resource from the Library",
+                    width = NULL, #TODO: Try 12 to see if the table can be expanded
                     status = "primary",
                     # uiOutput("filtered_phenotypes")
-                    h3("Select a Book from the Library:"),
-                    h5('A library "Book" represents a desired health state.'),
-                    selectizeInput("book_search",
-                      label = "",
-                      choices = sort(unique(books)),
-                      selected = NULL,
-                      multiple = FALSE,
-                      options = list(
-                        onInitialize = I('function() { this.setValue(""); }')
-                      )
+                    h4("Selected rows will appear in the sidebar, where they can be further explored."),
+                    uiOutput("chapterFilters"),
+                    #uiOutput("filtered_phenotypes"),
+                    uiOutput("chapterSelect") # Make datatable of chapter selections
+
+                    #h5('A library "Book" represents a desired health state.'),
+                    # selectizeInput("book_search",
+                    #   label = "",
+                    #   choices = sort(unique(books)),
+                    #   selected = NULL,
+                    #   multiple = FALSE,
+                    #   options = list(
+                    #     onInitialize = I('function() { this.setValue(""); }')
+                    #   )
                       # ,
                       # options = list(maxItems = 5)
                     )
                   )
-                )),
+                )
+                ),
 
                 # When a book is selected, display the book description (nested between lines)
                 uiOutput("conditionalHR2"),
                 uiOutput("bookDescription"),
-                uiOutput("conditionalHR3"),
+                uiOutput("conditionalHR3")
 
                 # Chapter selection
-                uiOutput("chapterFilters"), # Make filters to allow for custom data table build
-                uiOutput("chapterSelect") # Make datatable of chapter selections
-              )
+                # TODO: Bring this in as a gear for the table
+                #uiOutput("chapterFilters") #, # Make filters to allow for custom data table build
+                #uiOutput("chapterSelect") # Make datatable of chapter selections
+              #)
             ), # End Find
 
             # Phenotype(s) 1-10
