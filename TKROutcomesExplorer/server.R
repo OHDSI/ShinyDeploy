@@ -20,299 +20,251 @@ library(shiny)
 library(plotly)
 library(shinycssloaders)
 
-source("utils.R")
+source("helpers.R")
 source("plots.R")
 
-shiny::shinyServer(function(input, output, session) {
-  session$onSessionEnded(stopApp)
-  # reactive values - contains the location of the plpResult
-  ##reactVars <- shiny::reactiveValues(resultLocation=NULL,
-  ##                                   plpResult= NULL)
-#=============
-    
-    summaryData <- shiny::reactive({
-      ind <- 1:nrow(allPerformance)
-      if(input$devDatabase!='All'){
-        ind <- intersect(ind,which(as.character(allPerformance$devDatabase)==input$devDatabase))
-      }
-      if(input$valDatabase!='All'){
-        ind <- intersect(ind,which(as.character(allPerformance$valDatabase)==input$valDatabase))
-      }
-      if(input$T!='All'){
-        ind <- intersect(ind,which(allPerformance$cohortName==input$T))
-      }
-      if(input$O!='All'){
-        ind <- intersect(ind,which(allPerformance$outcomeName==input$O))
-      }
-      if(input$modelSettingName!='All'){
-        ind <- intersect(ind,which(as.character(allPerformance$modelSettingName)==input$modelSettingName))
-      }
-      if(input$riskWindowStart!='All'){
-        ind <- intersect(ind,which(allPerformance$riskWindowStart==input$riskWindowStart))
-      }
-      if(input$riskWindowEnd!='All'){
-        ind <- intersect(ind,which(allPerformance$riskWindowEnd==input$riskWindowEnd))
-      }
-      
-      ind
-    })
-    
-    
-    
-    output$summaryTable <- DT::renderDataTable(DT::datatable(formatPerformance[summaryData(),!colnames(formatPerformance)%in%c('addExposureDaysToStart','addExposureDaysToEnd')],
-                                                             rownames= FALSE, selection = 'single'))
-    
-    
-    dataofint <- shiny::reactive({
-      if(is.null(input$summaryTable_rows_selected[1])){
-        ind <- 1
-      }else{
-        ind <- input$summaryTable_rows_selected[1]
-      }
-      
-      loc <- plpResultLocation[summaryData(),][ind,]$plpResultLocation
-      logLocation <- gsub('validationResult.rds','plpLog.txt',gsub('plpResult.rds','plpLog.txt', as.character(loc)))
-      if(file.exists(logLocation)){
-        txt <- readLines(logLocation)
-      } else{
-        txt <- 'log not available'
-      }
-      
-      covariates <- NULL
-      population <- NULL
-      modelset <- NULL
-     
-       if(file.exists(as.character(loc))){
-        eval <- readRDS(as.character(loc))
-        # rounding values to 2dp
-        for(coln in c('covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome')){
-          eval$covariateSummary[,coln] <- format(round(eval$covariateSummary[,coln], 2), nsmall = 2)
-          class(eval$covariateSummary[,coln]) <- "numeric"
-          }
-        
-      } else{
-        eval <- NULL
-      }
-      if(length(grep('/Validation',loc))>0){
-        type <- 'validation' }else{
-        type <- 'test'
-        }
-
-      if(!is.null(eval)){
-        covariates <- eval$model$metaData$call$covariateSettings
-        population <- eval$model$populationSettings
-        covariates <- data.frame(covariateName = names(covariates), 
-                                 SettingValue = unlist(lapply(covariates, 
-                                                              function(x) paste0(x, 
-                                                                                 collapse='-')))
-        )
-        population$attrition <- NULL # remove the attrition as result and not setting
-        population <- data.frame(Setting = names(population), 
-                                 Value = unlist(lapply(population, 
-                                                       function(x) paste0(x, 
-                                                                          collapse='-')))
-        )
-        modelset <- data.frame(Setting = c('Model',names(eval$model$modelSettings[[2]])),
-                               Value = c(eval$model$modelSettings[[1]], unlist(lapply(eval$model$modelSettings[[2]], 
-                                                                                      function(x) paste0(x, collapse=''))))
-        )
-        
-        row.names(covariates) <- NULL
-        row.names(population) <- NULL
-        row.names(modelset) <- NULL
-      }
-      
-      return(list(eval=eval, type=type, 
-                  logtext = txt,
-                  logLocation=logLocation,
-                  covariates = covariates,
-                  population = population,
-                  modelset = modelset))
-    })
-    
-    plotters <- shiny::reactive({
-      
-      eval <- dataofint()$eval$performanceEvaluation
-      if(is.null(eval)){return(NULL)}
-      
-      calPlot <- NULL 
-      rocPlot <- NULL
-      prPlot <- NULL
-      f1Plot <- NULL
-      demoPlot <- NULL
-      boxPlot <- NULL
-      distPlot <- NULL
-      txt <- 'Empty'
-      predictionText <- c()
-      
-      if(!is.null(eval)){
-        intPlot <- plotShiny(eval, input$slider1)
-        rocPlot <- intPlot$roc
-        prPlot <- intPlot$pr
-        f1Plot <- intPlot$f1score
-        threshold <- intPlot$threshold
-        prefthreshold <- intPlot$prefthreshold
-        TP <- intPlot$TP
-        FP <- intPlot$FP
-        TN <- intPlot$TN
-        FN <- intPlot$FN
-        prefdistPlot <- plotPreferencePDF(eval, type=dataofint()$type )
-        prefdistPlot <- prefdistPlot + ggplot2::geom_vline(xintercept=prefthreshold)
-        preddistPlot <- plotPredictedPDF(eval, type=dataofint()$type )
-        preddistPlot <- preddistPlot + ggplot2::geom_vline(xintercept=threshold)
-        boxPlot <-  plotPredictionDistribution(eval, type=dataofint()$type )
-        
-        calPlot <- plotSparseCalibration2(eval, type=dataofint()$type )
-        demoPlot <- tryCatch(plotDemographicSummary(eval, type=dataofint()$type ),
-                             error= function(cond){return(NULL)})
-        
-        if(is.null(input$summaryTable_rows_selected[1])){
-          ind <- 1
-        }else{
-          ind <- input$summaryTable_rows_selected[1]
-        }
-        predictionText <- paste0('Within ', formatPerformance[summaryData(),'T'][ind],
-                                 ' predict who will develop ', formatPerformance[summaryData(),'O'][ind],
-                                 ' during ', formatPerformance[summaryData(),'TAR start'][ind], ' day/s',
-                                 ' after ', ifelse(formatPerformance[summaryData(),'addExposureDaysToStart'][ind]==0, ' cohort start ', ' cohort end '),
-                                 ' and ', formatPerformance[summaryData(),'TAR end'][ind], ' day/s',
-                                 ' after ', ifelse(formatPerformance[summaryData(),'addExposureDaysToEnd'][ind]==0, ' cohort start ', ' cohort end '))
-        
-      }
-
-      twobytwo <- as.data.frame(matrix(c(FP,TP,TN,FN), byrow=T, ncol=2))
-      colnames(twobytwo) <- c('Ground Truth Negative','Ground Truth Positive')
-      rownames(twobytwo) <- c('Predicted Positive','Predicted Negative')
-      
-      performance <- data.frame(Incidence = (TP+FN)/(TP+TN+FP+FN),
-                                Threshold = threshold,
-                                Sensitivity = TP/(TP+FN),
-                                Specificity = TN/(TN+FP),
-                                PPV = TP/(TP+FP),
-                                NPV = TN/(TN+FN))
-      
-      list(rocPlot= rocPlot, calPlot=calPlot, 
-           prPlot=prPlot, f1Plot=f1Plot, 
-           demoPlot=demoPlot, boxPlot=boxPlot,
-           prefdistPlot=prefdistPlot,
-           preddistPlot=preddistPlot, predictionText=predictionText,
-           threshold = format(threshold, digits=5), 
-           twobytwo=twobytwo,
-           performance = performance )
-    })
-    
-    output$performance <- shiny::renderTable(plotters()$performance, 
-                                             rownames = F, digits = 3)
-    output$twobytwo <- shiny::renderTable(plotters()$twobytwo, 
-                                          rownames = T, digits = 0)
-    
-    output$modelTable <- DT::renderDataTable(dataofint()$modelset)
-    output$covariateTable <- DT::renderDataTable(dataofint()$covariates)
-    output$populationTable <- DT::renderDataTable(dataofint()$population)
-    
-    output$info <- shiny::renderText(plotters()$predictionText)
-    output$log <- shiny::renderText( paste(dataofint()$logtext, collapse="\n") )
-    output$threshold <- shiny::renderText(plotters()$threshold)
-    
-    output$roc <- plotly::renderPlotly({
-      plotters()$rocPlot
-    })
-    output$cal <- shiny::renderPlot({
-      plotters()$calPlot
-    })
-    output$pr <- plotly::renderPlotly({
-      plotters()$prPlot
-    })
-    output$f1 <- plotly::renderPlotly({
-      plotters()$f1Plot
-    })
-    output$demo <- shiny::renderPlot({
-      plotters()$demoPlot
-    })
-    output$box <- shiny::renderPlot({
-      plotters()$boxPlot
-    })
-    output$preddist <- shiny::renderPlot({
-      plotters()$preddistPlot
-    })
-    output$prefdist <- shiny::renderPlot({
-      plotters()$prefdistPlot
-    })
-    
-    
-    covs <- shiny::reactive({
-      if(is.null(dataofint()$eval))
-        return(NULL)
-      plotCovariateSummary(dataofint()$eval$covariateSummary)
-    })
-    
-    output$covariateSummaryBinary <- plotly::renderPlotly({ covs()$binary })
-    output$covariateSummaryMeasure <- plotly::renderPlotly({ covs()$meas })
+server <- shiny::shinyServer(function(input, output, session) {
+  session$onSessionEnded(shiny::stopApp)
+  filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
-    
-    output$modelView <- DT::renderDataTable(dataofint()$eval$covariateSummary[,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )],
-                                            colnames = c('Covariate Name', 'Value', 'Outcome Mean', 'Non-outcome Mean'))
+  print(summaryTable)
   
+  # need to remove over columns:
+  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
+                                                           rownames= FALSE, selection = 'single'))
+  
+  selectedRow <- shiny::reactive({
+    if(is.null(input$summaryTable_rows_selected[1])){
+      return(1)
+    }else{
+      return(input$summaryTable_rows_selected[1])
+    }
+  })
+  
+  
+  
+  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,filterIndex(), selectedRow())})
+  
+  # covariate table
+  output$modelView <- DT::renderDataTable(editCovariates(plpResult()$covariateSummary)$table,  
+                                          colnames = editCovariates(plpResult()$covariateSummary)$colnames)
+  
+  
+  output$modelCovariateInfo <- DT::renderDataTable(data.frame(covariates = nrow(plpResult()$covariateSummary),
+                                                              nonZeroCount = sum(plpResult()$covariateSummary$covariateValue!=0)))
+  
+  # Downloadable csv of model ----
+  output$downloadData <- shiny::downloadHandler(
+    filename = function(){'model.csv'},
+    content = function(file) {
+      write.csv(plpResult()$covariateSummary[plpResult()$covariateSummary$covariateValue!=0,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
+                , file, row.names = FALSE)
+    }
+  )
+  
+  # input tables
+  output$modelTable <- DT::renderDataTable(formatModSettings(plpResult()$model$modelSettings  ))
+  output$covariateTable <- DT::renderDataTable(formatCovSettings(plpResult()$model$metaData$call$covariateSettings))
+  output$populationTable <- DT::renderDataTable(formatPopSettings(plpResult()$model$populationSettings))
+  
+  
+  
+  
+  # prediction text
+  output$info <- shiny::renderText(paste0('Within ', summaryTable[filterIndex(),'T'][selectedRow()],
+                                          ' predict who will develop ',  summaryTable[filterIndex(),'O'][selectedRow()],
+                                          ' during ',summaryTable[filterIndex(),'TAR start'][selectedRow()], ' day/s',
+                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToStart'][selectedRow()]==0, ' cohort start ', ' cohort end '),
+                                          ' and ', summaryTable[filterIndex(),'TAR end'][selectedRow()], ' day/s',
+                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToEnd'][selectedRow()]==0, ' cohort start ', ' cohort end '))
+  )
+  
+  # PLOTTING FUNCTION
+  plotters <- shiny::reactive({
     
-    # dashboard
+    eval <- plpResult()$performanceEvaluation
+    if(is.null(eval)){return(NULL)}
     
-    output$performanceBoxIncidence <- renderInfoBox({
-      infoBox(
-        "Incidence", paste0(round(plotters()$performance$Incidence*100, digits=3),'%'), icon = icon("ambulance"),
-        color = "green"
-      )
-    })
+    calPlot <- NULL 
+    rocPlot <- NULL
+    prPlot <- NULL
+    f1Plot <- NULL
     
-    output$performanceBoxThreshold <- renderInfoBox({
-      infoBox(
-        "Threshold", format((plotters()$performance$Threshold), scientific = F, digits=3), icon = icon("edit"),
-        color = "yellow"
-      )
-    })
+    if(!is.null(eval)){
+      #intPlot <- plotShiny(eval, input$slider1) -- RMS
+      intPlot <- plotShiny(eval)
+      rocPlot <- intPlot$roc
+      prPlot <- intPlot$pr
+      f1Plot <- intPlot$f1score
+      
+      list(rocPlot= rocPlot,
+           prPlot=prPlot, f1Plot=f1Plot)
+    }
+  })
+  
+  
+  performance <- shiny::reactive({
     
-    output$performanceBoxPPV <- renderInfoBox({
-      infoBox(
-        "PPV", paste0(round(plotters()$performance$PPV*1000)/10, "%"), icon = icon("thumbs-up"),
-        color = "orange"
-      )
-    })
+    eval <- plpResult()$performanceEvaluation
     
-    output$performanceBoxSpecificity <- renderInfoBox({
-      infoBox(
-        "Specificity", paste0(round(plotters()$performance$Specificity*1000)/10, "%"), icon = icon("bullseye"),
-        color = "purple"
-      )
-    })
+    if(is.null(eval)){
+      return(NULL)
+    } else {
+      intPlot <- getORC(eval, input$slider1)
+      threshold <- intPlot$threshold
+      prefthreshold <- intPlot$prefthreshold
+      TP <- intPlot$TP
+      FP <- intPlot$FP
+      TN <- intPlot$TN
+      FN <- intPlot$FN
+    }
     
-    output$performanceBoxSensitivity <- renderInfoBox({
-      infoBox(
-        "Sensitivity", paste0(round(plotters()$performance$Sensitivity*1000)/10, "%"), icon = icon("low-vision"),
-        color = "blue"
-      )
-    })
+    twobytwo <- as.data.frame(matrix(c(FP,TP,TN,FN), byrow=T, ncol=2))
+    colnames(twobytwo) <- c('Ground Truth Negative','Ground Truth Positive')
+    rownames(twobytwo) <- c('Predicted Positive','Predicted Negative')
     
-    output$performanceBoxNPV <- renderInfoBox({
-      infoBox(
-        "NPV", paste0(round(plotters()$performance$NPV*1000)/10, "%"), icon = icon("minus-square"),
-        color = "black"
-      )
-    })
-    
-    
-    
-    # Downloadable csv of model ----
-    output$downloadData <- downloadHandler(
-      filename = function(){'model.csv'},
-      content = function(file) {
-        write.csv(dataofint()$eval$covariateSummary[dataofint()$eval$covariateSummary$covariateValue!=0,c('covariateName','covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
-                  , file, row.names = FALSE)
-      }
+    list(threshold = threshold, 
+         prefthreshold = prefthreshold,
+         twobytwo = twobytwo,
+         Incidence = (TP+FN)/(TP+TN+FP+FN),
+         Threshold = threshold,
+         Sensitivity = TP/(TP+FN),
+         Specificity = TN/(TN+FP),
+         PPV = TP/(TP+FP),
+         NPV = TN/(TN+FN) )
+  })
+  
+  
+  # preference plot
+  output$prefdist <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotPreferencePDF(plpResult()$performanceEvaluation, 
+                        type=plpResult()$type ) #+ 
+        # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
+    }
+  })
+  
+  output$preddist <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotPredictedPDF(plpResult()$performanceEvaluation, 
+                       type=plpResult()$type ) # + 
+        #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
+    }
+  })
+  
+  output$box <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotPredictionDistribution(plpResult()$performanceEvaluation, type=plpResult()$type )
+    }
+  })
+  
+  output$cal <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotSparseCalibration2(plpResult()$performanceEvaluation, type=plpResult()$type )
+    }
+  })
+  
+  output$demo <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      tryCatch(plotDemographicSummary(plpResult()$performanceEvaluation, 
+                                      type=plpResult()$type ),
+               error= function(cond){return(NULL)})
+    }
+  })
+  
+  
+  
+  # Do the tables and plots:
+  
+  output$performance <- shiny::renderTable(performance()$performance, 
+                                           rownames = F, digits = 3)
+  output$twobytwo <- shiny::renderTable(performance()$twobytwo, 
+                                        rownames = T, digits = 0)
+  
+  
+  output$threshold <- shiny::renderText(format(performance()$threshold,digits=5))
+  
+  output$roc <- plotly::renderPlotly({
+    plotters()$rocPlot
+  })
+  
+  output$pr <- plotly::renderPlotly({
+    plotters()$prPlot
+  })
+  output$f1 <- plotly::renderPlotly({
+    plotters()$f1Plot
+  })
+  
+  
+  
+  
+  
+  
+  # covariate model plots
+  covs <- shiny::reactive({
+    if(is.null(plpResult()$covariateSummary))
+      return(NULL)
+    plotCovariateSummary(formatCovariateTable(plpResult()$covariateSummary))
+  })
+  
+  output$covariateSummaryBinary <- plotly::renderPlotly({ covs()$binary })
+  output$covariateSummaryMeasure <- plotly::renderPlotly({ covs()$meas })
+  
+  # LOG
+  output$log <- shiny::renderText( paste(plpResult()$log, collapse="\n") )
+  
+  # dashboard
+  
+  output$performanceBoxIncidence <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Incidence", paste0(round(performance()$Incidence*100, digits=3),'%'), icon = shiny::icon("ambulance"),
+      color = "green"
     )
-    
-   
-    
-    
-#=============  
+  })
+  
+  output$performanceBoxThreshold <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Threshold", format((performance()$Threshold), scientific = F, digits=3), icon = shiny::icon("edit"),
+      color = "yellow"
+    )
+  })
+  
+  output$performanceBoxPPV <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "PPV", paste0(round(performance()$PPV*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      color = "orange"
+    )
+  })
+  
+  output$performanceBoxSpecificity <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Specificity", paste0(round(performance()$Specificity*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      color = "purple"
+    )
+  })
+  
+  output$performanceBoxSensitivity <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Sensitivity", paste0(round(performance()$Sensitivity*1000)/10, "%"), icon = shiny::icon("low-vision"),
+      color = "blue"
+    )
+  })
+  
+  output$performanceBoxNPV <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "NPV", paste0(round(performance()$NPV*1000)/10, "%"), icon = shiny::icon("minus-square"),
+      color = "black"
+    )
+  })
   
 })
-
