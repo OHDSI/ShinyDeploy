@@ -40,6 +40,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
                                         shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
+                                        shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")),
                                         shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
                                       )
                                     ),
@@ -57,6 +58,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         # First tab content
                                         shinydashboard::tabItem(tabName = "Description",
                                                                 shiny::includeMarkdown(path = "./www/shinyDescription.md")
+                                                                
+                                        ),
+                                        shinydashboard::tabItem(tabName = "DataInfo",
+                                                                shiny::includeMarkdown(path = "./www/dataInfo.md")
                                                                 
                                         ),
                                         shinydashboard::tabItem(tabName = "Summary",
