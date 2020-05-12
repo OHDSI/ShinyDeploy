@@ -1,5 +1,9 @@
 ### Predicting Severely Ill Patients In Those Admitted To Hospital For Pneumonia (To be investigated for the use on Patients, with or suspected to have, Covid-19)
 
+**Development Status: Under Development**
+
+### Information
+
 This shiny application contains the results of the internal and external validations of the models developed to predict risk of use of intensive services or death in patients who are admitted to hospital with pneumonia
 
 During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors.
@@ -8,7 +12,7 @@ Below are links for study-related artifacts that have been made available as par
 
 **Protocol:** [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/blob/master/SevereInHospitalizedPatients/docs/PLP_protocol_Q3_20200329.docx)
 
-### Development Status: Under Development
+### Abstract 
 
 Below is the abstract of the manuscript that summarizes the findings:
 
@@ -21,7 +25,7 @@ Below is the abstract of the manuscript that summarizes the findings:
 **Discussion:** We investigated whether machine learning models trained using big data in non-COVID-19 populations could be transported to COVID-19 patients.  Our results show that we are only able to achieve moderate predictive performance when discriminating which patients hospitalised with pnuemonia will require intensive care using medical records prior to, or on the data of, hospitalization.  AS COVID-19 datasets grow, models developed on COVID-19 patients should be investigated. 
 
 
-### Packages ###
+### Study Packages
 
 - OHDSI model development: [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/tree/master/SevereInHospitalizedPatients)
 - OHDSI model validation: [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/tree/master/SevereInHospVal)
