@@ -21,6 +21,16 @@ library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
 
+addInfo <- function(item, infoId) {
+  infoTag <- tags$small(class = "badge pull-right action-button",
+                        style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+                        type = "button", 
+                        id = infoId,
+                        "i")
+  item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
+  return(item)
+}
+
 ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardHeader(title = "Multiple PLP Viewer", 
@@ -35,13 +45,13 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
-                                        shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")),
-                                        shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
-                                        shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
-                                        shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
-                                        shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
-                                        shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")),
-                                        shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
+                                        addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                        addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                        addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                        addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
+                                                                addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                        addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
                                       )
                                     ),
                                     

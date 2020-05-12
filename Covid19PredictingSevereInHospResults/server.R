@@ -267,4 +267,43 @@ server <- shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  
+  
+  
+  
+  # HELPER INFO
+  showInfoBox <- function(title, htmlFileName) {
+    shiny::showModal(shiny::modalDialog(
+      title = title,
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
+    ))
+  }
+  
+  
+  observeEvent(input$DescriptionInfo, {
+    showInfoBox("Description", "html/Description.html")
+  })
+  observeEvent(input$SummaryInfo, {
+    showInfoBox("Summary", "html/Summary.html")
+  })
+  observeEvent(input$PerformanceInfo, {
+    showInfoBox("Performance", "html/Performance.html")
+  })
+  observeEvent(input$ModelInfo, {
+    showInfoBox("Model", "html/Model.html")
+  })
+  observeEvent(input$LogInfo, {
+    showInfoBox("Log", "html/Log.html")
+  })
+  observeEvent(input$DataInfoInfo, {
+    showInfoBox("DataInfo", "html/DataInfo.html")
+  })
+  observeEvent(input$HelpInfo, {
+    showInfoBox("HelpInfo", "html/Help.html")
+  })
+  
+  
 })
