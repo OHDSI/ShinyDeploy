@@ -31,7 +31,28 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   # need to remove over columns:
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
-                                                           rownames= FALSE, selection = 'single'))
+                                                           rownames= FALSE, selection = 'single',
+                                             extensions = 'Buttons', options = list(
+                                               dom = 'Bfrtip', buttons = I('colvis')
+                                             ),
+                                             
+                                             container = htmltools::withTags(table(
+                                               class = 'display',
+                                               thead(
+                                                 #tags$th(title=active_columns[i], colnames(data)[i])
+                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model',
+                                                                                'TAR start', 'TAR end', 'AUC', 'AUPRC', 
+                                                                                'T Size', 'O Count', 'O Incidence (%)'), 
+                                                                     labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population','Outcome', 
+                                                                     'Model type','Time-at-risk start day', 'Time-at-risk end day', 'Area under the reciever operating characteristics', 'Area under the precision recall curve',
+                                                                     'Target population size of test or validation set', 'Outcome count in test or validation set', 'percentage of target population that have O during time-at-risk')), 1,
+                                                          function(x) th(title=x[2], x[1])))
+                                               )
+                                             ))
+                                                          
+                                             )
+  )
+                                             
   
   selectedRow <- shiny::reactive({
     if(is.null(input$summaryTable_rows_selected[1])){
