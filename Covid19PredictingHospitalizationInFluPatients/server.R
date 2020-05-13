@@ -31,7 +31,28 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   # need to remove over columns:
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
-                                                           rownames= FALSE, selection = 'single'))
+                                                           rownames= FALSE, selection = 'single',
+                                             extensions = 'Buttons', options = list(
+                                               dom = 'Bfrtip', buttons = I('colvis')
+                                             ),
+                                             
+                                             container = htmltools::withTags(table(
+                                               class = 'display',
+                                               thead(
+                                                 #tags$th(title=active_columns[i], colnames(data)[i])
+                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model',
+                                                                                'TAR start', 'TAR end', 'AUC', 'AUPRC', 
+                                                                                'T Size', 'O Count', 'O Incidence (%)'), 
+                                                                     labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
+                                                                     'Model type','Time-at-risk start day', 'Time-at-risk end day', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
+                                                                     'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
+                                                          function(x) th(title=x[2], x[1])))
+                                               )
+                                             ))
+                                                          
+                                             )
+  )
+                                             
   
   selectedRow <- shiny::reactive({
     if(is.null(input$summaryTable_rows_selected[1])){
@@ -266,5 +287,70 @@ server <- shiny::shinyServer(function(input, output, session) {
       color = "black"
     )
   })
+  
+  
+  
+  
+  
+  # HELPER INFO
+  showInfoBox <- function(title, htmlFileName) {
+    shiny::showModal(shiny::modalDialog(
+      title = title,
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
+    ))
+  }
+  
+  
+  observeEvent(input$DescriptionInfo, {
+    showInfoBox("Description", "html/Description.html")
+  })
+  observeEvent(input$SummaryInfo, {
+    showInfoBox("Summary", "html/Summary.html")
+  })
+  observeEvent(input$PerformanceInfo, {
+    showInfoBox("Performance", "html/Performance.html")
+  })
+  observeEvent(input$ModelInfo, {
+    showInfoBox("Model", "html/Model.html")
+  })
+  observeEvent(input$LogInfo, {
+    showInfoBox("Log", "html/Log.html")
+  })
+  observeEvent(input$DataInfoInfo, {
+    showInfoBox("DataInfo", "html/DataInfo.html")
+  })
+  observeEvent(input$HelpInfo, {
+    showInfoBox("HelpInfo", "html/Help.html")
+  })
+  
+  
+  observeEvent(input$rocHelp, {
+    showInfoBox("ROC Help", "html/rocHelp.html")
+  })
+  observeEvent(input$prcHelp, {
+    showInfoBox("PRC Help", "html/prcHelp.html")
+  })
+  observeEvent(input$f1Help, {
+    showInfoBox("F1 Score Plot Help", "html/f1Help.html")
+  })
+  observeEvent(input$boxHelp, {
+    showInfoBox("Box Plot Help", "html/boxHelp.html")
+  })
+  observeEvent(input$predDistHelp, {
+    showInfoBox("Predicted Risk Distribution Help", "html/predDistHelp.html")
+  })
+  observeEvent(input$prefDistHelp, {
+    showInfoBox("Preference Score Distribution Help", "html/prefDistHelp.html")
+  })
+  observeEvent(input$calHelp, {
+    showInfoBox("Calibration Help", "html/calHelp.html")
+  })
+  observeEvent(input$demoHelp, {
+    showInfoBox("Demographic Help", "html/demoHelp.html")
+  })
+  
   
 })
