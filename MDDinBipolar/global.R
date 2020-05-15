@@ -27,3 +27,4 @@ if(inputType == 'file' & !is.null(validation)){
 
 summaryTable <- getSummary(result, inputType, validation)
 
+timeAUCs <- read.csv(file.path(result, 'aucYear', 'aucAll.csv'))

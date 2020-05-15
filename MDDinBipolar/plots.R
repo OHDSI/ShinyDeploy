@@ -419,3 +419,31 @@ plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
   return(plot)
 }
 
+
+
+
+
+
+
+aucTime <- function(databases){
+  data <- timeAUCs[timeAUCs$database%in%c(databases),]
+  ggplot(data, aes(x=year, y=auc, group=database)) +
+    #geom_bar(stat="identity",position=position_dodge(), aes(color=database, fill=database))+
+    geom_line(aes(color=database, linetype = database))+
+    geom_point(aes(color=database)) +
+    scale_color_manual(values=c("#921528", "#080808", "#1A95C7","#0CCDB6",
+                                "#F8AAD2", "#DA9605", "#281F64","#A9D80C",
+                                "#DAD105", "#C22EC7"
+    ))
+  
+  
+  
+}
+
+
+survival <- function(database){
+ list(src = file.path(result, 'surv', paste0(database,'_survivalplot.png')),
+      alt = 'test', width='800px')
+  #png::readPNG(system.file(file.path(result, 'surv', 'ccae_survivalplot.png'), package="png"))
+}
+
