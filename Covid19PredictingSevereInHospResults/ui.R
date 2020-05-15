@@ -21,6 +21,16 @@ library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
 
+addInfo <- function(item, infoId) {
+  infoTag <- tags$small(class = "badge pull-right action-button",
+                        style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+                        type = "button", 
+                        id = infoId,
+                        "i")
+  item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
+  return(item)
+}
+
 ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardHeader(title = "Multiple PLP Viewer", 
@@ -35,12 +45,13 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(
-                                        shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")),
-                                        shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
-                                        shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
-                                        shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
-                                        shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
-                                        shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
+                                        addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                        addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                        addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                        addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
+                                                                addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                        addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
                                       )
                                     ),
                                     
@@ -58,20 +69,23 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         shinydashboard::tabItem(tabName = "Description",
                                                                 shiny::includeMarkdown(path = "./www/shinyDescription.md")
                                                                 
-                                                                         ),
+                                        ),
+                                        shinydashboard::tabItem(tabName = "DataInfo",
+                                                                shiny::includeMarkdown(path = "./www/dataInfo.md")
                                                                 
+                                        ),
                                         shinydashboard::tabItem(tabName = "Summary",
                                                                 
                                                                 shiny::fluidRow(
                                                                   shiny::column(2, 
                                                                                 shiny::h4('Filters'),
+                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model)))),
                                                                                 shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
                                                                                 shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
                                                                                 shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
                                                                                 shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
                                                                                 shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(as.character(summaryTable$`TAR start`)))),
-                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`)))),
-                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model))))
+                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`))))
                                                                   ),  
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 
@@ -175,28 +189,34 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                              
                                                                              shiny::fluidRow(
                                                                                shinydashboard::box( status = 'info',
-                                                                                                    title = "ROC Plot", solidHeader = TRUE,
+                                                                                                    title = actionLink("rocHelp", "ROC Plot", icon = icon("info")),
+                                                                                                    solidHeader = TRUE,
                                                                                                     shinycssloaders::withSpinner(plotly::plotlyOutput('roc'))),
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Precision recall plot", solidHeader = TRUE,
+                                                                                                   title = actionLink("prcHelp", "Precision recall plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    side = "right",
                                                                                                    shinycssloaders::withSpinner(plotly::plotlyOutput('pr')))),
                                                                              
                                                                              shiny::fluidRow(
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "F1 Score Plot", solidHeader = TRUE,
+                                                                                                   title = actionLink("f1Help", "F1 Score Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    shinycssloaders::withSpinner(plotly::plotlyOutput('f1'))),
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Box Plot", solidHeader = TRUE,
+                                                                                                   title = actionLink("boxHelp","Box Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    side = "right",
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('box')))),
                                                                              
                                                                              shiny::fluidRow(
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Prediction Score Distribution", solidHeader = TRUE,
+                                                                                                   title = actionLink("predDistHelp","Prediction Score Distribution", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('preddist'))),
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Preference Score Distribution", solidHeader = TRUE,
+                                                                                                   title = actionLink("prefDistHelp","Preference Score Distribution", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    side = "right",
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('prefdist'))))
                                                                              
@@ -205,10 +225,12 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                     tabPanel("Calibration", 
                                                                              shiny::fluidRow(
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Calibration Plot", solidHeader = TRUE,
+                                                                                                   title = actionLink("calHelp","Calibration Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('cal'))),
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = "Demographic Plot", solidHeader = TRUE,
+                                                                                                   title = actionLink("demoHelp","Demographic Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
                                                                                                    side = "right",
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('demo')))
                                                                              )
