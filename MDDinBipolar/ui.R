@@ -38,6 +38,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")),
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
+                                        shinydashboard::menuItem("TimeAUC", tabName = "TimeAUC", icon = shiny::icon("clock")),
+                                        shinydashboard::menuItem("Survival", tabName = "Survival", icon = shiny::icon("line-chart")),
                                         shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
                                         shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
                                       )
@@ -51,6 +53,52 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 shiny::h2("Information"),
                                                                 shiny::p("Click on a row to explore the results for that model.  When you wish to explore a different model, then select the new result row and the tabs will be updated."),
                                                                 shiny::a("Demo Video", href = 'https://youtu.be/StpV40yl1UE', target='_blank')
+                                        ),
+                                        
+                                        # help tab
+                                        shinydashboard::tabItem(tabName = "TimeAUC",
+                                                                shiny::h2("AUC per year"),
+                                                                shiny::p("Select the databases to plot the AUC by year"),
+                                                                
+                                                                shiny::fluidRow(
+                                                                  shiny::column(2, 
+                                                                shiny::checkboxGroupInput("aucDatabase", "Databases to show:",
+                                                                                   c("CCAE" = "ccae",
+                                                                                     "MDCD" = "mdcd",
+                                                                                     "STARR" = "starr",
+                                                                                     "iqvia_ambemr" = "iqvia_ambemr",  
+                                                                                     "iqvia_belgium" = "iqvia_belgium",
+                                                                                     "iqvia_dafr" = "iqvia_dafr",
+                                                                                     "iqvia_dager" = "iqvia_dager",  
+                                                                                     "JMDC" = "jmdc",
+                                                                                     "optumDod" = "optumDod", 
+                                                                                     "CUMC" = "cumc"))
+                                                                  ),
+                                                                shiny::column(10, 
+                                                                  shinycssloaders::withSpinner(shiny::plotOutput('aucTime'))
+                                                                )
+                                                                )
+                                        ),
+                                        
+                                        # help tab
+                                        shinydashboard::tabItem(tabName = "Survival",
+                                                                shiny::h2("Conversion from MDD to bipolar over time"),
+                                                                shiny::p("Select the database to plot"),
+                                                                shiny::selectInput("survDatabase", "Database:",
+                                                                                                          c("CCAE" = "ccae",
+                                                                                                            "MDCD" = "mdcd",
+                                                                                                            "STARR" = "starr",
+                                                                                                            "iqvia_ambemr" = "iqvia_ambemr",  
+                                                                                                            "iqvia_belgium" = "iqvia_belgium",
+                                                                                                            "iqvia_dafr" = "iqvia_dafr",
+                                                                                                            "iqvia_dager" = "iqvia_dager",  
+                                                                                                            "JMDC" = "jmdc",
+                                                                                                            "optumDod" = "optumDod", 
+                                                                                                            "CUMC" = "cumc")),
+                                                                  
+                                                                shinycssloaders::withSpinner(shiny::plotOutput('survDatabase'))
+                                                                  
+                                                                
                                         ),
                                         
                                         # First tab content

@@ -258,4 +258,28 @@ server <- shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  
+  
+  
+  
+  # extras
+  output$aucTime <- shiny::renderPlot({
+    if(is.null(input$aucDatabase)){
+      aucTime('')
+    } else{
+      aucTime(input$aucDatabase)
+    }
+  })
+  
+  
+  
+  # extras
+  output$survDatabase <- shiny::renderImage({ #shiny::renderPlot({
+    if(is.null(input$survDatabase)){
+      survival('')
+    } else{
+      survival(input$survDatabase)
+    }
+  }, deleteFile = FALSE)
+  
 })
