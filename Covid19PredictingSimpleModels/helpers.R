@@ -1,6 +1,9 @@
 # this function finds the filter index
 getFilter <- function(summaryTable,input){
   ind <- 1:nrow(summaryTable)
+  if(input$analysisId!='All'){
+    ind <- intersect(ind,which(as.character(summaryTable$Analysis)==input$analysisId))
+  }
   if(input$devDatabase!='All'){
     ind <- intersect(ind,which(as.character(summaryTable$Dev)==input$devDatabase))
   }

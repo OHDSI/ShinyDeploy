@@ -40,6 +40,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")),
                                         shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")),
                                         shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")),
+                                        shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")),
                                         shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info"))
                                       )
                                     ),
@@ -59,18 +60,23 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 shiny::includeMarkdown(path = "./www/shinyDescription.md")
                                                                 
                                         ),
+                                        shinydashboard::tabItem(tabName = "DataInfo",
+                                                                shiny::includeMarkdown(path = "./www/dataInfo.md")
+                                                                
+                                        ),
                                         shinydashboard::tabItem(tabName = "Summary",
                                                                 
                                                                 shiny::fluidRow(
                                                                   shiny::column(2, 
                                                                                 shiny::h4('Filters'),
+                                                                                shiny::selectInput('analysisId', 'Analysis Id:', c('All',unique(as.character(summaryTable$Analysis)))),
+                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model)))),
                                                                                 shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
                                                                                 shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
                                                                                 shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
                                                                                 shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
                                                                                 shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(as.character(summaryTable$`TAR start`)))),
-                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`)))),
-                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model))))
+                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`))))
                                                                   ),  
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 
