@@ -1,12 +1,13 @@
-***Predicting Patients Requiring Hospitalization When Initially Presenting with Flu or Flu like symptoms (To be investigated for the use on Patients, with or suspected to have, Covid-19)***
+### Predicting Patients Requiring Hospitalization When Initially Presenting with Flu or Flu like symptoms (To be investigated for the use on Patients, with or suspected to have, Covid-19)
+
+**Development Status: Under Development**
 
 This shiny application contains the results of the internal and external validations of the models developed to predict risk of hospitalisation within 30 days of intitial presentation to a healthcare professional with symptoms.
 
 During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors.
 
----
-### Development Status: Under Development
 
+### Abstract 
 Below is the abstract of the manuscript that summarizes the findings:
 
 **Importance** COVID-19 is causing high mortality worldwide. Developing models that can quantify the risk of negative outcomes in patients infected with COVID-19 using their medical history could help countries develop strategies to shield the most vulnerable from the virus.
@@ -26,12 +27,13 @@ Below is the abstract of the manuscript that summarizes the findings:
 **Conclusions and relevance**
 We were able to develop parsimonious models containing nine predictors using large databases of flu patients that transported well to COVID-19 patients.  Our models could be used to quantify a patient’s risk of becoming severely or critically ill due to COVID-19 infection based on their age, gender and medical history.  This can be used to identify the patients that require being shielded from COVID-19 to reduce the virus impact on morbidity and mortality.
 
+### Useful Links
 
 Below are links for study-related artifacts that have been made available as part of this study:
 
 **Protocol:** [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/blob/master/HospitalizationInSentHomePatients/docs/PLP_protocol_Q1%2BQ2_20200329.docx)
 
-### Packages ###
+### Packages
 
 - OHDSI model development: [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/tree/master/HospitalizationInSymptomaticPatients)
 - OHDSI full model validation: [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/tree/master/HospInOutpatientVal)
