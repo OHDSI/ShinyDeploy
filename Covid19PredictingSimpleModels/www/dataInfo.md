@@ -1,4 +1,4 @@
-# Data Information #
+# Data Information # 
 
 The following databases were used in this study:
 
@@ -12,7 +12,7 @@ The following databases were used in this study:
 | *JMDC* &nbsp; &nbsp; | Japan Medical Data Center &nbsp; &nbsp; | Japan &nbsp; &nbsp; | Claims &nbsp; &nbsp; | 2000-2019 |
 | *IPCI* &nbsp; &nbsp; | Integrated Primary Care Information | Netherlands &nbsp; &nbsp; | GP &nbsp; &nbsp; | 2006-2020 |
 | *optumEhr* &nbsp; &nbsp; | Optum® de-identified Electronic Health Record Dataset &nbsp; &nbsp;  | USA | EHR &nbsp; &nbsp; | 2006-2019 |
-| *CLARET* &nbsp; &nbsp; | Clinical Academic Research Enterprise Trust (CLARET) | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; | ?-2020 |
+| *Tufts - CLARET* &nbsp; &nbsp; | Clinical Academic Research Enterprise Trust (CLARET) | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; | 2006-2020 |
 | *SIDIAP* &nbsp; &nbsp; | The Information System for Research in Primary Care (SIDIAP) | Spain &nbsp; &nbsp; | GP &nbsp; &nbsp; | ?-2020 |
 | *HIRA* &nbsp; &nbsp; | Health Insurance and Review Assessment | Korea &nbsp; &nbsp; | Claims &nbsp; &nbsp; | 2013-2020 |
 | *AU_ePBRN* &nbsp; &nbsp; |  electronic Practice Based Research Network | Australia &nbsp; &nbsp; | EHR (GP + Hospital) | 2012-2019 |
