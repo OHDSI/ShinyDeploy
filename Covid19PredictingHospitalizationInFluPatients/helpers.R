@@ -128,12 +128,23 @@ formatCovariateTable <- function(covariateSummary){
       class(covariateSummary[,coln]) <- "numeric"
     }
   }
+  
+  # edit the simple model names:
+  covariateSummary$covariateName <- gsub('\\[COVID v1\\] Persons with ', '', covariateSummary$covariateName)
+  covariateSummary$covariateName <- gsub('\\[Covid v1\\] Persons with ', '', covariateSummary$covariateName)
+  covariateSummary$covariateName <- gsub('\\[covid v1\\] Persons with ', '', covariateSummary$covariateName)
+  
+
   return(covariateSummary)
 }
 
 
 
 editCovariates <- function(covs){
+  
+  # remove Custom ATLAS variable during day -9999 through -1 days relative to index:
+  covs$covariateName <- gsub('Custom ATLAS variable during day -9999 through -1 days relative to index: ','History of ', covs$covariateName)
+  
   if(!is.null(covs$StandardizedMeanDiff)){
     return(list(table = formatCovariateTable(covs[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome','StandardizedMeanDiff')]),
                 colnames = c('Covariate Name', 'Value','Count', 'Outcome Mean', 'Non-outcome Mean','Std Mean Diff')
