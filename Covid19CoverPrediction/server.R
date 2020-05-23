@@ -73,7 +73,7 @@ server <- shiny::shinyServer(function(input, output, session) {
       hypertension = input$hypertension * 3,
       kidney = input$kidney * 2
     )
-    totals <- unlist(lapply(inputData,  function(x){rowSums(x) - 93})) #subtract the 88 we used to make positive
+    totals <- unlist(lapply(inputData,  function(x){rowSums(x) - 93})) #subtract the 93 we used to make positive
     #TODO: update to match names in paper
     riskValues$data <- data.frame(names = c('COVER-H','COVER-I', 'COVER-F'),
                                   values = 1/(1+exp(-totals/10)) *100, stringsAsFactors = F)

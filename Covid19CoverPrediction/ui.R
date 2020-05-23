@@ -105,7 +105,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                     shiny::h2("Description"),
                                                                     # shiny::p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic."),
                                                                     shiny::p("This calculator presents the results of a prediction study that developed 3 prediction models."),
-                                                                    shiny::p("The three models predicted: requiring hospital admission (COVER-A), requiring intensive services (COVER-C), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
+                                                                    shiny::p("The three models predicted: requiring hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
                                                                     shiny::p(' '),
                                                                     shiny::h3("Disclaimer"),
                                                                     shiny::p('Should not be considered Medical Advice. 
