@@ -86,6 +86,7 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                                                  decreasing = FALSE)])
     #moved this here because there is a warning if done in plotting
     riskValues$data$values <- round(riskValues$data$values, 1)
+    riskValues$data$values[riskValues$data$values ==0] <- 0.1
     riskValues$data$color <- cut(riskValues$data$values,
                                  breaks = c(0,10, 15, 100),
                                  labels = c("#148c76", "#e3782f","#d02038" ))
