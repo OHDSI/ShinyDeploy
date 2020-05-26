@@ -86,10 +86,11 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                                                  decreasing = FALSE)])
     #moved this here because there is a warning if done in plotting
     riskValues$data$values <- round(riskValues$data$values, 1)
+    riskValues$data$values[riskValues$data$values ==0] <- 0.1
     riskValues$data$color <- cut(riskValues$data$values,
                                  breaks = c(0,10, 15, 100),
-                                 labels = c("#148c76", "#e3782f","#d02038" ))
-    
+                                 labels = c("#D6BA84", "#D35836","#981B1E" ))
+    # Red #981B1E , Orange #D35836 and Golden #D6BA84
   })
   #plot for the risk score calculator
   output$contributions <- plotly::renderPlotly(plotly::plot_ly(x = as.double(riskValues$data$values), 
