@@ -1,4 +1,4 @@
-### Predicting Patients Requiring Hospitalization When Initially Presenting with Flu or Flu like symptoms (To be investigated for the use on Patients, with or suspected to have, Covid-19)
+### Seek COVER: Development and validation of a personalized risk calculator for COVID-19 outcomes in an international network
 
 **Development Status: Under Development**
 
@@ -7,29 +7,35 @@ This shiny application contains the results of the internal and external validat
 During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors.
 
 
-### Abstract 
-Below is the abstract of the manuscript that summarizes the findings:
+**Abstract**
+Importance
+COVID-19 is causing high mortality worldwide. Developing models to quantify the risk of poor outcomes in infected patients could help develop strategies to shield the most vulnerable during de-confinement.
 
-**Importance** COVID-19 is causing high mortality worldwide. Developing models that can quantify the risk of negative outcomes in patients infected with COVID-19 using their medical history could help countries develop strategies to shield the most vulnerable from the virus.
+**Objective**
+To develop and externally validate COVID-19 Estimated Risk (COVER) scores that quantify a patient’s risk of hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the 30-days following COVID-19 diagnosis.
 
-**Objective** To develop and externally validate internationally simple personalized risk scores that quantify the risk of patients requiring hospitlization, requiring intensive care or dying due to COVID-19 infection.
+**Design**
+Multinational, distributed network cohorts.
 
-**Design** Multinational, distributed network cohorts
+**Setting**
+We analyzed a federated network of electronic medical records and administrative claims data from 14 data sources and 6 countries, mapped to a common data model. 
 
-**Setting** We used real world (electronic medical records and claims) data from 6 data sources and 4 countries (Netherlands, South Korea, Spain, and the US), mapped to a common data model and analysed in a federated manner. 
+**Participants**
+Model development used a patient population consisting of >2 million patients with a general practice (GP), emergency room (ER), or outpatient (OP) visit with diagnosed influenza or flu-like symptoms any time prior to 2020. The model was validated on patients with a GP, ER, or OP visit in 2020 with a confirmed or suspected COVID-19 diagnosis across five databases from South Korea, Spain and the United States.
 
-**Participants** Model development used a large patient population consisting of >2 million patients with an outpatient (OP), general practice (GP) or emergency room (ER) visit with suspected or diagnosed influenza or influenza-like symptoms any time prior to 2020. The model was externally validated on patients with an OP/GP/ER visit in 2020 with a confirmed or suspected COVID-19 diagnosis across two different databases from Korea and Spain.
+**Outcomes**
+Age, sex, historical conditions, and drug use prior to index date were considered as candidate predictors. Outcomes included i) hospitalization with pneumonia, ii) hospitalization with pneumonia requiring intensive services or death, and iii) death in the 30 days after index date.
 
-**Exposures and outcomes** Age, gender, historical diagnoses and previous drug use prior to the index visit were studied as candidate covariates. Outcomes included i) hospital admission for pneumonia, ii) hospitalization for pneumonia requiring intensive care or iii) death in the 30 days after a valid GP/ER/OP visit with a confirmed COVID-19 diagnosis. 
-
-**Results** Within the flu data we identified 7 predictors (history of cancer, COPD, diabetes, heart disease, hypertension, hyperlipidemia, and kidney disease) in additional to age and gender that were able to discriminate which patients with a visit would i) require hospitalization with pneumonia, ii) require intensive care with pneumonia,  or iii) die.  The AUCs ranged between 0.66-0.84 for predicting hospitalization, 0.65-0.84 for predicting intensive care and 0.63-0.9 for predicting death in flu patients across the world.  When transported to COVID-19 specific patients with an outpatient or ER visit, the AUCs ranged between 0.75-0.81 for predicting hospitalization, 0.89-0.91 for predicting intensive care and 0.86-0.89 for predicting death. Calibration in the COVID-19 patients was overall acceptable, with underestimated risk in the most elderly and highest risk strata.,,
+**Results**
+Overall, 44,507 COVID-19 patients were included for model validation, after initial model development and validation using 6,869,127 patients with influenza or flu-like symptoms. We identified 7 predictors (history of cancer, chronic obstructive pulmonary disease, diabetes, heart disease, hypertension, hyperlipidemia, and kidney disease) which combined with age and sex could discriminate which patients would experience any of our three outcomes. The models achieved high performance in influenza. When transported to COVID-19 cohorts, the AUC ranges were, COVER-H: 0.69-0.81, COVER-I: 0.73-0.91, and COVER-F: 0.72-0.90. Calibration was overall acceptable, with overestimated risk in the most elderly and highest risk strata.,,
 
 **Conclusions and relevance**
-We were able to develop parsimonious models containing nine predictors using large databases of flu patients that transported well to COVID-19 patients.  Our models could be used to quantify a patient’s risk of becoming severely or critically ill due to COVID-19 infection based on their age, gender and medical history.  This can be used to identify the patients that require being shielded from COVID-19 to reduce the virus impact on morbidity and mortality.
+A 9-predictor model performs well for COVID-19 patients for predicting hospitalization, intensive services and fatality. The models could aid in providing reassurance for low risk patients and shield high risk patients from COVID-19 during de-confinement to reduce the virus’ impact on morbidity and mortality.
+
 
 ### Useful Links
-
-Below are links for study-related artifacts that have been made available as part of this study:
+A preprint of this research is available here: 
+Below are links for study-related artifacts that have been made available as part of this study: [link](https://www.medrxiv.org/content/10.1101/2020.05.26.20112649v1)
 
 **Protocol:** [link](https://github.com/ohdsi-studies/Covid19PredictionStudies/blob/master/HospitalizationInSentHomePatients/docs/PLP_protocol_Q1%2BQ2_20200329.docx)
 
