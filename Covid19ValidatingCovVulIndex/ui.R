@@ -44,7 +44,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     ), 
                                     
                                     shinydashboard::dashboardSidebar(
-                                      shinydashboard::sidebarMenu(
+                                      shinydashboard::sidebarMenu(id ='menu',
                                         addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
                                         addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
                                         addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
@@ -52,7 +52,37 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                         addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
                                                                 addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
                                                                         addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
-                                      )
+                                      ),
+                                        # scroller performanace - make conditional
+                                      conditionalPanel(condition = "input.menu=='Performance'",
+                                        shinydashboard::box(width = 12,
+                                                            title = tagList(shiny::icon("gear"), "Input"), 
+                                                            status = "info", solidHeader = TRUE,
+                                                            shiny::splitLayout(
+                                                              cellWidths = c('5%', '90%', '5%'),
+                                                              shiny::h5(' '),
+                                                              shiny::sliderInput("slider1", 
+                                                                                 shiny::span(shiny::h4("Threshold value: ", strong(shiny::textOutput('threshold'))), style="color:black"), 
+                                                                                 min = 1, max = 100, value = 50, ticks = F),
+                                                              shiny::h5(' ')
+                                                            ),
+                                                            shiny::splitLayout(
+                                                              cellWidths = c('5%', '90%', '5%'),
+                                                              shiny::span(shiny::h5(strong('0')), style="color:black"),
+                                                              shiny::h5(' '),
+                                                              shiny::span(shiny::h5(strong('1')), style="color:black")
+                                                            ),
+                                                            shiny::tags$script(shiny::HTML("
+                                                                                           $(document).ready(function() {setTimeout(function() {
+                                                                                           supElement = document.getElementById('slider1').parentElement;
+                                                                                           $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
+                                                                                           }, 50);})
+                                                                                           "))
+                                                            ))
+                                      
+                                        
+                                        
+                                        
                                     ),
                                     
                                     shinydashboard::dashboardBody(
@@ -90,9 +120,9 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 
                                                                                 # do this inside tabs:
-                                                                                shiny::tabsetPanel(
+                                                                                shiny::tabsetPanel(id = "tabs",
                                                                                   
-                                                                                  shiny::tabPanel("Results",
+                                                                                  shiny::tabPanel("All Results",
                                                                                                   shiny::div(DT::dataTableOutput('summaryTable'), 
                                                                                                              style = "font-size:70%")),
                                                                                   
@@ -108,7 +138,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                   ),
                                                                                                   DT::dataTableOutput('populationTable')),
                                                                                   
-                                                                                  shiny::tabPanel("Covariate Settings",
+                                                                                  shiny::tabPanel("Covariate Settings", 
                                                                                                   shiny::h3('Covariate Settings: ', 
                                                                                                             shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank") 
                                                                                                   ),
@@ -120,49 +150,26 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 )),
                                         # second tab
                                         shinydashboard::tabItem(tabName = "Performance", 
+                                                                shiny::fluidRow(
+                                                                  box(width='100%',
+                                                                             # add dropdown selection
+                                                                             shiny::selectInput(
+                                                                               "selectPerformance",
+                                                                               label = shiny::h4("Select prediction result to explore"),
+                                                                               choices = myResultList
+                                                                             )
+                                                                  )),
                                                                 
                                                                 shiny::fluidRow(
                                                                   tabBox(
                                                                     title = "Performance", 
                                                                     # The id lets us use input$tabset1 on the server to find the current tab
                                                                     id = "tabset1", height = "100%", width='100%',
-                                                                    tabPanel("Summary", 
+                                                                    
+                                                                    tabPanel("Threshold Dependant", 
                                                                              
                                                                              shiny::fluidRow(
-                                                                               shiny::column(width = 4,
-                                                                                             shinydashboard::box(width = 12,
-                                                                                                                 title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
-                                                                                                                 shiny::textOutput('info')
-                                                                                             ),
-                                                                                             shinydashboard::box(width = 12,
-                                                                                                                 title = tagList(shiny::icon("gear"), "Input"), 
-                                                                                                                 status = "info", solidHeader = TRUE,
-                                                                                                                 shiny::splitLayout(
-                                                                                                                   cellWidths = c('5%', '90%', '5%'),
-                                                                                                                   shiny::h5(' '),
-                                                                                                                   shiny::sliderInput("slider1", 
-                                                                                                                                      shiny::h4("Threshold value slider: ", strong(shiny::textOutput('threshold'))), 
-                                                                                                                                      min = 1, max = 100, value = 50, ticks = F),
-                                                                                                                   shiny::h5(' ')
-                                                                                                                 ),
-                                                                                                                 shiny::splitLayout(
-                                                                                                                   cellWidths = c('5%', '90%', '5%'),
-                                                                                                                   shiny::h5(strong('0')),
-                                                                                                                   shiny::h5(' '),
-                                                                                                                   shiny::h5(strong('1'))
-                                                                                                                 ),
-                                                                                                                 shiny::tags$script(shiny::HTML("
-                                                                                                                                                $(document).ready(function() {setTimeout(function() {
-                                                                                                                                                supElement = document.getElementById('slider1').parentElement;
-                                                                                                                                                $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
-                                                                                                                                                }, 50);})
-                                                                                                                                                "))
-                                                                                                                 )
-                                                                                             
-                                                                                             ),
-                                                                               
-                                                                               
-                                                                               shiny::column(width = 8,
+                                                                               shiny::column(width = 12,
                                                                                              shinydashboard::box(width = 12,
                                                                                                                  title = "Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
@@ -184,7 +191,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                )
                                                                              
                                                                              
-                                                                               ),
+                                                                               ), # end summary
                                                                     tabPanel("Discrimination", 
                                                                              
                                                                              shiny::fluidRow(
@@ -239,6 +246,15 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         
                                         # 3rd tab
                                         shinydashboard::tabItem(tabName = "Model", 
+                                                                shiny::fluidRow(
+                                                                  box(width='100%',
+                                                                      # add dropdown selection
+                                                                      shiny::selectInput(
+                                                                        "selectModel",
+                                                                        label = shiny::h4("Select prediction result to explore"),
+                                                                        choices = myResultList
+                                                                      )
+                                                                  )),
                                                                 shiny::fluidRow(
                                                                   shinydashboard::box( status = 'info',
                                                                                        title = "Binary", solidHeader = TRUE,

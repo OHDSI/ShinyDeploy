@@ -27,7 +27,7 @@ server <- shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(shiny::stopApp)
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
-  print(summaryTable)
+  #print(summaryTable)
   
   # need to remove over columns:
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
@@ -40,11 +40,11 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                class = 'display',
                                                thead(
                                                  #tags$th(title=active_columns[i], colnames(data)[i])
-                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model',
-                                                                                'TAR start', 'TAR end', 'AUC', 'AUPRC', 
+                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model','Covariate setting',
+                                                                                'TAR', 'AUC', 'AUPRC', 
                                                                                 'T Size', 'O Count', 'O Incidence (%)'), 
                                                                      labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
-                                                                     'Model type','Time-at-risk start day', 'Time-at-risk end day', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
+                                                                     'Model type','Id for the covariate/settings used','Time-at-risk period', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
                                                                      'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
                                                           function(x) th(title=x[2], x[1])))
                                                )
@@ -288,6 +288,33 @@ server <- shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  
+  # SELECTING RESULTS - for PERFORMANCE/MODEl
+  
+  
+  
+  # CONDITIONAL SETTINGS TABS
+  shiny::hideTab(inputId = "tabs", target = "Model Settings")
+  shiny::hideTab(inputId = "tabs", target = "Population Settings")
+  shiny::hideTab(inputId = "tabs", target = "Covariate Settings")
+  settingShow <- shiny::reactiveVal(value = FALSE)
+  #observeEvent(input$summaryTable_rows_selected, {
+  observe({
+    #print(!settingShow() )
+    #settingShow <- !settingShow()
+    #settingShow(settingShow) 
+    #if(settingShow ){
+    if(!is.null(input$summaryTable_rows_selected)){
+      shiny::showTab(inputId = "tabs", target = "Model Settings")
+      shiny::showTab(inputId = "tabs", target = "Population Settings")
+      shiny::showTab(inputId = "tabs", target = "Covariate Settings")
+    } else {
+      shiny::hideTab(inputId = "tabs", target = "Model Settings")
+      shiny::hideTab(inputId = "tabs", target = "Population Settings")
+      shiny::hideTab(inputId = "tabs", target = "Covariate Settings")
+    }
+  })
+
   
   
   
