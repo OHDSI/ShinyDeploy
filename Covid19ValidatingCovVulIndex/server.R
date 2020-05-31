@@ -54,16 +54,6 @@ server <- shiny::shinyServer(function(input, output, session) {
   )
                                              
   
-  selectedRow <- shiny::reactive({
-    if(is.null(input$summaryTable_rows_selected[1])){
-      return(1)
-    }else{
-      return(input$summaryTable_rows_selected[1])
-    }
-  })
-  
-  
-  
   plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,filterIndex(), selectedRow())})
   
   # covariate table
@@ -290,20 +280,54 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   
   # SELECTING RESULTS - for PERFORMANCE/MODEl
+  selectedRow <- shiny::reactiveVal(value = 1)
   
+  # row selection updates dropdowns
+  shiny::observeEvent(input$summaryTable_rows_selected,{
+    selectedRow(input$summaryTable_rows_selected)
+    shiny::updateSelectInput(session, "selectModel",
+                           label = shiny::h4("Select prediction result to explore"),
+                           choices = myResultList,
+                           selected = myResultList[[input$summaryTable_rows_selected]]
+                           )
+    shiny::updateSelectInput(session, "selectPerformance",
+                             label = shiny::h4("Select prediction result to explore"),
+                             choices = myResultList,
+                             selected = myResultList[[input$summaryTable_rows_selected]]
+    )
+  })
   
+  #drop downs update row and other drop down
+  sumProxy <- DT::dataTableProxy("summaryTable", session = session)
+
+  shiny::observeEvent(input$selectModel,{
+    val <- which(myResultList==input$selectModel)
+    selectedRow(val)
+    DT::selectRows(sumProxy, val)
+    shiny::updateSelectInput(session, "selectPerformance",
+                             label = shiny::h4("Select prediction result to explore"),
+                             choices = myResultList,
+                             selected = input$selectModel
+    )
+  })
+  shiny::observeEvent(input$selectPerformance,{
+    val <- which(myResultList==input$selectPerformance)
+    selectedRow(val)
+    DT::selectRows(sumProxy, val)
+    shiny::updateSelectInput(session, "selectModel",
+                             label = shiny::h4("Select prediction result to explore"),
+                             choices = myResultList,
+                             selected = input$selectPerformance
+    )
+  })
   
   # CONDITIONAL SETTINGS TABS
   shiny::hideTab(inputId = "tabs", target = "Model Settings")
   shiny::hideTab(inputId = "tabs", target = "Population Settings")
   shiny::hideTab(inputId = "tabs", target = "Covariate Settings")
   settingShow <- shiny::reactiveVal(value = FALSE)
-  #observeEvent(input$summaryTable_rows_selected, {
+
   observe({
-    #print(!settingShow() )
-    #settingShow <- !settingShow()
-    #settingShow(settingShow) 
-    #if(settingShow ){
     if(!is.null(input$summaryTable_rows_selected)){
       shiny::showTab(inputId = "tabs", target = "Model Settings")
       shiny::showTab(inputId = "tabs", target = "Population Settings")
