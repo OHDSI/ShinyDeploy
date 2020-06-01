@@ -1157,6 +1157,8 @@ coh_formData <- function(input, session) {
   if (data$Value[idx_coh_book_exist] == "No") {
     idx_coh_existing_books <- which(data$Name == "coh_existing_books")
     data$Value[idx_coh_existing_books] <- NA
+    idx_coh_book_clinical_description <- which(data$Name == "coh_book_clinical_description")
+    data$Value[idx_coh_book_clinical_description] <- "This book already has a clinical description"
   }
   
   # Then, add in the data that are captured differently
@@ -2485,6 +2487,45 @@ server <- function(input, output, session) {
     } else {
       showModal(saveDataModal(failed = TRUE))
     }
+    
+     y <- paste0(BOOKMARK_PATH, "/", u_uid, '%', cur_savename)
+    dir.create(y)
+
+    try(if (values_coh_phenotype$upload_state == "uploaded"){
+      dir.create(paste0(y, "/Phenotype"))
+      file.copy(input$coh_link_phenotype_def$datapath, paste0(y, "/Phenotype/", input$coh_link_phenotype_def$name), overwrite = TRUE)
+    })
+
+    try(if (values_coh_validation$upload_state == "uploaded"){
+      dir.create(paste0(y, "/Coh_Validation"))
+      file.copy(input$coh_validation_upload$datapath, paste0(y, "/Coh_Validation/", input$coh_validation_upload$name), overwrite = TRUE)
+    })
+
+    try(if (isTruthy(input$coh_supp_doc)){
+      dir.create(paste0(y, "/Supplemental"))
+      file.copy(input$coh_supp_doc$datapath, paste0(y, "/Supplemental/", input$coh_supp_doc$name), overwrite = FALSE)
+    })
+
+    try(if (values_val_check$upload_state == "uploaded"){
+      dir.create(paste0(y, "/Val_Implementation"))
+      file.copy(input$validation_check_upload$datapath, paste0(y, "/Val_Implementation/", input$validation_check_upload$name), overwrite = TRUE)
+    })
+
+    try(if (values_val_upload$upload_state == "uploaded"){
+      dir.create(paste0(y, "/Val_Validation"))
+      file.copy(input$val_validation_upload$datapath, paste0(y, "/Val_Validation/", input$val_validation_upload$name), overwrite = TRUE)
+    })
+    
+    try(if (values_cha_features$upload_state == "uploaded"){
+      dir.create(paste0(y, "/Characterization_Features"))
+      file.copy(input$char_features$datapath, paste0(y, "/Characterization_Features/", input$char_features$name), overwrite = TRUE)
+    })
+    
+    try(if (isTruthy(input$char_stability)){
+      dir.create(paste0(y, "/Characterization_Stability"))
+      file.copy(input$char_stability$datapath, paste0(y, "/Characterization_Stability/", input$char_stability$name), overwrite = TRUE)
+    })
+    
   })
   
   # On save click, transfer the save logic to the saveDataModal() function
@@ -2955,14 +2996,14 @@ server <- function(input, output, session) {
                       selected = loadRDS$coh_existing_books
     )
     
-    if (loadRDS$coh_book_exist != "Yes"){
+    try(if (loadRDS$coh_book_exist != "Yes"){
       book_exist(FALSE)
       book_create(TRUE)
       book_title(loadRDS$coh_book_title)
       book_cd(loadRDS$coh_book_clinical_description)
       book_ta(loadRDS$coh_therapeutic_areas_book)
       book_tag(loadRDS$coh_tags_book)
-    }
+    })
     
     updateTextInput(session,
                     inputId = "coh_book_title",
