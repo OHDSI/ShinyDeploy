@@ -50,10 +50,30 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                   addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
                                                                   addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
                                                                   addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingInfo"),
-                                                                  addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
                                                                   addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
                                                                   addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
                                       ),
+                                      
+                                      # scroller performanace - make conditional
+                                      conditionalPanel(condition = "input.menu=='Performance'",
+                                                       shiny::sliderInput("slider1", 
+                                                                          shiny::span("Threshold: ", shiny::textOutput('threshold'), style="color:white;font-family: Arial;font-size:14px;"), 
+                                                                          min = 1, max = 100, value = 50, ticks = F
+                                                       ),
+                                                       
+                                                       shiny::splitLayout(
+                                                         cellWidths = c('10%', '80%', '10%'),
+                                                         shiny::span(shiny::h5(strong('0')), style="color:white"),
+                                                         shiny::h5(' '),
+                                                         shiny::span(shiny::h5(strong('1')), style="color:white")
+                                                       ),
+                                                       shiny::tags$script(shiny::HTML("
+                                                                                      $(document).ready(function() {setTimeout(function() {
+                                                                                      supElement = document.getElementById('slider1').parentElement;
+                                                                                      $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
+                                                                                      }, 50);})
+                                                                                      "))
+                                                       ),
                                       
                                       conditionalPanel(condition = "input.menu=='Performance' || input.menu=='Model' || input.menu=='Settings' || input.menu=='Log'",
                                                        
@@ -72,40 +92,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                        #  choices = myResultList
                                                        #)            
                                                        
-                                      ),
-                                        # scroller performanace - make conditional
-                                      conditionalPanel(condition = "input.menu=='Performance'",
-                                        shinydashboard::box(width = 12,
-                                                            title = tagList(shiny::icon("gear"), "Threshold"), 
-                                                            status = "info", solidHeader = TRUE,
-                                                            shiny::splitLayout(
-                                                              cellWidths = c('5%', '90%', '5%'),
-                                                              shiny::h5(' '),
-                                                              shiny::sliderInput("slider1", 
-                                                                                 shiny::span(shiny::h4(strong(shiny::textOutput('threshold'))), style="color:black"), 
-                                                                                 min = 1, max = 100, value = 50, ticks = F),
-                                                              shiny::h5(' ')
-                                                            ),
-                                                            shiny::splitLayout(
-                                                              cellWidths = c('5%', '90%', '5%'),
-                                                              shiny::span(shiny::h5(strong('0')), style="color:black"),
-                                                              shiny::h5(' '),
-                                                              shiny::span(shiny::h5(strong('1')), style="color:black")
-                                                            ),
-                                                            shiny::tags$script(shiny::HTML("
-                                                                                           $(document).ready(function() {setTimeout(function() {
-                                                                                           supElement = document.getElementById('slider1').parentElement;
-                                                                                           $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
-                                                                                           }, 50);})
-                                                                                           "))
-                                                            ))
+                                      )
                                       
-                                      
-                                      
-                                        
-                                        
-                                        
-                                    ),
+                                  
+                                    ), # end sidebar
                                     
                                     shinydashboard::dashboardBody(
                                       shinydashboard::tabItems(
@@ -287,11 +277,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                     title = "Model Table", solidHeader = TRUE,
                                                                                                     shiny::downloadButton("downloadData", "Download Model"),
                                                                                                     DT::dataTableOutput('modelView')))
-                                        ),
-                                        
-                                        # 4th tab
-                                        shinydashboard::tabItem(tabName = "Log", 
-                                                                shiny::verbatimTextOutput('log')
                                         )
                                         
                                         
