@@ -1,6 +1,6 @@
 ### Seek COVER: Development and validation of a personalized risk calculator for COVID-19 outcomes in an international network
 
-**Development Status: Under Development**
+**Development Status: Under Review**
 
 This shiny application contains the results of the internal and external validations of the models developed to predict risk of hospitalisation within 30 days of intitial presentation to a healthcare professional with symptoms.
 
