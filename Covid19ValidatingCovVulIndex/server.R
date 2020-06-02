@@ -56,7 +56,7 @@ server <- shiny::shinyServer(function(input, output, session) {
   )
                                              
   
-  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,filterIndex(), selectedRow())})
+  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,trueRow())})
   
   # covariate table
   output$modelView <- DT::renderDataTable(editCovariates(plpResult()$covariateSummary)$table,  
@@ -84,16 +84,18 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   
   # prediction text
-  output$info <- shiny::renderUI(shiny::HTML(paste0(shiny::strong('Model: '), summaryTable[filterIndex(),'Model'][selectedRow()], ' with covariate setting id ',summaryTable[filterIndex(),'covariateSettingId'][selectedRow()] , '<br/>',
-                                                    shiny::strong('Question:'), ' Within ', summaryTable[filterIndex(),'T'][selectedRow()],
-                                          ' predict who will develop ',  summaryTable[filterIndex(),'O'][selectedRow()],
-                                          ' during ',summaryTable[filterIndex(),'TAR'][selectedRow()], '<br/>',
-                                          ' Developed in database: ', shiny::strong(summaryTable[filterIndex(),'Dev'][selectedRow()]), ' and ',
-                                          ' validated in database:  ', shiny::strong(summaryTable[filterIndex(),'Val'][selectedRow()])
-                                   ))
-                                   
-                                          
-  )
+  #output$info <- shiny::renderUI(shiny::HTML(paste0(shiny::strong('Model: '), summaryTable[trueRow(),'Model'], ' with covariate setting id ',summaryTable[trueRow(),'covariateSettingId'] , '<br/>',
+  #                                                  shiny::strong('Question:'), ' Within ', summaryTable[trueRow(),'T'],
+  #                                        ' predict who will develop ',  summaryTable[trueRow(),'O'],
+  #                                        ' during ',summaryTable[trueRow(),'TAR'], '<br/>',
+  #                                        ' Developed in database: ', shiny::strong(summaryTable[trueRow(),'Dev']), ' and ',
+  #                                        ' validated in database:  ', shiny::strong(summaryTable[trueRow(),'Val'])
+  #                                 ))
+  #)
+  
+  output$sideSettings  <- shiny::renderTable(t(data.frame(Development = as.character(summaryTable[trueRow(),'Dev']), 
+                                                        Validation = as.character(summaryTable[trueRow(),'Val']),
+                                                        Model = as.character(summaryTable[trueRow(),'Model']))), rownames = T, colnames = F)
   
   # PLOTTING FUNCTION
   plotters <- shiny::reactive({
@@ -285,15 +287,15 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   
   # SELECTING RESULTS - for PERFORMANCE/MODEl
-  selectedRow <- shiny::reactiveVal(value = 1)
+  ##selectedRow <- shiny::reactiveVal(value = 1)
+  trueRow <- shiny::reactiveVal(value = 1)
   
   # row selection updates dropdowns
   shiny::observeEvent(input$summaryTable_rows_selected,{
-    selectedRow(input$summaryTable_rows_selected)
+    #selectedRow(input$summaryTable_rows_selected)
+    trueRow(filterIndex()[input$summaryTable_rows_selected])
     shiny::updateSelectInput(session, "selectResult",
-                           #label = shiny::h4("Result:"),
-                           #choices = myResultList,
-                           selected = myResultList[[input$summaryTable_rows_selected]]
+                           selected = myResultList[[trueRow()]]
                            )
   })
   
@@ -302,8 +304,8 @@ server <- shiny::shinyServer(function(input, output, session) {
 
   shiny::observeEvent(input$selectResult,{
     val <- which(myResultList==input$selectResult)
-    selectedRow(val)
-    DT::selectRows(sumProxy, val)
+    trueRow(val)
+    DT::selectRows(sumProxy, which(filterIndex()==val)) # reset filter here?
   })
   
 

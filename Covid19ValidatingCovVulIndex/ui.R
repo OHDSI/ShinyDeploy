@@ -61,7 +61,9 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                  choices = myResultList,
                                                                                  selected = myResultList[[1]],
                                                                                  options = shinyWidgets::pickerOptions(liveSearch = TRUE, dropupAuto = FALSE, header = 'Select a result here to view...'),
-                                                                                 multiple = FALSE)
+                                                                                 multiple = FALSE),
+                                                       
+                                                       shiny::tableOutput("sideSettings")
                                                        
                                                        
                                                        #shiny::selectInput(
@@ -134,8 +136,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                 shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
                                                                                 shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
                                                                                 shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
-                                                                                shiny::selectInput('riskWindowStart', 'Time-at-risk start:', c('All',unique(as.character(summaryTable$`TAR start`)))),
-                                                                                shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`))))
+                                                                                shiny::selectInput('TAR', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$TAR))))
                                                                   ),  
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 shiny::div(DT::dataTableOutput('summaryTable'), 
@@ -179,10 +180,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         shinydashboard::tabItem(tabName = "Performance", 
                                                                 
                                                                 shiny::fluidRow(
-                                                                  shinydashboard::box(width = 12,
-                                                                                      title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
-                                                                                      shiny::htmlOutput('info')
-                                                                  ),
+                                                                  #shinydashboard::box(width = 12,
+                                                                  #                    title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
+                                                                  #                    shiny::htmlOutput('info')
+                                                                  #),
                                                                   tabBox(
                                                                     title = "Performance", 
                                                                     # The id lets us use input$tabset1 on the server to find the current tab
