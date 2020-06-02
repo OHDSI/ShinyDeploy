@@ -210,7 +210,7 @@ server <- shiny::shinyServer(function(input, output, session) {
                                         rownames = T, digits = 0)
   
   
-  output$threshold <- shiny::renderText(format(performance()$threshold,digits=5))
+  output$threshold <- shiny::renderText(paste0('Threshold: ',format(performance()$threshold,digits=5)))
   
   output$roc <- plotly::renderPlotly({
     plotters()$rocPlot
