@@ -33,7 +33,9 @@ server <- shiny::shinyServer(function(input, output, session) {
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
                                                            rownames= FALSE, selection = 'single',
                                              extensions = 'Buttons', options = list(
-                                               dom = 'Bfrtip', buttons = I('colvis')
+                                               dom = 'Blfrtip' , 
+                                               buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ) 
+                                               #pageLength = 100, lengthMenu=c(10, 50, 100,200)
                                              ),
                                              
                                              container = htmltools::withTags(table(
@@ -68,7 +70,7 @@ server <- shiny::shinyServer(function(input, output, session) {
   output$downloadData <- shiny::downloadHandler(
     filename = function(){'model.csv'},
     content = function(file) {
-      write.csv(plpResult()$covariateSummary[plpResult()$covariateSummary$covariateValue!=0,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
+      write.csv(plpResult()$covariateSummary[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
                 , file, row.names = FALSE)
     }
   )
@@ -82,12 +84,15 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   
   # prediction text
-  output$info <- shiny::renderText(paste0('Within ', summaryTable[filterIndex(),'T'][selectedRow()],
+  output$info <- shiny::renderUI(shiny::HTML(paste0(shiny::strong('Model: '), summaryTable[filterIndex(),'Model'][selectedRow()], ' with covariate setting id ',summaryTable[filterIndex(),'covariateSettingId'][selectedRow()] , '<br/>',
+                                                    shiny::strong('Question:'), ' Within ', summaryTable[filterIndex(),'T'][selectedRow()],
                                           ' predict who will develop ',  summaryTable[filterIndex(),'O'][selectedRow()],
-                                          ' during ',summaryTable[filterIndex(),'TAR start'][selectedRow()], ' day/s',
-                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToStart'][selectedRow()]==0, ' cohort start ', ' cohort end '),
-                                          ' and ', summaryTable[filterIndex(),'TAR end'][selectedRow()], ' day/s',
-                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToEnd'][selectedRow()]==0, ' cohort start ', ' cohort end '))
+                                          ' during ',summaryTable[filterIndex(),'TAR'][selectedRow()], '<br/>',
+                                          ' Developed in database: ', shiny::strong(summaryTable[filterIndex(),'Dev'][selectedRow()]), ' and ',
+                                          ' validated in database:  ', shiny::strong(summaryTable[filterIndex(),'Val'][selectedRow()])
+                                   ))
+                                   
+                                          
   )
   
   # PLOTTING FUNCTION
@@ -285,63 +290,23 @@ server <- shiny::shinyServer(function(input, output, session) {
   # row selection updates dropdowns
   shiny::observeEvent(input$summaryTable_rows_selected,{
     selectedRow(input$summaryTable_rows_selected)
-    shiny::updateSelectInput(session, "selectModel",
-                           label = shiny::h4("Select prediction result to explore"),
-                           choices = myResultList,
+    shiny::updateSelectInput(session, "selectResult",
+                           #label = shiny::h4("Result:"),
+                           #choices = myResultList,
                            selected = myResultList[[input$summaryTable_rows_selected]]
                            )
-    shiny::updateSelectInput(session, "selectPerformance",
-                             label = shiny::h4("Select prediction result to explore"),
-                             choices = myResultList,
-                             selected = myResultList[[input$summaryTable_rows_selected]]
-    )
   })
   
   #drop downs update row and other drop down
   sumProxy <- DT::dataTableProxy("summaryTable", session = session)
 
-  shiny::observeEvent(input$selectModel,{
-    val <- which(myResultList==input$selectModel)
+  shiny::observeEvent(input$selectResult,{
+    val <- which(myResultList==input$selectResult)
     selectedRow(val)
     DT::selectRows(sumProxy, val)
-    shiny::updateSelectInput(session, "selectPerformance",
-                             label = shiny::h4("Select prediction result to explore"),
-                             choices = myResultList,
-                             selected = input$selectModel
-    )
-  })
-  shiny::observeEvent(input$selectPerformance,{
-    val <- which(myResultList==input$selectPerformance)
-    selectedRow(val)
-    DT::selectRows(sumProxy, val)
-    shiny::updateSelectInput(session, "selectModel",
-                             label = shiny::h4("Select prediction result to explore"),
-                             choices = myResultList,
-                             selected = input$selectPerformance
-    )
   })
   
-  # CONDITIONAL SETTINGS TABS
-  shiny::hideTab(inputId = "tabs", target = "Model Settings")
-  shiny::hideTab(inputId = "tabs", target = "Population Settings")
-  shiny::hideTab(inputId = "tabs", target = "Covariate Settings")
-  settingShow <- shiny::reactiveVal(value = FALSE)
 
-  observe({
-    if(!is.null(input$summaryTable_rows_selected)){
-      shiny::showTab(inputId = "tabs", target = "Model Settings")
-      shiny::showTab(inputId = "tabs", target = "Population Settings")
-      shiny::showTab(inputId = "tabs", target = "Covariate Settings")
-    } else {
-      shiny::hideTab(inputId = "tabs", target = "Model Settings")
-      shiny::hideTab(inputId = "tabs", target = "Population Settings")
-      shiny::hideTab(inputId = "tabs", target = "Covariate Settings")
-    }
-  })
-
-  
-  
-  
   
   # HELPER INFO
   showInfoBox <- function(title, htmlFileName) {

@@ -28,12 +28,12 @@ if(inputType == 'file' & !is.null(validation)){
 summaryTable <- getSummary(result, inputType, validation)
 
 
-myResultList <- lapply(1:nrow(summaryTable), function(i){paste('Within', as.character(summaryTable$T[i]),
-                                                               'predict who will develop ',as.character(summaryTable$O[i]),
-                                                               'during', as.character(summaryTable$TAR[i]),
-                                                               '-- developed in', as.character(summaryTable$Dev[i]),
-                                                               'validated in ',as.character(summaryTable$Val[i]),
-                                                               'using model ', as.character(summaryTable$Model[i]),
-                                                               'with predictor setting ', as.character(summaryTable$covariateSettingId[i]))})
+myResultList <- lapply(1:nrow(summaryTable), function(i){paste( 'Dev:', as.character(summaryTable$Dev[i]),
+                                                                '- Val:',as.character(summaryTable$Val[i]),
+                                                                 '-T:', as.character(summaryTable$T[i]),
+                                                               '- O:',as.character(summaryTable$O[i]),
+                                                               '- TAR:', as.character(summaryTable$TAR[i]),
+                                                               '- Model:', as.character(summaryTable$Model[i]),
+                                                               'Predictor:', as.character(summaryTable$covariateSettingId[i]))})
 
 

@@ -45,24 +45,42 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(id ='menu',
-                                        addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
-                                        addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
-                                        addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
-                                                addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
-                                                        addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
-                                                                addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
-                                                                        addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
+                                                                  addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
+                                      ),
+                                      
+                                      conditionalPanel(condition = "input.menu=='Performance' || input.menu=='Model' || input.menu=='Settings' || input.menu=='Log'",
+                                                       
+                                                       shinyWidgets::pickerInput("selectResult", "Result:",
+                                                                                 choices = myResultList,
+                                                                                 selected = myResultList[[1]],
+                                                                                 options = shinyWidgets::pickerOptions(liveSearch = TRUE, dropupAuto = FALSE, header = 'Select a result here to view...'),
+                                                                                 multiple = FALSE)
+                                                       
+                                                       
+                                                       #shiny::selectInput(
+                                                       #  "selectResult",
+                                                       #  label = shiny::h4("Result:"),
+                                                       #  choices = myResultList
+                                                       #)            
+                                                       
                                       ),
                                         # scroller performanace - make conditional
                                       conditionalPanel(condition = "input.menu=='Performance'",
                                         shinydashboard::box(width = 12,
-                                                            title = tagList(shiny::icon("gear"), "Input"), 
+                                                            title = tagList(shiny::icon("gear"), "Threshold"), 
                                                             status = "info", solidHeader = TRUE,
                                                             shiny::splitLayout(
                                                               cellWidths = c('5%', '90%', '5%'),
                                                               shiny::h5(' '),
                                                               shiny::sliderInput("slider1", 
-                                                                                 shiny::span(shiny::h4("Threshold value: ", strong(shiny::textOutput('threshold'))), style="color:black"), 
+                                                                                 shiny::span(shiny::h4(strong(shiny::textOutput('threshold'))), style="color:black"), 
                                                                                  min = 1, max = 100, value = 50, ticks = F),
                                                               shiny::h5(' ')
                                                             ),
@@ -79,6 +97,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                            }, 50);})
                                                                                            "))
                                                             ))
+                                      
+                                      
                                       
                                         
                                         
@@ -118,31 +138,38 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                 shiny::selectInput('riskWindowEnd', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$`TAR end`))))
                                                                   ),  
                                                                   shiny::column(10, style = "background-color:#F3FAFC;",
+                                                                                shiny::div(DT::dataTableOutput('summaryTable'), 
+                                                                                           style = "font-size:70%")
+                                                                                
+                                                                  ))),
+                                                                                
+                                        
+                                        shinydashboard::tabItem(tabName = "Settings",
+                                                                
+                                                                shiny::fluidRow(
+                                                                   
+                                                                  shiny::column(10, style = "background-color:#F3FAFC;",
                                                                                 
                                                                                 # do this inside tabs:
                                                                                 shiny::tabsetPanel(id = "tabs",
-                                                                                  
-                                                                                  shiny::tabPanel("All Results",
-                                                                                                  shiny::div(DT::dataTableOutput('summaryTable'), 
-                                                                                                             style = "font-size:70%")),
-                                                                                  
-                                                                                  shiny::tabPanel("Model Settings",
-                                                                                                  shiny::h3('Model Settings: ', 
-                                                                                                            shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank") 
-                                                                                                  ),
-                                                                                                  DT::dataTableOutput('modelTable')),
-                                                                                  
-                                                                                  shiny::tabPanel("Population Settings",
-                                                                                                  shiny::h3('Population Settings: ', 
-                                                                                                            shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/createStudyPopulation.html", target="_blank") 
-                                                                                                  ),
-                                                                                                  DT::dataTableOutput('populationTable')),
-                                                                                  
-                                                                                  shiny::tabPanel("Covariate Settings", 
-                                                                                                  shiny::h3('Covariate Settings: ', 
-                                                                                                            shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank") 
-                                                                                                  ),
-                                                                                                  DT::dataTableOutput('covariateTable'))
+                                                                                                   
+                                                                                                   shiny::tabPanel("Model Settings",
+                                                                                                                   shiny::h3('Model Settings: ', 
+                                                                                                                             shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('modelTable')),
+                                                                                                   
+                                                                                                   shiny::tabPanel("Population Settings",
+                                                                                                                   shiny::h3('Population Settings: ', 
+                                                                                                                             shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/createStudyPopulation.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('populationTable')),
+                                                                                                   
+                                                                                                   shiny::tabPanel("Covariate Settings", 
+                                                                                                                   shiny::h3('Covariate Settings: ', 
+                                                                                                                             shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('covariateTable'))
                                                                                 )
                                                                                 
                                                                   )
@@ -150,17 +177,12 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 )),
                                         # second tab
                                         shinydashboard::tabItem(tabName = "Performance", 
-                                                                shiny::fluidRow(
-                                                                  box(width='100%',
-                                                                             # add dropdown selection
-                                                                             shiny::selectInput(
-                                                                               "selectPerformance",
-                                                                               label = shiny::h4("Select prediction result to explore"),
-                                                                               choices = myResultList
-                                                                             )
-                                                                  )),
                                                                 
                                                                 shiny::fluidRow(
+                                                                  shinydashboard::box(width = 12,
+                                                                                      title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
+                                                                                      shiny::htmlOutput('info')
+                                                                  ),
                                                                   tabBox(
                                                                     title = "Performance", 
                                                                     # The id lets us use input$tabset1 on the server to find the current tab
@@ -246,15 +268,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         
                                         # 3rd tab
                                         shinydashboard::tabItem(tabName = "Model", 
-                                                                shiny::fluidRow(
-                                                                  box(width='100%',
-                                                                      # add dropdown selection
-                                                                      shiny::selectInput(
-                                                                        "selectModel",
-                                                                        label = shiny::h4("Select prediction result to explore"),
-                                                                        choices = myResultList
-                                                                      )
-                                                                  )),
+                                                               
                                                                 shiny::fluidRow(
                                                                   shinydashboard::box( status = 'info',
                                                                                        title = "Binary", solidHeader = TRUE,
