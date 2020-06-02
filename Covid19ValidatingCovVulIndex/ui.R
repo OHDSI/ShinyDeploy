@@ -33,7 +33,7 @@ addInfo <- function(item, infoId) {
 
 ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
-                                    shinydashboard::dashboardHeader(title = "Multiple PLP Viewer", 
+                                    shinydashboard::dashboardHeader(title = "C-19 Validation", 
                                                                     
                                                                     tags$li(div(img(src = 'logo.png',
                                                                                     title = "OHDSI PLP", height = "40px", width = "40px"),
