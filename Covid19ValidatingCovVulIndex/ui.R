@@ -78,8 +78,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                  options = shinyWidgets::pickerOptions(liveSearch = TRUE, dropupAuto = FALSE, header = 'Select a result here to view...'),
                                                                                  multiple = FALSE),
                                                        
-                                                       shiny::tableOutput("sideSettings")
-                                                       
+                                                       shiny::tableOutput("sideSettings"),
+                                                       shiny::tableOutput("sideSettings2")
                                                        
                                                        #shiny::selectInput(
                                                        #  "selectResult",

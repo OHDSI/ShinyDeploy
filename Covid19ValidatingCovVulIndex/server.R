@@ -97,6 +97,10 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                         Validation = as.character(summaryTable[trueRow(),'Val']),
                                                         Model = as.character(summaryTable[trueRow(),'Model']))), rownames = T, colnames = F)
   
+  output$sideSettings2  <- shiny::renderTable(t(data.frame(T = paste0(substring(as.character(summaryTable[trueRow(),'T']),0,25),'...') , 
+                                                          O = paste0(substring(as.character(summaryTable[trueRow(),'O']),0,25),'...')  )), 
+                                                          rownames = T, colnames = F)
+  
   # PLOTTING FUNCTION
   plotters <- shiny::reactive({
     
