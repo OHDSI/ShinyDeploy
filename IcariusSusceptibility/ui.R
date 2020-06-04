@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("OHDSI COVID-19 Studyathon: ACE inhibitors population-level effect estimation", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("OHDSI COVID-19 Studyathon: ICARIUS - Susceptibility study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -25,7 +25,7 @@ shinyUI(
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
                                  HTML("<br/>"),
-                                 div(p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic. The preliminary research results on this web-based application are from a retrospective, real-world, observational study in support of this activity and will subsequently be submitted to a peer-reviewed, scientific journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
+                                 div(p("The Observational Health Data Sciences and Informatics (OHDSI) international community hosted a COVID-19 virtual study-a-thon March 26-29 to inform healthcare decision-making in response to the current global pandemic. The preliminary research results on this web-based application are from a retrospective, real-world, observational study in support of this activity and will subsequently be submitted to a peer-reviewed, scientific journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p>Below is the abstract of the manuscript that summarizes the findings:</p>"),
                                  HTML("<p><strong>Background: </strong></p>"),
@@ -35,8 +35,8 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
-                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/\">https://github.com/ohdsi-studies/</a></li>"),
+                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/Covid19Icarius/tree/master/Documents\">https://github.com/ohdsi-studies/Covid19Icarius/tree/master/Documents</a></li>"),
+                                 HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/Covid19Icarius/tree/master/Covid19IncidenceRasInhibitors\">https://github.com/ohdsi-studies/Covid19Icarius/tree/master/Covid19IncidenceRasInhibitors</a></li>"),
                                  HTML("</ul>")
                         ),
                         tabPanel("Explore results",

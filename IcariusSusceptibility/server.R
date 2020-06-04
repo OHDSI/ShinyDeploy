@@ -130,7 +130,7 @@ shinyServer(function(input, output, session) {
     table$calibratedCi95Ub <- prettyHr(table$calibratedCi95Ub)
     table$calibratedP <- prettyHr(table$calibratedP)
     colnames(table) <- mainColumnNames
-    options = list(pageLength = 15,
+    options = list(pageLength = 20,
                    searching = FALSE,
                    lengthChange = TRUE,
                    ordering = TRUE,

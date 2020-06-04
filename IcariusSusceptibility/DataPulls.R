@@ -33,7 +33,7 @@ getIndications <- function(connection) {
 }
 
 getSubgroups <- function(connection) {
-  sql <- "SELECT DISTINCT interaction_covariate_id AS subgroup_id, covariate_name AS subgroup_name 
+  sql <- "SELECT DISTINCT interaction_covariate_id AS subgroup_id, covariate_name AS subgroup_name
     FROM (
       SELECT DISTINCT interaction_covariate_id
       FROM cm_interaction_result
@@ -98,13 +98,13 @@ getDatabaseDetails <- function(connection, databaseId) {
 
 getIndicationForExposure <- function(connection,
                                      exposureIds = c()) {
-  sql <- "SELECT exposure_id, indication_id FROM single_exposure_of_interest WHERE"  
+  sql <- "SELECT exposure_id, indication_id FROM single_exposure_of_interest WHERE"
   sql <- paste(sql, paste0("exposure_id IN (", paste(exposureIds, collapse = ", "), ")"))
-  
+
   sql <- SqlRender::translateSql(sql, targetDialect = connection@dbms)$sql
   indications <- querySql(connection, sql)
   colnames(indications) <- SqlRender::snakeCaseToCamelCase(colnames(indications))
-  return(indications)  
+  return(indications)
 }
 
 getTcoDbs <- function(connection,
@@ -277,19 +277,18 @@ getCovariateBalance <- function(connection,
                                 analysisId,
                                 outcomeId = NULL) {
   file <- sprintf("covariate_balance_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
-  print(file)
   balance <- readRDS(file.path(dataFolder, file))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]
-  balance <- merge(balance, covariate[covariate$databaseId == databaseId & covariate$analysisId == analysisId, 
+  balance <- merge(balance, covariate[covariate$databaseId == databaseId & covariate$analysisId == analysisId,
                                       c("covariateId", "covariateAnalysisId", "covariateName")])
   balance <- balance[ c("covariateId",
                         "covariateName",
-                        "covariateAnalysisId", 
-                        "targetMeanBefore", 
-                        "comparatorMeanBefore", 
-                        "stdDiffBefore", 
-                        "targetMeanAfter", 
+                        "covariateAnalysisId",
+                        "targetMeanBefore",
+                        "comparatorMeanBefore",
+                        "stdDiffBefore",
+                        "targetMeanAfter",
                         "comparatorMeanAfter",
                         "stdDiffAfter")]
   colnames(balance) <- c("covariateId",
@@ -320,7 +319,7 @@ getKaplanMeier <- function(connection, targetId, comparatorId, outcomeId, databa
   colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
   km <- km[km$outcomeId == outcomeId &
              km$analysisId == analysisId, ]
-  
+
   return(km)
 }
 
@@ -363,9 +362,9 @@ getPropensityModel <- function(connection, targetId, comparatorId, analysisId, d
                              propensityModel$comparatorId == comparatorId &
                              propensityModel$analysisId == analysisId &
                              propensityModel$databaseId == databaseId, ]
-  covariateSubset <- covariate[covariate$databaseId == databaseId & covariate$analysisId == analysisId, 
+  covariateSubset <- covariate[covariate$databaseId == databaseId & covariate$analysisId == analysisId,
                                c("covariateId", "covariateName")]
-  covariateSubset <- rbind(covariateSubset, 
+  covariateSubset <- rbind(covariateSubset,
                            data.frame(covariateId = 0,
                                       covariateName = "Intercept"))
   model <- merge(model, covariateSubset)
