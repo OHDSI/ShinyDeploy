@@ -70,8 +70,8 @@ domain <- data.frame()
 domain <- rbind(domain,data.frame(name = "All", covariateAnalysisId = c(1:1000)))
 domain <- rbind(domain,data.frame(name = "Cohort", covariateAnalysisId = c(100:210)))
 domain <- rbind(domain,data.frame(name = "Demographics", covariateAnalysisId = c(1:99)))
-domain <- rbind(domain,data.frame(name = "Drug", covariateAnalysisId = c(212)))
-domain <- rbind(domain,data.frame(name = "Condition", covariateAnalysisId = c(412)))
+domain <- rbind(domain,data.frame(name = "Drug", covariateAnalysisId = c(412)))
+domain <- rbind(domain,data.frame(name = "Condition", covariateAnalysisId = c(212)))
 domain$name <- as.character(domain$name)
 domainName <- "All"
 
