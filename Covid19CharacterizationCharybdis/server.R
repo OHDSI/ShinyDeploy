@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
+library(htmltools)
 source("PlotsAndTables.R")
 
 
@@ -78,6 +79,24 @@ shinyServer(function(input, output, session) {
     return(strataCohort$strataId[strataCohort$strataName %in% input$strataCohortList])
   })
   
+  targetCohortName <- reactive({
+    cohort <- cohortXref[cohortXref$cohortId == cohortId(), c("targetName", "strataId", "strataName")]
+    fullCohortName <- cohort$targetName[1]
+    if (cohort$strataId[1] > 0) {
+      fullCohortName <- paste(fullCohortName, cohort$strataName[1])
+    }
+     return(fullCohortName)
+  })
+  
+  comparatorCohortName <- reactive({
+    cohort <- cohortXref[cohortXref$cohortId == comparatorCohortId(), c("targetName", "strataId", "strataName")]
+    fullCohortName <- cohort$targetName[1]
+    if (cohort$strataId[1] > 0) {
+      fullCohortName <- paste(fullCohortName, cohort$strataName[1])
+    }
+    return(fullCohortName)
+  })
+  
   cohortId <- reactive({
     return(unlist(cohortXref[cohortXref$targetId == targetId() & cohortXref$strataName == input$strataCohort,c("cohortId")]))
   })
@@ -144,19 +163,39 @@ shinyServer(function(input, output, session) {
                    ordering = TRUE,
                    paging = TRUE,
                    info = TRUE,
+                   scrollX = TRUE,
+                   rowGroup = list(dataSrc = 0),
                    columnDefs = list(minCellCountDef(2:(length(databaseIds) - 1))))
+    extensions = c('RowGroup')
     
     dataTable <- datatable(table,
                            options = options,
                            rownames = FALSE,
                            container = sketch, 
                            escape = FALSE,
+                           extensions = extensions,
                            class = "stripe nowrap compact")
     return(dataTable)
   })
+
+  output$cohortName <- renderUI({ 
+    return(htmltools::withTags(
+        div(class="cohort-heading",
+          h4(targetCohortName())
+        )
+      ))
+  })
+  
+  output$comparisonName <- renderUI({
+    return(htmltools::withTags(
+        div(class="cohort-heading",
+            h4("Target: ", targetCohortName()),
+            h4("Comparator: ", comparatorCohortName()))
+        ))
+  })
   
   output$characterizationTable <- renderDataTable({
-    data <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId %in% input$databases, ]
+    data <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId %in% input$database, ]
     data$cohortId <- NULL
     databaseIds <- unique(data$databaseId)
     

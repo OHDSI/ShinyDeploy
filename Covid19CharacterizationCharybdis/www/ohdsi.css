@@ -1,0 +1,38 @@
+.skin-blue .main-header .logo {
+ background-color: #415f74;
+}
+.skin-blue .main-header .logo:hover {
+ background-color: #415f74;
+}
+.skin-blue .main-header .navbar {
+ background-color: #415f74;
+}
+
+.skin-blue .main-sidebar {
+  background-color: #20425A;
+}
+
+.dropdown-toggle {
+  background-color: #FFFFFF;
+}
+
+ul.dropdown-menu.inner li > a {
+  color: #000000;
+} 
+
+ul.dropdown-menu.inner li > a.selected {
+  color: #000000 !important;
+} 
+
+/*
+table.dataTable > tbody > tr.odd > td {
+  
+}
+*/
+
+div.cohort-heading {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  border-bottom: 2px solid #F28F1B;
+}

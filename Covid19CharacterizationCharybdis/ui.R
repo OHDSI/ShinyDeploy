@@ -2,6 +2,9 @@ library(shiny)
 library(shinydashboard)
 library(DT)
 
+ohdsiBlueHex <- "#20425A"
+ohdsiLightYellowHex <- "FBC209"
+
 addInfo <- function(item, infoId) {
   infoTag <- tags$small(class = "badge pull-right action-button",
                         style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
@@ -21,17 +24,24 @@ dashboardPage(
                     width = "40px"),
                 style = "padding-top:0px; padding-bottom:0px;"),
             class = "dropdown")    
-    ),  dashboardSidebar(
+    ),  
+  dashboardSidebar(
+    tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
                 menuItem("Database information", tabName = "databaseInformation"), 
-                conditionalPanel(condition = "input.tabs=='compareCohortCharacterization'",
+                conditionalPanel(condition = "input.tabs=='cohortCharacterization' | input.tabs=='compareCohortCharacterization'",
                    selectInput("database", "Database", database$databaseId, selectize = FALSE)
                 ),
-                conditionalPanel(condition = "input.tabs=='cohortCharacterization' | input.tabs=='cohortCounts'",
-                   checkboxGroupInput("databases", "Database", database$databaseId, selected = database$databaseId[1])
+                conditionalPanel(condition = "input.tabs=='cohortCounts'",
+                   #checkboxGroupInput("databases", "Database", database$databaseId, selected = database$databaseId[1])
+                   shinyWidgets::pickerInput("databases", "Database",
+                                             choices = database$databaseId,
+                                             selected = database$databaseId,
+                                             options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
+                                             multiple = TRUE)
                 ),
                 conditionalPanel(condition = "input.tabs=='cohortCounts'",
                    shinyWidgets::pickerInput("targetCohortList", "Cohort",
@@ -86,14 +96,20 @@ dashboardPage(
     )
   ),
   dashboardBody(
+    tags$head(
+      tags$link(rel="stylesheet", type="text/css", href="ohdsi.css")
+    ),
+    ### changing theme
     tabItems(
       tabItem(tabName = "cohortCounts",
               dataTableOutput("cohortCountsTable")
       ),
       tabItem(tabName = "cohortCharacterization",
+              htmlOutput("cohortName"),
               dataTableOutput("characterizationTable")
       ),
       tabItem(tabName = "compareCohortCharacterization",
+              htmlOutput("comparisonName"),
               radioButtons("charCompareType", "", c("Table", "Plot"), selected = "Table", inline = TRUE),
               conditionalPanel(condition = "input.charCompareType=='Table'",
                                dataTableOutput("charCompareTable")
