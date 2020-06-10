@@ -28,14 +28,16 @@ dashboardPage(
   dashboardSidebar(
     tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
+                menuItem("About", tabName = "about"),
+                menuItem("Cohorts", tabName = "cohorts"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
                 menuItem("Database information", tabName = "databaseInformation"), 
-                conditionalPanel(condition = "input.tabs=='cohortCharacterization' | input.tabs=='compareCohortCharacterization'",
+                conditionalPanel(condition = "input.tabs=='compareCohortCharacterization'",
                    selectInput("database", "Database", database$databaseId, selectize = FALSE)
                 ),
-                conditionalPanel(condition = "input.tabs=='cohortCounts'",
+                conditionalPanel(condition = "input.tabs=='cohortCharacterization' | input.tabs=='cohortCounts'",
                    #checkboxGroupInput("databases", "Database", database$databaseId, selected = database$databaseId[1])
                    shinyWidgets::pickerInput("databases", "Database",
                                              choices = database$databaseId,
@@ -55,7 +57,7 @@ dashboardPage(
                                              options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
                                              multiple = TRUE)
                 ),
-                conditionalPanel(condition = "input.tabs!='cohortCounts' & input.tabs!='databaseInformation'",
+                conditionalPanel(condition = "input.tabs!='about' & input.tabs!='cohorts' & input.tabs!='cohortCounts' & input.tabs!='databaseInformation'",
                    shinyWidgets::pickerInput("targetCohort", "Cohort (Target)",
                                              choices = characterizationTargetCohort$targetName,
                                              selected = targetName,
@@ -101,6 +103,12 @@ dashboardPage(
     ),
     ### changing theme
     tabItems(
+      tabItem(tabName = "about",
+              includeMarkdown("md/about.md")
+      ),
+      tabItem(tabName = "cohorts",
+              includeMarkdown("md/cohorts.md")
+      ),
       tabItem(tabName = "cohortCounts",
               dataTableOutput("cohortCountsTable")
       ),
