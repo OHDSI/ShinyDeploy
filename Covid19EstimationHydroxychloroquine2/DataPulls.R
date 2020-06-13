@@ -244,16 +244,20 @@ getControlResults <- function(connection, targetId, comparatorId, analysisId, da
                                   cohortMethodResult$comparatorId == comparatorId &
                                   cohortMethodResult$analysisId == analysisId &
                                   cohortMethodResult$databaseId == databaseId, ]
-  results$effectSize <- NA
-  idx <- results$outcomeId %in% negativeControlOutcome$outcomeId
-  results$effectSize[idx] <- 1
-  if (!is.null(positiveControlOutcome)) {
-    idx <- results$outcomeId %in% positiveControlOutcome$outcomeId
-    results$effectSize[idx] <- positiveControlOutcome$effectSize[match(results$outcomeId[idx],
-                                                                       positiveControlOutcome$outcomeId)]
+  if (nrow(results) > 0) {
+    results$effectSize <- NA
+    idx <- results$outcomeId %in% negativeControlOutcome$outcomeId
+    results$effectSize[idx] <- 1
+    if (!is.null(positiveControlOutcome)) {
+      idx <- results$outcomeId %in% positiveControlOutcome$outcomeId
+      results$effectSize[idx] <- positiveControlOutcome$effectSize[match(results$outcomeId[idx],
+                                                                         positiveControlOutcome$outcomeId)]
+    }
+    results <- results[!is.na(results$effectSize), ]
+    return(results)
+  } else {
+    return(results)
   }
-  results <- results[!is.na(results$effectSize), ]
-  return(results)
 }
 
 getCmFollowUpDist <- function(connection,
@@ -277,8 +281,8 @@ getCovariateBalance <- function(connection,
                                 analysisId,
                                 outcomeId = NULL) {
   file <- sprintf("covariate_balance_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
-  print(file)
-  balance <- readRDS(file.path(dataFolder, file))
+  #print(file)
+  balance <- readRDS(file.path(dataFolder, file[1]))
   colnames(balance) <- SqlRender::snakeCaseToCamelCase(colnames(balance))
   balance <- balance[balance$analysisId == analysisId & balance$outcomeId == outcomeId, ]
   balance <- merge(balance, covariate[covariate$databaseId == databaseId & covariate$analysisId == analysisId, 
@@ -308,7 +312,11 @@ getCovariateBalance <- function(connection,
 
 getPs <- function(connection, targetIds, comparatorIds, analysisId, databaseId) {
   file <- sprintf("preference_score_dist_t%s_c%s_%s.rds", targetIds, comparatorIds, databaseId)
-  ps <- readRDS(file.path(dataFolder, file))
+  filePath <- file.path(dataFolder, file)
+  if (!file.exists(filePath)) {
+    return(NULL)
+  }
+  ps <- readRDS(filePath)
   colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
   ps <- ps[ps$analysisId == analysisId, ]
   return(ps)

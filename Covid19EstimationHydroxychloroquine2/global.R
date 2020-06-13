@@ -2,6 +2,7 @@ source("DataPulls.R")
 source("PlotsAndTables.R")
 
 shinySettings <- list(dataFolder = "data", blind = FALSE)
+
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
 connection <- NULL
@@ -48,7 +49,10 @@ for (removePart in removeParts) {
 
 tcos <- unique(cohortMethodResult[, c("targetId", "comparatorId", "outcomeId")])
 tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
-               
+
+
+
+# data clean -----------------------------------------------------------------------------------------
 outcomeOfInterest$definition <- NULL
 outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
 
@@ -57,3 +61,20 @@ exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
 
 cohortMethodAnalysis$definition <- NULL
 cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
+
+cohortMethodResult$i2 <- round(cohortMethodResult$i2, 2)
+
+exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[OHDSI-Covid19] Hydroxychloroquine + Azithromycin"] <- "Hydroxychloroquine + Azithromycin with prior RA"
+exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[OHDSI Cov19] New users of Hydroxychloroquine with prior rheumatoid arthritis"] <- "Hydroxychloroquine with prior RA"
+exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[OHDSI-Covid19] Hydroxychloroquine + Amoxicillin"] <- "Hydroxychloroquine + Amoxicillin with prior RA"
+exposureOfInterest$exposureName[exposureOfInterest$exposureName == "[OHDSI Cov19] New users of sulfasazine with prior rheumatoid arthritis"] <- "Sulfasalazine with prior RA"
+exposureOfInterest <- exposureOfInterest[order(exposureOfInterest$exposureId), ]
+
+cohortMethodAnalysis$description[cohortMethodAnalysis$description == "No prior outcome in last 30d, 5 PS strata, TAR on-treatment+14d"] <- "5 PS strata, on-treatment + 14 days follow-up"
+cohortMethodAnalysis$description[cohortMethodAnalysis$description == "No prior outcome in last 30d, 5 PS strata, TAR 30d fixed"] <- "5 PS strata, 30 days follow-up"
+cohortMethodAnalysis <- cohortMethodAnalysis[order(cohortMethodAnalysis$analysisId, decreasing = TRUE), ]
+
+dbOrder <- c("AmbEMR", "CCAE", "Clinformatics", "CPRD", "DAGermany", "IMRD", "MDCD", "MDCR", "OpenClaims", "OptumEHR", "Meta-analysis")
+database$dbOrder <- match(database$databaseId, dbOrder)
+database <- database[order(database$dbOrder), ]
+database$dbOrder <- NULL
