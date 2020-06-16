@@ -4,19 +4,6 @@ library(DT)
 library(htmltools)
 source("PlotsAndTables.R")
 
-
-continuousAnalysisIds <- c(901:926)
-
-getAnalysisIdFromCovariateId <- function(covariateId) {
-  analysisId <- substr(covariateId, nchar(covariateId)-2, nchar(covariateId))
-  return(as.integer(analysisId))  
-}
-
-isCovariateContinuous <- function(covariateId) {
-  analysisId <- getAnalysisIdFromCovariateId(covariateId)
-  return(!is.na(match(analysisId, continuousAnalysisIds)))
-}
-
 truncateStringDef <- function(columns, maxChars) {
   list(
     targets = columns,
@@ -183,11 +170,11 @@ shinyServer(function(input, output, session) {
                    ordering = TRUE,
                    paging = TRUE,
                    info = TRUE,
-                   dom = 'tip',
+                   #dom = 'tip',
                    scrollX = TRUE,
-                   rowGroup = list(dataSrc = 0),
+                  # rowGroup = list(dataSrc = 0),
                    columnDefs = list(
-                      list(targets = c(0), visible = 0),
+                      #list(targets = c(0), visible = 0),
                       minCellCountDef(2:(length(databaseIds) - 1))
                      )
                    )
@@ -199,7 +186,7 @@ shinyServer(function(input, output, session) {
                            rownames = FALSE,
                            container = sketch, 
                            escape = FALSE,
-                           extensions = extensions,
+                           #extensions = extensions,
                            class = "stripe nowrap compact")
     return(dataTable)
   })
@@ -243,7 +230,6 @@ shinyServer(function(input, output, session) {
       minCellPercentDef(1:length(databaseIds))
     )
     covariateFiltered <- getFilteredCovariates()
-    table <- table[isCovariateContinuous(table$covariateId) == FALSE, ]
     table <- merge(covariateFiltered, table)    
     table$covariateAnalysisId <- NULL
     table$covariateId <- NULL
@@ -307,7 +293,6 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
 
-    balance <- balance[isCovariateContinuous(balance$covariateId) == FALSE, ]
     columnDefs <- list(
       truncateStringDef(0, 150),
       minCellPercentDef(c(1,3)),
