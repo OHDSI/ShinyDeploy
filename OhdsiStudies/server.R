@@ -80,14 +80,15 @@ server <- function(input, output) {
       
       convertFormatting <- function(markdown) {
         bold <- regmatches(markdown, gregexpr("\\*\\*[^\\*]*\\*\\*", markdown))[[1]]
-        html <- markdown
+        html <- trimws(markdown)
         if (length(bold) > 0) {
           for (i in 1:length(bold)) {
             text <- gsub("\\*\\*([^\\*]*)\\*\\*", "\\1", bold[i])
             converted <- sprintf("<strong>%s</strong>", text)
             html <- sub(bold[i], converted, html, fixed = TRUE)
           }
-        }    
+        }
+        html <- gsub("\n", "<br/>", html)
         return(html)
       }
       
