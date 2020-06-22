@@ -79,6 +79,7 @@ server <- function(input, output) {
       markdown <- row$description
       
       convertFormatting <- function(markdown) {
+        markdown <- convertHyperlinks(markdown)
         bold <- regmatches(markdown, gregexpr("\\*\\*[^\\*]*\\*\\*", markdown))[[1]]
         html <- trimws(markdown)
         if (length(bold) > 0) {
@@ -93,7 +94,7 @@ server <- function(input, output) {
       }
       
       lines <- list(sprintf("<h2>%s</h2>", row$title),
-                    sprintf("<p>%s</p>", convertFormatting(convertHyperlinks(row$description))),
+                    sprintf("<p>%s</p>", convertFormatting(row$description)),
                     "<table>",
                     sprintf("<tr><td>Github repository</td><td>&nbsp;&nbsp;</td><td><a href=\"https://github.com/ohdsi-studies/%s\"><strong>ohdsi-studies/%s</strong></a></td></tr>", row$name, row$name),
                     sprintf("<tr><td>Study status</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", row$status),
@@ -101,13 +102,13 @@ server <- function(input, output) {
                     sprintf("<tr><td>Study type</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", row$studyType),
                     sprintf("<tr><td>Tags</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", row$tags),
                     sprintf("<tr><td>Study lead(s)</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", row$lead),
-                    sprintf("<tr><td>Study lead forums tag(s)</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertHyperlinks(row$leadTag)),
+                    sprintf("<tr><td>Study lead forums tag(s)</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertFormatting(row$leadTag)),
                     sprintf("<tr><td>Study start date</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", formatDate(row$studyStartDate)),
                     sprintf("<tr><td>Last change date</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", formatDate(row$lastPushDate)),
                     sprintf("<tr><td>Study end date</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", formatDate(row$studyEndDate)),
-                    sprintf("<tr><td>Protocol</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertHyperlinks(row$protocol)),
-                    sprintf("<tr><td>Publications</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertHyperlinks(row$publications)),
-                    sprintf("<tr><td>Resuls explorer</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertHyperlinks(row$resultsExplorer)),
+                    sprintf("<tr><td>Protocol</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertFormatting(row$protocol)),
+                    sprintf("<tr><td>Publications</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertFormatting(row$publications)),
+                    sprintf("<tr><td>Resuls explorer</td><td>&nbsp;&nbsp;</td><td><strong>%s</strong></td></tr>", convertFormatting(row$resultsExplorer)),
                     "</table>")
       return(HTML(paste(lines, collapse = "\n")))
       

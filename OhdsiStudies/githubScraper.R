@@ -105,7 +105,7 @@ parseReadmes <- function(repoTable) {
     description <- substr(readmeHeader, startOfDescription, nchar(readmeHeader))
     startOfStucturedElements <- max(posEmptyLine[posEmptyLine < startOfDescription])
     structuredElements <- substr(readmeHeader, startOfStucturedElements, startOfDescription)
-    structuredElements <- strsplit(structuredElements, "\n *- ")[[1]]
+    structuredElements <- strsplit(structuredElements, "\n- ")[[1]]
     status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readmeHeader))
     result <- data.frame(title = trimws(gsub("\n==.*", "", readmeHeader)),
                          useCases = getElement("Analytics use case\\(s\\):", structuredElements),
