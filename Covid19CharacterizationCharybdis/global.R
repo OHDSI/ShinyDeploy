@@ -1,6 +1,9 @@
+s3BucketUrl <- "s3://ohdsi-shiny-data/Covid19CharacterizationCharybdis/hlimdxf1_PreMerged.RData"
 if (!exists("shinySettings")) {
   if (file.exists("data")) {
     shinySettings <- list(dataFolder = "data")
+  } else if (file.exists(s3BucketUrl)){
+    shinySettings <- list(dataFolder = s3BucketUrl)
   } else {
     shinySettings <- list(dataFolder = "c:/temp/exampleStudy")
   }
