@@ -30,18 +30,18 @@ server <- function(input, output, session) {
     foundFile <- file.exists(s3BucketUrl)
     msg <- paste(msg, "<br/><b>File exists</b>:", foundFile)
     
-    # Curl attempt
-    curlUrl <- paste0("https://s3.amazonaws.com/", bucket(), "/", fileName())
-    msg <- paste(msg, "<br/><b>HTTPS URL</b>:", curlUrl)
-    curlFileFound <- tryCatch({
-      con <- curl::curl(curlUrl)
-      open(con)
-      return(TRUE)
-    }, error = function(e) {
-      return(FALSE)
-    })
+    # # Curl attempt
+    # curlUrl <- paste0("https://s3.amazonaws.com/", bucket(), "/", fileName())
+    # msg <- paste(msg, "<br/><b>HTTPS URL</b>:", curlUrl)
+    # curlFileFound <- tryCatch({
+    #   con <- curl::curl(curlUrl)
+    #   open(con)
+    #   return(TRUE)
+    # }, error = function(e) {
+    #   return(FALSE)
+    # })
+    # msg <- paste(msg, "<br/><b>Curl file exists</b>:", curlFileFound)
     
-    msg <- paste(msg, "<br/><b>Curl file exists</b>:", curlFileFound)
     # Use aws.s3 library if installed
     if (is_installed("aws.s3")) {
       headObject <- aws.s3::head_object(fileName(), bucket = bucket())
