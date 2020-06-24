@@ -46,6 +46,11 @@ server <- function(input, output, session) {
     if (is_installed("aws.s3")) {
       headObject <- aws.s3::head_object(fileName(), bucket = bucket())
       msg <- paste(msg, "<br/><b>Head Object</b>:", headObject)
+      if (headObject) {
+        filecontents <- load(aws.s3::get_object(fileName(), bucket = bucket()))
+        sizeOfFile <- object.size(filecontents)
+        msg <- paste(msg, "<br/><b>File size</b>:", sizeOfFile)
+      }
     } else {
       msg <- paste(msg, "<br/><b>aws.s3 not installed</b>")
     }
