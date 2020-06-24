@@ -3,7 +3,7 @@ library(DT)
 
 server <- function(input, output) {
   
-  if (difftime(Sys.time(), repoTable$timeStamp[1], "hours") > 24) {
+  if (difftime(Sys.time(), repoTable$timeStamp[1], units = "hours") > 24) {
     repoTable <<- scrapeGithub()
   }
   
