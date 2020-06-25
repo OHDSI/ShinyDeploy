@@ -1,67 +1,87 @@
-s3BucketUrl <- "s3://ohdsi-shiny-data/Covid19CharacterizationCharybdis/hlimdxf1_PreMerged.RData"
+# Borrowed from devtools:
+# https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L44
+is_installed <- function(pkg, version = 0) {
+  installed_version <- tryCatch(utils::packageVersion(pkg), error = function(e) NA)
+  !is.na(installed_version) && installed_version >= version
+}
+
 if (!exists("shinySettings")) {
   if (file.exists("data")) {
-    shinySettings <- list(dataFolder = "data")
-  } else if (file.exists(s3BucketUrl)){
-    shinySettings <- list(dataFolder = s3BucketUrl)
+    shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
+  } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
+    library("aws.ec2metadata")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/fpxcywqr_PreMerged.RData")
   } else {
-    shinySettings <- list(dataFolder = "c:/temp/exampleStudy")
+    shinySettings <- list(storage = "filesystem", dataFolder = "c:/temp/exampleStudy", dataFile = "PreMerged.RData")
   }
 }
+dataStorage <- shinySettings$storage
 dataFolder <- shinySettings$dataFolder
+dataFile <- shinySettings$dataFile
 
 suppressWarnings(rm("cohort", "cohortCount", "cohortOverlap", "conceptSets", "database", "incidenceRate", "includedSourceConcept", "inclusionRuleStats", "indexEventBreakdown", "orphanConcept", "timeDistribution"))
 
-if (file.exists(file.path(dataFolder, "PreMerged.RData"))) {
-  writeLines("Using merged data detected in data folder")
-  load(file.path(dataFolder, "PreMerged.RData"))
+if (dataStorage == "s3") {
+  fileExists <- aws.s3::head_object(dataFile, bucket = dataFolder)
+  if (fileExists) {
+    writeLines("Using merged data detected in S3 Bucket")
+    aws.s3::s3load(dataFile, bucket = dataFolder)
+  } else {
+    writeLines(paste0("Could not find ", dataFile, " in S3 Bucket"))
+  }
 } else {
-  zipFiles <- list.files(dataFolder, pattern = ".zip", full.names = TRUE)
-  
-  loadFile <- function(file, folder, overwrite) {
-    # print(file)
-    tableName <- gsub(".csv$", "", file)
-    camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
-    data <- readr::read_csv(file.path(folder, file), col_types = readr::cols(), guess_max = 1e7, locale = readr::locale(encoding = "UTF-8"))
-    colnames(data) <- SqlRender::snakeCaseToCamelCase(colnames(data))
+  if (file.exists(file.path(dataFolder, dataFile))) {
+    writeLines("Using merged data detected in data folder")
+    load(file.path(dataFolder, dataFile))
+  } else {
+    zipFiles <- list.files(dataFolder, pattern = ".zip", full.names = TRUE)
     
-    if (!overwrite && exists(camelCaseName, envir = .GlobalEnv)) {
-      existingData <- get(camelCaseName, envir = .GlobalEnv)
-      if (nrow(existingData) > 0) {
-        if (nrow(data) > 0 &&
-            all(colnames(existingData) %in% colnames(data)) &&
-            all(colnames(data) %in% colnames(existingData))) {
-          data <- data[, colnames(existingData)]
+    loadFile <- function(file, folder, overwrite) {
+      # print(file)
+      tableName <- gsub(".csv$", "", file)
+      camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
+      data <- readr::read_csv(file.path(folder, file), col_types = readr::cols(), guess_max = 1e7, locale = readr::locale(encoding = "UTF-8"))
+      colnames(data) <- SqlRender::snakeCaseToCamelCase(colnames(data))
+      
+      if (!overwrite && exists(camelCaseName, envir = .GlobalEnv)) {
+        existingData <- get(camelCaseName, envir = .GlobalEnv)
+        if (nrow(existingData) > 0) {
+          if (nrow(data) > 0 &&
+              all(colnames(existingData) %in% colnames(data)) &&
+              all(colnames(data) %in% colnames(existingData))) {
+            data <- data[, colnames(existingData)]
+          }
+          
+          if (!isTRUE(all.equal(colnames(data), colnames(existingData), check.attributes = FALSE))) {
+            stop("Table columns do no match previously seen columns. Columns in ", 
+                 file, 
+                 ":\n", 
+                 paste(colnames(data), collapse = ", "), 
+                 "\nPrevious columns:\n",
+                 paste(colnames(existingData), collapse = ", "))
+          }
         }
-        
-        if (!isTRUE(all.equal(colnames(data), colnames(existingData), check.attributes = FALSE))) {
-          stop("Table columns do no match previously seen columns. Columns in ", 
-               file, 
-               ":\n", 
-               paste(colnames(data), collapse = ", "), 
-               "\nPrevious columns:\n",
-               paste(colnames(existingData), collapse = ", "))
-        }
+        data <- rbind(existingData, data)
       }
-      data <- rbind(existingData, data)
+      assign(camelCaseName, data, envir = .GlobalEnv)
+      
+      invisible(NULL)
     }
-    assign(camelCaseName, data, envir = .GlobalEnv)
     
-    invisible(NULL)
-  }
-  
-  for (i in 1:length(zipFiles)) {
-    writeLines(paste("Processing", zipFiles[i]))
-    tempFolder <- tempfile()
-    dir.create(tempFolder)
-    unzip(zipFiles[i], exdir = tempFolder)
-    
-    csvFiles <- list.files(tempFolder, pattern = ".csv")
-    lapply(csvFiles, loadFile, folder = tempFolder, overwrite = (i == 1))
-    
-    unlink(tempFolder, recursive = TRUE)
-  }
+    for (i in 1:length(zipFiles)) {
+      writeLines(paste("Processing", zipFiles[i]))
+      tempFolder <- tempfile()
+      dir.create(tempFolder)
+      unzip(zipFiles[i], exdir = tempFolder)
+      
+      csvFiles <- list.files(tempFolder, pattern = ".csv")
+      lapply(csvFiles, loadFile, folder = tempFolder, overwrite = (i == 1))
+      
+      unlink(tempFolder, recursive = TRUE)
+    }
+  }  
 }
+
 
 if (exists("covariate")) {
   covariate <- unique(covariate)
