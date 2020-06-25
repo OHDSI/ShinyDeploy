@@ -4,7 +4,7 @@ library(aws.ec2metadata)
 
 ui <- fluidPage(
   textInput("fileName", label="Enter file name:", value="Covid19CharacterizationCharybdis/fgz8jale_PreMerged.RData"),
-  textInput("bucket", label="Bucket:", value="ohdsi-shiny-data"),
+  textInput("bucket", label="Bucket:", value=Sys.getenv("OHDSI_SHINY_DATA_BUCKET")),
   actionButton("exists", "File exists?"),
   htmlOutput("fileExists")
 )
