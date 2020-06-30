@@ -216,18 +216,18 @@ shinyServer(function(input, output, session) {
     databaseIds <- unique(data$databaseId)
     databaseIdsWithCounts <- merge(databaseIds, counts, by.x="x", by.y="databaseId")
     databaseIdsWithCounts <- dplyr::rename(databaseIdsWithCounts, databaseId="x")
-    table <- data[data$databaseId == databaseIds[1], c("covariateId", "mean")]
-    colnames(table)[2] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
-    if (length(databaseIds) > 1) {
-      for (i in 2:length(databaseIds)) {
-        temp <- data[data$databaseId == databaseIds[i], c("covariateId", "mean")]
-        colnames(temp)[2] <- paste(colnames(temp)[2], databaseIds[i], sep = "_")
+    table <- data[data$databaseId == databaseIdsWithCounts$databaseId[1], c("covariateId", "mean")]
+    colnames(table)[2] <- paste(colnames(table)[2], databaseIdsWithCounts$databaseId[1], sep = "_")
+    if (nrow(databaseIdsWithCounts) > 1) {
+      for (i in 2:nrow(databaseIdsWithCounts)) {
+        temp <- data[data$databaseId == databaseIdsWithCounts$databaseId[i], c("covariateId", "mean")]
+        colnames(temp)[2] <- paste(colnames(temp)[2], databaseIdsWithCounts$databaseId[i], sep = "_")
         table <- merge(table, temp, all = TRUE)
       }
     }
     columnDefs <- list(
       truncateStringDef(0, 150),
-      minCellPercentDef(1:length(databaseIds))
+      minCellPercentDef(1:nrow(databaseIdsWithCounts))
     )
     covariateFiltered <- getFilteredCovariates()
     table <- merge(covariateFiltered, table)    
@@ -254,7 +254,7 @@ shinyServer(function(input, output, session) {
           lapply(paste0("(n = ", format(databaseIdsWithCounts$cohortSubjects, big.mark = ","), ")"), th, colspan = 1, class = "dt-center no-padding")
         ),
         tr(
-          lapply(rep(c("Proportion"), length(databaseIds)), th, colspan = 1)
+          lapply(rep(c("Proportion"), nrow(databaseIdsWithCounts)), th, colspan = 1)
         )
       )
     ))
@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
                        escape = FALSE,
                        class = "stripe nowrap compact")
     table <- formatStyle(table = table,
-                         columns = 1:length(databaseIds),
+                         columns = 1:nrow(databaseIdsWithCounts),
                          background = styleColorBar(c(0,1), "lightblue"),
                          backgroundSize = "98% 88%",
                          backgroundRepeat = "no-repeat",
