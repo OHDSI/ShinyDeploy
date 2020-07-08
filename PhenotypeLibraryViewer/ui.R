@@ -3,7 +3,7 @@
 # UI Definition
 shinyUI(
   fluidPage(
-
+    
     # CSS for app style settings
     includeCSS("www/styles.css"),
 
@@ -18,6 +18,7 @@ shinyUI(
       dashboardSidebar(
         width = 250,
         sidebarMenu(
+          id = "tabs",
           menuItem("Find", tabName = "find", icon = icon("search")),
           uiOutput("conditionalHR1"),
           lapply(1:10, function(x) {
