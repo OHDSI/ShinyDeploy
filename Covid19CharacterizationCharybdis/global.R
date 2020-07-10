@@ -10,7 +10,7 @@ if (!exists("shinySettings")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
-    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/efdza9q7_PreMerged.RData")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/oh6952gq_PreMerged.RData")
   } else {
     shinySettings <- list(storage = "filesystem", dataFolder = "c:/temp/exampleStudy", dataFile = "PreMerged.RData")
   }
