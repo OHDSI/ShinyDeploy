@@ -1,6 +1,46 @@
 library(shiny)
 library(ggplot2)
 
+singleRankVector <- function(row) {
+  return(data.frame(type = row$type,
+                    rank = row$start:row$end,
+                    weight = 1 / (1 + row$end - row$start),
+                    row.names = NULL))
+}
+
+computeRankVectors <- function(subgroup, descending = TRUE) {
+  totalLength <- nrow(subgroup)
+  valueCounts <- aggregate(rep(1, totalLength) ~ value, data = subgroup, FUN = sum) 
+  if (nrow(valueCounts) == 1) {
+    # One unique value. Distribute weights evenly over all ranks
+    valueCounts$start <- 1
+    valueCounts$end <- totalLength
+  } else if (nrow(valueCounts) == totalLength) {
+    # All values are unique. Simple ranking without consideration of ties
+    rankVectors <- data.frame(type = subgroup$type,
+                              rank = order(subgroup$value, decreasing = descending),
+                              weight = 1,
+                              row.names = NULL)
+    return(rankVectors)
+  } else {
+    # Handle ties
+    if (descending) {
+      valueCounts <- valueCounts[order(-valueCounts$value), ]
+    } else {
+      valueCounts <- valueCounts[order(valueCounts$value), ]
+    }
+    valueCounts$end <- cumsum(valueCounts[, 2])
+    valueCounts$start <-  c(1, valueCounts$end[1:(nrow(valueCounts) - 1)] + 1 )
+    valueCounts[, 2] <- NULL
+  }
+  valueCounts <- merge(subgroup[, c("type", "value")], valueCounts) 
+  rankVectors <- lapply(split(valueCounts, 1:totalLength), singleRankVector)
+  rankVectors <- do.call("rbind", rankVectors)
+  rankVectors$start <- NULL
+  rankVectors$end <- NULL
+  return(rankVectors)
+}
+
 shinyServer(function(input, output, session) {
   
   # Fixed effects ---------------------------------------------------
@@ -44,21 +84,21 @@ shinyServer(function(input, output, session) {
   
   getReferenceValues <- function(metrics) {
     ref <- data.frame()
-    if ("bias" %in% metrics) {
+    if ("Bias" %in% metrics) {
       ref <- rbind(ref, data.frame(value = 0,
-                                   metric = "bias")) 
+                                   metric = "Bias")) 
     }
-    if ("coverage" %in% metrics) {
+    if ("Coverage" %in% metrics) {
       ref <- rbind(ref, data.frame(value = 0.95,
-                                   metric = "coverage")) 
+                                   metric = "Coverage")) 
     }
-    if ("mse" %in% metrics) {
+    if ("MSE" %in% metrics) {
       ref <- rbind(ref, data.frame(value = 0,
-                                   metric = "mse")) 
+                                   metric = "MSE")) 
     }
-    if ("nonEstimable" %in% metrics) {
+    if ("Non-Estimable" %in% metrics) {
       ref <- rbind(ref, data.frame(value = 0,
-                                   metric = "nonEstimable")) 
+                                   metric = "Non-Estimable")) 
     }
     return(ref)
   }
@@ -154,10 +194,10 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1] & subset$simParam == subset$simParam[1]) 
     HTML(sprintf("<strong>Figure S1.2. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent the various simulation parameters. Color indicates the various tested
-                 meta-analysis algorithms.", count))
+                 meta-analysis algorithms. Hover over a data point to reveal more details.", count))
   })
   
   output$mainViolinCaptionFixed <- renderUI({
@@ -165,7 +205,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1] & subset$simParam == subset$simParam[1]) 
     HTML(sprintf("<strong>Figure S1.1. </strong>Violin plots showing the performance accross the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent %s. Color indicates the various tested
                  meta-analysis algorithms.", count, input$simParamFixedRadioButton))
@@ -173,34 +213,28 @@ shinyServer(function(input, output, session) {
   
   output$rankPlotFixed  <- renderPlot({
     subset <- filteredResultsFixed()
-    subset <- subset[!grepl("bias", subset$metric), ]
-    
-    rankMethods <- function(subgroup, descending = TRUE) {
-      if (descending) {
-        subgroup$rank <- order(-subgroup$value)
-      } else {
-        subgroup$rank <- order(subgroup$value)
-      }
-      return(subgroup)
-    }
+    subset <- subset[!grepl("Bias", subset$metric), ]
     
     processMetric <- function(metricSubset) {
       metric <- metricSubset$metric[1]
-      descending <- grepl("precision", metric)
-      if (grepl("coverage", metric)) {
+      descending <- grepl("Precision", metric)
+      if (grepl("Coverage", metric)) {
         metricSubset$value <- abs(0.95 - metricSubset$value)
       }
-      subgroups <- split(metricSubset, apply(metricSubset[, c(simParamsFixed, "metric")],1,paste,collapse=" "))
-      metricSubset <- lapply(subgroups, rankMethods, descending = descending)
+      subgroups <- split(metricSubset, apply(metricSubset[, c(simParamsFixed, "metric")],1,paste,collapse = " "))
+      names(subgroups) <- NULL
+      metricSubset <- lapply(subgroups, computeRankVectors, descending = descending)
       metricSubset <- do.call(rbind, metricSubset)  
+      results <- aggregate(weight ~ type + rank, data = metricSubset, sum)
+      metricSubset$metric <- metric
       return(metricSubset)
     }
     
-    rankedSubset <- lapply(split(subset, subset$metric), processMetric)
+    rankedSubset <- lapply(split(subset, subset$metric, drop = TRUE), processMetric)
     rankedSubset <- do.call(rbind, rankedSubset)
     rankedSubset$type <- gsub(" ", "\n", rankedSubset$type)
-    plot <- ggplot2::ggplot(rankedSubset, ggplot2::aes(x = rank)) +
-      ggplot2::geom_histogram(binwidth = 1, color = rgb(0, 0, 0.8, alpha = 0), fill = rgb(0, 0, 0.8), alpha = 0.6) +
+    plot <- ggplot2::ggplot(rankedSubset, ggplot2::aes(x = rank, y = weight)) +
+      ggplot2::geom_col(color = rgb(0, 0, 0.8, alpha = 0), fill = rgb(0, 0, 0.8), alpha = 0.6) +
       ggplot2::scale_x_continuous("Rank (lower is better)", breaks = min(rankedSubset$rank):max(rankedSubset$rank)) +
       ggplot2::scale_y_continuous("Count") +
       ggplot2::facet_grid(type~metric) +
@@ -350,10 +384,10 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1] & subset$simParam == subset$simParam[1]) 
     HTML(sprintf("<strong>Figure S2.2. </strong>Each dot represents one of the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent the various simulation parameters. Color indicates the various tested
-                 meta-analysis algorithms.", count))
+                 meta-analysis algorithms. Hover over a data point to reveal more details.", count))
   })
   
   output$mainViolinCaptionRandom <- renderUI({
@@ -361,7 +395,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1]) 
+    count <- sum(subset$type == subset$type[1] & subset$metric == subset$metric[1] & subset$simParam == subset$simParam[1]) 
     HTML(sprintf("<strong>Figure S2.1. </strong>Violin plots showing the performance accross the %s selected simulation scenarios. The y-axes represent the various metrics 
     as estimated over 1,000 iterations per scenario, and the x-axes represent %s. Color indicates the various tested
                  meta-analysis algorithms.", count, input$simParamRandomRadioButton))
@@ -369,34 +403,28 @@ shinyServer(function(input, output, session) {
   
   output$rankPlotRandom  <- renderPlot({
     subset <- filteredResultsRandom()
-    subset <- subset[!grepl("bias", subset$metric), ]
-    
-    rankMethods <- function(subgroup, descending = TRUE) {
-      if (descending) {
-        subgroup$rank <- order(-subgroup$value)
-      } else {
-        subgroup$rank <- order(subgroup$value)
-      }
-      return(subgroup)
-    }
+    subset <- subset[!grepl("Bias", subset$metric), ]
     
     processMetric <- function(metricSubset) {
       metric <- metricSubset$metric[1]
-      descending <- grepl("precision", metric)
-      if (grepl("coverage", metric)) {
+      descending <- grepl("Precision", metric)
+      if (grepl("Coverage", metric)) {
         metricSubset$value <- abs(0.95 - metricSubset$value)
       }
-      subgroups <- split(metricSubset, apply(metricSubset[, c(simParamsRandom, "metric")],1,paste,collapse=" "))
-      metricSubset <- lapply(subgroups, rankMethods, descending = descending)
+      subgroups <- split(metricSubset, apply(metricSubset[, c(simParamsRandom, "metric")],1,paste,collapse = " "))
+      names(subgroups) <- NULL
+      metricSubset <- lapply(subgroups, computeRankVectors, descending = descending)
       metricSubset <- do.call(rbind, metricSubset)  
+      results <- aggregate(weight ~ type + rank, data = metricSubset, sum)
+      metricSubset$metric <- metric
       return(metricSubset)
     }
     
-    rankedSubset <- lapply(split(subset, subset$metric), processMetric)
+    rankedSubset <- lapply(split(subset, subset$metric, drop = TRUE), processMetric)
     rankedSubset <- do.call(rbind, rankedSubset)
     rankedSubset$type <- gsub(" ", "\n", rankedSubset$type)
-    plot <- ggplot2::ggplot(rankedSubset, ggplot2::aes(x = rank)) +
-      ggplot2::geom_histogram(binwidth = 1, color = rgb(0, 0, 0.8, alpha = 0), fill = rgb(0, 0, 0.8), alpha = 0.6) +
+    plot <- ggplot2::ggplot(rankedSubset, ggplot2::aes(x = rank, y = weight)) +
+      ggplot2::geom_col(color = rgb(0, 0, 0.8, alpha = 0), fill = rgb(0, 0, 0.8), alpha = 0.6) +
       ggplot2::scale_x_continuous("Rank (lower is better)", breaks = min(rankedSubset$rank):max(rankedSubset$rank)) +
       ggplot2::scale_y_continuous("Count") +
       ggplot2::facet_grid(type~metric) +
