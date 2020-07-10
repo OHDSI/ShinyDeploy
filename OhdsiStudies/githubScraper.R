@@ -75,34 +75,49 @@ getAllReadmes <- function(repoTable) {
 parseReadmes <- function(repoTable) {
   
   parseReadme <- function(readme) {
-    getElement <- function(header) {
-      if (grepl(header, readme)) {
-        element <- gsub(sprintf(".*%s([^\n]*)\n.*", header),"\\1",readme)
+    getElement <- function(header, structuredElements) {
+      index <- grepl(header, structuredElements)
+      if (sum(index) == 1) {
+        element <- structuredElements[index]
+        element <- gsub(header, "", element)
         element <- trimws(gsub("\\*", "", element))
         if (element == "-") {
           return("")
         } else {
           return(element)
         }
-        
       } else {
         return("")
       }
     }
     readme <- gsub("\r", "", readme)
-    description <- trimws(gsub("\n([^\n]*\n=+\n|#).*", "",  gsub(".*Results explorer:[^\n]*\n *\n", "", readme)))
-    status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readme))
-    result <- data.frame(title = trimws(gsub("\n==.*", "", readme)),
-                         useCases = getElement("Analytics use case\\(s\\):"),
-                         studyType = getElement("Study type:"),
-                         tags = getElement("Tags:"),
-                         lead = getElement("Study lead:"),
-                         leadTag = getElement("Study lead forums tag:"),
-                         studyStartDate = getElement("Study start date:"),
-                         studyEndDate = getElement("Study end date:"),
-                         protocol = getElement("Protocol:"),
-                         publications = getElement("Publications:"),
-                         resultsExplorer = getElement("Results explorer:"),
+    sectionHeaders <- gregexpr("\n[^\n]*\n=+|\n#+", readme)[[1]]
+    posResultsExplorer <- gregexpr("Results explorer", readme)[[1]]
+    if (all(sectionHeaders < posResultsExplorer)) {
+      endOfReadmeHeader <- nchar(readme)
+    } else {
+      endOfReadmeHeader <- min(sectionHeaders[sectionHeaders > posResultsExplorer])
+    }
+    readmeHeader <- substr(readme, 1, endOfReadmeHeader)
+    
+    posEmptyLine <- gregexpr("\n *\n", readmeHeader)[[1]]
+    startOfDescription <- min(posEmptyLine[posEmptyLine > posResultsExplorer])
+    description <- substr(readmeHeader, startOfDescription, nchar(readmeHeader))
+    startOfStucturedElements <- max(posEmptyLine[posEmptyLine < startOfDescription])
+    structuredElements <- substr(readmeHeader, startOfStucturedElements, startOfDescription)
+    structuredElements <- strsplit(structuredElements, "\n- ")[[1]]
+    status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readmeHeader))
+    result <- data.frame(title = trimws(gsub("\n==.*", "", readmeHeader)),
+                         useCases = getElement("Analytics use case\\(s\\):", structuredElements),
+                         studyType = getElement("Study type:", structuredElements),
+                         tags = getElement("Tags:", structuredElements),
+                         lead = getElement("Study lead:", structuredElements),
+                         leadTag = getElement("Study lead forums tag:", structuredElements),
+                         studyStartDate = getElement("Study start date:", structuredElements),
+                         studyEndDate = getElement("Study end date:", structuredElements),
+                         protocol = getElement("Protocol:", structuredElements),
+                         publications = getElement("Publications:", structuredElements),
+                         resultsExplorer = getElement("Results explorer:", structuredElements),
                          status = status,
                          description = description,
                          stringsAsFactors = FALSE)

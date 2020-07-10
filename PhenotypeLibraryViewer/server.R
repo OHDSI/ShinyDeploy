@@ -103,34 +103,39 @@ getDummyValidationStats <- function(name) {
 }
 
 # Makes one item of the validation tab in the navbar menu
-makeValidationSetTabs <- function(val_data, pheTitle) {
-  return(
-    lapply(1:nrow(val_data), function(x) {
-      tabPanel(
-        paste0("Set #", x),
-        fluidRow(column(12, box(
-          status = "primary", width = NULL,
-          buildValidationMarkdown(val_data[x, ], pheTitle)
-        )))
-      )
-    })
-  )
-}
+#makeValidationSetTabs <- function(val_data, pheTitle) {
+#  return(
+#    lapply(1:nrow(val_data), function(x) {
+#      tabPanel(
+#        paste0("Set #", x),
+#        fluidRow(column(12, box(
+#          status = "primary", width = NULL,
+#          buildValidationMarkdown(val_data[x, ], pheTitle)
+#        )))
+#      )
+#    })
+#  )
+#}
 
 # Makes overview tab to summarize over multiple validation sets
-makeValidationOverviewTab <- function(val_data, name) {
-  return(
-    tabPanel(
-      title = "Overview", value = paste0("overview_", name),
-      h1("Validation Overview"),
-      fluidRow(column(12, box(
-        status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
-        h4(paste("Number of Validation Sets:", nrow(val_data)))
-      ))),
-      h3("More to come...")
-    )
-  )
-}
+# val_data, name
+#makeValidationOverviewTab <- function(name) {
+#  return(
+#    tabPanel(
+#      #title = "Overview", value = paste0("overview_", name),
+#      title = "Overview", value = paste0("overview_", name),
+#      h1("Validation Overview"),
+#      
+#      DT::dataTableOutput("validation")
+      
+      #fluidRow(column(12, box(
+      #  status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
+      #  h4(paste("Number of Validation Sets:", nrow(val_data)))
+      #))),
+      #h3("More to come...")
+#    )
+#  )
+#}
 
 # Build the graph for the connected components of the currently selected phenotype
 buildVisNetwork <- function(phe_data) {
@@ -224,7 +229,52 @@ makeChapterPage <- function(selected_book, selected_chapter){
   # Subset data to the selected chapter
   phe_data <- subset(phe, (Book == selected_book) & (coh_chapter_title == selected_chapter))
   val_data <- subset(val, (validation_book_selection == selected_book) & (validation_chapter_selection == selected_chapter))
+  
+  book <- gsub(" ", "%20", selected_book)
+  chapter <- gsub(" ", "%20", selected_chapter)
+  keep <- c("timestamp", "name", "val_valid_proc_desc", "val_valid_data_desc",
+            "val_cdm_version", "val_vocab_version", "val_validation_modality",
+            "val_true_pos", "val_true_neg", "val_false_pos", "val_false_neg",
+            "val_inconclusive", "val_add_comms", "Implementation")
+  if (nrow(val_data) > 0){
+    links <- c()
+    for(i in 1:nrow(val_data)){
+      author <- val_data[i,"name"]
+      time <- val_data[i,"timestamp"]
+      l <- paste0("http://github.com/OHDSI/PhenotypeLibrary/blob/master/OHDSI%20Gold%20Standard%20Phenotype%20Library/Books/", book, "/", chapter, "/Validation/", author, "_", time)
+      f <- paste0("<a href='",l,"'target='_blank'>", "Implementation", "</a>")
+      links <- c(links, f)
+    }
+    val_data$Implementation <- links
+    val_data <- val_data[,keep]
+  }
 
+  if(phe_data$coh_previous_validation == "TRUE"){
+    l <- paste0("http://github.com/OHDSI/PhenotypeLibrary/blob/master/OHDSI%20Gold%20Standard%20Phenotype%20Library/Books/", book, "/", chapter, "/Validation")
+    f <- paste0("<a href='",l,"'target='_blank'>", "Implementation", "</a>")
+    pval <- data.frame(phe_data["timestamp"],
+              phe_data["name"],
+              phe_data["coh_valid_proc_desc"],
+              phe_data["coh_valid_data_desc"],
+              phe_data["coh_cdm_version"],
+              phe_data["coh_vocab_version"],
+              phe_data["coh_validation_modality"],
+              phe_data["coh_true_pos"],
+              phe_data["coh_true_neg"],
+              phe_data["coh_false_pos"],
+              phe_data["coh_false_neg"],
+              phe_data["coh_inconclusive"],
+              phe_data["coh_add_comms"],
+              f
+              )
+    names(pval) <- keep
+    if (nrow(val_data) == 0){
+      val_data <- pval
+    } else{
+      val_data <- rbind(val_data, pval)
+    }
+  }
+  
   # Make tabsetPanel
   return(
     tabsetPanel(
@@ -257,12 +307,42 @@ makeChapterPage <- function(selected_book, selected_chapter){
         if (nrow(val_data) > 0) {
           navbarPage(
             "",
+            tabPanel(
+              #title = "Overview", value = paste0("overview_", name),
+              title = "Overview", value = paste0("overview"),
+              h1("Validation Overview"),
+              
+              renderDataTable({
+                datatable(
+                  data = val_data,
+                  filter = "top",
+                  elementId = "validationTable",
+                  class = "hover",
+                  rownames = FALSE,
+                  escape = FALSE,
+                  options = list(
+                    pageLength = 30,
+                    lengthChange = FALSE,
+                    scrollX = TRUE,
+                    scrollCollapse = TRUE,
+                    autoWidth = FALSE
+                  )
+                )
+              })
+              
+              #fluidRow(column(12, box(
+              #  status = "primary", width = NULL, title = "Validations", solidHeader = TRUE,
+              #  h4(paste("Number of Validation Sets:", nrow(val_data)))
+              #))),
+              #h3("More to come...")
+            )
 
             # Validation overview tab
-            makeValidationOverviewTab(val_data, phe_data$coh_chapter_title),
+            #makeValidationOverviewTab(val_data, phe_data$coh_chapter_title)
+            #makeValidationOverviewTab(phe_data$coh_chapter_title)
 
             # Individual validation set selector
-            do.call("navbarMenu", c(makeValidationSetTabs(val_data, phe_data$coh_chapter_title), list(title = "Validation Sets")))
+            #do.call("navbarMenu", c(makeValidationSetTabs(val_data, phe_data$coh_chapter_title), list(title = "Validation Sets")))
           )
         } else {
           fluidRow(column(12, box(
@@ -519,4 +599,5 @@ shinyServer(function(input, output, session) {
             )
       )
   }) # End chapterSelect
+  
 }) # End shinyServer
