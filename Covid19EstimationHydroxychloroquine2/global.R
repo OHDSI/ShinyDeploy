@@ -54,3 +54,7 @@ dbOrder <- c("AmbEMR", "CCAE", "Clinformatics", "CPRD", "DAGermany", "IMRD", "MD
 database$dbOrder <- match(database$databaseId, dbOrder)
 database <- database[order(database$dbOrder), ]
 database$dbOrder <- NULL
+
+outcomeOfInterest$outcomeOrder <- match(outcomeOfInterest$outcomeId, c(16527, 16525, 16526))
+outcomeOfInterest <- outcomeOfInterest[order(outcomeOfInterest$outcomeOrder), ]
+outcomeOfInterest$outcomeOrder <- NULL
