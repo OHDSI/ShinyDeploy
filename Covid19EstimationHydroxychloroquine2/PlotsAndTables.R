@@ -944,7 +944,7 @@ judgeEffectiveness <- function(hrLower, hrUpper) {
 
 prettyHr <- function(x) {
   result <- sprintf("%.2f", x)
-  result[is.na(x) | x > 100] <- "NA"
+  result[is.na(x) | x > 1000] <- "NA"
   return(result)
 }
 

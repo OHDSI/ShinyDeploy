@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Risk of hydroxychloroquine, alone and in combination with azithromycin: neuropsychiatric and inflluenza outcomes", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Risk of depression, suicidal ideation, suicide and psychosis with hydroxychloroquine treatment for rheumatoid arthritis: a multi-national network cohort study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -44,8 +44,8 @@ shinyUI(
 
                         fluidRow(
                           column(3,
-                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
-                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
+                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName)[1], selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName)[2], selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
                                  selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
                                  checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId, width = '100%'),
                                  checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1], width = '100%')
