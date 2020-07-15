@@ -101,3 +101,8 @@ cohortId,name,atlasId,circeDef
 198,Multi-system inflammatory syndrome (Kawasaki disease or toxic shock syndrome),234,TRUE
 201,Acute kidney injury (AKI) using diagnosis codes and change in measurements during hospitlization,NA,FALSE
 202,Discharge from hospitalization,NA,FALSE
+117,Prevalent tuberculosis,221,TRUE
+205,Prevalent Human immunodeficiency virus infection broad,314,TRUE
+206,Prevalent tuberculosis broad,315,TRUE
+156,Venous thromboembolic (pulmonary embolism and deep vein thrombosis) events,275,TRUE
+164,Death,96,TRUE

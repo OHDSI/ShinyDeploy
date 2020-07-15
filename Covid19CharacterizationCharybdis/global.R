@@ -128,4 +128,4 @@ comparatorName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("t
 comparatorStrataName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("strataName")][1]
 
 cohortInfo <- readr::read_csv("./cohorts.csv", col_types = readr::cols())
-
+cohortInfo <- cohortInfo[order(cohortInfo$name),]
