@@ -107,7 +107,7 @@ dashboardPage(
               includeMarkdown("md/about.md")
       ),
       tabItem(tabName = "cohorts",
-              includeMarkdown("md/cohorts.md")
+              dataTableOutput("cohortInfoTable")
       ),
       tabItem(tabName = "cohortCounts",
               dataTableOutput("cohortCountsTable")

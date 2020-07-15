@@ -10,7 +10,7 @@ if (!exists("shinySettings")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
-    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/b4qig3e2_PreMerged.RData")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/4y32ktsd_PreMerged.RData")
   } else {
     shinySettings <- list(storage = "filesystem", dataFolder = "c:/temp/exampleStudy", dataFile = "PreMerged.RData")
   }
@@ -126,4 +126,6 @@ targetName <- cohortXref[cohortXref$cohortId == initCharCohortId,c("targetName")
 strataName <- cohortXref[cohortXref$cohortId == initCharCohortId,c("strataName")][1]
 comparatorName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("targetName")][1]
 comparatorStrataName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("strataName")][1]
+
+cohortInfo <- readr::read_csv("./cohorts.csv", col_types = readr::cols())
 

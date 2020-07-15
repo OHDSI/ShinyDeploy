@@ -108,6 +108,43 @@ shinyServer(function(input, output, session) {
     return(domain[domain$name %in% input$domainFilter,c("covariateAnalysisId")])
   })
   
+  output$cohortInfoTable <- renderDataTable({
+    data <- cohortInfo
+    atlasCohortUrl <- "https://atlas.ohdsi.org/#/cohortdefinition/"
+    githubCohortUrl <- "https://github.com/ohdsi-studies/Covid19CharacterizationCharybdis/tree/master/inst/sql/sql_server/"
+    data$url <- ifelse(data$circeDef == TRUE, 
+                       paste0(atlasCohortUrl, data$atlasId),
+                       paste0(githubCohortUrl, data$cohortId, ".sql"))
+    data$url <- paste0("<a href='", data$url, "' target='_blank'>", data$url, "</a>")
+    table <- data[, c("name", "url")]
+    sketch <- htmltools::withTags(table(
+      class = 'display',
+      thead(
+        tr(
+          th('Cohort Name'),
+          th('Definition')
+        )
+      )
+    ))
+    
+    options = list(pageLength = 25,
+                   searching = TRUE,
+                   lengthChange = TRUE,
+                   ordering = TRUE,
+                   paging = TRUE,
+                   info = TRUE,
+                   scrollX = TRUE
+    )
+    dataTable <- datatable(table,
+                           options = options,
+                           rownames = FALSE,
+                           container = sketch, 
+                           escape = FALSE,
+                           class = "stripe nowrap compact")
+    return(dataTable)
+    
+  })
+  
   output$cohortCountsTable <- renderDataTable({
     data <- cohortCount[cohortCount$databaseId %in% input$databases & cohortCount$cohortId %in% cohortIdList(), ]
     if (nrow(data) == 0) {
