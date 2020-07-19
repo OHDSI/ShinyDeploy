@@ -9,3 +9,9 @@ Characterizing Health Associated Risks, and Your Baseline Disease In SARS-COV-2 
 **Resources:**<br>
 - The study protocol is available <a href="https://github.com/ohdsi-studies/Covid19CharacterizationCharybdis/blob/master/documents/Protocol_COVID-19%20Charybdis%20Characterisation_V5.docx" target="_blank">here</a>
 - All analytic code is availble at <a href="https://github.com/ohdsi-studies/Covid19CharacterizationCharybdis" target="_blank">GitHub</a>
+
+**Cohort Diagnostics:**<br>
+- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagCovid/">COVID cohorts</a>
+- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagInfluenza/">Influenza cohorts</a>
+- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagStrata/">Strata cohorts</a>
+- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagFeature/">Feature cohorts</a>

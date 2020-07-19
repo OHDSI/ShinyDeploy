@@ -55,15 +55,11 @@ styleAbsColorBar <- function(maxValue, colorPositive, colorNegative, angle = 90)
 shinyServer(function(input, output, session) {
   
   cohortIdList <- reactive({
-    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdList() & cohortXref$strataId %in% strataCohortIdList(),c("cohortId")]))
+    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdList() & cohortXref$strataName %in% input$strataCohortList,c("cohortId")]))
   })
   
   targetCohortIdList <- reactive({
     return(targetCohort$targetId[targetCohort$targetName %in% input$targetCohortList])
-  })
-  
-  strataCohortIdList <- reactive({
-    return(strataCohort$strataId[strataCohort$strataName %in% input$strataCohortList])
   })
   
   targetCohortName <- reactive({
