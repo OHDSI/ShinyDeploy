@@ -8,7 +8,7 @@ CDM Version: 5.3
 # DEX19: How many people are taking a drug for a given indication?
 
 ## Description
-
+Calculate the number of people taking a drug for a given indication.
 
 ## Query
 The following is a sample run of the query. The input parameters are highlighted in

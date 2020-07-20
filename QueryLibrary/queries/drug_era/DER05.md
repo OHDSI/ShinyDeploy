@@ -8,6 +8,7 @@ CDM Version: 5.3
 # DER05: For a given indication, what proportion of patients take each indicated treatment?
 
 ## Description
+For a given indication, calculate the proportion of patients that take each indicated treatment.
 
 ## Query
 ```sql

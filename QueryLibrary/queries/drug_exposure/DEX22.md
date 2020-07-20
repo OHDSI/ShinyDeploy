@@ -5,9 +5,10 @@ Author:Patrick Ryan
 CDM Version: 5.3
 -->
 
-# DEX22: How many poeple take a drug in a given class?
+# DEX22: How many people take a drug in a given class?
 
 ## Description
+Calculate the number of people that take a drug from a given class.
 
 ## Query
 The following is a sample run of the query. The input parameters are highlighted in  blue. S

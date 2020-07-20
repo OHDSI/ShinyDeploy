@@ -8,18 +8,23 @@ CDM Version: 5.3
 # DRC01: What is the average/max/min cost per pill (total cost / quantity) per drug concept?
 
 ## Description
+This query calculates the average, maximum and minimum cost per pill for a given list of drug concepts. 
+Cost per pill is defined here as total cost divided by the quantity taken.
 
 ## Query
 ```sql
-SELECT avg(t.cost_per_pill) avg_val_num, max(t.cost_per_pill) max_val_num, min(t.cost_per_pill) min_val_num, t.drug_concept_id
+SELECT  t.drug_concept_id,
+        avg(t.cost_per_pill) avg_val_num, 
+        max(t.cost_per_pill) max_val_num, 
+        min(t.cost_per_pill) min_val_num
 from (
-select c.total_paid/d.quantity as cost_per_pill, d.drug_concept_id
-FROM @cdm.cost c
-JOIN @cdm.drug_exposure d
-ON d.drug_exposure_id = c.cost_event_id
-WHERE d.quantity > 0
-AND d.drug_concept_id
-IN (906805, 1517070, 19010522) ) t
+    SELECT c.total_paid/d.quantity as cost_per_pill, d.drug_concept_id
+    FROM @cdm.cost c
+    JOIN @cdm.drug_exposure d
+        ON d.drug_exposure_id = c.cost_event_id
+    WHERE d.quantity > 0
+        AND d.drug_concept_id IN (906805, 1517070, 19010522) 
+) t
 GROUP BY t.drug_concept_id
 ORDER BY t.drug_concept_id;
 ```

@@ -8,7 +8,7 @@ CDM Version: 5.3
 # DEX14: Among people who take drug A, how many take drug B at the same time?
 
 ## Description
-
+Calculate among the people who take a drug from a given class, how many take another given drug class at the same time.
 
 ## Query
 The following is a sample run of the query. The input parameters are highlighted in  blue  S
@@ -54,8 +54,8 @@ SELECT COUNT(DISTINCT de1.person_id) AS num_users,
 
 |  Field |  Description |
 | --- | --- |
-| num_users |   |
-| also_bp |   |
+| num_users |  5484 |
+| also_bp |  1577 |
 
 ## Documentation
 https://github.com/OHDSI/CommonDataModel/wiki/
