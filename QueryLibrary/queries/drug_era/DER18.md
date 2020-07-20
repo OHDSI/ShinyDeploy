@@ -57,7 +57,7 @@ GROUP BY ordered_data.drug_concept_id
 
 |  Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
-| list of concept_id | 1300978, 1304643, 1549080 | Yes |   |
+| list of concept_id | 1300978, 1304643, 1549080 | Yes | 'Megestrol', 'darbepoetin alfa', 'Estrogens, Conjugated (USP)'  |
 
 ## Output
 
