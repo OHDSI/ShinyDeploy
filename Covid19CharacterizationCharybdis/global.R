@@ -1,3 +1,5 @@
+enableBookmarking(store = "url")
+
 # Borrowed from devtools:
 # https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L44
 is_installed <- function(pkg, version = 0) {
@@ -10,7 +12,7 @@ if (!exists("shinySettings")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
-    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/ki5cpnaq_PreMerged.RData")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/45207won_PreMerged.RData")
   } else {
     shinySettings <- list(storage = "filesystem", dataFolder = "c:/temp/exampleStudy", dataFile = "PreMerged.RData")
   }

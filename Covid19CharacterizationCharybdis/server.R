@@ -468,4 +468,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$compareCohortCharacterizationInfo, {
     showInfoBox("Compare Cohort Characteristics", "html/compareCohortCharacterization.html")
   })
+  
+  observe({
+    # Trigger this observer every time an input changes
+    reactiveValuesToList(input)
+    session$doBookmark()
+  })  
+  
+  onBookmarked(function(url) {
+    updateQueryString(url)
+  })  
 })
