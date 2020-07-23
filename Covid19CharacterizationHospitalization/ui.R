@@ -14,10 +14,10 @@ addInfo <- function(item, infoId) {
 
 dashboardPage(
   dashboardHeader(
-      title = "OHDSI characterisation of hospitalised adults with COVID-19 and influenza",
+      title = "OHDSI phenotyping of adults hospitalised with COVID-19 and influenza",
       titleWidth = 850,
       tags$li(div(img(src = 'logo.png',
-                      title = "OHDSI characterisation of hospitalised adults with COVID-19 and influenza", 
+                      title = "OHDSI phenotyping of adults hospitalised with COVID-19 and influenza", 
                       height = "40px", 
                       width = "40px"),
                   style = "padding-top:0px; padding-bottom:0px;"),
@@ -135,7 +135,8 @@ dashboardPage(
                                   )
                            )
                          )),
-              dataTableOutput("characterizationTable")
+              dataTableOutput("characterizationTable"),
+             downloadButton('x3', 'Download Data')
       ),
       tabItem(tabName = "cohortOverlap",
               box(
@@ -161,7 +162,8 @@ dashboardPage(
                            )
                          )),
               conditionalPanel(condition = "input.charCompareType=='Summary table' | input.charCompareType=='All covariates'",
-                               dataTableOutput("charCompareTable")
+                               dataTableOutput("charCompareTable"),
+             downloadButton('x4', 'Download Data')
               ),
               conditionalPanel(condition = "input.charCompareType=='Plot'",
                                box(
