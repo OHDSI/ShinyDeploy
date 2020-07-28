@@ -20,7 +20,8 @@ library(shiny)
 library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
-library(shiny.i18n)
+if(!require(shiny.i18n)){install.packages('shiny.i18n')}
+# require(shiny.i18n)
 addInfo <- function(item, infoId) {
   infoTag <- tags$small(class = "badge pull-right action-button",
                         style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
