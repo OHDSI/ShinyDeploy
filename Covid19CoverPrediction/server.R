@@ -28,13 +28,14 @@ server <- shiny::shinyServer(function(input, output, session) {
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
   print(summaryTable)
-  
   ###Risk Calculator
   inputData  <- shiny::reactiveValues(dataHosp = NULL, dataIntense = NULL, dataDeath = NULL)
   riskValues  <- shiny::reactiveValues(data = NULL)
+  # initial language setting
+  i18n <- Translator$new(translation_csvs_path = "./www/languages/translation/")
+  i18n$set_translation_language("en")
   
   shiny::observeEvent(input$calculate, {
-    
     inputData$dataHosp <- data.frame(
       Intercept = 43, #updated to make scale positive
       age = ageCalc(input$age, 'Hospitalization'),
@@ -92,6 +93,57 @@ server <- shiny::shinyServer(function(input, output, session) {
                                  labels = c("#D6BA84", "#D35836","#981B1E" ))
     # Red #981B1E , Orange #D35836 and Golden #D6BA84
   })
+  observeEvent(input$language, {
+    i18n$set_translation_language(input$language)
+    output$risktabside <- shiny::renderUI(
+      sidebarPanel(
+        shiny::p(i18n$t('Use this tool to calculate the risk of COVID outcomes: ')),
+        shiny::p(' '),
+        shiny::sliderInput("age", i18n$t("Age:"),
+                           min = 18, max = 94,
+                           value = 50),
+        shiny::selectInput("sex",i18n$t("Sex"), choices = c(i18n$t("Male"), i18n$t("Female"))),
+        shiny::checkboxInput("cancer", i18n$t("History of Cancer")),
+        shiny::checkboxInput("copd", i18n$t("History of COPD")),
+        shiny::checkboxInput("diabetes", i18n$t("History of Diabetes")),
+        shiny::checkboxInput("hd", i18n$t("History of Heart disease")),
+        shiny::checkboxInput("hl", i18n$t("History of Hyperlipidemia")),
+        shiny::checkboxInput("hypertension", i18n$t("History of Hypertension")),
+        shiny::checkboxInput("kidney",i18n$t("History of Kidney Disease")),
+        shiny::actionButton("calculate",i18n$t("Calculate Risk")),
+        hr()
+        
+      ))
+    
+    output$risktabmain <- shiny::renderUI(
+      mainPanel(
+        conditionalPanel('input.calculate', {
+          shinydashboard::box(width = 12,
+                              title = tagList(shiny::icon("bar-chart"),i18n$t("Predicted Risk (%)")), status = "info", solidHeader = TRUE,
+                              
+                              plotly::plotlyOutput("contributions"))}
+          
+        ),
+        shinydashboard::box(
+          status = "primary", solidHeader = TRUE,
+          width = 12,
+          shiny::includeMarkdown(path = paste0("./www/languages/calculatorDesc_", input$language, ".md"))
+          #   shiny::h2("Description"),
+          #   # shiny::p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic."),
+          #   shiny::p("This calculator presents the results of a prediction study that developed 3 prediction models."),
+          #   shiny::p("The three models predicted: requiring hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
+          #   shiny::p(' '),
+          #   shiny::h3("Disclaimer"),
+          #   shiny::p('Should not be considered Medical Advice.
+          #                                                                    By using the app, you acknowledge that the content does not constitute medical advice and does not create a Healthcare Professional - Patient relationship and does not constitute medical opinion or advice.
+          #                                                                    Access to general information is provided for research and educational purposes only.
+          #                                                                    Content is not recommended or endorsed by any doctor or healthcare provider.
+          #                                                                    The information provided is not a substitute for medical or professional care,
+          #                                                                    and you should not use the information in place of an appointment or the advice of your physician or other healthcare provider.
+          #                                                                    You are liable or responsible for any action taken through use of information in this site.'), #Todo: add disclaimer
+        ),                                                                  )
+    )
+  })
   #plot for the risk score calculator
   output$contributions <- plotly::renderPlotly(plotly::plot_ly(x = as.double(riskValues$data$values), 
                                                                y = riskValues$data$names, 
@@ -103,31 +155,9 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                                    range=c(-0.1,max(riskValues$data$values)*1.25)
                                                                  )
                                                                ))
-  
   # need to remove over columns:
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
-                                                           rownames= FALSE, selection = 'single',
-                                             extensions = 'Buttons', options = list(
-                                               dom = 'Bfrtip', buttons = I('colvis')
-                                             ),
-                                             
-                                             container = htmltools::withTags(table(
-                                               class = 'display',
-                                               thead(
-                                                 #tags$th(title=active_columns[i], colnames(data)[i])
-                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model',
-                                                                                'TAR start', 'TAR end', 'AUC', 'AUPRC', 
-                                                                                'T Size', 'O Count', 'O Incidence (%)'), 
-                                                                     labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
-                                                                     'Model type','Time-at-risk start day', 'Time-at-risk end day', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
-                                                                     'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
-                                                          function(x) th(title=x[2], x[1])))
-                                               )
-                                             ))
-                                                          
-                                             )
-  )
-                                             
+                                                           rownames= FALSE, selection = 'single'))
   
   selectedRow <- shiny::reactive({
     if(is.null(input$summaryTable_rows_selected[1])){
@@ -238,7 +268,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     } else{
       plotPreferencePDF(plpResult()$performanceEvaluation, 
                         type=plpResult()$type ) #+ 
-        # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
+      # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
     }
   })
   
@@ -248,7 +278,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     } else{
       plotPredictedPDF(plpResult()$performanceEvaluation, 
                        type=plpResult()$type ) # + 
-        #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
+      #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
     }
   })
   
@@ -362,71 +392,5 @@ server <- shiny::shinyServer(function(input, output, session) {
       color = "black"
     )
   })
-  
-  
-  
-  
-  
-  
-  # HELPER INFO
-  showInfoBox <- function(title, htmlFileName) {
-    shiny::showModal(shiny::modalDialog(
-      title = title,
-      easyClose = TRUE,
-      footer = NULL,
-      size = "l",
-      shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
-    ))
-  }
-  
-  
-  observeEvent(input$DescriptionInfo, {
-    showInfoBox("Description", "html/Description.html")
-  })
-  observeEvent(input$SummaryInfo, {
-    showInfoBox("Summary", "html/Summary.html")
-  })
-  observeEvent(input$PerformanceInfo, {
-    showInfoBox("Performance", "html/Performance.html")
-  })
-  observeEvent(input$ModelInfo, {
-    showInfoBox("Model", "html/Model.html")
-  })
-  observeEvent(input$LogInfo, {
-    showInfoBox("Log", "html/Log.html")
-  })
-  observeEvent(input$DataInfoInfo, {
-    showInfoBox("DataInfo", "html/DataInfo.html")
-  })
-  observeEvent(input$HelpInfo, {
-    showInfoBox("HelpInfo", "html/Help.html")
-  })
-  
-  
-  observeEvent(input$rocHelp, {
-    showInfoBox("ROC Help", "html/rocHelp.html")
-  })
-  observeEvent(input$prcHelp, {
-    showInfoBox("PRC Help", "html/prcHelp.html")
-  })
-  observeEvent(input$f1Help, {
-    showInfoBox("F1 Score Plot Help", "html/f1Help.html")
-  })
-  observeEvent(input$boxHelp, {
-    showInfoBox("Box Plot Help", "html/boxHelp.html")
-  })
-  observeEvent(input$predDistHelp, {
-    showInfoBox("Predicted Risk Distribution Help", "html/predDistHelp.html")
-  })
-  observeEvent(input$prefDistHelp, {
-    showInfoBox("Preference Score Distribution Help", "html/prefDistHelp.html")
-  })
-  observeEvent(input$calHelp, {
-    showInfoBox("Calibration Help", "html/calHelp.html")
-  })
-  observeEvent(input$demoHelp, {
-    showInfoBox("Demographic Help", "html/demoHelp.html")
-  })
-  
   
 })
