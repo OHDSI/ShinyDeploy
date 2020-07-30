@@ -4,13 +4,13 @@ Age:,Edat:
 Sex,Sexe:
 Male,Masculí
 Female,Femení
-History of Cancer,Història de Cànc
-History of COPD,Història de Malaltia pulmonar obstructiva crònica (MPO
-History of Diabetes,Història de Diabeti
-History of Heart disease,Història de Malaltia cardía
-History of Hyperlipidemia,Història d'Hiperlipidèm
-History of Hypertension,Història d'Hipertensi
-History of Kidney Disease,Història de Malaltia rena
+History of Cancer,Història de Càncer
+History of COPD,Història de Malaltia pulmonar obstructiva crònica (MPOC)
+History of Diabetes,Història de Diabetis
+History of Heart disease,Història de Malaltia cardíaca
+History of Hyperlipidemia,Història d'Hiperlipidèmia
+History of Hypertension,Història d'Hipertensió
+History of Kidney Disease,Història de Malaltia renal
 Calculate Risk,Calcular el risc
 Predicted Risk (%),Risc previst (%)
 Use this tool to calculate the risk of COVID outcomes: ,Utilitzeu aquesta eina per calcular el risc de complicacions COVID:
