@@ -18,6 +18,7 @@ The following databases were used in this study:
 | *optumEhr* &nbsp; &nbsp; | Optum® de-identified Electronic Health Record Dataset &nbsp; &nbsp;  | USA | EHR &nbsp; &nbsp; | 2006-2019 |
 | *SIDIAP* &nbsp; &nbsp; | The Information System for Research in Primary Care (SIDIAP) | Spain &nbsp; &nbsp; | GP &nbsp; &nbsp; | 2006-2020 |
 | *TRDW* &nbsp; &nbsp; | Tufts Researrch Data Warehouse | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; | 2006-2020 |
+| *CPRD* &nbsp; &nbsp; | Clinical Practice Research Datalink  | UK &nbsp; &nbsp; | Primary Care EHR &nbsp; &nbsp; | ?-2020 |
 
 
 All databases obtained IRB approval or used deidentified data that was considered exempt from IRB approval.
