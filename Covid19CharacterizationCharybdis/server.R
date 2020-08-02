@@ -544,6 +544,10 @@ shinyServer(function(input, output, session) {
   )
 
   # Database Info ------------------
+  output$borderDatabaseInformation <- renderUI({
+    return(renderBorderTag())
+  })
+  
   output$databaseInformationTable <- renderDataTable({
 
     table <- database[, c("databaseId", "databaseName", "description")]
@@ -562,6 +566,17 @@ shinyServer(function(input, output, session) {
                        class = "stripe compact")
     return(table)
   })
+  
+  output$dlDatabaseInformation <- downloadHandler(
+    filename = function() {
+      "database_info.csv"
+    },
+    content = function(file) {
+      table <- database[, c("databaseId", "databaseName", "description")]
+      write.csv(table, file, row.names = FALSE, na = "")
+    }
+  )
+  
   
   showInfoBox <- function(title, htmlFileName) {
     showModal(modalDialog(

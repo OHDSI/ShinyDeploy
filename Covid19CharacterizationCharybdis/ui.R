@@ -173,7 +173,8 @@ dashboardPage(
               )
       ),
       tabItem(tabName = "databaseInformation",
-              # uiOutput("databaseInformationPanel")
+              downloadButton("dlDatabaseInformation", "Download Data"),
+              htmlOutput("borderDatabaseInformation"),
               dataTableOutput("databaseInformationTable")
       )
     )
