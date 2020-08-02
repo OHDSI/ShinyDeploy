@@ -16,11 +16,11 @@
   background-color: #FFFFFF;
 }
 
-ul.dropdown-menu.inner li > a {
+.dropdown-menu.inner li > a {
   color: #000000;
 } 
 
-ul.dropdown-menu.inner li > a.selected {
+.dropdown-menu.inner li > .selected {
   color: #000000 !important;
 } 
 
@@ -31,8 +31,25 @@ ul.dropdown-menu.inner li > a.selected {
 }
 
 .no-padding {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
+}
+
+.cohort-heading {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  border-bottom: 2px solid #F28F1B;
+}
+
+ul.dropdown-shinyWidgets > li {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.download-container {
+  display: block;
+  width: 140px;
 }
 
 /*
@@ -40,10 +57,3 @@ table.dataTable > tbody > tr.odd > td {
   
 }
 */
-
-div.cohort-heading {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 0;
-  border-bottom: 2px solid #F28F1B;
-}
