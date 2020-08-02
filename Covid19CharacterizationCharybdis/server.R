@@ -208,23 +208,26 @@ shinyServer(function(input, output, session) {
   
   getCohortCountsTable <- reactive({
     data <- cohortCount[cohortCount$databaseId %in% input$databases & cohortCount$cohortId %in% cohortIdList(), ]
-    return(data)
+    table <- dplyr::inner_join(cohortXref, data, by="cohortId")
+    table <- table[order(table$targetName),]
+    return(table)
   })
   
   getCohortCountsTablePivotedByDB <- reactive({
+    columnsToInclude <- c("cohortId","targetId","targetName","strataId","strataName","cohortType", "cohortSubjects")
+    subjectIndex <-  match("cohortSubjects", columnsToInclude)
     data <- getCohortCountsTable()    
     databaseIds <- unique(data$databaseId)
-    table <- data[data$databaseId == databaseIds[1], c("cohortId", "cohortSubjects")]
-    colnames(table)[2] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
+    browser()
+    table <- data[data$databaseId == databaseIds[1], columnsToInclude]
+    colnames(table)[subjectIndex] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
     if (length(databaseIds) > 1) {
       for (i in 2:length(databaseIds)) {
-        temp <- data[data$databaseId == databaseIds[i], c("cohortId", "cohortSubjects")]
-        colnames(temp)[2] <- paste(colnames(temp)[2], databaseIds[i], sep = "_")
+        temp <- data[data$databaseId == databaseIds[i], columnsToInclude]
+        colnames(temp)[subjectIndex] <- paste(colnames(temp)[subjectIndex], databaseIds[i], sep = "_")
         table <- merge(table, temp, all = TRUE)
       }
     }
-    table <- dplyr::inner_join(cohortXref, table, by="cohortId")
-    table <- table[order(table$targetName),]
     return(list(table = table, databaseIds = databaseIds))
   })
   
