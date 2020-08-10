@@ -171,3 +171,8 @@ comparatorStrataName <- cohortXref[cohortXref$cohortId == initCharCompareCohortI
 
 cohortInfo <- readr::read_csv("./cohorts.csv", col_types = readr::cols())
 cohortInfo <- cohortInfo[order(cohortInfo$name),]
+
+# Read in the database terms of use
+dbTermsOfUse <- readr::read_csv("./databaseTermsOfUse.csv", col_types = readr::cols())
+colnames(dbTermsOfUse) <- SqlRender::snakeCaseToCamelCase(colnames(dbTermsOfUse))
+database <- dplyr::left_join(database, dbTermsOfUse, by="databaseId")

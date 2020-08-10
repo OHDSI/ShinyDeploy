@@ -553,7 +553,7 @@ shinyServer(function(input, output, session) {
   
   output$databaseInformationTable <- renderDataTable({
 
-    table <- database[, c("databaseId", "databaseName", "description")]
+    table <- database[, c("databaseId", "databaseName", "description", "termsOfUse")]
     options = list(pageLength = 25,
                    searching = TRUE,
                    lengthChange = FALSE,
@@ -564,7 +564,7 @@ shinyServer(function(input, output, session) {
     )
     table <- datatable(table,
                        options = options,
-                       colnames = c("ID", "Name", "Description"),
+                       colnames = c("ID", "Name", "Description", "Terms of Use"),
                        rownames = FALSE,
                        class = "stripe compact")
     return(table)
