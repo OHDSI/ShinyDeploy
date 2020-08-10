@@ -218,7 +218,6 @@ shinyServer(function(input, output, session) {
     subjectIndex <-  match("cohortSubjects", columnsToInclude)
     data <- getCohortCountsTable()    
     databaseIds <- unique(data$databaseId)
-    browser()
     table <- data[data$databaseId == databaseIds[1], columnsToInclude]
     colnames(table)[subjectIndex] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
     if (length(databaseIds) > 1) {
