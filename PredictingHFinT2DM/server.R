@@ -28,69 +28,7 @@ server <- shiny::shinyServer(function(input, output, session) {
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
   print(summaryTable)
-  
-  observeEvent(input$language, {
-    i18n$set_translation_language(input$language)
-    output$risktabside <- shiny::renderUI(
-      sidebarPanel(
-        shiny::p(i18n$t('Use this tool to calculate the risk of COVID outcomes: ')),
-        shiny::p(' '),
-        shiny::sliderInput("age", i18n$t("Age:"),
-                           min = 18, max = 94,
-                           value = 50),
-        shiny::selectInput("sex",i18n$t("Sex"), choices = c(i18n$t("Male"), i18n$t("Female"))),
-        shiny::checkboxInput("cancer", i18n$t("History of Cancer")),
-        shiny::checkboxInput("copd", i18n$t("History of COPD")),
-        shiny::checkboxInput("diabetes", i18n$t("History of Diabetes")),
-        shiny::checkboxInput("hd", i18n$t("History of Heart disease")),
-        shiny::checkboxInput("hl", i18n$t("History of Hyperlipidemia")),
-        shiny::checkboxInput("hypertension", i18n$t("History of Hypertension")),
-        shiny::checkboxInput("kidney",i18n$t("History of Kidney Disease")),
-        shiny::actionButton("calculate",i18n$t("Calculate Risk")),
-        hr()
-        
-      ))
-    
-    output$risktabmain <- shiny::renderUI(
-      mainPanel(
-        conditionalPanel('input.calculate', {
-          shinydashboard::box(width = 12,
-                              title = tagList(shiny::icon("bar-chart"),i18n$t("Predicted Risk (%)")), status = "info", solidHeader = TRUE,
-                              
-                              plotly::plotlyOutput("contributions"))}
-          
-        ),
-        shinydashboard::box(
-          status = "primary", solidHeader = TRUE,
-          width = 12,
-          shiny::includeMarkdown(path = paste0("./www/languages/calculatorDesc_", input$language, ".md"))
-          #   shiny::h2("Description"),
-        #   # shiny::p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic."),
-        #   shiny::p("This calculator presents the results of a prediction study that developed 3 prediction models."),
-        #   shiny::p("The three models predicted: requiring hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
-        #   shiny::p(' '),
-        #   shiny::h3("Disclaimer"),
-        #   shiny::p('Should not be considered Medical Advice.
-        #                                                                    By using the app, you acknowledge that the content does not constitute medical advice and does not create a Healthcare Professional - Patient relationship and does not constitute medical opinion or advice.
-        #                                                                    Access to general information is provided for research and educational purposes only.
-        #                                                                    Content is not recommended or endorsed by any doctor or healthcare provider.
-        #                                                                    The information provided is not a substitute for medical or professional care,
-        #                                                                    and you should not use the information in place of an appointment or the advice of your physician or other healthcare provider.
-        #                                                                    You are liable or responsible for any action taken through use of information in this site.'), #Todo: add disclaimer
-        ),                                                                  )
-    )
-  })
-  #plot for the risk score calculator
-  output$contributions <- plotly::renderPlotly(plotly::plot_ly(x = as.double(riskValues$data$values), 
-                                                               y = riskValues$data$names, 
-                                                               text = paste0(riskValues$data$values,'%'), textposition = 'auto', insidetextfont = list(size=20, color = 'white'),
-                                                               color = riskValues$data$color,
-                                                               colors = levels(riskValues$data$color),
-                                                               type = 'bar', orientation = 'h', showlegend = F) %>% layout(
-                                                                 xaxis = list(
-                                                                   range=c(-0.1,max(riskValues$data$values)*1.25)
-                                                                 )
-                                                               ))
+
   # need to remove over columns:
   output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
                                                            rownames= FALSE, selection = 'single'))
