@@ -34,6 +34,9 @@ dashboardPage(
   dashboardSidebar(
     tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
+                # Used for testing cookie set/remove
+                #actionButton("cookieGetVal", "Cookie value"),
+                #actionButton("cookieRmVal", "Cookie Remove"),
                 menuItem("About", tabName = "about"),
                 menuItem("Cohorts", tabName = "cohorts"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
@@ -105,7 +108,9 @@ dashboardPage(
   ),
   dashboardBody(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="ohdsi.css")
+      tags$link(rel="stylesheet", type="text/css", href="ohdsi.css"),
+      tags$script(src = "js/lib/js.cookie.js"),
+      tags$script(src = "js/charybdis.js")
     ),
     ### changing theme
     tabItems(
