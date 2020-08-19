@@ -134,7 +134,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                             "optumDod" = "optumDod", 
                                                                                                             "optum Ehr" = "Optum EHR",
                                                                                                             "MDCR" = "mdcr",
-                                                                                                            "CUIMC" = "cumc"))
+                                                                                                            "CUIMC" = "cumc",
+                                                                                                            "VA" = "VA"))
                                                                   ),
                                                                   shiny::column(10, 
                                                                                 shinycssloaders::withSpinner(shiny::plotOutput('aucTime'))
