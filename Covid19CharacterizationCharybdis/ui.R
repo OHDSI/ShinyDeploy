@@ -5,9 +5,15 @@ library(DT)
 ohdsiBlueHex <- "#20425A"
 ohdsiLightYellowHex <- "FBC209"
 
-addInfo <- function(item, infoId) {
-  infoTag <- tags$small(class = "badge pull-right action-button",
-                        style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+addInfo <- function(item, infoId, class = NULL, style = NULL) {
+  if (is.null(class)) {
+    class = "badge pull-right action-button"
+  }
+  if (is.null(style)) {
+    style = "padding: 1px 6px 2px 6px; background-color: steelblue;"
+  }
+  infoTag <- tags$small(class = class,
+                        style = style,
                         type = "button", 
                         id = infoId,
                         "i")
@@ -28,6 +34,9 @@ dashboardPage(
   dashboardSidebar(
     tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
+                # Used for testing cookie set/remove
+                #actionButton("cookieGetVal", "Cookie value"),
+                #actionButton("cookieRmVal", "Cookie Remove"),
                 menuItem("About", tabName = "about"),
                 menuItem("Cohorts", tabName = "cohorts"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
@@ -99,7 +108,9 @@ dashboardPage(
   ),
   dashboardBody(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="ohdsi.css")
+      tags$link(rel="stylesheet", type="text/css", href="ohdsi.css"),
+      tags$script(src = "js/lib/js.cookie.js"),
+      tags$script(src = "js/charybdis.js")
     ),
     ### changing theme
     tabItems(
@@ -107,17 +118,53 @@ dashboardPage(
               includeMarkdown("md/about.md")
       ),
       tabItem(tabName = "cohorts",
-              includeMarkdown("md/cohorts.md")
+              downloadButton("dlCohortInfo", "Download Data"),
+              htmlOutput("borderCohortInfo"),
+              dataTableOutput("cohortInfoTable")
       ),
       tabItem(tabName = "cohortCounts",
+              htmltools::withTags(
+                addInfo(
+                  div(class="download-container",
+                    shinyWidgets::dropdownButton(
+                      inputId = "cohortCountsDownload",
+                      label = "Download",
+                      icon = icon("download"),
+                      circle = F,
+                      margin="20px",
+                      downloadButton("dlCohortCountsByDb", "Download Table View"),
+                      downloadButton("dlCohortCountsFlat", "Download Flat Data")
+                    ),
+                  ),
+                "dlCohortCountsInfo"
+              )),
+              htmlOutput("borderCohortCounts"),
               dataTableOutput("cohortCountsTable")
       ),
       tabItem(tabName = "cohortCharacterization",
               htmlOutput("cohortName"),
+              htmltools::withTags(
+                addInfo(
+                  div(class="download-container",
+                      shinyWidgets::dropdownButton(
+                        inputId = "characterizationDownload",
+                        label = "Download",
+                        icon = icon("download"),
+                        circle = F,
+                        margin="20px",
+                        downloadButton("dlCharacterizationByDb", "Download Table View"),
+                        downloadButton("dlCharacterizationFlat", "Download Flat Data")
+                      ),
+                  ),
+                  "dlCharacterizationInfo"
+                )),
+              htmlOutput("borderCharacterization"),
               dataTableOutput("characterizationTable")
       ),
       tabItem(tabName = "compareCohortCharacterization",
               htmlOutput("comparisonName"),
+              downloadButton("dlCharCompare", "Download Data"),
+              htmlOutput("borderCharCompare"),
               radioButtons("charCompareType", "", c("Table", "Plot"), selected = "Table", inline = TRUE),
               conditionalPanel(condition = "input.charCompareType=='Table'",
                                dataTableOutput("charCompareTable")
@@ -131,7 +178,8 @@ dashboardPage(
               )
       ),
       tabItem(tabName = "databaseInformation",
-              # uiOutput("databaseInformationPanel")
+              downloadButton("dlDatabaseInformation", "Download Data"),
+              htmlOutput("borderDatabaseInformation"),
               dataTableOutput("databaseInformationTable")
       )
     )

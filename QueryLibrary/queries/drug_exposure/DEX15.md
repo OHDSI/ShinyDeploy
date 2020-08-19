@@ -8,6 +8,7 @@ CDM Version: 5.3
 # DEX15: Number of persons taking a given drug having at least a 180 day period prior and a 365 day follow-up period
 
 ## Description
+Calculate the number of persons taking a given drug, having at least a 180 day period prior and a 365 day follow-up period.
 
 ## Query
 The following is a sample run of the query. The input parameters are highlighted in  blue.
@@ -53,8 +54,8 @@ SELECT FLOOR(1.0*DATEDIFF(d,su.index_date,op.observation_period_end_date)/365) A
 
 |  Field |  Description |
 | --- | --- |
-| follow_up_years |  |
-| persons |  |
+| follow_up_years | 1 |
+| persons | 335 |
 
 ## Documentation
 https://github.com/OHDSI/CommonDataModel/wiki/

@@ -8,22 +8,19 @@ CDM Version: 5.3
 # DER07: What is the average time between eras for a given ingredient? ex. steroids for RA
 
 ## Description
+Calculate the average time between eras for a given ingredient.
 
 ## Query
 ```sql
-select
-        avg(datediff(day, t.drug_era_end_date, t.next_era_start)) as num_days
-from
-        (
-                select
-                        r.drug_era_end_date,
-                        lead(r.drug_era_start_date) over(partition by r.person_id, r.drug_concept_id order by r.drug_era_start_date) as next_era_start
-                from
-                        @cdm.drug_era r
-                where r.drug_concept_id = 1304643
-        ) t
-where
-        t.next_era_start is not null
+SELECT avg(datediff(day, t.drug_era_end_date, t.next_era_start)) AS num_days
+FROM (
+         SELECT r.drug_era_end_date,
+                lead(r.drug_era_start_date)
+                OVER (PARTITION BY r.person_id, r.drug_concept_id ORDER BY r.drug_era_start_date) AS next_era_start
+         FROM @cdm.drug_era r
+         WHERE r.drug_concept_id = 1304643
+     ) t
+WHERE t.next_era_start IS NOT NULL
 ```
 
 ## Input

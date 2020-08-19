@@ -20,7 +20,8 @@ library(shiny)
 library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
-
+if(!require(shiny.i18n)){install.packages('shiny.i18n')}
+# require(shiny.i18n)
 addInfo <- function(item, infoId) {
   infoTag <- tags$small(class = "badge pull-right action-button",
                         style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
@@ -31,6 +32,13 @@ addInfo <- function(item, infoId) {
   return(item)
 }
 
+#translation
+# i18n <- Translator$new(translation_csvs_path = "./data/translation/")
+# i18n$set_translation_language("en")
+translationFiles <-  list.files("./www/languages/translation")
+translationChoices <- c("en")
+translationChoices <- append(translationChoices, gsub(".*_|.c.*", "", translationFiles))
+translationChoices <- translationChoices[translationChoices != "Xx"]
 ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardHeader(title = "Multiple PLP Viewer", 
@@ -72,53 +80,56 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 
                                         ),
                                         shinydashboard::tabItem(tabName = "Risk", 
-                                                                sidebarPanel(
-                                                                  shiny::p('Use this tool to calculate the risk of COVID outcomes: '),
-                                                                  shiny::p(' '),
-                                                                  shiny::sliderInput("age", "Age:",
-                                                                                     min = 18, max = 94,
-                                                                                     value = 50),
-                                                                  shiny::selectInput("sex","Sex", choices = c("Male", "Female")),
-                                                                  shiny::checkboxInput("cancer", "History of Cancer"),
-                                                                  shiny::checkboxInput("copd", "History of COPD"),
-                                                                  shiny::checkboxInput("diabetes", "History of Diabetes"),
-                                                                  shiny::checkboxInput("hd", "History of Heart disease"),
-                                                                  shiny::checkboxInput("hl", "History of Hyperlipidemia"),
-                                                                  shiny::checkboxInput("hypertension", "History of Hypertension"),
-                                                                  shiny::checkboxInput("kidney","History of Kidney Disease"),
-                                                                  shiny::actionButton("calculate","Calculate Risk"),
-                                                                  
-                                                                  hr()
+                                                                shiny::selectInput("language",'Language', choices = translationChoices),
+                                                                shiny::uiOutput("risktabside"),                                                                
+                                                                shiny::uiOutput("risktabmain")
                                                                 
-                                                                ),
-                                                                mainPanel(
-                                                                  conditionalPanel('input.calculate', {
-                                                                    shinydashboard::box(width = 12,
-                                                                                        title = tagList(shiny::icon("bar-chart"),"Predicted Risk (%)"), status = "info", solidHeader = TRUE,
-                                                                                        
-                                                                                        plotly::plotlyOutput("contributions"))}
-                                                                    
-                                                                  ),
-                                                                  shinydashboard::box(
-                                                                    status = "primary", solidHeader = TRUE,
-                                                                    width = 12,
-                                                                    shiny::h2("Description"),
-                                                                    # shiny::p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic."),
-                                                                    shiny::p("This calculator presents the results of a prediction study that developed 3 prediction models."),
-                                                                    shiny::p("The three models predicted: requiring hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
-                                                                    shiny::p(' '),
-                                                                    shiny::h3("Disclaimer"),
-                                                                    shiny::p('Should not be considered Medical Advice. 
-                                                                         By using the app, you acknowledge that the content does not constitute medical advice and does not create a Healthcare Professional - Patient relationship and does not constitute medical opinion or advice.
-                                                                         Access to general information is provided for research and educational purposes only. 
-                                                                         Content is not recommended or endorsed by any doctor or healthcare provider. 
-                                                                         The information provided is not a substitute for medical or professional care, 
-                                                                         and you should not use the information in place of an appointment or the advice of your physician or other healthcare provider. 
-                                                                         You are liable or responsible for any action taken through use of information in this site.'), #Todo: add disclaimer
-                                                                  ),                                                                  )
+                                                                # sidebarPanel(
+                                                                #   shiny::p(i18n$t('Use this tool to calculate the risk of COVID outcomes: ')),
+                                                                #   shiny::p(' '),
+                                                                #   shiny::sliderInput("age", i18n$t("Age:"),
+                                                                #                      min = 18, max = 94,
+                                                                #                      value = 50),
+                                                                #   shiny::selectInput("sex",i18n$t("Sex"), choices = c(i18n$t("Male"), i18n$t("Female"))),
+                                                                #   shiny::checkboxInput("cancer", i18n$t("History of Cancer")),
+                                                                #   shiny::checkboxInput("copd", i18n$t("History of COPD")),
+                                                                #   shiny::checkboxInput("diabetes", i18n$t("History of Diabetes")),
+                                                                #   shiny::checkboxInput("hd", i18n$t("History of Heart disease")),
+                                                                #   shiny::checkboxInput("hl", i18n$t("History of Hyperlipidemia")),
+                                                                #   shiny::checkboxInput("hypertension", i18n$t("History of Hypertension")),
+                                                                #   shiny::checkboxInput("kidney",i18n$t("History of Kidney Disease")),
+                                                                #   shiny::actionButton("calculate",i18n$t("Calculate Risk")),
+                                                                #   hr()
+                                                                # 
+                                                                # ),
+                                                                # mainPanel(
+                                                                #   conditionalPanel('input.calculate', {
+                                                                #     shinydashboard::box(width = 12,
+                                                                #                         title = tagList(shiny::icon("bar-chart"),i18n$t("Predicted Risk (%)")), status = "info", solidHeader = TRUE,
+                                                                # 
+                                                                #                         plotly::plotlyOutput("contributions"))}
+                                                                # 
+                                                                #   ),
+                                                                #   shinydashboard::box(
+                                                                #     status = "primary", solidHeader = TRUE,
+                                                                #     width = 12,
+                                                                #     shiny::h2("Description"),
+                                                                #     # shiny::p("The Observational Health Data Sciences and Informatics (OHDSI) international community is hosting a COVID-19 virtual study-a-thon this week (March 26-29) to inform healthcare decision-making in response to the current global pandemic."),
+                                                                #     shiny::p("This calculator presents the results of a prediction study that developed 3 prediction models."),
+                                                                #     shiny::p("The three models predicted: requiring hospital admission (COVER-H), requiring intensive services (COVER-I), or fatality (COVER-F) in the month following COVID-19 diagnosis"),
+                                                                #     shiny::p(' '),
+                                                                #     shiny::h3("Disclaimer"),
+                                                                #     shiny::p('Should not be considered Medical Advice.
+                                                                #          By using the app, you acknowledge that the content does not constitute medical advice and does not create a Healthcare Professional - Patient relationship and does not constitute medical opinion or advice.
+                                                                #          Access to general information is provided for research and educational purposes only.
+                                                                #          Content is not recommended or endorsed by any doctor or healthcare provider.
+                                                                #          The information provided is not a substitute for medical or professional care,
+                                                                #          and you should not use the information in place of an appointment or the advice of your physician or other healthcare provider.
+                                                                #          You are liable or responsible for any action taken through use of information in this site.'), #Todo: add disclaimer
+                                                                #   ),                                                                  )
                                                                 
                                         ),                     
-                                                                
+                                        
                                         shinydashboard::tabItem(tabName = "DataInfo",
                                                                 shiny::includeMarkdown(path = "./www/dataInfo.md")
                                                                 
@@ -206,9 +217,9 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                                                                 $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
                                                                                                                                                 }, 50);})
                                                                                                                                                 "))
-                                                                                                                 )
+                                                                                             )
                                                                                              
-                                                                                             ),
+                                                                               ),
                                                                                
                                                                                
                                                                                shiny::column(width = 8,
@@ -230,10 +241,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                                  #infoBoxOutput("performanceBox"),
                                                                                              )
                                                                                )
-                                                                               )
+                                                                             )
                                                                              
                                                                              
-                                                                               ),
+                                                                    ),
                                                                     tabPanel("Discrimination", 
                                                                              
                                                                              shiny::fluidRow(
@@ -284,7 +295,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('demo')))
                                                                              )
                                                                     )
-                                                                                             ))),
+                                                                  ))),
                                         
                                         # 3rd tab
                                         shinydashboard::tabItem(tabName = "Model", 
@@ -313,6 +324,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                         )
                                         
                                         
-                                                                )
+                                      )
                                     )
-                                    )
+)

@@ -1,3 +1,20 @@
+library(shiny)
+library(pool)
+library(DatabaseConnector)
+source("DataPulls.R")
+
+connPool <- NULL # Will be initialized if using a DB
+
+# Cleanup the database connPool if it was created
+onStop(function() {
+  if (!is.null(connPool)) {
+    if (DBI::dbIsValid(connPool)) {
+      writeLines("Closing database pool")
+      poolClose(connPool)
+    }
+  }
+})
+
 # Borrowed from devtools:
 # https://github.com/hadley/devtools/blob/ba7a5a4abd8258c52cb156e7b26bb4bf47a79f0b/R/utils.r#L44
 is_installed <- function(pkg, version = 0) {
@@ -5,23 +22,48 @@ is_installed <- function(pkg, version = 0) {
   !is.na(installed_version) && installed_version >= version
 }
 
+usingDbStorage <- function() {
+  return(shinySettings$storage=='database')
+}
+
+# Data Loading Priority: Database, "/data" folder, S3
 if (!exists("shinySettings")) {
-  if (file.exists("data")) {
+  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("charybdisdbSchema") != "") {
+    shinySettings <- list(storage = "database", 
+                          connectionDetails = DatabaseConnector::createConnectionDetails(dbms = "postgresql",
+                                                                                         server = paste(Sys.getenv("shinydbServer"),
+                                                                                                        Sys.getenv("shinydbDatabase"),
+                                                                                                        sep = "/"),
+                                                                                         port = Sys.getenv("shinydbPort"),
+                                                                                         user = Sys.getenv("charybdisdbUser"),
+                                                                                         password = Sys.getenv("charybdisdbPw"))
+    )
+  } else if (file.exists("data")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
-    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/r3fqc5po_PreMerged.RData")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "Covid19CharacterizationCharybdis/z4ud1qrs_PreMerged.RData")
   } else {
-    shinySettings <- list(storage = "filesystem", dataFolder = "c:/temp/exampleStudy", dataFile = "PreMerged.RData")
+    stop("Results data not found")
   }
 }
 dataStorage <- shinySettings$storage
 dataFolder <- shinySettings$dataFolder
 dataFile <- shinySettings$dataFile
 
-suppressWarnings(rm("cohort", "cohortCount", "cohortOverlap", "conceptSets", "database", "incidenceRate", "includedSourceConcept", "inclusionRuleStats", "indexEventBreakdown", "orphanConcept", "timeDistribution"))
+suppressWarnings(rm("cohort", "cohortCount", "database"))
 
-if (dataStorage == "s3") {
+if (dataStorage == "database") {
+  connPool <- dbPool(
+    drv = DatabaseConnector::DatabaseConnectorDriver(),
+    dbms = shinySettings$connectionDetails$dbms,
+    server = shinySettings$connectionDetails$server,
+    port = shinySettings$connectionDetails$port,
+    user = shinySettings$connectionDetails$user,
+    password = shinySettings$connectionDetails$password
+  )  
+  loadDataFromDB(connPool)
+} else if (dataStorage == "s3") {
   fileExists <- aws.s3::head_object(dataFile, bucket = dataFolder)
   if (fileExists) {
     writeLines("Using merged data detected in S3 Bucket")
@@ -90,7 +132,7 @@ if (exists("covariate")) {
 
 # Setup filters
 domain <- data.frame()
-domain <- rbind(domain,data.frame(name = "All", covariateAnalysisId = c(1:1000)))
+domain <- rbind(domain,data.frame(name = "All", covariateAnalysisId = c(1:10000)))
 domain <- rbind(domain,data.frame(name = "Cohort", covariateAnalysisId = c(10000)))
 domain <- rbind(domain,data.frame(name = "Demographics", covariateAnalysisId = c(1:99)))
 domain <- rbind(domain,data.frame(name = "Drug", covariateAnalysisId = c(412)))
@@ -127,3 +169,10 @@ strataName <- cohortXref[cohortXref$cohortId == initCharCohortId,c("strataName")
 comparatorName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("targetName")][1]
 comparatorStrataName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("strataName")][1]
 
+cohortInfo <- readr::read_csv("./cohorts.csv", col_types = readr::cols())
+cohortInfo <- cohortInfo[order(cohortInfo$name),]
+
+# Read in the database terms of use
+dbTermsOfUse <- readr::read_csv("./databaseTermsOfUse.csv", col_types = readr::cols())
+colnames(dbTermsOfUse) <- SqlRender::snakeCaseToCamelCase(colnames(dbTermsOfUse))
+database <- dplyr::left_join(database, dbTermsOfUse, by="databaseId")

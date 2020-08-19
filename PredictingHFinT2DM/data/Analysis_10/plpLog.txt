@@ -1,0 +1,55 @@
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 4.0.2
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_10
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		CohortID:           13897
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          11696
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        5015
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		Covariates:         13219
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		Population size:    3567
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction		Cases:              53
+2020-07-08 09:50:16	[Main thread]	WARN	PatientLevelPrediction	personSplitter	deprecatedWarning: 'personSplitter' is deprecated. Use 'randomSplitter' instead. See help("Deprecated") 
+2020-07-08 09:50:16	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Creating a 25% test and 75% train (into 3 folds) random stratified split by class
+2020-07-08 09:50:17	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Data split into 891 test cases and 2676 train cases (893, 892, 891)
+2020-07-08 09:50:17	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2020-07-08 09:50:19	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 11 redundant covariates
+2020-07-08 09:50:19	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 6146 infrequent covariates
+2020-07-08 09:50:19	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Normalizing covariates
+2020-07-08 09:50:21	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Tidying covariates took 4.12 secs
+2020-07-08 09:50:21	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2020-07-08 09:50:22	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2020-07-08 09:50:23	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2020-07-08 09:50:26	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2020-07-08 09:50:26	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2020-07-08 09:50:26	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 5.56 secs
+2020-07-08 09:50:27	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Creating variable importance data frame
+2020-07-08 09:50:27	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Getting predictions on train set
+2020-07-08 09:50:27	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2020-07-08 09:50:28	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2020-07-08 09:50:28	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 0.165 secs
+2020-07-08 09:50:28	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2020-07-08 09:50:29	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2020-07-08 09:50:29	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 0.089 secs
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                80.15
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      71.69
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      88.62
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              10.96
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 2.52 intercept:         -0.02
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.12
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                58.27
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      40.77
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      75.78
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              2.12
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration gradient: 0.88 intercept:         0.00
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.03
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2020-07-08 09:50:30
+2020-07-08 09:50:30	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2020-07-08 09:50:42	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2020-07-08 09:50:42
+2020-07-08 09:50:42	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2020-07-08 09:50:43	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\./hfint2dm07072020Results/jmdc/Analysis_10\plpResult
+2020-07-08 09:50:43	[Main thread]	INFO	PatientLevelPrediction		Log saved to ./hfint2dm07072020Results/jmdc/Analysis_10/plplog.txt
+2020-07-08 09:50:43	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.
