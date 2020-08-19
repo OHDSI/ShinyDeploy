@@ -150,14 +150,18 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 shiny::selectInput("survDatabase", "Database:",
                                                                                    c("CCAE" = "ccae",
                                                                                      "MDCD" = "mdcd",
+                                                                                     "MDCR" = "mdcr",
                                                                                      "STARR" = "starr",
                                                                                      "iqvia_ambemr" = "iqvia_ambemr",  
-                                                                                     "iqvia_belgium" = "iqvia_belgium",
-                                                                                     "iqvia_dafr" = "iqvia_dafr",
+                                                                                     #"iqvia_belgium" = "iqvia_belgium",
+                                                                                     #"iqvia_dafr" = "iqvia_dafr",
                                                                                      "iqvia_dager" = "iqvia_dager",  
                                                                                      "JMDC" = "jmdc",
+                                                                                     "AUSOM" = "AUSOM",
                                                                                      "optumDod" = "optumDod", 
-                                                                                     "CUMC" = "cumc")),
+                                                                                     "optumEhr" = "optumEhr"
+                                                                                     #"CUMC" = "cumc"
+                                                                                     )),
                                                                 
                                                                 shinycssloaders::withSpinner(shiny::plotOutput('survDatabase'))
                                                                 
