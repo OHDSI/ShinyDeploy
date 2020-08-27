@@ -1,3 +1,10 @@
+library(magrittr)
+
+source("R/Plots.R")
+source("R/Tables.R")
+source("R/Other.R")
+
+
 if (!exists("shinySettings")) {
   if (file.exists("data")) {
     shinySettings <- list(dataFolder = "data")
@@ -36,7 +43,6 @@ if (file.exists(file.path(dataFolder, "PreMerged.RData"))) {
                  paste(colnames(data), collapse = ", "), 
                  "\nPrevious columns:\n",
                  paste(colnames(existingData), collapse = ", "))
-            
           }
         }
       }
@@ -60,16 +66,92 @@ if (file.exists(file.path(dataFolder, "PreMerged.RData"))) {
   }
 }
 
-cohort <- unique(cohort)
-cohort <- cohort[, c("cohortFullName", "cohortId", "cohortName")]
+cohort <- cohort %>% 
+          dplyr::distinct() %>% 
+          dplyr::select(.data$cohortFullName, .data$cohortId, .data$cohortName) %>% 
+          dplyr::arrange(.data$cohortFullName, .data$cohortId)
+
+database <- database %>% 
+            dplyr::distinct() %>% 
+            dplyr::arrange(.data$databaseId)
+
 if (exists("covariate")) {
-  covariate <- unique(covariate)
+  covariate <- covariate %>% 
+    dplyr::distinct() %>% 
+    dplyr::arrange(.data$covariateName)
+  if (!"conceptId" %in% colnames(covariate)) {
+    warning("conceptId not found in covariate file. Calculating conceptId from covariateId. This may rarely cause errors.")
+  covariate <- covariate %>% 
+    dplyr::mutate(conceptId = (.data$covariateId - .data$covariateAnalysisId)/1000)
+  }
 }
+
+if (exists("temporalCovariate")) {
+  temporalCovariate <- temporalCovariate %>% 
+    dplyr::distinct() %>% 
+    dplyr::arrange(.data$covariateName, .data$timeId)
+  if (!"conceptId" %in% colnames(temporalCovariate)) {
+    warning("conceptId not found in temporalCovariate file. Calculating conceptId from covariateId. This may rarely cause errors.")
+    temporalCovariate <- temporalCovariate %>% 
+      dplyr::mutate(conceptId = (.data$covariateId - .data$covariateAnalysisId)/1000)
+  }
+  temporalCovariateChoices <- temporalCovariate %>%
+    dplyr::select(.data$timeId, .data$startDayTemporalCharacterization, .data$endDayTemporalCharacterization) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(choices = paste0("Start ", .data$startDayTemporalCharacterization, " to end ", .data$endDayTemporalCharacterization)) %>%
+    dplyr::select(.data$timeId, .data$choices) %>% 
+    dplyr::arrange(.data$timeId)
+}
+
 if (exists("includedSourceConcept")) {
-  conceptSets <- unique(includedSourceConcept[, c("cohortId", "conceptSetId", "conceptSetName")])
+  conceptSets <- includedSourceConcept %>% 
+                  dplyr::select(.data$cohortId, .data$conceptSetId, .data$conceptSetName) %>% 
+                  dplyr::distinct() %>% 
+                  dplyr::arrange(.data$cohortId, .data$conceptSetName)
 } else if (exists("orphanConcept")) {
-  conceptSets <- unique(orphanConcept[, c("cohortId", "conceptSetId", "conceptSetName")])
+  conceptSets <- orphanConcept %>% 
+                  dplyr::select(.data$cohortId, .data$conceptSetId, .data$conceptSetName) %>% 
+                  dplyr::distinct() %>% 
+                  dplyr::arrange(.data$cohortId, .data$conceptSetName)
 } else {
   conceptSets <- NULL 
 }
 
+
+if ("phenotypeDescription.csv" %in% list.files(path = dataFolder)) {
+  print("loading phenotypeDescription and cohortDescription from local folder. App set to work in Phenotype library mode.")
+  appTitle <- "Phenotype Library"
+  cohortDescription <- readr::read_csv(file.path(dataFolder, 'cohortDescription.csv'), 
+                                       col_types = readr::cols(), 
+                                       guess_max = 1e7, 
+                                       locale = readr::locale(encoding = "UTF-8"),
+                                       trim_ws = TRUE, 
+                                       na = '0', 
+                                       skip_empty_rows = TRUE) %>% 
+    dplyr::mutate(dplyr::across(tidyr::everything(), ~tidyr::replace_na(data = .x, replace = ''))) %>% 
+    dplyr::arrange(.data$phenotypeId, .data$cohortDefinitionName)
+  
+  cohort <- cohort %>%
+    dplyr::rename(cohortFullNameOld = .data$cohortFullName) %>% 
+        dplyr::left_join(y = cohortDescription %>% 
+                           dplyr::mutate(cohortId = utils::type.convert(.data$atlasId),
+                                         cohortFullName = .data$cohortDefinitionName) %>% 
+                           dplyr::select(.data$cohortId, .data$cohortFullName)) %>% 
+                           dplyr::relocate(.data$cohortFullName) %>% 
+        dplyr::mutate(cohortFullName = dplyr::case_when(is.na(.data$cohortFullName) ~ .data$cohortFullNameOld,
+                                                        TRUE ~ .data$cohortFullName)) %>% 
+        dplyr::select(-.data$cohortFullNameOld) %>% 
+        dplyr::arrange(.data$cohortFullName)
+  
+  phenotypeDescription <- readr::read_csv(file.path(dataFolder, "phenotypeDescription.csv"), 
+                                          col_types = readr::cols(), 
+                                          guess_max = 1e7, 
+                                          locale = readr::locale(encoding = "UTF-8"),
+                                          trim_ws = TRUE, 
+                                          na = '0', 
+                                          skip_empty_rows = TRUE) %>% 
+    dplyr::mutate(dplyr::across(tidyr::everything(), ~tidyr::replace_na(data = .x, replace = ''))) %>% 
+    dplyr::arrange(.data$phenotypeName, .data$phenotypeId)
+} else {
+  print("phenotypeDescription not found. App set to work in Cohort Diagnostics mode.")
+}

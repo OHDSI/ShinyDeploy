@@ -142,9 +142,9 @@ compareCohortCharacteristics <- function(characteristics1, characteristics2) {
   m$stdDiff <- (m$mean2 - m$mean1)/m$sd
   
   ref <- unique(rbind(characteristics1[,
-                                       c("covariateId", "covariateName")],
+                                       c("covariateId", "covariateName","covariateAnalysisId","windowId")],
                       characteristics2[,
-                                       c("covariateId", "covariateName")]))
+                                       c("covariateId", "covariateName","covariateAnalysisId","windowId")]))
   m <- merge(ref, m)
   m <- m[order(-abs(m$stdDiff)), ]
   return(m)
