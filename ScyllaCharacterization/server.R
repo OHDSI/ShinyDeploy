@@ -56,7 +56,7 @@ getCovariateDataSubset <- function(cohortId, databaseList, comparatorCohortId = 
   if (usingDbStorage()) {
     return(getCovariateValue(connPool, cohortId = cohortId, databaseList = databaseList, comparatorCohortId = comparatorCohortId))
   } else {
-    return(covariateValue[covariateValue$cohortId == cohortId & covariateValue$databaseId %in% databaseList, ])
+    return(covariateValue[covariateValue$cohortId %in% c(cohortId, comparatorCohortId) & covariateValue$databaseId %in% databaseList, ])
   }
 }
 
