@@ -341,7 +341,7 @@ plotDemographicSummary <- function(evaluation, type='test', fileName=NULL){
 
 
 
-plotSparseCalibration2 <- function(evaluation, type='test', fileName=NULL){
+plotSparseCalibration_old <- function(evaluation, type='test', fileName=NULL){
   if(is.null(evaluation$calibrationSummary$Eval)){
     evaluation$calibrationSummary$Eval <- type
   }
@@ -416,6 +416,91 @@ plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
                                        xend = 2.1, yend = one95))
   
   
+  if (!is.null(fileName))
+    ggplot2::ggsave(fileName, plot, width = 5, height = 4.5, dpi = 400)
+  return(plot)
+}
+
+
+plotSparseCalibration2 <- function(evaluation,
+                                  smooth = "loess",
+                                  span = 1,
+                                  nKnots = 5,
+                                  scatter = T,
+                                  type = "test",
+                                  bins = 20,
+                                  zoom =  "data",
+                                  sample = T,
+                                  fileName = NULL) {
+  
+
+    # use calibrationSummary
+    sparsePred <- evaluation$calibrationSummary
+    
+    limVal <- max(max(sparsePred$averagePredictedProbability),max(sparsePred$observedIncidence))
+    
+    smooth_plot <- ggplot2::ggplot(data = sparsePred, ggplot2::aes(x = averagePredictedProbability, 
+                                                                   y = observedIncidence)) +
+      ggplot2::stat_smooth(ggplot2::aes(color = "Loess", linetype = "Loess"),
+                           method = "loess",
+                           se = TRUE,
+                           #span = span,
+                           size = 1,
+                           show.legend = F) +
+      ggplot2::geom_segment(ggplot2::aes(x = 0,
+                                         xend = 1,
+                                         y = 0,
+                                         yend = 1,
+                                         color = "Ideal",
+                                         linetype = "Ideal")) +
+      ggplot2::coord_cartesian(xlim = c(0,limVal),
+                               ylim = c(0,limVal)) + 
+      ggplot2::scale_linetype_manual(name = "Models",
+                                     values = c(Loess = "solid",
+                                                Ideal = "dashed")) + 
+      ggplot2::scale_color_manual(name = "Models", values = c(Loess = "blue", Ideal = "red")) + 
+      ggplot2::labs(x = "Predicted Probability", y = "Observed Probability")
+    
+    # construct the plot grid
+    if (scatter) {
+      smooth_plot <- smooth_plot + ggplot2::geom_point(data = sparsePred,
+                                                       ggplot2::aes(x = averagePredictedProbability,
+                                                                    y = observedIncidence),
+                                                       color = "black",
+                                                       size = 2)
+    }
+    
+    # Histogram object detailing the distibution of event/noevent for each probability interval
+    
+    popData1 <- sparsePred[,c('averagePredictedProbability', 'PersonCountWithOutcome')]
+    popData1$Label <- "Outcome"
+    colnames(popData1) <- c('averagePredictedProbability','PersonCount',"Label")
+    popData2 <- sparsePred[,c('averagePredictedProbability', 'PersonCountAtRisk')]
+    popData2$Label <- "No Outcome"
+    popData2$PersonCountAtRisk <- -1*(popData2$PersonCountAtRisk -popData1$PersonCount)
+    colnames(popData2) <- c('averagePredictedProbability','PersonCount',"Label")
+    popData <- rbind(popData1, popData2)
+    popData$averagePredictedProbability <- factor(popData$averagePredictedProbability)
+    hist_plot <- ggplot2::ggplot(popData, ggplot2::aes(y = averagePredictedProbability, x = PersonCount, 
+                                                       fill = Label)) + 
+      ggplot2::geom_bar(data = subset(popData,Label == "Outcome"), stat = "identity") + 
+      ggplot2::geom_bar(data = subset(popData,Label == "No Outcome"), stat = "identity") + 
+      ggplot2::geom_bar(stat = "identity") + 
+      ggplot2::scale_x_continuous(labels = abs) + 
+      #ggplot2::scale_fill_brewer(palette = "Set1") + 
+      ggplot2::coord_flip( ) +
+      ggplot2::theme_bw() + 
+      ggplot2::theme(axis.title.x=ggplot2::element_blank(),
+                     axis.text.x=ggplot2::element_blank(),
+                     axis.ticks.x=ggplot2::element_blank())
+    
+  
+  plot <- cowplot::plot_grid(smooth_plot,
+                             hist_plot,
+                             ncol = 1,
+                             axis = "lr",
+                             align = "v",
+                             rel_heights = c(1, 0.6))
   if (!is.null(fileName))
     ggplot2::ggsave(fileName, plot, width = 5, height = 4.5, dpi = 400)
   return(plot)
