@@ -1,6 +1,8 @@
 #============  DYNAMIC PLOTS ======================
 #++++++++++++++++++++++++++++++++++++++++++++++++++
 
+install.packages('cowplot')
+
 plotShiny <- function(eval){
   
   data <- eval$thresholdSummary[eval$thresholdSummary$Eval%in%c('test','validation'),]
