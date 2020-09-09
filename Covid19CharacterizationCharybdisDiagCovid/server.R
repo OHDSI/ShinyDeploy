@@ -90,6 +90,17 @@ shinyServer(function(input, output, session) {
   #   session$sendCustomMessage("rmCookie", "")
   #   writeLines("----------------")
   # })
+  
+  observeEvent(input$termsOfUseReject, {
+    session$sendCustomMessage("alert", "You must accept the terms of use to use the application.")
+  })
+  
+  observeEvent(input$termsOfUseAccept, {
+    writeLines("Set cookie")
+    session$sendCustomMessage("setCookie", TERMS_OF_USE_ACCEPTED)
+    removeModal()
+  })
+  
   cohortId <- reactive({
     return(cohort$cohortId[cohort$cohortFullName == input$cohort])
   })
