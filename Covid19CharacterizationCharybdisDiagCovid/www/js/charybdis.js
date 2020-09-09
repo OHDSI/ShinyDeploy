@@ -3,7 +3,7 @@ setInputValue = function(params) {
 }
 
 setCookie = function(params) {
-  Cookies.set("termsOfUse", escape(params), { expires: 30 });
+  Cookies.set("Covid19CharacterizationCharybdisDiagCovid", escape(params), { expires: 30 });
 }
 
 Shiny.addCustomMessageHandler("setCookie", function(params) {
@@ -12,7 +12,7 @@ Shiny.addCustomMessageHandler("setCookie", function(params) {
 });
 
 Shiny.addCustomMessageHandler("rmCookie", function(params) {
-  Cookies.remove("termsOfUse");
+  Cookies.remove("Covid19CharacterizationCharybdisDiagCovid");
   setInputValue(params);
 });
 
@@ -21,7 +21,7 @@ Shiny.addCustomMessageHandler("alert", function(params) {
 });
 
 $(document).on('shiny:sessioninitialized', function(event) {
-  var cookie = Cookies.get("termsOfUse");
+  var cookie = Cookies.get("Covid19CharacterizationCharybdisDiagCovid");
   if (typeof cookie !== "undefined") {
     setInputValue(cookie);
   } else {
