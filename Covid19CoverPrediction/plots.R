@@ -1,7 +1,7 @@
 #============  DYNAMIC PLOTS ======================
 #++++++++++++++++++++++++++++++++++++++++++++++++++
 
-install.packages('cowplot')
+if(!require(cowplot)){install.packages('cowplot')}
 
 plotShiny <- function(eval){
   
