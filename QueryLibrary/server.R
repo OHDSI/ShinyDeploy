@@ -99,7 +99,7 @@ server <- shinyServer(
         table =  queriesDf
         return(table)
       },
-      server = FALSE,
+      server = TRUE,
 
       filter = list(position = 'top'),
       extensions = 'Buttons',
@@ -330,6 +330,12 @@ server <- shinyServer(
     output$allowexecute <- reactive(
       {
         allow_execute
+      }
+    )
+    
+    output$about <- renderText(
+      {
+        includeHTML(createRenderedHtml("./about.md", ""))
       }
     )
     

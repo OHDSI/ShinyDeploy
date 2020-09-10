@@ -8,6 +8,7 @@ CDM Version: 5.3
 # DEX18: What is the distribution of DRUG_TYPE_CONCEPT_ID (modes of distribution) for a given drug?
 
 ## Description
+Calculate the distribution of drug_type_concept_id for a given drug.
 
 ## Query
 The following is a sample run of the query. The input parameters are highlighted in blue.

@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Risk of hydroxychloroquine, alone and in combination with azithromycin: neuropsychiatric and inflluenza outcomes", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Risk of depression, suicidal ideation, suicide and psychosis with hydroxychloroquine treatment for rheumatoid arthritis: a multi-national network cohort study", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -28,10 +28,10 @@ shinyUI(
                                  div(p("The Observational Health Data Sciences and Informatics (OHDSI) international community hosted a COVID-19 virtual study-a-thon over March 26-29, 2020 to collaboratively generate evidence to inform healthcare decision-making in response to the current global pandemic. The preliminary research results on this web-based application are from a retrospective, real-world, observational study in support of this activity and will subsequently be submitted to a peer-reviewed, scientific journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p>Below is the abstract of the manuscript that summarizes the findings:</p>"),
-                                 HTML("<p><strong>Background:</strong></strong></p>"),
-                                 HTML("<p><strong>Methods:</strong></p>"),
-                                 HTML("<p><strong>Findings:</strong></p>"),
-                                 HTML("<p><strong>Interpretation:</strong></p>"),
+                                 HTML("<p><strong>Objectives:</strong> Recent regulatory warnings suggest that high-dose hydroxychloroquine for novel coronavirus disease 2019 (COVID-19) could cause depression or suicidal ideation. We aimed to study whether there is risk of depression, suicidal ideation, or psychosis associated with hydroxychloroquine use for rheumatoid arthritis (RA).</p>"),
+                                 HTML("<p><strong>Methods:</strong> A new user cohort study using claims and electronic medical records from 10 sources and 3 countries (Germany, UK, and US) was used. Rheumatoid arthritis patients aged 18+ and initiating hydroxychloroquine were compared to those initiating sulfasalazine (active comparator) and followed up in the short (30-day) and long term (on treatment). Study outcomes were depression, suicide/suicidal ideation, and hospitalization for psychosis. Propensity score stratification and calibration using negative control outcomes were used to address confounding. Cox models were fitted to estimate database-specific calibrated hazard ratios (HR), with estimates pooled where I2<40%.</p>"),
+                                 HTML("<p><strong>Results:</strong> Overall, 918,144 and 290,383 users of hydroxychloroquine and sulfasalazine, respectively, were included. No consistent risk of psychiatric events was observed with short-term hydroxychloroquine (compared to sulfasalazine) use, with meta-analytic HRs of 0.96 [95% CI 0.79-1.16] for depression, 0.94 [0.49-1.77] for suicide/suicidal ideation, and 1.03 [0.66-1.60] for psychosis. Long-term effects were similar, with meta-analytic HRs 0.94 [0.71-1.26] for depression, 0.77 [0.56-1.07] for suicide/suicidal ideation, and 0.99 [0.72-1.35] for psychosis.</p>"),
+                                 HTML("<p><strong>Conclusions:</strong> Hydroxychloroquine as used to treat RA does not appear to increase the risk of depression, suicide/suicidal ideation, or psychosis compared to sulfasalazine. No effects were seen in the short (first month of treatment) or in the long term. Use at higher dose or for different indications might have other effects and needs further investigation.</p>"),
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
@@ -44,8 +44,8 @@ shinyUI(
 
                         fluidRow(
                           column(3,
-                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
-                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
+                                 selectInput("target", "Target", unique(exposureOfInterest$exposureName)[1], selected = unique(exposureOfInterest$exposureName)[1], width = '100%'),
+                                 selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName)[2], selected = unique(exposureOfInterest$exposureName)[2], width = '100%'),
                                  selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), width = '100%'),
                                  checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId, width = '100%'),
                                  checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[1], width = '100%')

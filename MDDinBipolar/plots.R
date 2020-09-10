@@ -90,10 +90,16 @@ plotCovariateSummary <- function(covariateSummary){
   covariateSummary$size <- 4+4*covariateSummary$size/max(covariateSummary$size)
   
   # color based on analysis id
-   covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, 'Age','Condition'))
-   covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) strsplit(as.character(x),'days before:')[[1]][1])
-   covariateSummary$times <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, '', paste0('days before:', strsplit(as.character(x), 'days before:')[[1]][2])))
-   
+  covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, 'Age','Condition'))
+  covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) strsplit(as.character(x),'days before:')[[1]][1])
+  covariateSummary$times <- sapply(covariateSummary$covariateName, function(x) ifelse(length(grep('days', as.character(x)))==0, '', paste0('days before:', strsplit(as.character(x), 'days before:')[[1]][2])))
+  
+  
+  #covariateSummary$color <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ' ')[[1]][1]))
+  #covariateSummary$times <- sapply(sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), 'during day ')[[1]][2])),function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][1]))
+  #covariateSummary$desc <- sapply(covariateSummary$covariateName, function(x) ifelse(is.na(x), '', strsplit(as.character(x), ': ')[[1]][2]))
+  
+  
   l <- list(x = 0.01, y = 1,
             font = list(
               family = "sans-serif",
@@ -420,11 +426,6 @@ plotPredictionDistribution <- function(evaluation, type='test', fileName=NULL){
 }
 
 
-
-
-
-
-
 aucTime <- function(databases){
   data <- timeAUCs[timeAUCs$database%in%c(databases),]
   ggplot(data, aes(x=year, y=auc, group=database)) +
@@ -442,8 +443,12 @@ aucTime <- function(databases){
 
 
 survival <- function(database){
- list(src = file.path(result, 'surv', paste0(database,'_survivalplot.png')),
-      alt = 'test', width='800px')
+  list(src = file.path(result, 'surv', paste0(database,'_survivalplot.png')),
+       alt = 'test', width='800px')
   #png::readPNG(system.file(file.path(result, 'surv', 'ccae_survivalplot.png'), package="png"))
 }
 
+spline <- function(database){
+  list(src = file.path(result, 'spline', paste0(database,'.png')),
+       alt = 'spline', width='600px')
+}

@@ -4,16 +4,16 @@ source("widgets.R")
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel("Small-Sample Evidence Synthesis Results"),
+            titlePanel("Simulation Results"),
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
-                                 HTML("</BR><P>This app is under development. All results are preliminary and may change without notice.</P>"),
-                                 HTML("</BR><P>Do not use.</P>")
+                                 HTML("<p>Simulation results accompanying the manuscript entitled <strong>'Combining Cox Regressions Across a Heterogeneous Distributed Research Network Facing Small and Zero Counts'</strong> by M.J. Schuemie, Y. Chen, D. Madigan, and M.A. Suchard.</p>"),
+                                 HTML("<p>For review use only")
                         ),
                         tabPanel("Fixed-effects simulations",       
                                  fluidRow(
                                    column(3,
-                                          checkboxGroupInput("typeFixed", "Meta-analysis algorithm", choices = typesFixed, selected = typesFixed),
+                                          checkboxGroupInput("typeFixed", "Meta-analysis algorithm", choices = typesFixed, selected = typesFixed[!grepl("Pooled", typesFixed)]),
                                           lapply(simParamsFixed, createSimParamWidget, results = resultsFixed, suffix = "Fixed"),
                                           checkboxGroupInput("metricFixed", "Metric", choices = metricsFixed, selected = metricsFixed)
                                           ),  

@@ -52,20 +52,20 @@ ORDER BY drug_concept_id;
 
 | Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
-| drug_concept_id | 1300978, 1304643, 1549080 | Yes |   |
+| drug_concept_id | 1300978, 1304643, 1549080 | Yes | 'Megestrol', 'darbepoetin alfa', 'Estrogens, Conjugated (USP)'  |
 
 ## Output
-
+The start date for the drug era constructed from the individual instances of drug exposures. It is the start date of the very first chronologically recorded instance of utilization of a drug.
 | Field |  Description |
 | --- | --- |
 | drug_concept_id | A foreign key that refers to a standard concept identifier in the vocabulary for the drug concept. |
-| min_value |   |
-| max_value |   |
-| avg_value | The start date for the drug era constructed from the individual instances of drug exposures. It is the start date of the very first chronologically recorded instance of utilization of a drug. |
-| stddev_value |   |
-| percentile_25 |      |
-| median_value |      |
-| percentile_75 |      |
+| min_value | The minimum drug era start date, in days from the minimum |
+| max_value | The maximum drug era start date, in days from the minimum |
+| avg_value | The average drug era start date |
+| stddev_value | The standard deviation of the drug era start date, in days  |
+| percentile_25 | The first quartile of the drug era start dates     |
+| median_value |  The median of the drug era start dates    |
+| percentile_75 |  The third quartile of the drug era start dates    |
 
 ## Example output record
 
@@ -81,4 +81,4 @@ ORDER BY drug_concept_id;
 | percentile_75 | 2005-01-15 00:00:00 |
 
 ## Documentation
-https://github.com/OHDSI/CommonDataModel/wiki/
+https://github.com/OHDSI/CommonDataModel/wiki/DRUG_ERA

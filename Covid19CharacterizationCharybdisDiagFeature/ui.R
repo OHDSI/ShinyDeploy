@@ -16,6 +16,9 @@ dashboardPage(
   dashboardHeader(title = "Cohort Diagnostics"),
   dashboardSidebar(
     sidebarMenu(id = "tabs",
+                # Used for testing cookie set/remove
+                #actionButton("cookieGetVal", "Cookie value"),
+                #actionButton("cookieRmVal", "Cookie Remove"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 if (exists("incidenceRate")) addInfo(menuItem("Incidence Rate", tabName = "incidenceRate"), "incidenceRateInfo"),
                 if (exists("timeDistribution")) addInfo(menuItem("Time Distributions", tabName = "timeDistribution"), "timeDistributionInfo"),
@@ -45,6 +48,10 @@ dashboardPage(
     )
   ),
   dashboardBody(
+	tags$head(
+      tags$script(src = "js/lib/js.cookie.js"),
+      tags$script(src = "js/charybdis.js")
+    ),  
     tabItems(
       tabItem(tabName = "cohortCounts",
               dataTableOutput("cohortCountsTable")

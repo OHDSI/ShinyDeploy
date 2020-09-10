@@ -116,6 +116,7 @@ shinyServer(function(input, output, session) {
     ))
 
     options = list(#pageLength = 25,
+      
                    lengthChange=FALSE,
                    searching = FALSE,
                    lengthChange = TRUE,
@@ -125,6 +126,8 @@ shinyServer(function(input, output, session) {
                    columnDefs = list(minCellCountDef(1:(length(databaseIds) - 1))))
 
     dataTable <- datatable(table,
+                           
+                         
                            options = options,
                            rownames = FALSE,
                            container = sketch,
@@ -305,6 +308,7 @@ shinyServer(function(input, output, session) {
                    paging = TRUE,
                    info = TRUE)
     table <- datatable(table,
+                         
                        options = options,
                        rownames = FALSE,
                        colnames = headers,
@@ -338,6 +342,7 @@ shinyServer(function(input, output, session) {
                    paging = TRUE,
                    columnDefs = list(minCellCountDef(0)))
     table <- datatable(table,
+                         
                        options = options,
                        rownames = FALSE,
                        escape = FALSE,
@@ -369,6 +374,7 @@ shinyServer(function(input, output, session) {
                    paging = TRUE,
                    columnDefs = list(minCellCountDef(0)))
     table <- datatable(table,
+                         
                        options = options,
                        rownames = FALSE,
                        escape = FALSE,
@@ -400,6 +406,7 @@ shinyServer(function(input, output, session) {
                    paging = TRUE,
                    columnDefs = list(minCellCountDef(2:5)))
     table <- datatable(table,
+                         
                        options = options,
                        rownames = FALSE,
                        escape = FALSE,
@@ -441,6 +448,7 @@ shinyServer(function(input, output, session) {
                    paging = TRUE,
                    columnDefs = list(minCellCountDef(3:ncol(table) - 1)))
     dataTable <- datatable(table,
+                         
                            options = options,
                            rownames = FALSE,
                            escape = FALSE,
@@ -456,7 +464,10 @@ shinyServer(function(input, output, session) {
     return(dataTable)
   })
   
-  output$characterizationTable <- renderDataTable({
+  
+  get.characterizationTable <-reactive({
+    
+      
     data <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId %in% input$databases, ]
     data$cohortId <- NULL
     databaseIds <- unique(data$databaseId)
@@ -499,6 +510,7 @@ shinyServer(function(input, output, session) {
         )
       ))
       table <- datatable(table,
+                         
                          options = options,
                          rownames = FALSE,
                          container = sketch, 
@@ -539,6 +551,7 @@ shinyServer(function(input, output, session) {
       table$covariateAnalysisId <- NULL
       table$covariateId <- NULL
       table <- table[order(table$covariateName), ]
+      
       options = list(pageLength = 25,
                      searching = TRUE,
                      lengthChange = TRUE,
@@ -559,6 +572,7 @@ shinyServer(function(input, output, session) {
         )
       ))
       table <- datatable(table,
+                         
                          options = options,
                          rownames = FALSE,
                          container = sketch, 
@@ -571,8 +585,25 @@ shinyServer(function(input, output, session) {
                            backgroundRepeat = "no-repeat",
                            backgroundPosition = "center")
     }
-    return(table)
+    table
+    
   })
+  
+  
+  
+  
+  output$characterizationTable <- renderDataTable({
+    return(get.characterizationTable())
+  })
+  
+  output$x3 = downloadHandler('characteristics.csv', content = function(file) {
+    table<-get.characterizationTable()
+    
+    table<-table$x$data
+    table[,1]<- gsub("&nbsp;","", table[,1])
+    
+    write.csv(as.data.frame(table), file, row.names = FALSE, na = "")
+  })   
   
   output$overlapTable <- renderDataTable({
     data <- cohortOverlap[cohortOverlap$targetCohortId == cohortId() & 
@@ -612,6 +643,7 @@ shinyServer(function(input, output, session) {
                    info = FALSE,
                    columnDefs = list(minCellCountDef(1)))
     table <- datatable(table,
+                         
                        options = options,
                        rownames = TRUE,
                        class = "stripe nowrap compact")
@@ -659,8 +691,10 @@ shinyServer(function(input, output, session) {
     return(balance)
   })
   
-  output$charCompareTable <- renderDataTable({
-    balance <- computeBalance()
+  
+  get.charCompareTable<-reactive({
+    
+     balance <- computeBalance()
     if (nrow(balance) == 0) {
       return(NULL)
     }
@@ -676,6 +710,7 @@ shinyServer(function(input, output, session) {
                      columnDefs = list(minCellPercentDef(1:2))
       )
       table <- datatable(table,
+                         
                          options = options,
                          rownames = FALSE,
                          escape = FALSE,
@@ -721,6 +756,7 @@ shinyServer(function(input, output, session) {
                      columnDefs = columnDefs
       )
       table <- datatable(table,
+                         
                          options = options,
                          rownames = FALSE,
                          escape = FALSE,
@@ -739,8 +775,26 @@ shinyServer(function(input, output, session) {
                            backgroundPosition = "center")
       table <- formatRound(table, c(3, 5, 6), digits = 2)
     }
-    return(table)
+    
+    
   })
+  
+  output$charCompareTable <- renderDataTable({
+ #  browser()
+    return(get.charCompareTable())
+  })
+  
+    output$x4 = downloadHandler('compare_characteristics.csv', content = function(file) {
+    table<-get.charCompareTable()
+    
+    table<-table$x$data
+    table[,1]<- gsub("&nbsp;","", table[,1])
+  
+    write.csv(as.data.frame(table), file, row.names = FALSE, na = "")
+  })   
+
+  
+  
   
   output$charComparePlot <- renderPlot({
     balance <- computeBalance()
