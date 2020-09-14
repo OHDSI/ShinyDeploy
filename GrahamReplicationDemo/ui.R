@@ -2,7 +2,7 @@ library(shiny)
 library(DT)
 
 shinyUI(
-  fluidPage(style = "width:1500px;",
+  fluidPage(#style = "width:1500px;",
             titlePanel(paste("Evidence Explorer", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
