@@ -2,8 +2,7 @@ library(shiny)
 library(DT)
 
 mainColumns <- c("description", 
-                 "databaseId",
-                 "i2",
+                 "databaseId", 
                  "rr", 
                  "ci95Lb",
                  "ci95Ub",
@@ -15,7 +14,6 @@ mainColumns <- c("description",
 
 mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
                      "<span title=\"Data source\">Data source</span>", 
-                     "<span title=\"Between database heterogeneity\">I2</span>",
                      "<span title=\"Hazard ratio (uncalibrated)\">HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (uncalibrated)\">LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (uncalibrated)\">UB</span>", 
@@ -61,11 +59,7 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
-    results$order <- match(results$databaseId, c(database$databaseId[database$databaseId != "Meta-analysis"], "Meta-analysis"))
-    results <- results[order(results$order), ]
-    results$order <- NULL
-    results <- results[order(results$analysisId, decreasing = TRUE), ]
-    
+    results <- results[order(results$analysisId), ]
     if (blind) {
       results$rr <- rep(NA, nrow(results))
       results$ci95Ub <- rep(NA, nrow(results))
@@ -80,9 +74,9 @@ shinyServer(function(input, output, session) {
       results$calibratedSeLogRr <- rep(NA, nrow(results))
       results$calibratedP <- rep(NA, nrow(results))
     }
-   return(results)
+    return(results)
   })
-
+  
   selectedRow <- reactive({
     idx <- input$mainTable_rows_selected
     if (is.null(idx)) {
@@ -96,54 +90,30 @@ shinyServer(function(input, output, session) {
       return(row)
     }
   })
-
+  
   output$rowIsSelected <- reactive({
     return(!is.null(selectedRow()))
   })
   outputOptions(output, "rowIsSelected", suspendWhenHidden = FALSE)
   
-  output$isMetaAnalysis <- reactive({
-    row <- selectedRow()
-    isMetaAnalysis <- !is.null(row) && (row$databaseId == "Meta-analysis")
-    if (isMetaAnalysis) {
-      hideTab("detailsTabsetPanel", "Attrition")
-      hideTab("detailsTabsetPanel", "Population characteristics")
-      hideTab("detailsTabsetPanel", "Propensity model")
-      hideTab("detailsTabsetPanel", "Propensity scores")
-      hideTab("detailsTabsetPanel", "Covariate balance")
-      hideTab("detailsTabsetPanel", "Kaplan-Meier")
-      showTab("detailsTabsetPanel", "Forest plot")
-    } else {
-      showTab("detailsTabsetPanel", "Attrition")
-      showTab("detailsTabsetPanel", "Population characteristics")
-      showTab("detailsTabsetPanel", "Propensity model")
-      showTab("detailsTabsetPanel", "Propensity scores")
-      showTab("detailsTabsetPanel", "Covariate balance")
-      showTab("detailsTabsetPanel", "Kaplan-Meier")
-      hideTab("detailsTabsetPanel", "Forest plot")
-    }
-    return(isMetaAnalysis)
-  })
-  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
-  
   balance <- reactive({
-     row <- selectedRow()
-     if (is.null(row)) {
-       return(NULL)
-     } else {
-       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
-       comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
-       outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
-       balance <- getCovariateBalance(connection = connection,
-                                      targetId = targetId,
-                                      comparatorId = comparatorId,
-                                      databaseId = row$databaseId,
-                                      analysisId = row$analysisId,
-                                      outcomeId = outcomeId)
-       return(balance)
-     }
+    row <- selectedRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
+      comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
+      outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
+      balance <- getCovariateBalance(connection = connection,
+                                     targetId = targetId,
+                                     comparatorId = comparatorId,
+                                     databaseId = row$databaseId,
+                                     analysisId = row$analysisId,
+                                     outcomeId = outcomeId)
+      return(balance)
+    }
   })
-
+  
   output$mainTable <- renderDataTable({
     table <- resultSubset()
     if (is.null(table) || nrow(table) == 0) {
@@ -193,52 +163,17 @@ shinyServer(function(input, output, session) {
     if (is.null(row)) {
       return(NULL)
     } else {
-      isMetaAnalysis <- row$databaseId == "Meta-analysis"
-      if (isMetaAnalysis) {
-        isHeterogeneous <- row$i2 > 0.4
-        targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
-        comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
-        outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
-        databaseIds <- c(unlist(strsplit(row$sources, split = ", ")), "Meta-analysis")
-        rows <- getMainResults(connection = connection,
-                               targetIds = targetId,
-                               comparatorIds = comparatorId,
-                               outcomeIds = outcomeId,
-                               databaseIds = databaseIds,
-                               analysisIds = row$analysisId)
-        table <- preparePowerTable(rows, cohortMethodAnalysis)
-        table$description <- NULL
-        table$order <- match(table$databaseId, c(table$databaseId[table$databaseId != "Meta-analysis"], "Meta-analysis"))
-        table <- table[order(table$order), ]
-        table$order <- NULL
-        
-        if (isHeterogeneous) {
-          table <- table[table$databaseId != "Meta-analysis", ]
-        }
-        
-        colnames(table) <- c("Source",
-                             "Target subjects",
-                             "Comparator subjects",
-                             "Target years",
-                             "Comparator years",
-                             "Target events",
-                             "Comparator events",
-                             "Target IR (/1,000 PY)",
-                             "Comparator IR (/1,000 PY)",
-                             "MDRR")
-      } else {
-        table <- preparePowerTable(row, cohortMethodAnalysis)
-        table$description <- NULL
-        colnames(table) <- c("Target subjects",
-                             "Comparator subjects",
-                             "Target years",
-                             "Comparator years",
-                             "Target events",
-                             "Comparator events",
-                             "Target IR (/1,000 PY)",
-                             "Comparator IR (/1,000 PY)",
-                             "MDRR")
-      }
+      table <- preparePowerTable(row, cohortMethodAnalysis)
+      table$description <- NULL
+      colnames(table) <- c("Target subjects",
+                           "Comparator subjects",
+                           "Target years",
+                           "Comparator years",
+                           "Target events",
+                           "Comparator events",
+                           "Target IR (per 1,000 PY)",
+                           "Comparator IR (per 1,000 PY)",
+                           "MDRR")
       return(table)
     }
   })
@@ -254,7 +189,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
   })
-
+  
   output$timeAtRiskTable <- renderTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -273,7 +208,7 @@ shinyServer(function(input, output, session) {
       return(table)
     }
   })
-
+  
   attritionPlot <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
@@ -300,14 +235,14 @@ shinyServer(function(input, output, session) {
   output$downloadAttritionPlotPng <- downloadHandler(filename = "Attrition.png", 
                                                      contentType = "image/png", 
                                                      content = function(file) {
-    ggplot2::ggsave(file, plot = attritionPlot(), width = 6, height = 7, dpi = 400)
-  })
-
+                                                       ggplot2::ggsave(file, plot = attritionPlot(), width = 6, height = 7, dpi = 400)
+                                                     })
+  
   output$downloadAttritionPlotPdf <- downloadHandler(filename = "Attrition.pdf", 
                                                      contentType = "application/pdf", 
                                                      content = function(file) {
-    ggplot2::ggsave(file = file, plot = attritionPlot(), width = 6, height = 7)
-  })
+                                                       ggplot2::ggsave(file = file, plot = attritionPlot(), width = 6, height = 7)
+                                                     })
   
   output$attritionPlotCaption <- renderUI({
     row <- selectedRow()
@@ -319,7 +254,7 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
-
+  
   output$table1Caption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
@@ -331,7 +266,7 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
-
+  
   output$table1Table <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
@@ -341,68 +276,37 @@ shinyServer(function(input, output, session) {
       if (nrow(bal) == 0) {
         return(NULL)
       }
-      if (input$charType == "Pretty") {
-        table1 <- prepareTable1(balance = bal,
-                                beforeLabel = paste("Before PS adjustment"),
-                                afterLabel = paste("After PS adjustment"))
-        
-        container <- htmltools::withTags(table(
-          class = 'display',
-          thead(
-            tr(
-              th(rowspan = 3, "Characteristic"),
-              th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
-              th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
-            ),
-            tr(
-              lapply(table1[1, 2:ncol(table1)], th)
-            ),
-            tr(
-              lapply(table1[2, 2:ncol(table1)], th)
-            )
+      table1 <- prepareTable1(balance = bal,
+                              beforeLabel = paste("Before PS adjustment"),
+                              afterLabel = paste("After PS adjustment"))
+      
+      container <- htmltools::withTags(table(
+        class = 'display',
+        thead(
+          tr(
+            th(rowspan = 3, "Characteristic"),
+            th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
+            th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
+          ),
+          tr(
+            lapply(table1[1, 2:ncol(table1)], th)
+          ),
+          tr(
+            lapply(table1[2, 2:ncol(table1)], th)
           )
-        ))
-        options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
-                        searching = FALSE,
-                        ordering = FALSE,
-                        paging = FALSE,
-                        bInfo = FALSE)
-        table1 <- datatable(table1[3:nrow(table1), ],
-                            options = options,
-                            rownames = FALSE,
-                            escape = FALSE,
-                            container = container,
-                            class = "stripe nowrap compact")
-      } else {
-        table1 <- prepareRawTable1(bal)
-        container <- htmltools::withTags(table(
-          class = 'display',
-          thead(
-            tr(
-              th(rowspan = 3, "Characteristic"),
-              th(colspan = 3, class = "dt-center", paste("Before PS adjustment")),
-              th(colspan = 3, class = "dt-center", paste("After PS adjustment"))
-            ),
-            tr(
-              lapply(table1[1, 2:ncol(table1)], th)
-            ),
-            tr(
-              lapply(table1[2, 2:ncol(table1)], th)
-            )
-          )
-        ))
-        options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
-                        searching = TRUE,
-                        ordering = TRUE,
-                        paging = TRUE,
-                        bInfo = TRUE)
-        table1 <- datatable(table1[3:nrow(table1), ],
-                            options = options,
-                            rownames = FALSE,
-                            escape = FALSE,
-                            container = container,
-                            class = "stripe compact")
-      }
+        )
+      ))
+      options <- list(columnDefs = list(list(className = 'dt-right',  targets = 1:6)),
+                      searching = FALSE,
+                      ordering = FALSE,
+                      paging = FALSE,
+                      bInfo = FALSE)
+      table1 <- datatable(table1[3:nrow(table1), ],
+                          options = options,
+                          rownames = FALSE,
+                          escape = FALSE,
+                          container = container,
+                          class = "stripe nowrap compact")
       return(table1)
     }
   })
@@ -438,7 +342,7 @@ shinyServer(function(input, output, session) {
       return(table)
     }
   })
-
+  
   psDistPlot <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
@@ -452,9 +356,6 @@ shinyServer(function(input, output, session) {
                   comparatorIds = comparatorId,
                   analysisId = row$analysisId,
                   databaseId = row$databaseId)
-      if (is.null(ps)) {
-        return(NULL)
-      }
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
@@ -475,7 +376,7 @@ shinyServer(function(input, output, session) {
                                                   content = function(file) {
                                                     ggplot2::ggsave(file = file, plot = psDistPlot(), width = 5, height = 3.5)
                                                   })
-
+  
   balancePlot <- reactive({
     bal <- balance()
     if (is.null(bal) || nrow(bal) == 0) {
@@ -495,16 +396,16 @@ shinyServer(function(input, output, session) {
   })
   
   output$downloadBalancePlotPng <- downloadHandler(filename = "Balance.png", 
-                                                  contentType = "image/png", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file, plot = balancePlot(), width = 4, height = 4, dpi = 400)
-                                                  })
+                                                   contentType = "image/png", 
+                                                   content = function(file) {
+                                                     ggplot2::ggsave(file, plot = balancePlot(), width = 4, height = 4, dpi = 400)
+                                                   })
   
   output$downloadBalancePlotPdf <- downloadHandler(filename = "Balance.pdf", 
-                                                  contentType = "application/pdf", 
-                                                  content = function(file) {
-                                                    ggplot2::ggsave(file = file, plot = balancePlot(), width = 4, height = 4)
-                                                  })
+                                                   contentType = "application/pdf", 
+                                                   content = function(file) {
+                                                     ggplot2::ggsave(file = file, plot = balancePlot(), width = 4, height = 4)
+                                                   })
   
   output$balancePlotCaption <- renderUI({
     bal <- balance()
@@ -518,7 +419,7 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text)))
     }
   })
-
+  
   output$hoverInfoBalanceScatter <- renderUI({
     bal <- balance()
     if (is.null(bal) || nrow(bal) == 0) {
@@ -553,7 +454,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-
+  
   systematicErrorPlot <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
@@ -566,7 +467,7 @@ shinyServer(function(input, output, session) {
                                           comparatorId = comparatorId,
                                           analysisId = row$analysisId,
                                           databaseId = row$databaseId)
-
+      
       plot <- plotScatter(controlResults)
       return(plot)
     }
@@ -577,31 +478,31 @@ shinyServer(function(input, output, session) {
   })
   
   output$downloadSystematicErrorPlotPng <- downloadHandler(filename = "SystematicError.png", 
-                                                   contentType = "image/png", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file, plot = systematicErrorPlot(), width = 12, height = 5.5, dpi = 400)
-                                                   })
+                                                           contentType = "image/png", 
+                                                           content = function(file) {
+                                                             ggplot2::ggsave(file, plot = systematicErrorPlot(), width = 12, height = 5.5, dpi = 400)
+                                                           })
   
   output$downloadSystematicErrorPlotPdf <- downloadHandler(filename = "SystematicError.pdf", 
-                                                   contentType = "application/pdf", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file = file, plot = systematicErrorPlot(), width = 12, height = 5.5)
-                                                   })
-
+                                                           contentType = "application/pdf", 
+                                                           content = function(file) {
+                                                             ggplot2::ggsave(file = file, plot = systematicErrorPlot(), width = 12, height = 5.5)
+                                                           })
+  
   kaplanMeierPlot <- reactive({
     row <- selectedRow()
-    if (is.null(row) || is.na(row$rr)) {
+    if (is.null(row)) {
       return(NULL)
     } else {
       targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
       comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
       outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
       km <- getKaplanMeier(connection = connection,
-                                   targetId = targetId,
-                                   comparatorId = comparatorId,
-                                   outcomeId = outcomeId,
-                                   databaseId = row$databaseId,
-                                   analysisId = row$analysisId)
+                           targetId = targetId,
+                           comparatorId = comparatorId,
+                           outcomeId = outcomeId,
+                           databaseId = row$databaseId,
+                           analysisId = row$analysisId)
       plot <- plotKaplanMeier(kaplanMeier = km,
                               targetName = input$target,
                               comparatorName = input$comparator)
@@ -614,16 +515,16 @@ shinyServer(function(input, output, session) {
   }, res = 100)
   
   output$downloadKaplanMeierPlotPng <- downloadHandler(filename = "KaplanMeier.png", 
-                                                   contentType = "image/png", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file, plot = kaplanMeierPlot(), width = 7, height = 5, dpi = 400)
-                                                   })
+                                                       contentType = "image/png", 
+                                                       content = function(file) {
+                                                         ggplot2::ggsave(file, plot = kaplanMeierPlot(), width = 7, height = 5, dpi = 400)
+                                                       })
   
   output$downloadKaplanMeierPlotPdf <- downloadHandler(filename = "KaplanMeier.pdf", 
-                                                   contentType = "application/pdf", 
-                                                   content = function(file) {
-                                                     ggplot2::ggsave(file = file, plot = kaplanMeierPlot(), width = 7, height = 5)
-                                                   })
+                                                       contentType = "application/pdf", 
+                                                       content = function(file) {
+                                                         ggplot2::ggsave(file = file, plot = kaplanMeierPlot(), width = 7, height = 5)
+                                                       })
   
   output$kaplanMeierPlotPlotCaption <- renderUI({
     row <- selectedRow()
@@ -639,89 +540,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  forestPlotData <- reactive({
-    row <- selectedRow()
-    if (is.null(row)) {
-      return(NULL)
-    } else if (row$databaseId != "Meta-analysis") {
-      return(NULL)
-    } else {
-      targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
-      comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
-      outcomeId <- outcomeOfInterest$outcomeId[outcomeOfInterest$outcomeName == input$outcome]
-      databaseIds <- c(unlist(strsplit(row$sources, split = ", ")), "Meta-analysis")
-      results <- getMainResults(connection = connection,
-                                targetIds = targetId,
-                                comparatorIds = comparatorId,
-                                outcomeIds = outcomeId,
-                                databaseIds = databaseIds,
-                                analysisIds = row$analysisId)
-      return(results)
-    }
-  })
-  
-  forestPlot <- reactive({
-    row <- selectedRow()
-    if (is.null(row)) {
-      return(NULL)
-    } else if (row$databaseId != "Meta-analysis") {
-      return(NULL)
-    } else {
-      results <- forestPlotData()
-      plot <- plotForest(results, input$target, input$comparator)
-      return(plot)
-    }
-  })
-  
-  output$forestPlot <- renderPlot({
-    return(forestPlot())
-  }, res = 100)
-  
-  output$forestPlotCaption <- renderUI({
-    row <- selectedRow()
-    if (is.null(row)) {
-      return(NULL)
-    } else if (row$databaseId != "Meta-analysis") {
-      return(NULL)
-    } else {
-      text <- "<strong>Figure 6.</strong> Forest plot showing the per-database and summary calibrated hazard ratios (and 95 percent confidence intervals) 
-      comparing <em>%s</em> to <em>%s</em> for the outcome of <em>%s</em>. Summary estimate is not reported where I2 > 0.4."
-      return(HTML(sprintf(text, input$target, input$comparator, input$outcome)))
-    }
-  })
-  
-  output$hoverInfoForestPlot <- renderUI({
-    forestData <- forestPlotData()
-    if (is.null(forestData)) {
-      return(NULL)
-    } else {
-      hover <- input$plotHoverForestPlot
-      point <- nearPoints(forestData, hover, xvar = "calibratedRr", yvar = "databaseId", threshold = 5, maxpoints = 1, addDist = TRUE)
-      if (nrow(point) == 0) {
-        return(NULL)
-      }
-      left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left)
-      top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom)
-      left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
-      top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
-      style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
-                      "left:",
-                      left_px - 300,
-                      "px; top:",
-                      top_px - 50,
-                      "px; width:400px;")
-      hr <- sprintf("%.2f (%.2f - %.2f)", point$calibratedRr, point$calibratedCi95Lb, point$calibratedCi95Ub)
-      div(
-        style="position: relative; width: 0; height: 0",
-        wellPanel(
-          style = style,
-          p(HTML(paste0("<b> Database: </b>", point$databaseId, "<br/>",
-                        "<b> Calibrated harard ratio (95% CI): </b>", hr, "<br/>")))
-        )
-      )
-    }
-  })
-
   interactionEffects <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
@@ -752,7 +570,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   output$subgroupTableCaption <- renderUI({
     row <- selectedRow()
     if (is.null(row)) {
@@ -765,7 +583,7 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
-
+  
   output$subgroupTable <- renderDataTable({
     row <- selectedRow()
     if (is.null(row)) {
