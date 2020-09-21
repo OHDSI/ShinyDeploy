@@ -1,87 +1,93 @@
 cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
-1001,1001,Hydroxychloroquine ,0,All,Target
-1002,1002,Hydroxychloroquine + Azithromycin ,0,All,Target
-1003,1003,Hydroxychloroquine + Fluoroquinolones,0,All,Target
-1004,1004,Hydroxychloroquine + Amoxicillin,0,All,Target
-1005,1005,Hydroxychloroquine + ceftriaxone,0,All,Target
-1006,1006,Chloroquine,0,All,Target
-1007,1007,Azithromycin,0,All,Target
-1008,1008,Fluoroquinolones,0,All,Target
 1009,1009,Amoxicillin,0,All,Target
+1103,1103,antibiotics in SCYLLA,0,All,Target
 1010,1010,Ceftriaxone,0,All,Target
-1011,1011,"IL6 inhibitors (tocilizumab, sarilumab, siltuximab)",0,All,Target
-1012,1012,tocilizumab,0,All,Target
-1013,1013,siltuximab,0,All,Target
-1014,1014,sarilumab,0,All,Target
-1015,1015,"JAK inhibitors (ruxolitinib, tofacitinib, oclacitinib, baricitinib, fedratinib, upadacitinib)",0,All,Target
-1016,1016,baricitinib,0,All,Target
-1017,1017,tofacitinib,0,All,Target
-1018,1018,"TNF inhibitors (infliximab, golimumab, etanercept, certolizumab pegol, adalimumab)",0,All,Target
-1019,1019,adalimumab,0,All,Target
-1020,1020,etanercept,0,All,Target
-1021,1021,infliximab,0,All,Target
-1022,1022,ustekinumab,0,All,Target
-1023,1023,Anakinra,0,All,Target
-1024,1024,HIV Protease inhibitors,0,All,Target
-1025,1025,ritonavir/lopinavir,0,All,Target
-1026,1026,Interferon beta 1b,0,All,Target
-1027,1027,Interferon beta 1a,0,All,Target
-1028,1028,Interferon alfa 2a,0,All,Target
-1029,1029,favipiravir,0,All,Target
-1030,1030,Remdesivir,0,All,Target
-1031,1031,ribavirin,0,All,Target
-1032,1032,oseltamivir,0,All,Target
-1033,1033,Ivermectin,0,All,Target
-1034,1034,itraconazole,0,All,Target
-1035,1035,warfarin,0,All,Target
-1041,1041,acenocoumarol,0,All,Target
-1036,1036,heparin,0,All,Target
-1037,1037,enoxaparin,0,All,Target
-1038,1038,edoxaban,0,All,Target
-1039,1039,dabigatran,0,All,Target
-1040,1040,rivaroxaban,0,All,Target
-1042,1042,apixaban,0,All,Target
-1043,1043,bemiparin,0,All,Target
-1044,1044,clopidogrel,0,All,Target
-1045,1045,aspirin,0,All,Target
-1046,1046,prasugrel,0,All,Target
-1047,1047,alteplase,0,All,Target
-1048,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",0,All,Target
-1049,1049,tranexamic acid,0,All,Target
-1050,1050,Ruxolitinib,0,All,Target
-1051,1051,Siltuximab,0,All,Target
+1008,1008,Fluoroquinolones,0,All,Target
+1007,1007,Azithromycin,0,All,Target
+1105,1105,antidiabetics in SCYLLA,0,All,Target
+1065,1065,DPP-4 inhibitors,0,All,Target
+1067,1067,GLP1 inhibitors,0,All,Target
+1064,1064,metformin,0,All,Target
+1066,1066,SGLT2 inhibitors,0,All,Target
 1052,1052,ACE inhibitors,0,All,Target
 1053,1053,Angiotensin receptor blockers (ARBs),0,All,Target
+1104,1104,concomitant cardiovascular prevention therapies in SCYLLA,0,All,Target
+1077,1077,Losartan,0,All,Target
 1054,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),0,All,Target
 1055,1055,Thiazide or thiazide-like diuretics,0,All,Target
-1056,1056,Hydrocortisone,0,All,Target
-1057,1057,dexamethasone,0,All,Target
-1058,1058,prednisone or prednisolone,0,All,Target
-1059,1059,raloxifene,0,All,Target
-1060,1060,Bevacizumab,0,All,Target
-1061,1061,Fingolimod,0,All,Target
-1062,1062,eculizumab ,0,All,Target
-1063,1063,Statins,0,All,Target
-1064,1064,metformin,0,All,Target
-1065,1065,DPP-4 inhibitors,0,All,Target
-1066,1066,SGLT2 inhibitors,0,All,Target
-1067,1067,GLP1 inhibitors,0,All,Target
-1068,1068,H2 receptor antagonist,0,All,Target
-1069,1069,famotidine,0,All,Target
-1070,1070,"Alpha-1 blockers (Doxazosin, prazosin, terazosin, tasulosin, silodosin, alfuzosin)",0,All,Target
-1071,1071,prazosin,0,All,Target
-1072,1072,terazosin,0,All,Target
-1073,1073,doxazosin,0,All,Target
-1074,1074,tamsulosin,0,All,Target
-1075,1075,BCG vaccine,0,All,Target
-1076,1076,Colchicine,0,All,Target
-1077,1077,Losartan,0,All,Target
-1078,1078,cholecalciferol,0,All,Target
-1079,1079,Ibrutinib,0,All,Target
-1080,1080,abiraterone,0,All,Target
-1081,1081,bicalutamide,0,All,Target
+1041,1041,acenocoumarol,0,All,Target
+1047,1047,alteplase,0,All,Target
+1102,1102,antithrombotics in SCYLLA,0,All,Target
+1042,1042,apixaban,0,All,Target
+1045,1045,aspirin,0,All,Target
+1043,1043,bemiparin,0,All,Target
+1044,1044,clopidogrel,0,All,Target
+1039,1039,dabigatran,0,All,Target
+1038,1038,edoxaban,0,All,Target
+1037,1037,enoxaparin,0,All,Target
+1036,1036,heparin,0,All,Target
+1046,1046,prasugrel,0,All,Target
+1040,1040,rivaroxaban,0,All,Target
+1035,1035,warfarin,0,All,Target
+1100,1100,antivirals in SCYLLA,0,All,Target
+1006,1006,Chloroquine,0,All,Target
 1082,1082,emtricitabine,0,All,Target
+1029,1029,favipiravir,0,All,Target
+1024,1024,HIV Protease inhibitors,0,All,Target
+1001,1001,Hydroxychloroquine ,0,All,Target
+1004,1004,Hydroxychloroquine + Amoxicillin,0,All,Target
+1002,1002,Hydroxychloroquine + Azithromycin ,0,All,Target
+1005,1005,Hydroxychloroquine + ceftriaxone,0,All,Target
+1003,1003,Hydroxychloroquine + Fluoroquinolones,0,All,Target
+1028,1028,Interferon alfa 2a,0,All,Target
+1027,1027,Interferon beta 1a,0,All,Target
+1026,1026,Interferon beta 1b,0,All,Target
+1034,1034,itraconazole,0,All,Target
+1033,1033,Ivermectin,0,All,Target
+1032,1032,oseltamivir,0,All,Target
+1059,1059,raloxifene,0,All,Target
+1030,1030,Remdesivir,0,All,Target
+1031,1031,ribavirin,0,All,Target
+1025,1025,ritonavir/lopinavir,0,All,Target
+1080,1080,abiraterone,0,All,Target
+1070,1070,"Alpha-1 blockers (Doxazosin, prazosin, terazosin, tasulosin, silodosin, alfuzosin)",0,All,Target
+1048,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",0,All,Target
+1106,1106,concomitant therapies in SCYLLA,0,All,Target
+1075,1075,BCG vaccine,0,All,Target
+1081,1081,bicalutamide,0,All,Target
+1076,1076,Colchicine,0,All,Target
+1073,1073,doxazosin,0,All,Target
+1071,1071,prazosin,0,All,Target
+1074,1074,tamsulosin,0,All,Target
+1072,1072,terazosin,0,All,Target
+1049,1049,tranexamic acid,0,All,Target
+1063,1063,Statins,0,All,Target
+1019,1019,adalimumab,0,All,Target
+1023,1023,Anakinra,0,All,Target
+1101,1101,immune-based therapies in SCYLLA,0,All,Target
+1016,1016,baricitinib,0,All,Target
+1060,1060,Bevacizumab,0,All,Target
+1078,1078,cholecalciferol,0,All,Target
+1057,1057,dexamethasone,0,All,Target
+1062,1062,eculizumab ,0,All,Target
+1020,1020,etanercept,0,All,Target
+1069,1069,famotidine,0,All,Target
+1061,1061,Fingolimod,0,All,Target
+1068,1068,H2 receptor antagonist,0,All,Target
+1056,1056,Hydrocortisone,0,All,Target
+1079,1079,Ibrutinib,0,All,Target
+1011,1011,"IL6 inhibitors (tocilizumab, sarilumab, siltuximab)",0,All,Target
+1021,1021,infliximab,0,All,Target
+1015,1015,"JAK inhibitors (ruxolitinib, tofacitinib, oclacitinib, baricitinib, fedratinib, upadacitinib)",0,All,Target
+1058,1058,prednisone or prednisolone,0,All,Target
+1050,1050,Ruxolitinib,0,All,Target
+1014,1014,sarilumab,0,All,Target
+1013,1013,siltuximab,0,All,Target
 1083,1083,tacrolimus,0,All,Target
+1018,1018,"TNF inhibitors (infliximab, golimumab, etanercept, certolizumab pegol, adalimumab)",0,All,Target
+1012,1012,tocilizumab,0,All,Target
+1017,1017,tofacitinib,0,All,Target
+1022,1022,ustekinumab,0,All,Target
 1001020011,1001,Hydroxychloroquine ,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1002020011,1002,Hydroxychloroquine + Azithromycin ,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1003020011,1003,Hydroxychloroquine + Fluoroquinolones,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
@@ -132,7 +138,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020011,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1049020011,1049,tranexamic acid,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1050020011,1050,Ruxolitinib,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
-1051020011,1051,Siltuximab,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1052020011,1052,ACE inhibitors,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1053020011,1053,Angiotensin receptor blockers (ARBs),2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1054020011,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
@@ -165,6 +170,13 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020011,1081,bicalutamide,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1082020011,1082,emtricitabine,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1083020011,1083,tacrolimus,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1100020011,1100,antivirals in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1101020011,1101,immune-based therapies in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1102020011,1102,antithrombotics in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1103020011,1103,antibiotics in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1104020011,1104,concomitant cardiovascular prevention therapies in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1105020011,1105,antidiabetics in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
+1106020011,1106,concomitant therapies in SCYLLA,2001,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services,TwS
 1001020021,1001,Hydroxychloroquine ,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1002020021,1002,Hydroxychloroquine + Azithromycin ,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1003020021,1003,Hydroxychloroquine + Fluoroquinolones,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
@@ -215,7 +227,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020021,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1049020021,1049,tranexamic acid,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1050020021,1050,Ruxolitinib,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
-1051020021,1051,Siltuximab,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1052020021,1052,ACE inhibitors,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1053020021,1053,Angiotensin receptor blockers (ARBs),2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1054020021,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
@@ -248,6 +259,13 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020021,1081,bicalutamide,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1082020021,1082,emtricitabine,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1083020021,1083,tacrolimus,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1100020021,1100,antivirals in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1101020021,1101,immune-based therapies in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1102020021,1102,antithrombotics in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1103020021,1103,antibiotics in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1104020021,1104,concomitant cardiovascular prevention therapies in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1105020021,1105,antidiabetics in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
+1106020021,1106,concomitant therapies in SCYLLA,2002,with Persons with a COVID-19 diagnosis record or a SARS-CoV-2 positive test prior to inpatient visit or intensive services and 365d prior observation,TwS
 1001020031,1001,Hydroxychloroquine ,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1002020031,1002,Hydroxychloroquine + Azithromycin ,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1003020031,1003,Hydroxychloroquine + Fluoroquinolones,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
@@ -298,7 +316,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020031,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1049020031,1049,tranexamic acid,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1050020031,1050,Ruxolitinib,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
-1051020031,1051,Siltuximab,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1052020031,1052,ACE inhibitors,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1053020031,1053,Angiotensin receptor blockers (ARBs),2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1054020031,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
@@ -331,6 +348,13 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020031,1081,bicalutamide,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1082020031,1082,emtricitabine,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1083020031,1083,tacrolimus,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1100020031,1100,antivirals in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1101020031,1101,immune-based therapies in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1102020031,1102,antithrombotics in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1103020031,1103,antibiotics in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1104020031,1104,concomitant cardiovascular prevention therapies in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1105020031,1105,antidiabetics in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
+1106020031,1106,concomitant therapies in SCYLLA,2003,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services",TwS
 1001020041,1001,Hydroxychloroquine ,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1002020041,1002,Hydroxychloroquine + Azithromycin ,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1003020041,1003,Hydroxychloroquine + Fluoroquinolones,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
@@ -381,7 +405,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020041,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1049020041,1049,tranexamic acid,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1050020041,1050,Ruxolitinib,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
-1051020041,1051,Siltuximab,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1052020041,1052,ACE inhibitors,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1053020041,1053,Angiotensin receptor blockers (ARBs),2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1054020041,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
@@ -414,6 +437,13 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020041,1081,bicalutamide,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1082020041,1082,emtricitabine,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1083020041,1083,tacrolimus,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1100020041,1100,antivirals in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1101020041,1101,immune-based therapies in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1102020041,1102,antithrombotics in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1103020041,1103,antibiotics in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1104020041,1104,concomitant cardiovascular prevention therapies in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1105020041,1105,antidiabetics in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
+1106020041,1106,concomitant therapies in SCYLLA,2004,"with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test, inpatient setting without or prior to intensive services and 365d prior observation",TwS
 1001020051,1001,Hydroxychloroquine ,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1002020051,1002,Hydroxychloroquine + Azithromycin ,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1003020051,1003,Hydroxychloroquine + Fluoroquinolones,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
@@ -464,7 +494,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020051,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1049020051,1049,tranexamic acid,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1050020051,1050,Ruxolitinib,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
-1051020051,1051,Siltuximab,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1052020051,1052,ACE inhibitors,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1053020051,1053,Angiotensin receptor blockers (ARBs),2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1054020051,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
@@ -497,6 +526,13 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020051,1081,bicalutamide,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1082020051,1082,emtricitabine,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1083020051,1083,tacrolimus,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1100020051,1100,antivirals in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1101020051,1101,immune-based therapies in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1102020051,1102,antithrombotics in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1103020051,1103,antibiotics in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1104020051,1104,concomitant cardiovascular prevention therapies in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1105020051,1105,antidiabetics in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
+1106020051,1106,concomitant therapies in SCYLLA,2005,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services,TwS
 1001020061,1001,Hydroxychloroquine ,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1002020061,1002,Hydroxychloroquine + Azithromycin ,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1003020061,1003,Hydroxychloroquine + Fluoroquinolones,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
@@ -547,7 +583,6 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1048020061,1048,"Antifibrinolytics (tranexamic acid, aminocaproic acid)",2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1049020061,1049,tranexamic acid,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1050020061,1050,Ruxolitinib,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
-1051020061,1051,Siltuximab,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1052020061,1052,ACE inhibitors,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1053020061,1053,Angiotensin receptor blockers (ARBs),2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1054020061,1054,Non-Dihydropyridine Calcium Channel Blocker (ndCCB),2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
@@ -580,3 +615,10 @@ cohortId,targetId,targetName,subgroupId,subgroupName,cohortType
 1081020061,1081,bicalutamide,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1082020061,1082,emtricitabine,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
 1083020061,1083,tacrolimus,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1100020061,1100,antivirals in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1101020061,1101,immune-based therapies in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1102020061,1102,antithrombotics in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1103020061,1103,antibiotics in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1104020061,1104,concomitant cardiovascular prevention therapies in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1105020061,1105,antidiabetics in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
+1106020061,1106,concomitant therapies in SCYLLA,2006,with Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test after intensive services with 365d prior observation,TwS
