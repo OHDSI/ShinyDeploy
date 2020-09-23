@@ -503,7 +503,7 @@ shiny::shinyServer(
 		output$evaluationPlotBalance <- shiny::renderPlot(
 			{
 				balanceSubset() %>%
-					CohortMethod::plotCovariateBalanceScatterPlot(
+					plotCovariateBalanceScatterPlot(
 						beforeLabel = "Before stratification",
 						afterLabel = "After stratification"
 					) +
