@@ -6,15 +6,19 @@ output:
     theme: null
 ---
 
-## 2020-Sep-21
+## 2020-Sep-24
 
 This release contains new data sets and updates to existing ones:
 
 ### Additions
 
-#### University of Washington COVID Research Dataset (uwDM_OMOP)
+#### IQVIA LPD Italy (LPDItaly)
 
-University of Washington COVID Research Dataset 
+LPD Italy is comprised of anonymised patient records collected from software used by GPs during an office visit to document patients’ clinical records.  Data coverage includes over 2M patient records with at least one visit and 119.5M prescription orders across 900 GP practices.  Dates of service include from 2004 through present. Observation time is defined by the first and last consultation dates.  Drugs are captured as prescription records with product, quantity, dosing directions, strength, indication and date of consultation. 
+
+#### University of Washington COVID Research Dataset (UWM-CRD)
+
+The dataset includes UW Medicine patients who have been tested for COVID-19 that have information within the UW Medicine Electronic Health Record. The dataset is a subgroup of the non-OMOP clinical data warehouse of University of Washington Medical Center, comprised of Harborview Medical Center, UW Medical Center - Montlake, and Northwest hospital in Seattle WA, and is based on its current electronic health record systems, with data spanning over 10 years and including roughly 5 million patients. 
 
 #### Optum® De-Identified Clinformatics® Data Mart Database – Socio-Economic Status (SES)
 
@@ -30,7 +34,6 @@ The following data sets were updated in this release:
 - CPRD
 - HealthVerity
 - Nanfang Hospital COVID-19 Research Database (NFHCRD)
-- Optum EHR
 - SIDIAP
 - VA
 
