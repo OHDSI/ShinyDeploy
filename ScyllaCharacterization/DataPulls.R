@@ -1,4 +1,4 @@
-loadDataFromDB <- function(connPool, networkSchema = Sys.getenv("scyllaCharDbSchema")) {
+loadDataFromDB <- function(connPool, networkSchema = Sys.getenv("scylladbSchema")) {
   loadDataToGlobalEnv("cohort", queryTable(connPool, networkSchema, "cohort"))
   loadDataToGlobalEnv("cohortCount", queryTable(connPool, networkSchema, "cohort_count"))
   loadDataToGlobalEnv("database", queryTable(connPool, networkSchema, "database"))
@@ -10,7 +10,7 @@ loadDataToGlobalEnv <- function(x, value) {
   assign(x, value, envir = .GlobalEnv)
 }
 
-getCovariateValue <- function(connPool, networkSchema = Sys.getenv("scyllaCharDbSchema"), cohortId, databaseList, comparatorCohortId = NULL) {
+getCovariateValue <- function(connPool, networkSchema = Sys.getenv("scylladbSchema"), cohortId, databaseList, comparatorCohortId = NULL) {
   if (cohortId > 0 && length(databaseList > 0)) {
     cohortSearchClause <- ifelse(is.null(comparatorCohortId), "cohort_id = @cohort_id", "cohort_id IN (@cohort_id, @comparator_cohort_id)")
     sql <- paste0("SELECT * FROM @network_schema.covariate_value WHERE ", cohortSearchClause, " AND database_id IN (@database_list)")

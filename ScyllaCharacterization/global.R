@@ -27,15 +27,15 @@ usingDbStorage <- function() {
 
 # Data Loading Priority: Database, "/data" folder, S3
 if (!exists("shinySettings")) {
-  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("scyllaCharDbSchema") != "") {
+  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("scylladbSchema") != "") {
     shinySettings <- list(storage = "database", 
                           connectionDetails = DatabaseConnector::createConnectionDetails(dbms = "postgresql",
                                                                                          server = paste(Sys.getenv("shinydbServer"),
                                                                                                         Sys.getenv("shinydbDatabase"),
                                                                                                         sep = "/"),
                                                                                          port = Sys.getenv("shinydbPort"),
-                                                                                         user = Sys.getenv("scyllaCharDbUser"),
-                                                                                         password = Sys.getenv("scyllaCharDbPw"))
+                                                                                         user = Sys.getenv("scylladbUser"),
+                                                                                         password = Sys.getenv("scylladbPw"))
     )
   } else if (file.exists("data")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
