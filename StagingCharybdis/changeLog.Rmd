@@ -6,7 +6,7 @@ output:
     theme: null
 ---
 
-## 2020-Sep-24
+## 2020-Oct-7
 
 This release contains new data sets and updates to existing ones:
 
@@ -25,7 +25,7 @@ The dataset includes UW Medicine patients who have been tested for COVID-19 that
 Optum© De-Identified Clinformatics® Data Mart Database (OptumInsight, Eden Prairie, MN) is an adjudicated administrative health claims database for members with private health insurance, who are fully insured in commercial plans or in administrative services only (ASOs), Legacy Medicare Choice Lives (prior to January 2006), and Medicare Advantage (Medicare Advantage Prescription Drug coverage starting January 2006).  The population is primarily representative of US commercial claims patients (0-65 years old) with some Medicare (65+ years old) however ages are capped at 90 years.  It includes data captured from administrative claims processed from inpatient and outpatient medical services and prescriptions as dispensed, as well as results for outpatient lab tests processed by large national lab vendors who participate in data exchange with Optum.  Optum SES provides socio-economic status for members with both medical and pharmacy coverage and location information for patients at the US Census Division level.  
 
 #### Health Data Compass (HDC-UColorado)
-Health Data Compass (HDC) is a multi-institutional data warehouse. HDC contains inpatient and outpatient electronic medical data including patient, encounter, diagnosis, procedures, medications, laboratory results from two electronic medical record systems (UCHealth and Children's Hospital of Colorado), state-level all-payers claims data, and the Colorado death registry. Only UCHealth data was used for this study. Acknowledgement statement: Supported by the Health Data Compass Data Warehouse project (healthdatacompass.org).
+Health Data Compass (HDC) is a multi-institutional data warehouse. HDC contains inpatient and outpatient electronic medical data including patient, encounter, diagnosis, procedures, medications, laboratory results from two electronic medical record systems (UCHealth and Children's Hospital of Colorado), state-level all-payers claims data, and the Colorado death registry. Only UCHealth data was used for this study. Acknowledgment statement: Supported by the Health Data Compass Data Warehouse project (healthdatacompass.org).
 
 ### Updates
 
@@ -33,7 +33,10 @@ The following data sets were updated in this release:
 
 - CPRD
 - HealthVerity
+- IPCI
 - Nanfang Hospital COVID-19 Research Database (NFHCRD)
+- Optum EHR
+- Premier
 - SIDIAP
 - VA
 
