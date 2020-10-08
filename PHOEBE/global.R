@@ -15,8 +15,6 @@ connPool <- dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
                    user = Sys.getenv("phoebedbUser"),
                    password = Sys.getenv("phoebedbPw"))  
 
-#connPool <- connect(connectionDetails)
-
 # Cleanup the database connPool  when the application stops
 onStop(function() {
   if (DBI::dbIsValid(connPool)) {
