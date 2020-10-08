@@ -6,15 +6,21 @@ source("DataPulls.R")
 
 connPool <- NULL # Will be initialized if using a DB
 
-#connection settings
-connectionDetails <- createConnectionDetails(dbms = "postgresql",
-                                             server = paste(Sys.getenv("shinydbServer"),
-                                                            Sys.getenv("shinydbDatabase"),
-                                                            sep = "/"),
-                                             port = Sys.getenv("shinydbPort"),
-                                             user = Sys.getenv("shinydbUser"),
-                                             password = Sys.getenv("shinydbPw"))
+connPool <- dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
+                   dbms = "postgresql",
+                   server = paste(Sys.getenv("phoebedbServer"),
+                                  Sys.getenv("phoebedb"),
+                                  sep = "/"),
+                   port = 5432,
+                   user = Sys.getenv("phoebedbUser"),
+                   password = Sys.getenv("phoebedbPw"))  
 
+#connPool <- connect(connectionDetails)
 
-connPool <- connect(connectionDetails)
-
+# Cleanup the database connPool  when the application stops
+onStop(function() {
+  if (DBI::dbIsValid(connPool)) {
+    writeLines("Closing database pool")
+    poolClose(connPool)
+  }
+})
