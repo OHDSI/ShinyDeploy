@@ -56,7 +56,7 @@ getCovariateDataSubset <- function(cohortId, databaseList, comparatorCohortId = 
   if (usingDbStorage()) {
     return(getCovariateValue(connPool, cohortId = cohortId, databaseList = databaseList, comparatorCohortId = comparatorCohortId))
   } else {
-    return(covariateValue[covariateValue$cohortId == cohortId & covariateValue$databaseId %in% databaseList, ])
+    return(covariateValue[covariateValue$cohortId %in% c(cohortId, comparatorCohortId) & covariateValue$databaseId %in% databaseList, ])
   }
 }
 
@@ -268,6 +268,7 @@ shinyServer(function(input, output, session) {
     subjectIndex <-  match("cohortSubjects", columnsToInclude)
     data <- getCohortCountsTable()    
     databaseIds <- unique(data$databaseId)
+    databaseIds <- sort(databaseIds)
     table <- data[data$databaseId == databaseIds[1], columnsToInclude]
     colnames(table)[subjectIndex] <- paste(colnames(table)[2], databaseIds[1], sep = "_")
     if (length(databaseIds) > 1) {
@@ -469,7 +470,7 @@ shinyServer(function(input, output, session) {
     if (cohortId() == comparatorCohortId()) {
       return(data.frame())
     }
-    covariateFiltered <- covariateFiltered <- getFilteredCovariates()
+    covariateFiltered <- getFilteredCovariates()
     covariateValue <- getCovariateDataSubset(cohortId(), input$database, comparatorCohortId())
     covs1 <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId == input$database, ]
     covs2 <- covariateValue[covariateValue$cohortId == comparatorCohortId() & covariateValue$databaseId == input$database, ]
@@ -608,8 +609,9 @@ shinyServer(function(input, output, session) {
                    lengthChange = FALSE,
                    ordering = TRUE,
                    paging = FALSE,
-                   columnDefs = list(list(width = '30%', targets = 1),
-                                     list(width = '60%', targets = 2))
+                   columnDefs = list(list(width = '10%', targets = 0),
+                                     list(width = '20%', targets = 1),
+                                     list(width = '35%', targets = 2))
     )
     table <- datatable(table,
                        options = options,
