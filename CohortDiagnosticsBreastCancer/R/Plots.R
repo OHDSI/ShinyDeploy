@@ -3,7 +3,7 @@ plotTimeDistribution <- function(data,
                                  databaseIds = NULL,
                                  xAxis = "database") {
   
-  if (is.null(cohortIds) || xAxis != "database" || is.null(databaseIds)) {
+  if (is.null(cohortIds) || length(cohortIds) > 1 || xAxis != "database" || is.null(databaseIds)) {
     warning("Not yet supported. Upcoming feature.")
     return(NULL)
   }
@@ -47,16 +47,6 @@ plotTimeDistribution <- function(data,
       dplyr::filter(.data$Database %in% !!databaseIds)
   }
   
-  plotData$tooltip <- c(paste0(plotData$shortName, " : ", plotData$cohortName,
-                              "\nDatabase = ", plotData$Database, 
-                              "\nMin = ",  plotData$Min,
-                              "\nMax = ",  plotData$Max,
-                              "\nP25 = ",  plotData$P25,
-                              "\nMedian = ",  plotData$Median,
-                              "\nP75 = ", plotData$P75,
-                              "\nTime Measure = ",  plotData$TimeMeasure,
-                              "\nAverage = ",  plotData$Average))
-  
   plot <- ggplot2::ggplot(data = plotData) +
     ggplot2::aes(x = .data$Database,
                  ymin = .data$Min,
@@ -68,18 +58,18 @@ plotTimeDistribution <- function(data,
                  average = .data$Average) +
     ggplot2::geom_errorbar(mapping = ggplot2::aes(ymin = .data$Min, 
                                                   ymax = .data$Max), size = 0.5) +
-    ggiraph::geom_boxplot_interactive(ggplot2::aes(tooltip = tooltip),
-                                      stat = "identity", 
-                                      fill = rgb(0, 0, 0.8, alpha = 0.25), 
-                                      size = 0.2) +
-    ggplot2::facet_grid(Database+shortName~TimeMeasure, scales = "free") +
+    ggplot2::geom_boxplot(stat = "identity", 
+                          fill = rgb(0, 0, 0.8, alpha = 0.25), 
+                          size = 0.2) +
+    ggplot2::facet_grid(rows = Database~TimeMeasure, scales = "free", switch = "y") +
     ggplot2::coord_flip() +
     ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
                    panel.grid.minor.y = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(),
                    axis.ticks.y = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
-                   strip.text.y.right = ggplot2::element_text(angle = 0)) 
+                   strip.text.y.left = ggplot2::element_text(angle = 0)) 
+  
   plot <- ggiraph::girafe(ggobj = plot,
                           options = list(
                             ggiraph::opts_sizing(width = .7),
@@ -228,7 +218,7 @@ plotIncidenceRate <- function(data,
   
   plotData$ageGroup <- factor(plotData$ageGroup,
                               levels = newSort$ageGroup)
-  plotData$tooltip <- c(paste0(plotData$shortName, ":", plotData$cohortName,"\n","Incidence Rate = ", scales::comma(plotData$incidenceRate, accuracy = 0.01), 
+  plotData$tooltip <- c(paste0("Incidence Rate = ", scales::comma(plotData$incidenceRate, accuracy = 0.01), 
                                "\nDatabase = ", plotData$databaseId, 
                                "\nPerson years = ", scales::comma(plotData$personYears, accuracy = 0.1), 
                                "\nCohort count = ", scales::comma(plotData$cohortCount)))
@@ -272,16 +262,15 @@ plotIncidenceRate <- function(data,
     }
     if (stratifyByGender | stratifyByCalendarYear) {
       if (stratifyByAgeGroup) {
-        plot <- plot + facet_nested(databaseId + shortName ~ plotData$ageGroup, scales = scales)
+        plot <- plot + ggplot2::facet_grid(databaseId~plotData$ageGroup, scales = scales)
       } else {
-        plot <- plot + facet_nested(databaseId + shortName ~ ., scales = scales) 
+        plot <- plot + ggplot2::facet_grid(databaseId~., scales = scales) 
       }
-    } else {
-      plot <- plot + facet_nested(databaseId + shortName ~., scales = scales) 
     }
-    spacing <- rep(c(1, rep(0.5, length(unique(plotData$shortName)) - 1)), length(unique(plotData$databaseId)))[-1]
-    plot <- plot + ggplot2::theme(panel.spacing.y = ggplot2::unit(spacing, "lines"),
-                                  strip.background = ggplot2::element_blank())
+    else
+    {
+      plot <- plot + ggplot2::facet_grid(databaseId~., scales = scales) 
+    }
   } else {
     if (stratifyByAgeGroup) {
       plot <- plot + ggplot2::facet_grid(~ageGroup) 
@@ -300,8 +289,11 @@ plotCohortComparisonStandardizedDifference <- function(balance,
                                                        domain = "all",
                                                        targetLabel = "Mean Target",
                                                        comparatorLabel = "Mean Comparator") {
+  balance <- balance %>%
+    replace(is.na(.), 0)
+  
   domains <- c("condition", "device", "drug", "measurement", "observation", "procedure")
-  balance$domain <- tolower(stringr::str_extract(balance$covariateName, "[a-z]+"))
+  balance$domain <- tolower(gsub("[_ ].*", "", balance$covariateName))
   balance$domain[!balance$domain %in% domains] <- "other"
   
   if (domain != "all") {
@@ -317,10 +309,10 @@ plotCohortComparisonStandardizedDifference <- function(balance,
   
   # ggiraph::geom_point_interactive(ggplot2::aes(tooltip = tooltip), size = 3, alpha = 0.6)
   balance$tooltip <- c(paste("Covariate Name:", balance$covariateName,
-                             "\nDomain: ", balance$domain,
-                             "\nMean Target: ", scales::comma(balance$mean1, accuracy = 0.1),
-                             "\nMean Comparator:", scales::comma(balance$mean2, accuracy = 0.1),
-                             "\nStd diff.:", scales::comma(balance$stdDiff, accuracy = 0.1)))
+                              "\nDomain: ", balance$domain,
+                              "\nMean Target: ", scales::comma(balance$mean1, accuracy = 0.1),
+                              "\nMean Comparator:", scales::comma(balance$mean2, accuracy = 0.1),
+                              "\nStd diff.:", scales::comma(balance$stdDiff, accuracy = 0.1)))
   
   # Code used to generate palette:
   # writeLines(paste(RColorBrewer::brewer.pal(n = length(domains), name = "Dark2"), collapse = "\", \""))
@@ -328,21 +320,20 @@ plotCohortComparisonStandardizedDifference <- function(balance,
   # Make sure colors are consistent, no matter which domains are included:
   colors <- c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#444444")
   colors <- colors[c(domains, "other") %in% unique(balance$domain)]
-  
+
   balance$domain <- factor(balance$domain, levels = c(domains, "other"))
   
-  # targetLabel <- paste(strwrap(targetLabel, width = 50), collapse = "\n")
-  # comparatorLabel <- paste(strwrap(comparatorLabel, width = 50), collapse = "\n")
+  targetLabel <- paste(strwrap(targetLabel, width = 50), collapse = "\n")
+  comparatorLabel <- paste(strwrap(comparatorLabel, width = 50), collapse = "\n")
   
   plot <- ggplot2::ggplot(balance, ggplot2::aes(x = .data$mean1, y = .data$mean2, color = .data$domain)) +
     ggiraph::geom_point_interactive(ggplot2::aes(tooltip = .data$tooltip), size = 3,shape = 16, alpha = 0.5) +
     ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     ggplot2::geom_hline(yintercept = 0) +
     ggplot2::geom_vline(xintercept = 0) +             
-    ggplot2::scale_x_continuous("MEAN") +
-    ggplot2::scale_y_continuous("MEAN") +
-    ggplot2::scale_color_manual("Domain", values = colors) +
-    ggplot2::facet_grid(targetCohortShortName ~ databaseId + comparatorCohortShortName)
+    ggplot2::scale_x_continuous(targetLabel, limits = c(0, 1)) +
+    ggplot2::scale_y_continuous(comparatorLabel, limits = c(0, 1)) +
+    ggplot2::scale_color_manual("Domain", values = colors)
   
   plot <- ggiraph::girafe(ggobj = plot,
                           options = list(
@@ -428,10 +419,6 @@ plotCohortOverlap <- function(data,
                          add = errorMessage)
   checkmate::reportAssertions(collection = errorMessage)
   
-  
-  
-  
-  
   plotData <- data %>% 
     dplyr::mutate(absTOnlySubjects = abs(.data$tOnlySubjects), 
                   absCOnlySubjects = abs(.data$cOnlySubjects),
@@ -499,7 +486,7 @@ plotCohortOverlap <- function(data,
     ggplot2::ylab(label = "") +
     ggplot2::xlab(label = "") +
     ggplot2::scale_fill_manual("Subjects in", values = c(rgb(0.8, 0.2, 0.2), rgb(0.3, 0.2, 0.4), rgb(0.4, 0.4, 0.9))) +
-    ggplot2::facet_grid(.data$databaseId ~ .data$targetShortName, drop = FALSE) +
+    ggplot2::facet_grid(.data$targetShortName ~ .data$databaseId, drop = FALSE) +
     ggiraph::geom_bar_interactive(position = position, alpha = 0.6, stat = "identity") 
   if (yAxis == "Percentages") {
     plot <- plot + ggplot2::scale_y_continuous(labels = scales::percent)
