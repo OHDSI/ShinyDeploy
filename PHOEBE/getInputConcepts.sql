@@ -25,8 +25,14 @@ ss AS (
 } : {
 		AND LOWER(u.domain_id) = LOWER('@source_domain')
 }
-	)
-SELECT *
+	),
+ss2 AS (    
+SELECT 
+{@source_domain == ""} ? {
+	   ss.*, RANK() OVER (PARTITION BY domain_id ORDER BY drc desc) AS rnk
+} : {
+		*
+}
 FROM ss
 WHERE NOT EXISTS (
 		SELECT 1
@@ -37,4 +43,8 @@ WHERE NOT EXISTS (
 				AND concept_id = ca.ancestor_concept_id
 		)
 ORDER BY drc DESC 
-{@source_domain != ""} ? {LIMIT 1};
+        )
+SELECT  concept_id, concept_name, vocabulary_id, domain_id, standard_concept, rc, dbc, drc, ddbc       
+FROM ss2 
+{@source_domain != ""} ? {LIMIT 1} : {WHERE rnk=1}
+;
