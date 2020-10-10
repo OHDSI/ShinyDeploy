@@ -17,7 +17,7 @@ ss AS (
 	JOIN @vocabulary_database_schema.concept_synonym cs
 		ON cs.concept_id = u.concept_id
 	WHERE u.standard_concept = 'S'
-		AND LOWER(cs.concept_name) ~* '@source_string'
+		AND LOWER(cs.concept_synonym_name) ~* '@source_string'
 {@source_domain == ""} ? {
 		AND u.domain_id IN ('Condition', 'Procedure', 'Drug', 'Measurement', 'Observation')
 } : {
