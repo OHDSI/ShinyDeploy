@@ -32,29 +32,41 @@ dashboardPage(
       ),
       tabItem(tabName = "InitialConcept",
               htmlOutput("borderInitialConcept"),
+              HTML("This page provides you a recommendation for initial concept to be used with descendants for your initial concept set"),
+              fluidRow(tags$br()),
               textAreaInput(inputId = "sourceDomain",
-                            label = "Domain:",
+                            label = "Insert your domain of interest:",
                             value = ""),
               textAreaInput(inputId = "sourceString",
                             label = "Search string:",
                             value = ""),
               actionButton(inputId = "inputActionConcept", label = "Show recommendations"),
+              fluidRow(tags$br()),
               dataTableOutput("InitialConceptTable")
       ),
       tabItem(tabName = "ConceptSet",
               htmlOutput("borderConceptSet"),
               tabsetPanel(
                 tabPanel("Standard Concepts",
+                         fluidRow(tags$br()),
+                         HTML("This page provides you standard concept recommendations to modify your concept set.
+                              <br> Proceed to next tab to see recommendations for non-standard concepts."),
+                         fluidRow(tags$br()),
                          textAreaInput(inputId = "conceptList",
-                                       label = "Comma-separated concept list:",
+                                       label = "Insert your comma-separated concept list:",
                                        value = ""),
                          actionButton(inputId = "inputActionList", label = "Show recommendations"),
+                         fluidRow(tags$br()),
                          dataTableOutput("ConceptSetStandardTable"),
                          downloadButton("dlConceptSetStandard", "Download Data")
                          ),
-                
-                
-                tabPanel("Source Concepts",dataTableOutput("ConceptSetSourceTable"))
+                tabPanel("Source Concepts",
+                         fluidRow(tags$br()),
+                         HTML("This page shows you non-standard candidates for your concept set with corresponsing standard concepts."),
+                         fluidRow(tags$br()),
+                         dataTableOutput("ConceptSetSourceTable"),
+                         fluidRow(tags$br()),
+                         downloadButton("dlConceptSetSource", "Download Data"))
               )
        )
       
