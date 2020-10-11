@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+library(dplyr)
 source("DataPulls.R")
 
 renderBorderTag <-  function() {
@@ -53,26 +54,37 @@ shinyServer(function(input, output) {
   
   # output the initial concept recommendation into a table
   output$ConceptSetStandardTable <- DT::renderDataTable({
-    dt <- ConceptSetStandardData()
-    colnames(dt) <- c("concept id","concept name","vocabulary id","domain id",
-                      "standard concept","concept_in_set","record count","database count", "record with descendants count",
-                      "database with descendants count")
+     dt <- ConceptSetStandardData()
+     dt %>%
+     mutate (concept_in_set = as.factor(concept_in_set),
+             domain_id = as.factor(domain_id),
+             vocabulary_id = as.factor(vocabulary_id),
+             concept_id = as.character (concept_id)) %>% 
+     select (concept_in_set, everything())   %>%
+     datatable(colnames = c( "concept in set", "concept id","concept name","vocabulary id","domain id",
+                            "standard concept","record count","database count", "record with descendants count",
+                            "database with descendants count"), filter = 'top') %>% 
+     formatStyle(1,  color = JS("value == 'Included' ? 'green' : value == 'Not included - parent' ? 'orange' : value == 'Not included - descendant' ? 'orange' : 'red'"))
     
-    dt
-  },
-  filter = 'top')
+  })
   
   # output the initial concept recommendation into a table
   output$ConceptSetSourceTable <- DT::renderDataTable({
     dt <- ConceptSetSourceData()
-    colnames(dt) <- c("concept id","concept name","domain id","vocabulary id","standard concept","record count","database count",
-                      "record with descendants count", "database with descendants count", "source concept id", "source concept name",
-                      "source record count","source database count")
-    dt
-  },
-  filter = 'top',
-  options = list(scrollX = TRUE))
-  
+    dt %>%
+      mutate (domain_id = as.factor(domain_id),
+              vocabulary_id = as.factor(vocabulary_id),
+              source_vocabulary_id = as.factor(source_vocabulary_id),
+              concept_id = as.character (concept_id),
+              source_concept_id = as.character (source_concept_id)) %>% 
+      datatable(colnames = c("concept id","concept name","domain id","vocabulary id","standard concept","record count","database count",
+                             "record with descendants count", "database with descendants count", "source concept id", "source concept name",
+                             "source_vocabulary_id","source_concept_code","source record count","source database count"), 
+                             filter = 'top',  
+                             options = list(scrollX = TRUE))
+
+  })
+
   output$dlConceptSetStandard <- downloadHandler(
     filename = function() {
       'concept_set_standard.csv'
@@ -81,6 +93,15 @@ shinyServer(function(input, output) {
     table<-ConceptSetStandardData()
     write.csv(table, file, row.names = FALSE, na = "")
   })
+  
+  output$dlConceptSetSource <- downloadHandler(
+    filename = function() {
+      'concept_set_source.csv'
+    },
+    content = function(file) {
+      table<-ConceptSetSourceData()
+      write.csv(table, file, row.names = FALSE, na = "")
+    })
   
   output$borderInitialConcept <- renderUI({
     return(renderBorderTag())
