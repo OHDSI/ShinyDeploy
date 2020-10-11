@@ -43,10 +43,9 @@ from recommendations r
 join @vocabulary_database_schema.concept c on c.concept_id = r.concept_id
 left join @target_database_schema.cp_master cp on r.concept_id = cp.concept_id
 left join @target_database_schema.recommended_blacklist rb on r.concept_id = rb.concept_id
-where (rb.concept_id is null or concept_in_set = 'Included')
-and  not exists   (select 1 from list l
+where rb.concept_id is null 
+and  (not exists   (select 1 from list l
                    join @vocabulary_database_schema.concept_relationship cr1 on l.concept_id = cr1.concept_id_2 and cr1.relationship_id = 'Maps to'
-                    where cr1.concept_id_1 = r.concept_id)
+                    where cr1.concept_id_1 = r.concept_id) or concept_in_set = 'Included')
 order by coalesce(cp.rc,0) desc, coalesce(cp.dbc,0) desc, coalesce(cp.drc,0) desc, coalesce(cp.ddbc,0) desc
 ;
-
