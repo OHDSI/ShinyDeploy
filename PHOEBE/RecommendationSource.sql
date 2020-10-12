@@ -20,4 +20,3 @@ and not exists (select 1 from list l2
                           where cr1.concept_id_1 = r.concept_id )
 order by cp.rc desc, cp.dbc desc, cp.drc  desc,  cp.ddbc desc
 ;
-
