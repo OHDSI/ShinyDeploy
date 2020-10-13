@@ -19,12 +19,12 @@ recommendations as (
          join @target_database_schema.recommender_set rc1 on i.concept_id = rc1.source_id
          join @vocabulary_database_schema.concept c1 on rc1.concept_id = c1.concept_id and c1.standard_concept is null
          join @vocabulary_database_schema.concept_relationship cr1 on c1.concept_id = cr1.concept_id_1 and cr1.relationship_id in ('Maps to', 'Maps to value')
--- excluding those sources that already have one standard counterpart in our input list
-         where not exists (select 1 from list l 
-                           join @vocabulary_database_schema.concept_relationship cr2 on l.concept_id = cr2.concept_id_1
-                           where cr2.concept_id_2 = cr1.concept_id_2
-                           )
-
+             -- excluding those sources that already have one standard counterpart in our input list
+        left join (select *
+                     from list l
+                     join @vocabulary_database_schema.concept_relationship cr2 on l.concept_id = cr2.concept_id_2 and cr2.relationship_id = 'Maps to'
+                  ) a on a.concept_id_1 = cr1.concept_id_1
+              where a.concept_id_2 is null
   union
   -- find all not included parents
   select ca.ancestor_concept_id, 'Not included - parent' as concept_in_set
@@ -43,8 +43,8 @@ from recommendations r
 join @vocabulary_database_schema.concept c on c.concept_id = r.concept_id
 left join @target_database_schema.cp_master cp on r.concept_id = cp.concept_id
 left join @target_database_schema.recommended_blacklist rb on r.concept_id = rb.concept_id
-where rb.concept_id is null 
-and  (not exists   (select 1 from list l
+where (rb.concept_id is null 
+and  not exists   (select 1 from list l
                    join @vocabulary_database_schema.concept_relationship cr1 on l.concept_id = cr1.concept_id_2 and cr1.relationship_id = 'Maps to'
                     where cr1.concept_id_1 = r.concept_id) or concept_in_set = 'Included')
 order by coalesce(cp.rc,0) desc, coalesce(cp.dbc,0) desc, coalesce(cp.drc,0) desc, coalesce(cp.ddbc,0) desc
