@@ -18,45 +18,49 @@ addInfo <- function(item, infoId) {
   return(item)
 }
 
-if (!exists("phenotypeDescription")) {
-  appTitle <- cohortDiagnosticModeDefaultTitle
-} else {
-  appTitle <- phenotypeLibraryModeDefaultTitle
+cohortReference <- function(outputId) {
+  shinydashboard::box(# title = "Reference",
+                      status = "warning",
+                      width = "100%",
+                      shiny::uiOutput(outputId = outputId)
+  )
 }
 
-#header name
-header <-
-  shinydashboard::dashboardHeader(title = appTitle, 
-                                  tags$li(
-                                    tags$div(
-                                      tags$strong("Phenotype:"),
-                                      style = "color: white; margin-top: 14px; margin-right: 10px;"
-                                    ),
-                                    class = "dropdown"
-                                  ), 
-                                  tags$li(
-                                    tags$div(
-                                      shinyWidgets::pickerInput(
-                                        inputId = "phenotypes",
-                                        choices = phenotypeDescription$phenotypeName,
-                                        selected = phenotypeDescription$phenotypeName[1],
-                                        multiple = FALSE,
-                                        choicesOpt = list(style = rep_len("color: black;", 999)),
-                                        options = shinyWidgets::pickerOptions(
-                                          actionsBox = FALSE,
-                                          liveSearch = TRUE,
-                                          size = 20,
-                                          liveSearchStyle = "contains",
-                                          liveSearchPlaceholder = "Type here to search",
-                                          virtualScroll = 50,
-                                          dropdownAlignRight = TRUE
-                                        )
-                                      ),
-                                      style = "margin-top: 8px; margin-right: 10px; margin-bottom: -8px;"
-                                    ),
-                                    class = "dropdown"
-                                  )
+if (exists("phenotypeDescription")) {
+  header <-shinydashboard::dashboardHeader(title = phenotypeLibraryModeDefaultTitle, 
+                                           tags$li(
+                                             tags$div(
+                                               tags$strong("Phenotype:"),
+                                               style = "color: white; margin-top: 14px; margin-right: 10px;"
+                                             ),
+                                             class = "dropdown"
+                                           ), 
+                                           tags$li(
+                                             tags$div(
+                                               shinyWidgets::pickerInput(
+                                                 inputId = "phenotypes",
+                                                 choices = phenotypeDescription$phenotypeName,
+                                                 selected = phenotypeDescription$phenotypeName[1],
+                                                 multiple = FALSE,
+                                                 choicesOpt = list(style = rep_len("color: black;", 999)),
+                                                 options = shinyWidgets::pickerOptions(
+                                                   actionsBox = FALSE,
+                                                   liveSearch = TRUE,
+                                                   size = 20,
+                                                   liveSearchStyle = "contains",
+                                                   liveSearchPlaceholder = "Type here to search",
+                                                   virtualScroll = 50,
+                                                   dropdownAlignRight = TRUE
+                                                 )
+                                               ),
+                                               style = "margin-top: 8px; margin-right: 10px; margin-bottom: -8px;"
+                                             ),
+                                             class = "dropdown"
+                                           )
   )
+} else { 
+  header <- shinydashboard::dashboardHeader(title = cohortDiagnosticModeDefaultTitle)
+}
 #sidebarMenu
 sidebarMenu <-
   shinydashboard::sidebarMenu(
@@ -378,12 +382,12 @@ bodyTabItems <- shinydashboard::tabItems(
     )
   ),
   shinydashboard::tabItem(tabName = "cohortCounts",
-                          shiny::htmlOutput(outputId = "cohortCountsSelectedCohort"),
+                          cohortReference("cohortCountsSelectedCohort"),
                           DT::dataTableOutput("cohortCountsTable"),
   ),
   shinydashboard::tabItem(
     tabName = "incidenceRate",
-    shiny::uiOutput(outputId = "incidenceRateSelectedCohort"),
+    cohortReference("incidenceRateSelectedCohort"),
     shinydashboard::box(
       title = "Incidence Rate",
       width = NULL,
@@ -413,7 +417,7 @@ bodyTabItems <- shinydashboard::tabItems(
   ),
   shinydashboard::tabItem(
     tabName = "timeDistribution",
-    shiny::uiOutput(outputId = "timeDistSelectedCohort"),
+    cohortReference("timeDistSelectedCohort"),
     shinydashboard::box(
       title = "Time Distributions",
       width = NULL,
@@ -451,19 +455,17 @@ bodyTabItems <- shinydashboard::tabItems(
                           ),
                           DT::dataTableOutput("conceptSetDiagnosticsTable")),
   shinydashboard::tabItem(tabName = "inclusionRuleStats",
-                          div(style = "font-size:15px;font-weight: bold", "Target cohort:"),
-                          shiny::htmlOutput(outputId = "inclusionRuleStatSelectedCohort"),
-                          tags$br(),
+                          cohortReference("inclusionRuleStatSelectedCohort"),
                           DT::dataTableOutput("inclusionRuleTable")),
   shinydashboard::tabItem(tabName = "indexEventBreakdown",
-                          shiny::htmlOutput(outputId = "indexEventBreakdownSelectedCohort"),
+                          cohortReference("indexEventBreakdownSelectedCohort"),
                           DT::dataTableOutput("breakdownTable")),
   shinydashboard::tabItem(tabName = "visitContext",
-                          shiny::htmlOutput(outputId = "visitContextSelectedCohort"),
+                          cohortReference("visitContextSelectedCohort"),
                           DT::dataTableOutput("visitContextTable")),
   shinydashboard::tabItem(
     tabName = "cohortCharacterization",
-    shiny::htmlOutput(outputId = "characterizationSelectedCohort"),
+    cohortReference("characterizationSelectedCohort"),
     shiny::radioButtons(
       inputId = "charType",
       label = "",
@@ -475,26 +477,29 @@ bodyTabItems <- shinydashboard::tabItems(
   ),
   shinydashboard::tabItem(
     tabName = "temporalCharacterization",
-    htmlOutput(outputId = "temporalCharacterizationSelectedCohort"),
-    shinydashboard::box(
-      title = "Temporal Characterization Table",
-      width = NULL,
-      status = "primary",
-      DT::dataTableOutput("temporalCharacterizationTable")
+    cohortReference("temporalCharacterizationSelectedCohort"),
+    shiny::radioButtons(
+      inputId = "tempCharType",
+      label = "",
+      choices = c("Table", "Plot"),
+      selected = "Table",
+      inline = TRUE
     ),
-    ggiraph::ggiraphOutput("compareTemporalCharacterizationPlot",height = "100%")
-    # ,
-    # shinydashboard::box(
-    #   title = "Temporal Characterization Plot",
-    #   width = NULL,
-    #   status = "primary",
-    #   ggiraph::ggiraphOutput(
-    #     outputId = "covariateTimeSeriesPlot")
-    # )
+    shiny::conditionalPanel(condition = "input.tempCharType=='Table'",
+                            DT::dataTableOutput("temporalCharacterizationTable")),
+    shiny::conditionalPanel(
+      condition = "input.tempCharType=='Plot'",
+      shinydashboard::box(
+        title = "Compare Temporal Characterization",
+        width = NULL,
+        status = "primary",
+        ggiraph::ggiraphOutput("compareTemporalCharacterizationPlot",height = "100%")
+      )
+    )
   ),
   shinydashboard::tabItem(
     tabName = "cohortOverlap",
-    shiny::uiOutput(outputId = "cohortOverlapSelectedCohort"),
+    cohortReference("cohortOverlapSelectedCohort"),
     shinydashboard::box(
       title = "Cohort Overlap (Subjects)",
       width = NULL,
@@ -508,15 +513,10 @@ bodyTabItems <- shinydashboard::tabItems(
       ),
       ggiraph::ggiraphOutput("overlapPlot",height = "100%")
     )
-    # shinydashboard::box(
-    #   title = "Cohort Overlap Statistics",
-    #   width = NULL,
-    #   status = "primary",
-    #   DT::dataTableOutput("overlapTable")
-    # )
   ),
   shinydashboard::tabItem(
     tabName = "compareCohortCharacterization",
+    cohortReference("cohortCharCompareSelectedCohort"),
     shiny::radioButtons(
       inputId = "charCompareType",
       label = "",
@@ -553,7 +553,6 @@ bodyTabItems <- shinydashboard::tabItems(
     )
   ),
   shinydashboard::tabItem(tabName = "databaseInformation",
-                          # uiOutput("databaseInformationPanel")
                           DT::dataTableOutput("databaseInformationTable"))
 )
 

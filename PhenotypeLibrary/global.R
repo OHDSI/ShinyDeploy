@@ -37,6 +37,7 @@ defaultAboutText <- "
 <h3>The OHDSI Phenotype Library</h3>
 This app is under development. Please do not use.
 "
+
 if (!exists("shinySettings")) {
   writeLines("Using default settings")
   databaseMode <- defaultDatabaseMode & defaultServer != ""
@@ -159,15 +160,18 @@ if (databaseMode) {
 
 if (exists("cohort")) {
   cohort <- get("cohort") %>%
-    dplyr::mutate(cohortName = paste0(
-      "C",
-      cohort$cohortId - cohort$phenotypeId,
-      ": ",
-      purrr::map_chr(stringr::str_split(cohort$cohortName, "]"), 2)
-    ),
-    shortName = paste0(
-      "C",
-      cohort$cohortId - cohort$phenotypeId))
+    dplyr::arrange(.data$cohortId) %>%
+    dplyr::mutate(cohortName = stringr::str_remove(.data$cohortName, "\\[.+?\\] "))
+  
+  if (exists("phenotypeDescription")) {
+    cohort <- cohort %>%
+      dplyr::mutate(shortName = paste0("C", .data$cohortId - .data$phenotypeId)) 
+  } else {
+    cohort <- cohort %>%
+      dplyr::mutate(shortName = paste0("C", dplyr::row_number())) 
+  }
+  cohort <- cohort %>%
+    dplyr::mutate(compoundName = paste(shortName, cohortName, sep = ": "))
 }
 
 if (exists("database")) {
@@ -213,4 +217,12 @@ if (exists("phenotypeDescription")) {
                         dplyr::summarize(cohortDefinitions = dplyr::n()) %>%
                         dplyr::ungroup(),
                       by = "phenotypeId")
+  searchTerms <- getSearchTerms(dataSource = dataSource, includeDescendants = FALSE) %>% 
+    dplyr::group_by(.data$phenotypeId) %>%
+    dplyr::summarise(searchTermString = paste(.data$term, collapse = ", ")) %>%
+    dplyr::ungroup()
+  
+  phenotypeDescription <- phenotypeDescription %>%
+    dplyr::left_join(searchTerms,
+                     by = "phenotypeId")
 }
