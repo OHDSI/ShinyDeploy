@@ -237,6 +237,7 @@ sidebarMenu <-
       input.tabs != 'compareCohortCharacterization' &
       input.tabs != 'incidenceRate' &
       input.tabs != 'timeDistribution' &
+      input.tabs != 'inclusionRuleStats' &
       input.tabs != 'indexEventBreakdown' &
       input.tabs != 'cohortCharacterization' &
       input.tabs != 'temporalCharacterization' &
@@ -280,6 +281,7 @@ sidebarMenu <-
       input.tabs == 'compareCohortCharacterization' |
       input.tabs == 'incidenceRate' |
       input.tabs == 'timeDistribution' |
+      input.tabs == 'inclusionRuleStats' |
       input.tabs == 'indexEventBreakdown' |
       input.tabs == 'cohortCharacterization' |
       input.tabs == 'temporalCharacterization' |
@@ -412,24 +414,30 @@ bodyTabItems <- shinydashboard::tabItems(
                    )
                  )),
       shiny::htmlOutput(outputId = "hoverInfoIr"),
-      ggiraph::ggiraphOutput( outputId = "incidenceRatePlot", width = "100%", height = "100%" )
+      ggiraph::ggiraphOutput( outputId = "incidenceRatePlot", width = "100%", height = "100%")
     )
   ),
   shinydashboard::tabItem(
     tabName = "timeDistribution",
     cohortReference("timeDistSelectedCohort"),
-    shinydashboard::box(
-      title = "Time Distributions",
-      width = NULL,
-      status = "primary",
-      tags$br(),
-      ggiraph::ggiraphOutput("timeDisPlot", width = "100%", height = "100%")
+    shiny::radioButtons(
+      inputId = "timeDistributionType",
+      label = "",
+      choices = c("Table", "Plot"),
+      selected = "Table",
+      inline = TRUE
     ),
-    shinydashboard::box(
-      title = "Time Distributions Table",
-      width = NULL,
-      status = "primary",
-      DT::dataTableOutput("timeDistTable")
+    shiny::conditionalPanel(condition = "input.timeDistributionType=='Table'",
+                            DT::dataTableOutput("timeDistTable")),
+    shiny::conditionalPanel(
+      condition = "input.timeDistributionType=='Plot'",
+      shinydashboard::box(
+        title = "Time Distributions",
+        width = NULL,
+        status = "primary",
+        tags$br(),
+        ggiraph::ggiraphOutput("timeDisPlot", width = "100%", height = "100%")
+      )
     )
   ),
   shinydashboard::tabItem(
@@ -489,11 +497,47 @@ bodyTabItems <- shinydashboard::tabItems(
                             DT::dataTableOutput("temporalCharacterizationTable")),
     shiny::conditionalPanel(
       condition = "input.tempCharType=='Plot'",
+      
+      
+      tags$table(style = "width:100%",
+                 tags$tr(
+                   tags$td(
+                     shinyWidgets::pickerInput(
+                       inputId = "timeIdChoicesFilter",
+                       label = "Filter By Temporal Choices",
+                       choices = c("All", temporalCovariateChoices$choices),
+                       multiple = FALSE,
+                       choicesOpt = list(style = rep_len("color: black;", 999)),
+                       options = shinyWidgets::pickerOptions(
+                         actionsBox = TRUE,
+                         liveSearch = TRUE,
+                         size = 10,
+                         liveSearchStyle = "contains",
+                         liveSearchPlaceholder = "Type here to search",
+                         virtualScroll = 50))
+                   ),
+                   tags$td(
+                     shinyWidgets::pickerInput(
+                       inputId = "temporalDomainId",
+                       label = "Filter By Covariate Domain",
+                       choices = c("all","condition", "device", "drug", "measurement", "observation", "procedure", "other"),
+                       multiple = FALSE,
+                       choicesOpt = list(style = rep_len("color: black;", 999)),
+                       options = shinyWidgets::pickerOptions(
+                         actionsBox = TRUE, 
+                         liveSearch = TRUE, 
+                         size = 10,
+                         liveSearchStyle = 'contains',
+                         liveSearchPlaceholder = "Type here to search",
+                         virtualScroll = 50))
+                   )
+                 )
+      ),
       shinydashboard::box(
         title = "Compare Temporal Characterization",
         width = NULL,
         status = "primary",
-        ggiraph::ggiraphOutput("compareTemporalCharacterizationPlot",height = "100%")
+        ggiraph::ggiraphOutput("compareTemporalCharacterizationPlot", width = "100%", height = "100%")
       )
     )
   ),
@@ -511,7 +555,7 @@ bodyTabItems <- shinydashboard::tabItems(
         selected = "Percentages",
         inline = TRUE
       ),
-      ggiraph::ggiraphOutput("overlapPlot",height = "100%")
+      ggiraph::ggiraphOutput("overlapPlot", width = "100%", height = "100%")
     )
   ),
   shinydashboard::tabItem(
