@@ -3,9 +3,9 @@ with list as (
   from @vocabulary_database_schema.concept
   where concept_id in (@source_list)
 )
-select distinct c2.concept_id, c2.concept_name, c2.domain_id, c2.vocabulary_id, c2.standard_concept, cp.rc as record_count, cp.dbc as database_count,
-                cp.drc as descendant_record_count, cp.ddbc as descendant_database_count, c.concept_id as source_concept_id, c.concept_name as source_concept_name,
-                c.vocabulary_id as source_vocabulary_id, c.concept_code as source_concept_code, cp2.rc as source_record_count, cp2.dbc as source_database_count
+select distinct c2.concept_id, c2.concept_name, c2.domain_id, c2.vocabulary_id, c2.standard_concept, cp2.rc as record_count, cp2.dbc as database_count,
+                cp2.drc as descendant_record_count, cp2.ddbc as descendant_database_count, c.concept_id as source_concept_id, c.concept_name as source_concept_name,
+                c.vocabulary_id as source_vocabulary_id, c.concept_code as source_concept_code, cp.rc as source_record_count, cp.dbc as source_database_count
 from list l
 join @target_database_schema.recommender_set r on l.concept_id = r.source_id
 join @vocabulary_database_schema.concept c on c.concept_id = r.concept_id and c.standard_concept is null
