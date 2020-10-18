@@ -26,7 +26,10 @@ shinyServer(function(input, output) {
   ConceptSetStandardData <- eventReactive(input$inputActionList, {
     if (input$conceptList == '') {
       stop("need to input a concept list")
-    }  
+    } 
+    if (is.na(as.numeric(unlist(strsplit(input$conceptList, ",")))) == TRUE) {
+      stop("use comma-separated values")
+    }
     else {  
       concept_list <- loadRecommenderStandardFromDB(connPool, input$conceptList)
       return(concept_list)
@@ -36,7 +39,10 @@ shinyServer(function(input, output) {
   ConceptSetSourceData <- eventReactive(input$inputActionList, {
     if (input$conceptList == '') {
       stop("need to input a concept list")
-    }  
+    }
+    if (is.na(as.numeric(unlist(strsplit(input$conceptList, ",")))) == TRUE) {
+      stop("use comma-separated values")
+    }
     else {  
       concept_list <- loadRecommenderSourceFromDB(connPool, input$conceptList)
       return(concept_list)
