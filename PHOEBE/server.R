@@ -9,49 +9,59 @@ renderBorderTag <-  function() {
   ))
 }
 
+showInputError <- function(message) {
+  showModal(modalDialog(
+    title = "Input Error",
+    message
+  ))
+}
+
 shinyServer(function(input, output) {
   
   # use user's input for initial concept
   InitialConceptData <- eventReactive(input$inputActionConcept, {
     if (input$sourceString == '') {
-      stop("need to input a search string")
-    }  
-    else {  
-      initial_concept <- loadConceptFromDB(connPool, input$sourceDomain, input$sourceString)
+      showInputError("need to input a search string")
+      return(NULL)
+    }  else {  
+      withProgress(message = "Searching...", {
+        initial_concept <- loadConceptFromDB(connPool, input$sourceDomain, input$sourceString)
+      })
       return(initial_concept)
     }  
   })
   
   # use user's input for initial concept
   ConceptSetStandardData <- eventReactive(input$inputActionList, {
-    if (input$conceptList == '') {
-      stop("need to input a concept list")
-    } 
-    if (is.na(as.numeric(unlist(strsplit(input$conceptList, ",")))) == TRUE) {
-      stop("use comma-separated values")
-    }
-    else {  
-      concept_list <- loadRecommenderStandardFromDB(connPool, input$conceptList)
+    if (input$conceptList == '' || is.na(as.numeric(unlist(strsplit(input$conceptList, ","))))) {
+      showInputError("need to input a comma-separated concept ID list")
+      return(NULL)
+    } else {  
+      withProgress(message = "Searching...", {
+        concept_list <- loadRecommenderStandardFromDB(connPool, input$conceptList)
+      })
       return(concept_list)
     }  
   })
   
   ConceptSetSourceData <- eventReactive(input$inputActionList, {
-    if (input$conceptList == '') {
-      stop("need to input a concept list")
-    }
-    if (is.na(as.numeric(unlist(strsplit(input$conceptList, ",")))) == TRUE) {
-      stop("use comma-separated values")
-    }
-    else {  
-      concept_list <- loadRecommenderSourceFromDB(connPool, input$conceptList)
-      return(concept_list)
+    if (input$conceptList == '' || is.na(as.numeric(unlist(strsplit(input$conceptList, ","))))) {
+      showInputError("need to input a comma-separated concept ID list")
+      return(NULL)
+    }else {  
+      withProgress(message = "Searching...", {
+        concept_list <- loadRecommenderSourceFromDB(connPool, input$conceptList)
+        return(concept_list)
+      })
     }  
   })
   
   # output the initial concept recommendation into a table
   output$InitialConceptTable <- DT::renderDataTable({
     dt <- InitialConceptData()
+    if (is.null(dt)) {
+      return(NULL)
+    }
     colnames(dt) <- c("concept id","concept name","vocabulary id","domain id",
                       "standard concept","record count","database count", "record with descendants count",
                       "database with descendants count")
@@ -61,6 +71,9 @@ shinyServer(function(input, output) {
   # output the initial concept recommendation into a table
   output$ConceptSetStandardTable <- DT::renderDataTable({
      dt <- ConceptSetStandardData()
+     if (is.null(dt)) {
+       return(NULL)
+     }
      dt %>%
      mutate (concept_in_set = as.factor(concept_in_set),
              domain_id = as.factor(domain_id),
@@ -77,6 +90,9 @@ shinyServer(function(input, output) {
   # output the initial concept recommendation into a table
   output$ConceptSetSourceTable <- DT::renderDataTable({
     dt <- ConceptSetSourceData()
+    if (is.null(dt)) {
+      return(NULL)
+    }
     dt %>%
       mutate (domain_id = as.factor(domain_id),
               vocabulary_id = as.factor(vocabulary_id),

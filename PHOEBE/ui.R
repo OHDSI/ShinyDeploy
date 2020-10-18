@@ -46,16 +46,17 @@ dashboardPage(
       ),
       tabItem(tabName = "ConceptSet",
               htmlOutput("borderConceptSet"),
+              textAreaInput(inputId = "conceptList",
+                            label = "Insert your comma-separated concept list:",
+                            value = ""),
+              actionButton(inputId = "inputActionList", label = "Show recommendations"),
+              fluidRow(tags$br()),
               tabsetPanel(
                 tabPanel("Standard Concepts",
                          fluidRow(tags$br()),
                          HTML("This page provides you standard concept recommendations to modify your concept set.
                               <br> Proceed to next tab to see recommendations for non-standard concepts."),
                          fluidRow(tags$br()),
-                         textAreaInput(inputId = "conceptList",
-                                       label = "Insert your comma-separated concept list:",
-                                       value = ""),
-                         actionButton(inputId = "inputActionList", label = "Show recommendations"),
                          fluidRow(tags$br()),
                          dataTableOutput("ConceptSetStandardTable"),
                          downloadButton("dlConceptSetStandard", "Download Data")
