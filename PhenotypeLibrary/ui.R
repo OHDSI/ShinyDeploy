@@ -27,7 +27,7 @@ cohortReference <- function(outputId) {
 }
 
 if (exists("phenotypeDescription")) {
-  header <-shinydashboard::dashboardHeader(title = phenotypeLibraryModeDefaultTitle, 
+  header <- shinydashboard::dashboardHeader(title = phenotypeLibraryModeDefaultTitle, 
                                            tags$li(
                                              tags$div(
                                                tags$strong("Phenotype:"),
