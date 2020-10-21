@@ -22,14 +22,18 @@ getSummary  <- function(result,inputType,validation){
   } 
   
   #remove empty rows
-  emptyInd <- is.na(sumTab[,'C_stat'])
+  emptyInd <- is.na(sumTab[,'C_stat_2'])
   if(sum(emptyInd)>0){
     sumTab <- sumTab[!emptyInd,]
   }
   
-  sumTab <- sumTab[,c('valDatabase','cohortName','outcomeName','modelSettingName','TAR', 'C_stat','E_stat', 'populationSize','outcomeCount','incidence',
+  sumTab <- sumTab[,c('valDatabase','cohortName','outcomeName','modelSettingName','TAR', 
+                      'C_stat_2','E_stat_2', 'C_stat_3','E_stat_3','C_stat_5','E_stat_5','C_stat_10','E_stat_10',
+                      'populationSize','outcomeCount','incidence',
                       'plpResultLocation', 'plpResultLoad')]
-  colnames(sumTab) <- c('Val', 'T', 'O','Model', 'TAR', 'C-statistic','E-statistic', 'T Size','O Count','O Incidence (%)', 'plpResultLocation', 'plpResultLoad')
+  colnames(sumTab) <- c('Val', 'T', 'O','Model', 'TAR', 
+                        'C-statistic 2','E-statistic 2', 'C-statistic 3','E-statistic 3', 'C-statistic 5','E-statistic 5', 'C-statistic 10','E-statistic 10',
+                        'T Size','O Count','O Incidence (%)', 'plpResultLocation', 'plpResultLoad')
   
   return(sumTab)
 } 
@@ -48,8 +52,14 @@ getSummaryFromObject <- function(result,validation=NULL){
                        modelSettingName = result$model$modelSettings$model,
                        covariateSettingId = 1,
                        TAR = TAR,
-                       c_stat = as.double(as.character(eval$Value[eval$Metric=='c-Statistic'])),
-                       E_stat = as.double(as.character(eval$Value[eval$Metric=='Emean.Eavg'])),
+                       c_stat_2 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_2'])),
+                       E_stat_2 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_2'])),
+                       c_stat_3 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_3'])),
+                       E_stat_3 = as.double(as.character(eval$Value[eval$Metric=='EE-statistic_3'])),
+                       c_stat_5 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_5'])),
+                       E_stat_5 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_5'])),
+                       c_stat_10 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_10'])),
+                       E_stat_10 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_10'])),
                        populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
                        outcomeCount = as.double(as.character(eval$Value[eval$Metric=='outcomeCount'])),
                        incidence = as.double(as.character(eval$Value[eval$Metric=='outcomeCount']))/as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
@@ -69,8 +79,14 @@ getSummaryFromObject <- function(result,validation=NULL){
                            modelSettingName = result$model$modelSettings$model,
                            covariateSettingId =1,
                            TAR = TAR,
-                           c_stat = as.double(as.character(eval$Value[eval$Metric=='c-Statistic'])),
-                           E_stat = as.double(as.character(eval$Value[eval$Metric=='Emean.Eavg'])),
+                           c_stat_2 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_2'])),
+                           E_stat_2 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_2'])),
+                           c_stat_3 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_3'])),
+                           E_stat_3 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_3'])),
+                           c_stat_5 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_5'])),
+                           E_stat_5 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_5'])),
+                           c_stat_10 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_10'])),
+                           E_stat_10 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_10'])),
                            populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
                            outcomeCount = as.double(as.character(eval$Value[eval$Metric=='outcomeCount'])),
                            incidence = as.double(as.character(eval$Value[eval$Metric=='outcomeCount']))/as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
@@ -138,8 +154,14 @@ summaryPlpAnalyses <- function(analysesLocation){
     allPerformance <- devPerformance
   }
   
-  allPerformance$C_stat <- as.double(allPerformance$C_stat)
-  allPerformance$E_stat <- as.double(allPerformance$E_stat)
+  allPerformance$C_stat_2 <- as.double(allPerformance$C_stat_2)
+  allPerformance$E_stat_2 <- as.double(allPerformance$E_stat_2)
+  allPerformance$C_stat_3 <- as.double(allPerformance$C_stat_3)
+  allPerformance$E_stat_3 <- as.double(allPerformance$E_stat_3)
+  allPerformance$C_stat_5 <- as.double(allPerformance$C_stat_5)
+  allPerformance$E_stat_5 <- as.double(allPerformance$E_stat_5)
+  allPerformance$C_stat_10 <- as.double(allPerformance$C_stat_10)
+  allPerformance$E_stat_10 <- as.double(allPerformance$E_stat_10)
   allPerformance$outcomeCount <- as.double(allPerformance$outcomeCount)
   allPerformance$populationSize <- as.double(allPerformance$populationSize)
   allPerformance$incidence <- as.double(allPerformance$incidence)
@@ -155,7 +177,11 @@ getPerformance <- function(analysisLocation){
       
       analysisId <- strsplit(analysisLocation, '/')[[1]]
       return(data.frame(analysisId=analysisId[length(analysisId)], 
-                        C_stat=0.000, E_stat=0, outcomeCount=0,
+                        C_stat_2=0.000, E_stat_2=0,
+                        C_stat_3=0.000, E_stat_3=0,
+                        C_stat_5=0.000, E_stat_5=0,
+                        C_stat_10=0.000, E_stat_10=0,
+                        outcomeCount=0,
                         populationSize=0,incidence=0,plpResultLocation=location, 
                         plpResultLoad='loadPlpResult', TAR = '?'))
     } else {
@@ -186,16 +212,37 @@ getPerformance <- function(analysisLocation){
   res[, !colnames(res)%in%c('analysisId','outcomeCount','populationSize')] <- 
     format(as.double(res[, !colnames(res)%in%c('analysisId','outcomeCount','populationSize')]), digits = 2, scientific = F) 
   res$TAR <- TAR
-  if(sum(colnames(res)=='Emean.Eavg')>0){
-    res$E_stat <- res$Emean.Eavg
+  if(sum(colnames(res)=='E-statistic_2')>0){
+    res$E_stat_2 <- res$`E-statistic_2`
   }
-  if(sum(colnames(res)=='c-Statistic')>0){
-    res$C_stat <- res$`c-Statistic`
+  if(sum(colnames(res)=='c-Statistic_2')>0){
+    res$C_stat_2 <- res$`c-Statistic_2`
   }
-  
+  if(sum(colnames(res)=='E-statistic_3')>0){
+    res$E_stat_3 <- res$`E-statistic_3`
+  }
+  if(sum(colnames(res)=='c-Statistic_3')>0){
+    res$C_stat_3 <- res$`c-Statistic_3`
+  }
+  if(sum(colnames(res)=='E-statistic_5')>0){
+    res$E_stat_5 <- res$`E-statistic_5`
+  }
+  if(sum(colnames(res)=='c-Statistic_5')>0){
+    res$C_stat_5 <- res$`c-Statistic_5`
+  }
+  if(sum(colnames(res)=='E-statistic_10')>0){
+    res$E_stat_10 <- res$`E-statistic_10`
+  }
+  if(sum(colnames(res)=='c-Statistic_10')>0){
+    res$C_stat_10 <- res$`c-Statistic_10`
+  }
   res$plpResultLocation <- location
   res$plpResultLoad <- plpResultLoad
-  return(res[,c('analysisId', 'C_stat', 'E_stat', 'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad', 'TAR')])
+  
+  coi <- c('analysisId', 
+           'C_stat_2', 'E_stat_2','C_stat_3', 'E_stat_3', 'C_stat_5', 'E_stat_5', 'C_stat_10', 'E_stat_10',
+           'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad', 'TAR')
+  return(res[,coi[coi%in%colnames(res)]])
 }
 
 getValidationPerformance <- function(validationLocation){
@@ -213,15 +260,37 @@ getValidationPerformance <- function(validationLocation){
   valPerformance[, !colnames(valPerformance)%in%c('analysisId','outcomeCount','populationSize')] <- 
     format(as.double(valPerformance[, !colnames(valPerformance)%in%c('analysisId','outcomeCount','populationSize')]), digits = 2, scientific = F) 
   
-  if(sum(colnames(valPerformance)=='Emean.Eavg')>0){
-    valPerformance$E_stat <- valPerformance$Emean.Eavg
+  if(sum(colnames(valPerformance)=='E-statistic_2')>0){
+    valPerformance$E_stat_2 <- valPerformance$`E-statistic_2`
   }
-  if(sum(colnames(valPerformance)=='c-Statistic')>0){
-    valPerformance$C_stat <- valPerformance$`c-Statistic`
+  if(sum(colnames(valPerformance)=='c-Statistic_2')>0){
+    valPerformance$C_stat_2 <- valPerformance$`c-Statistic_2`
   }
+  if(sum(colnames(valPerformance)=='E-statistic_3')>0){
+    valPerformance$E_stat_3 <- valPerformance$`E-statistic_3`
+  }
+  if(sum(colnames(valPerformance)=='c-Statistic_3')>0){
+    valPerformance$C_stat_3 <- valPerformance$`c-Statistic_3`
+  }
+  if(sum(colnames(valPerformance)=='E-statistic_5')>0){
+    valPerformance$E_stat_5 <- valPerformance$`E-statistic_5`
+  }
+  if(sum(colnames(valPerformance)=='c-Statistic_5')>0){
+    valPerformance$C_stat_5 <- valPerformance$`c-Statistic_5`
+  }
+  if(sum(colnames(valPerformance)=='E-statistic_10')>0){
+    valPerformance$E_stat_10 <- valPerformance$`E-statistic_10`
+  }
+  if(sum(colnames(valPerformance)=='c-Statistic_10')>0){
+    valPerformance$C_stat_10 <- valPerformance$`c-Statistic_10`
+  }
+  
   valPerformance$analysisId <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])]]
   valPerformance$valDatabase <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])-1]]
-  valPerformance <- valPerformance[,c('analysisId','valDatabase', 'C_stat', 'E_stat', 'outcomeCount','populationSize','incidence')]
+  coi <- c('analysisId','valDatabase', 
+           'C_stat_2', 'E_stat_2','C_stat_3', 'E_stat_3', 'C_stat_5', 'E_stat_5', 'C_stat_10', 'E_stat_10',
+           'outcomeCount','populationSize','incidence')
+  valPerformance <- valPerformance[,coi[coi%in%colnames(valPerformance)]]
   valPerformance$plpResultLocation <- file.path(validationLocation,'validationResult.rds')
   valPerformance$plpResultLoad <- 'readRDS'
   valPerformance$TAR <- TAR

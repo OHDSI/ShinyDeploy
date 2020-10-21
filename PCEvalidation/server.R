@@ -43,10 +43,15 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                thead(
                                                  #tags$th(title=active_columns[i], colnames(data)[i])
                                                  tr(apply(data.frame(colnames=c('Val', 'T','O', 'Model',
-                                                                                'TAR', 'C-statistic', 'E-statistic', 
+                                                                                'TAR', 
+                                                                                'C-statistic 2', 'E-statistic 2', 'C-statistic 3', 'E-statistic 3', 'C-statistic 5', 'E-statistic 5', 'C-statistic 10', 'E-statistic 10', 
                                                                                 'T Size', 'O Count', 'O Incidence (%)'), 
                                                                      labels=c( 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
-                                                                     'Model type','Time-at-risk period', 'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     'Model type','Time-at-risk period', 
+                                                                     'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
                                                                      'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
                                                           function(x) th(title=x[2], x[1])))
                                                )
