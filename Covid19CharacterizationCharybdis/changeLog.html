@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Change Log</title>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Change Log</h1>
+
+
+
+<div id="oct-9" class="section level2">
+<h2>2020-Oct-9</h2>
+<p>This release contains new data sets and updates to existing ones:</p>
+<div id="additions" class="section level3">
+<h3>Additions</h3>
+<div id="iqvia-lpd-italy-lpditaly" class="section level4">
+<h4>IQVIA LPD Italy (LPDItaly)</h4>
+<p>LPD Italy is comprised of anonymised patient records collected from software used by GPs during an office visit to document patients’ clinical records. Data coverage includes over 2M patient records with at least one visit and 119.5M prescription orders across 900 GP practices. Dates of service include from 2004 through present. Observation time is defined by the first and last consultation dates. Drugs are captured as prescription records with product, quantity, dosing directions, strength, indication and date of consultation.</p>
+</div>
+<div id="university-of-washington-covid-research-dataset-uwm-crd" class="section level4">
+<h4>University of Washington COVID Research Dataset (UWM-CRD)</h4>
+<p>The dataset includes UW Medicine patients who have been tested for COVID-19 that have information within the UW Medicine Electronic Health Record. The dataset is a subgroup of the non-OMOP clinical data warehouse of University of Washington Medical Center, comprised of Harborview Medical Center, UW Medical Center - Montlake, and Northwest hospital in Seattle WA, and is based on its current electronic health record systems, with data spanning over 10 years and including roughly 5 million patients.</p>
+</div>
+<div id="optum-de-identified-clinformatics-data-mart-database-socio-economic-status-ses" class="section level4">
+<h4>Optum® De-Identified Clinformatics® Data Mart Database – Socio-Economic Status (SES)</h4>
+<p>Optum© De-Identified Clinformatics® Data Mart Database (OptumInsight, Eden Prairie, MN) is an adjudicated administrative health claims database for members with private health insurance, who are fully insured in commercial plans or in administrative services only (ASOs), Legacy Medicare Choice Lives (prior to January 2006), and Medicare Advantage (Medicare Advantage Prescription Drug coverage starting January 2006). The population is primarily representative of US commercial claims patients (0-65 years old) with some Medicare (65+ years old) however ages are capped at 90 years. It includes data captured from administrative claims processed from inpatient and outpatient medical services and prescriptions as dispensed, as well as results for outpatient lab tests processed by large national lab vendors who participate in data exchange with Optum. Optum SES provides socio-economic status for members with both medical and pharmacy coverage and location information for patients at the US Census Division level.</p>
+</div>
+<div id="health-data-compass-hdc-ucolorado" class="section level4">
+<h4>Health Data Compass (HDC-UColorado)</h4>
+<p>Health Data Compass (HDC) is a multi-institutional data warehouse. HDC contains inpatient and outpatient electronic medical data including patient, encounter, diagnosis, procedures, medications, laboratory results from two electronic medical record systems (UCHealth and Children’s Hospital of Colorado), state-level all-payers claims data, and the Colorado death registry. Only UCHealth data was used for this study. Acknowledgment statement: Supported by the Health Data Compass Data Warehouse project (healthdatacompass.org).</p>
+</div>
+</div>
+<div id="updates" class="section level3">
+<h3>Updates</h3>
+<p>The following data sets were updated in this release:</p>
+<ul>
+<li>CPRD</li>
+<li>HealthVerity</li>
+<li>IPCI</li>
+<li>Nanfang Hospital COVID-19 Research Database (NFHCRD)</li>
+<li>Optum EHR</li>
+<li>Premier</li>
+<li>SIDIAP</li>
+<li>VA</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="initial-release" class="section level2">
+<h2>Initial Release</h2>
+<p>Initial results provided from 18 databases:</p>
+<table>
+<thead>
+<tr>
+<th>
+databaseId
+</th>
+<th>
+databaseName
+</th>
+<th>
+description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+HealthVerity
+</td>
+<td>
+HealthVerity
+</td>
+<td>
+This HealthVerity derived data set contains de-identified patient information with an antibody and/or diagnostic test for COVID-19 linked to all available Medical Claims and Pharmacy Data from select private data providers participating in the HealthVerity marketplace.
+</td>
+</tr>
+<tr>
+<td>
+CDM_Premier_COVID_v1240
+</td>
+<td>
+Premier
+</td>
+<td>
+The Premier Healthcare Database contains complete clinical coding, hospital cost, and patient billing data from approximately 700 hospitals throughout the United States representing 20% of inpatient hospital stays. Premier collects data from participating hospitals in its health care alliance. The Premier health care alliance was formed for hospitals to share knowledge, improve patient safety, and reduce risks. Participation in the Premier health care alliance is voluntary. Although the database excludes federally funded hospitals (e.g., Veterans Affairs), the hospitals included are nationally representative based on bed size, geographic region, location (urban/rural) and teaching hospital status. The database contains a date-stamped log of all billed items by cost-accounting department including medications; laboratory, diagnostic, and therapeutic services; and primary and secondary diagnoses for each patientâ€™s hospitalization.
+</td>
+</tr>
+<tr>
+<td>
+CPRD_COVID
+</td>
+<td>
+Clinical Practice Research Datalink
+</td>
+<td>
+The Clinical Practice Research Datalink (CPRD) is a governmental, not-for-profit research service, jointly funded by the NHS National Institute for Health Research (NIHR) and the Medicines and Healthcare products Regulatory Agency (MHRA), a part of the Department of Health, United Kingdom (UK). CPRD consists of data collected from UK primary care for all ages. This includes conditions, observations, measurements, and procedures that the general practitioner is made aware of in additional to any prescriptions as prescribed by the general practitioner. In addition to primary care, there are also linked secondary care records for a small number of people. The major data elements contained within this database are outpatient prescriptions given by the general practitioner (coded with Multilex codes) and outpatient clinical, referral, immunization or test events that the general practitioner knows about (coded in Read or ICD10 or LOINC codes). The database also contains the patientsâ€™ year of births and any date of deaths.
+</td>
+</tr>
+<tr>
+<td>
+DCMC
+</td>
+<td>
+Daegu Catholic University Medical Center
+</td>
+<td>
+A teaching hospital in Daegu, South Korea, covered by Federated E-health Big Data for Evidence Renovation Network (FEEDER-NET).
+</td>
+</tr>
+<tr>
+<td>
+HIRA
+</td>
+<td>
+Health Insurance Review &amp; Assessment Service
+</td>
+<td>
+National claim data from a single insurance service from South Korea. It contains the observational medical records (including both inpatient and outpatient) of a patient while they are qualified to get the national medical insurance.
+</td>
+</tr>
+<tr>
+<td>
+HM Hospitals
+</td>
+<td>
+HM Hospitals
+</td>
+<td>
+Hospital de Madrid (HM) Hospitals data are made available through partnership with IDIAPJGol. The HM Hospitals database covers in-patient care delivered across a network of 17 private hospitals in Spain between 1st of March and 24th of April 2020. HM Hospitals database covers more than 2300 confirmed COVID-19 cases, and all in-patient hospital care, including the data of admission, conditions, procedures and medicines dispensed in hospital, date of discharge, and date of known death or date of end of follow-up in the database.
+</td>
+</tr>
+<tr>
+<td>
+NFHCRD
+</td>
+<td>
+Nanfang Hospital COVID-19 Research Database (NFHCRD)
+</td>
+<td>
+The clinical data warehouse of The People’s Hospital of HongHuï¼ŒHubeiï¼ŒChinaï¼Œbased on its current and previous electronic health record systems, with data spanning over 4 months and including over 400 patients.
+</td>
+</tr>
+<tr>
+<td>
+optum_ehr_covid_v1239
+</td>
+<td>
+Optum EHR
+</td>
+<td>
+OptumÂ© de-identified Electronic Health Record Dataset represents Humedicaâ€™s Electronic Health Record data a medical records database for patients receiving a COVID-19 diagnosis record or lab test for SARS-CoV-2. The medical record data includes clinical information, inclusive of prescriptions as prescribed and administered, lab results, vital signs, body measurements, diagnoses, procedures, and information derived from clinical Notes using Natural Language Processing (NLP).
+</td>
+</tr>
+<tr>
+<td>
+SIDIAP_H
+</td>
+<td>
+Information System for Research in Primary Care â€“ Hospitalization Linked Data (SIDIAP-H)
+</td>
+<td>
+The Information System for Research in Primary Care (SIDIAP; <a href="http://www.sidiap.org">www.sidiap.org</a>) is a primary care records database from Catalonia, North-East Spain. The SIDIAP-H subset of the database includes around 2 million people out of the total 7 million in SIDIAP that are registered in primary care practices with linked hospital inpatient data available as obtained from the Catalan Institute of Health hospitals. Healthcare is universal and tax-payer funded in the region, and primary care physicians are gatekeepers for all care and responsible for repeat prescriptions.
+</td>
+</tr>
+<tr>
+<td>
+SIDIAP
+</td>
+<td>
+Information System for Research in Primary Care (SIDIAP)
+</td>
+<td>
+The Information System for Research in Primary Care (SIDIAP; <a href="http://www.sidiap.org">www.sidiap.org</a>) is a primary care records database that covers approximately 7 million people, equivalent to an 80% of the population of Catalonia, North-East Spain. Healthcare is universal and tax-payer funded in the region, and primary care physicians are gatekeepers for all care and responsible for repeat prescriptions.
+</td>
+</tr>
+<tr>
+<td>
+STARR-OMOP
+</td>
+<td>
+STARR-OMOP
+</td>
+<td>
+STAnford medicine Research data Repository, a clinical data warehouse containing live Epic data from Stanford Health Care, the Stanford Childrenâ€™s Hospital, the University Healthcare Alliance and Packard Children’s Health Alliance clinics and other auxiliary data from Hospital applications such as radiology PACS. STARR platform is developed and operated by Stanford Medicine Research IT team and is made possible by Stanford School of Medicine Research Office. <a href="https://arxiv.org/abs/2003.10534">https://arxiv.org/abs/2003.10534</a>
+</td>
+</tr>
+<tr>
+<td>
+TRDW
+</td>
+<td>
+Tufts Research Data Warehouse (TRDW)
+</td>
+<td>
+Electronic medical record data on approximately 1 million patients who recived care beginning in 2006 at Tufts Medical Center (TMC). TMC is an academic medical center that includes Tuft Medical Center’s main downtown Boston hospital for adult patients, the Floating Hospital for Children, and associated primary and specialty care clinics. TRDW contains TMC’s EHR data fused with data on the same patients from TMC’s CoC accredited tumor registry, its oncology EHR, and death data from the Massachusetts State Registry of Vital Statistics. EHR data streams ingested into TRDW include controlled vocabulary data on all domains except cost, and select free text sources and devices.
+</td>
+</tr>
+<tr>
+<td>
+VA-OMOP
+</td>
+<td>
+Department of Veterans Affairs
+</td>
+<td>
+VA OMOP data reflects the national Department of Veterans Affairs health care system, which is the largest integrated provider of medical and mental health services in the United States. Care is provided at 170 VA Medical Centers and 1,063 outpatient sites serving more than 9 million enrolled Veterans each year.
+</td>
+</tr>
+<tr>
+<td>
+IPCI
+</td>
+<td>
+Integrated Primary Care Information
+</td>
+<td>
+The Integrated Primary Care Information (IPCI) database is a Dutch database containing the medical records of more than 2.5 million patients provided by more than 600 GPs geographically spread over the Netherlands. In the Netherlands, all citizins are registered with a GP practice which acts as a gatekeeper in a two-way exchange of information with secondary care.
+</td>
+</tr>
+<tr>
+<td>
+IQVIA_OpenClaims
+</td>
+<td>
+IQVIA Open Claims
+</td>
+<td>
+A United States database of open, pre-adjudicated claims from January 2013 to May 2020. Data are reported at anonymized patient level collected from office-based physicians and specialists via office management software and clearinghouse switch sources for the purpose of reimbursement. A subset of medical claims data have adjudicated claims.
+</td>
+</tr>
+<tr>
+<td>
+CUIMC
+</td>
+<td>
+Columbia University Irving Medical Center
+</td>
+<td>
+The clinical data warehouse of NewYork-Presbyterian Hospital/Columbia University Irving Medical Center, New York, NY, based on its current and previous electronic health record systems, with data spanning over 30 years and including over 6 million patients
+</td>
+</tr>
+<tr>
+<td>
+prod_lpdfr
+</td>
+<td>
+LPD FRANCE
+</td>
+<td>
+LPD France is a computerised network of physicians including GPs who contribute to a centralised database of anonymised patient EMR. Currently, &gt;1200 GPs from 400 practices are contributing to the database covering 7.8M patients in France. The database covers a time period from 1994 through the present. Observation time is defined by the first and last consultation dates. Drug information is derived from GP prescriptions. Drugs obtained over the counter by the patient outside the prescription system are not reported.
+</td>
+</tr>
+<tr>
+<td>
+prod_dager
+</td>
+<td>
+DA GERMANY
+</td>
+<td>
+DA Germany is collected from extracts of patient management software used by GPs and specialists practicing in ambulatory care settings. Data coverage includes more than 34M distinct person records out of at total population of 80M (42.5%) in the country and collected from 2,734 providers. Dates of service include from 1992 through March 2020.
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

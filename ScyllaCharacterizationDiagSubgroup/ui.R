@@ -456,9 +456,14 @@ bodyTabItems <- shinydashboard::tabItems(
                           DT::dataTableOutput("databaseInformationTable"))
 )
 
+#JavaScript References
+jsReferences <- tags$head(
+  tags$script(src = "js/lib/js.cookie.js"),
+  tags$script(src = "js/app.js")
+)
 
 #body
-body <- shinydashboard::dashboardBody(bodyTabItems)
+body <- shinydashboard::dashboardBody(jsReferences, bodyTabItems)
 
 
 #main

@@ -27,21 +27,21 @@ usingDbStorage <- function() {
 
 # Data Loading Priority: Database, "/data" folder, S3
 if (!exists("shinySettings")) {
-  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("scyllaCharDbSchema") != "") {
+  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("scylladbSchema") != "") {
     shinySettings <- list(storage = "database", 
                           connectionDetails = DatabaseConnector::createConnectionDetails(dbms = "postgresql",
                                                                                          server = paste(Sys.getenv("shinydbServer"),
                                                                                                         Sys.getenv("shinydbDatabase"),
                                                                                                         sep = "/"),
                                                                                          port = Sys.getenv("shinydbPort"),
-                                                                                         user = Sys.getenv("scyllaCharDbUser"),
-                                                                                         password = Sys.getenv("scyllaCharDbPw"))
+                                                                                         user = Sys.getenv("scylladbUser"),
+                                                                                         password = Sys.getenv("scylladbPw"))
     )
   } else if (file.exists("data")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
-    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "ScyllaCharacterization/5hjm3nls_PreMerged.RData")
+    shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "ScyllaCharacterization/apcb19uv_PreMerged.RData")
   } else {
     stop("Results data not found")
   }
@@ -140,7 +140,7 @@ domain$name <- as.character(domain$name)
 domainName <- "All"
 
 # This must match the featureTimeWindow.csv from the ScyllaCharacterization study
-timeWindow <- data.frame(windowId=c(1:4), name=c("-365d to -1d", "-30d to -1d", "index", "index to 30d"))
+timeWindow <- data.frame(windowId=c(1:3,5), name=c("-365d to -1d", "-30d to -1d", "index", "1d to 30d"))
 timeWindow$name <- as.character(timeWindow$name)
 
 cohortXref <- readr::read_csv("./cohortXref.csv", col_types = readr::cols())
