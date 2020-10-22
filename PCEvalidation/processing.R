@@ -27,13 +27,22 @@ getSummary  <- function(result,inputType,validation){
     sumTab <- sumTab[!emptyInd,]
   }
   
-  sumTab <- sumTab[,c('valDatabase','cohortName','outcomeName','modelSettingName','TAR', 
-                      'C_stat_2','E_stat_2', 'C_stat_3','E_stat_3','C_stat_5','E_stat_5','C_stat_10','E_stat_10',
-                      'populationSize','outcomeCount','incidence',
+  sumTab <- sumTab[,c('valDatabase','cohortName','outcomeName','TAR', 
+                      'survival_2', 'C_stat_2','E_stat_2', 
+                      'survival_3', 'C_stat_3','E_stat_3',
+                      'survival_5','C_stat_5','E_stat_5',
+                      'survival_10','C_stat_10','E_stat_10',
+                      'populationSize',
+                      #'outcomeCount','incidence',
                       'plpResultLocation', 'plpResultLoad')]
-  colnames(sumTab) <- c('Val', 'T', 'O','Model', 'TAR', 
-                        'C-statistic 2','E-statistic 2', 'C-statistic 3','E-statistic 3', 'C-statistic 5','E-statistic 5', 'C-statistic 10','E-statistic 10',
-                        'T Size','O Count','O Incidence (%)', 'plpResultLocation', 'plpResultLoad')
+  colnames(sumTab) <- c('Val', 'T', 'O', 'TAR', 
+                        'Surv 2','C-statistic 2','E-statistic 2', 
+                        'Surv 3','C-statistic 3','E-statistic 3', 
+                        'Surv 5','C-statistic 5','E-statistic 5', 
+                        'Surv 10','C-statistic 10','E-statistic 10',
+                        'T Size',
+                        #'O Count','O Incidence (%)', 
+                        'plpResultLocation', 'plpResultLoad')
   
   return(sumTab)
 } 
@@ -52,12 +61,16 @@ getSummaryFromObject <- function(result,validation=NULL){
                        modelSettingName = result$model$modelSettings$model,
                        covariateSettingId = 1,
                        TAR = TAR,
+                       survival_2 = as.double(as.character(eval$Value[eval$Metric=='survival_2'])),
                        c_stat_2 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_2'])),
                        E_stat_2 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_2'])),
+                       survival_3 = as.double(as.character(eval$Value[eval$Metric=='survival_3'])),
                        c_stat_3 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_3'])),
                        E_stat_3 = as.double(as.character(eval$Value[eval$Metric=='EE-statistic_3'])),
+                       survival_5 = as.double(as.character(eval$Value[eval$Metric=='survival_5'])),
                        c_stat_5 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_5'])),
                        E_stat_5 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_5'])),
+                       survival_10 = as.double(as.character(eval$Value[eval$Metric=='survival_10'])),
                        c_stat_10 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_10'])),
                        E_stat_10 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_10'])),
                        populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
@@ -79,12 +92,16 @@ getSummaryFromObject <- function(result,validation=NULL){
                            modelSettingName = result$model$modelSettings$model,
                            covariateSettingId =1,
                            TAR = TAR,
+                           survival_2 = as.double(as.character(eval$Value[eval$Metric=='survival_2'])),
                            c_stat_2 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_2'])),
                            E_stat_2 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_2'])),
+                           survival_3 = as.double(as.character(eval$Value[eval$Metric=='survival_3'])),
                            c_stat_3 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_3'])),
                            E_stat_3 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_3'])),
+                           survival_5 = as.double(as.character(eval$Value[eval$Metric=='survival_5'])),
                            c_stat_5 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_5'])),
                            E_stat_5 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_5'])),
+                           survival_10 = as.double(as.character(eval$Value[eval$Metric=='survival_10'])),
                            c_stat_10 = as.double(as.character(eval$Value[eval$Metric=='c-Statistic_10'])),
                            E_stat_10 = as.double(as.character(eval$Value[eval$Metric=='E-statistic_10'])),
                            populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
@@ -177,9 +194,13 @@ getPerformance <- function(analysisLocation){
       
       analysisId <- strsplit(analysisLocation, '/')[[1]]
       return(data.frame(analysisId=analysisId[length(analysisId)], 
+                        survival_2 = 1,
                         C_stat_2=0.000, E_stat_2=0,
+                        survival_3 = 1,
                         C_stat_3=0.000, E_stat_3=0,
+                        survival_5 = 1,
                         C_stat_5=0.000, E_stat_5=0,
+                        survival_10 = 1,
                         C_stat_10=0.000, E_stat_10=0,
                         outcomeCount=0,
                         populationSize=0,incidence=0,plpResultLocation=location, 
@@ -240,7 +261,10 @@ getPerformance <- function(analysisLocation){
   res$plpResultLoad <- plpResultLoad
   
   coi <- c('analysisId', 
-           'C_stat_2', 'E_stat_2','C_stat_3', 'E_stat_3', 'C_stat_5', 'E_stat_5', 'C_stat_10', 'E_stat_10',
+           'survival_2','C_stat_2', 'E_stat_2',
+           'survival_3','C_stat_3', 'E_stat_3', 
+           'survival_5','C_stat_5', 'E_stat_5', 
+           'survival_10','C_stat_10', 'E_stat_10',
            'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad', 'TAR')
   return(res[,coi[coi%in%colnames(res)]])
 }
@@ -288,7 +312,10 @@ getValidationPerformance <- function(validationLocation){
   valPerformance$analysisId <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])]]
   valPerformance$valDatabase <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])-1]]
   coi <- c('analysisId','valDatabase', 
-           'C_stat_2', 'E_stat_2','C_stat_3', 'E_stat_3', 'C_stat_5', 'E_stat_5', 'C_stat_10', 'E_stat_10',
+           'survival_2','C_stat_2', 'E_stat_2',
+           'survival_3','C_stat_3', 'E_stat_3', 
+           'survival_5','C_stat_5', 'E_stat_5', 
+           'survival_10','C_stat_10', 'E_stat_10',
            'outcomeCount','populationSize','incidence')
   valPerformance <- valPerformance[,coi[coi%in%colnames(valPerformance)]]
   valPerformance$plpResultLocation <- file.path(validationLocation,'validationResult.rds')

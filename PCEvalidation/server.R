@@ -42,17 +42,24 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                class = 'display',
                                                thead(
                                                  #tags$th(title=active_columns[i], colnames(data)[i])
-                                                 tr(apply(data.frame(colnames=c('Val', 'T','O', 'Model',
+                                                 tr(apply(data.frame(colnames=c('Val', 'T','O',
                                                                                 'TAR', 
-                                                                                'C-statistic 2', 'E-statistic 2', 'C-statistic 3', 'E-statistic 3', 'C-statistic 5', 'E-statistic 5', 'C-statistic 10', 'E-statistic 10', 
-                                                                                'T Size', 'O Count', 'O Incidence (%)'), 
+                                                                                'Surv 2', 'C-statistic 2', 'E-statistic 2', 
+                                                                                'Surv 3', 'C-statistic 3', 'E-statistic 3', 
+                                                                                'Surv 5', 'C-statistic 5', 'E-statistic 5', 
+                                                                                'Surv 10', 'C-statistic 10', 'E-statistic 10', 
+                                                                                'T Size'), 
                                                                      labels=c( 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
-                                                                     'Model type','Time-at-risk period', 
+                                                                     'Time-at-risk period', 
+                                                                     '1 - Survial at 2 years',
                                                                      'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     '1 - Survial at 3 years',
                                                                      'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     '1 - Survial at 5 years',
                                                                      'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
+                                                                     '1 - Survial at 10 years',
                                                                      'The discrimination C-statistic (test or validation)', 'The calibration E-statistic (test or validation)',
-                                                                     'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
+                                                                     'Target population size of test or validation set')), 1,
                                                           function(x) th(title=x[2], x[1])))
                                                )
                                              ))
