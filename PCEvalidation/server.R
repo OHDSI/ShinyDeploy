@@ -142,34 +142,37 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   performance <- shiny::reactive({
     
-    eval <- plpResult()$performanceEvaluation
+    eval <- as.data.frame(plpResult()$performanceEvaluation$evaluationStatistics)
     
     if(is.null(eval)){
       return(NULL)
     } else {
-      intPlot <- getORC(eval, input$slider1)
-      threshold <- intPlot$threshold
-      prefthreshold <- intPlot$prefthreshold
-      
-      TP <- intPlot$TP
-      FP <- intPlot$FP
-      TN <- intPlot$TN
-      FN <- intPlot$FN
+      survival2 <- as.double(as.character(eval$Value[eval$Metric=='survival_2']))
+      cstat2 <- as.double(as.character(eval$Value[eval$Metric=='c-Statistic_2']))
+      estat2 <- as.double(as.character(eval$Value[eval$Metric=='E-statistic_2']))
+      survival3 <- as.double(as.character(eval$Value[eval$Metric=='survival_3']))
+      cstat3 <- as.double(as.character(eval$Value[eval$Metric=='c-Statistic_3']))
+      estat3 <- as.double(as.character(eval$Value[eval$Metric=='E-statistic_3']))
+      survival5 <- as.double(as.character(eval$Value[eval$Metric=='survival_5']))
+      cstat5 <- as.double(as.character(eval$Value[eval$Metric=='c-Statistic_5']))
+      estat5 <- as.double(as.character(eval$Value[eval$Metric=='E-statistic_5']))
+      survival10 <- as.double(as.character(eval$Value[eval$Metric=='survival_10']))
+      cstat10 <- as.double(as.character(eval$Value[eval$Metric=='c-Statistic_10']))
+      estat10 <- as.double(as.character(eval$Value[eval$Metric=='E-statistic_10']))
     }
     
-    twobytwo <- as.data.frame(matrix(c(FP,TP,TN,FN), byrow=T, ncol=2))
-    colnames(twobytwo) <- c('Ground Truth Negative','Ground Truth Positive')
-    rownames(twobytwo) <- c('Predicted Positive','Predicted Negative')
-    
-    list(threshold = threshold, 
-         prefthreshold = prefthreshold,
-         twobytwo = twobytwo,
-         Incidence = (TP+FN)/(TP+TN+FP+FN),
-         Threshold = threshold,
-         Sensitivity = TP/(TP+FN),
-         Specificity = TN/(TN+FP),
-         PPV = TP/(TP+FP),
-         NPV = TN/(TN+FN) )
+    list(survival2 = survival2,
+         cstat2 = cstat2,
+         estat2 = estat2,
+         survival3 = survival3,
+         cstat3 = cstat3,
+         estat3 = estat3,
+         survival5 = survival5,
+         cstat5 = cstat5,
+         estat5 = estat5,
+         survival10 = survival10,
+         cstat10 = cstat10,
+         estat10 = estat10)
   })
   
   #nbPlot
@@ -178,6 +181,7 @@ server <- shiny::shinyServer(function(input, output, session) {
       return(NULL)
     } else{
       nbSummary <- plpResult()$performanceEvaluation$nbSummary
+      nbSummary <- nbSummary[, colnames(nbSummary)!='X']
       
       nbSummary <- reshape2::melt(nbSummary, id.vars = c('analysisId','time','threshold'))
       
@@ -240,14 +244,6 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   # Do the tables and plots:
   
-  output$performance <- shiny::renderTable(performance()$performance, 
-                                           rownames = F, digits = 3)
-  output$twobytwo <- shiny::renderTable(performance()$twobytwo, 
-                                        rownames = T, digits = 0)
-  
-  
-  output$threshold <- shiny::renderText(format(performance()$threshold,digits=5))
-  
   output$roc <- plotly::renderPlotly({
     plotters()$rocPlot
   })
@@ -279,45 +275,87 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   # dashboard
   
-  output$performanceBoxIncidence <- shinydashboard::renderInfoBox({
+  output$survival2 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "Incidence", paste0(round(performance()$Incidence*100, digits=3),'%'), icon = shiny::icon("ambulance"),
+      "Outcome", paste0(round(performance()$survival2*100, digits=3),'%'), icon = shiny::icon("ambulance"),
       color = "green"
     )
   })
   
-  output$performanceBoxThreshold <- shinydashboard::renderInfoBox({
+  output$cstat2 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "Threshold", format((performance()$Threshold), scientific = F, digits=3), icon = shiny::icon("edit"),
-      color = "yellow"
-    )
-  })
-  
-  output$performanceBoxPPV <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "PPV", paste0(round(performance()$PPV*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      "C-statistic", paste0(round(performance()$cstat2*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
       color = "orange"
     )
   })
   
-  output$performanceBoxSpecificity <- shinydashboard::renderInfoBox({
+  output$estat2 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "Specificity", paste0(round(performance()$Specificity*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      "E-statistic", paste0(round(performance()$estat2*1000)/10, "%"), icon = shiny::icon("bullseye"),
       color = "purple"
     )
   })
   
-  output$performanceBoxSensitivity <- shinydashboard::renderInfoBox({
+  output$survival3 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "Sensitivity", paste0(round(performance()$Sensitivity*1000)/10, "%"), icon = shiny::icon("low-vision"),
-      color = "blue"
+      "Outcome", paste0(round(performance()$survival3*100, digits=3),'%'), icon = shiny::icon("ambulance"),
+      color = "green"
     )
   })
   
-  output$performanceBoxNPV <- shinydashboard::renderInfoBox({
+  output$cstat3 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "NPV", paste0(round(performance()$NPV*1000)/10, "%"), icon = shiny::icon("minus-square"),
-      color = "black"
+      "C-statistic", paste0(round(performance()$cstat3*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      color = "orange"
+    )
+  })
+  
+  output$estat3 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "E-statistic", paste0(round(performance()$estat3*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      color = "purple"
+    )
+  })
+  
+  output$survival5 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Outcome", paste0(round(performance()$survival5*100, digits=3),'%'), icon = shiny::icon("ambulance"),
+      color = "green"
+    )
+  })
+  
+  output$cstat5 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "C-statistic", paste0(round(performance()$cstat5*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      color = "orange"
+    )
+  })
+  
+  output$estat5 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "E-statistic", paste0(round(performance()$estat5*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      color = "purple"
+    )
+  })
+
+  output$survival10 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Outcome", paste0(round(performance()$survival10*100, digits=3),'%'), icon = shiny::icon("ambulance"),
+      color = "green"
+    )
+  })
+  
+  output$cstat10 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "C-statistic", paste0(round(performance()$cstat10*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      color = "orange"
+    )
+  })
+  
+  output$estat10 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "E-statistic", paste0(round(performance()$estat10*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      color = "purple"
     )
   })
   

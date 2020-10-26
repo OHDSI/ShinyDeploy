@@ -57,10 +57,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                       
                                       # scroller performanace - make conditional
                                       conditionalPanel(condition = "input.menu=='Performance'",
-                                                       shiny::sliderInput("slider1", 
-                                                                          shiny::span("Threshold: ", shiny::textOutput('threshold'), style="color:white;font-family: Arial;font-size:14px;"), 
-                                                                          min = 1, max = 100, value = 50, ticks = F
-                                                       ),
                                                        
                                                        shiny::splitLayout(
                                                          cellWidths = c('10%', '80%', '10%'),
@@ -181,26 +177,41 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                     # The id lets us use input$tabset1 on the server to find the current tab
                                                                     id = "tabset1", height = "100%", width='100%',
                                                                     
-                                                                    tabPanel("Threshold Dependant", 
+                                                                    tabPanel("Aggregate", 
                                                                              
                                                                              shiny::fluidRow(
                                                                                shiny::column(width = 12,
                                                                                              shinydashboard::box(width = 12,
-                                                                                                                 title = "Dashboard",
+                                                                                                                 title = "2-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxThreshold"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxIncidence"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxPPV"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxSpecificity"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxSensitivity"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxNPV")
+                                                                                                                 shinydashboard::infoBoxOutput("survival2"),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat2"),
+                                                                                                                 shinydashboard::infoBoxOutput("estat2")
                                                                                                                  
                                                                                              ),
                                                                                              shinydashboard::box(width = 12,
-                                                                                                                 title = "Cutoff Performance",
+                                                                                                                 title = "3-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shiny::tableOutput('twobytwo')
-                                                                                                                 #infoBoxOutput("performanceBox"),
+                                                                                                                 shinydashboard::infoBoxOutput("survival3"),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat3"),
+                                                                                                                 shinydashboard::infoBoxOutput("estat3")
+                                                                                                                 
+                                                                                             ),
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "5-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival5"),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat5"),
+                                                                                                                 shinydashboard::infoBoxOutput("estat5")
+                                                                                                                 
+                                                                                             ),
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "10-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival10"),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat10"),
+                                                                                                                 shinydashboard::infoBoxOutput("estat10")
+                                                                                                                 
                                                                                              )
                                                                                )
                                                                              )
@@ -244,17 +255,22 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                              
                                                                              
                                                                     ),
+                                                                    
+                                                                    tabPanel("Net Benefit", 
+                                                                             shiny::fluidRow(
+                                                                    shinydashboard::box(status = 'info', width = 12,
+                                                                                        title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
+                                                                                        solidHeader = TRUE,
+                                                                                        side = "right",
+                                                                                        shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
+                                                                             )),
+                                                                    
                                                                     tabPanel("Calibration", 
                                                                              shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
+                                                                               shinydashboard::box(status = 'info', width = 12,
                                                                                                    title = actionLink("calHelp","10-year Calibration Plot", icon = icon("info")),
                                                                                                    solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('cal'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
+                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('cal')))
                                                                              )
                                                                     )
                                                                   ))),
