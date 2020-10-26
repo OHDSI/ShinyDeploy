@@ -57,13 +57,6 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                       
                                       # scroller performanace - make conditional
                                       conditionalPanel(condition = "input.menu=='Performance'",
-                                                       
-                                                       shiny::splitLayout(
-                                                         cellWidths = c('10%', '80%', '10%'),
-                                                         shiny::span(shiny::h5(strong('0')), style="color:white"),
-                                                         shiny::h5(' '),
-                                                         shiny::span(shiny::h5(strong('1')), style="color:white")
-                                                       ),
                                                        shiny::tags$script(shiny::HTML("
                                                                                       $(document).ready(function() {setTimeout(function() {
                                                                                       supElement = document.getElementById('slider1').parentElement;
