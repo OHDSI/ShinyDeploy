@@ -247,14 +247,14 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                     tabPanel("Calibration", 
                                                                              shiny::fluidRow(
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("calHelp","Calibration Plot", icon = icon("info")),
+                                                                                                   title = actionLink("calHelp","10-year Calibration Plot", icon = icon("info")),
                                                                                                    solidHeader = TRUE,
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('cal'))),
                                                                                shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("demoHelp","Demographic Plot", icon = icon("info")),
+                                                                                                   title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
                                                                                                    solidHeader = TRUE,
                                                                                                    side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('demo')))
+                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
                                                                              )
                                                                     )
                                                                   ))),

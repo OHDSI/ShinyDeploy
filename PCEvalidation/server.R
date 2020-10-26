@@ -34,7 +34,8 @@ server <- shiny::shinyServer(function(input, output, session) {
                                                            rownames= FALSE, selection = 'single',
                                              extensions = 'Buttons', options = list(
                                                dom = 'Blfrtip' , 
-                                               buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ) 
+                                               buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ),
+                                               scrollX = TRUE
                                                #pageLength = 100, lengthMenu=c(10, 50, 100,200)
                                              ),
                                              
@@ -106,8 +107,9 @@ server <- shiny::shinyServer(function(input, output, session) {
   #)
   
   output$sideSettings  <- shiny::renderTable(t(data.frame( 
-                                                        Validation = as.character(summaryTable[trueRow(),'Val']),
-                                                        Model = as.character(summaryTable[trueRow(),'Model']))), rownames = T, colnames = F)
+                                                        Validation = as.character(summaryTable[trueRow(),'Val'])#,
+                                                        #Model = as.character(summaryTable[trueRow(),'Model'])
+                                                        )), rownames = T, colnames = F)
   
   output$sideSettings2  <- shiny::renderTable(t(data.frame(T = paste0(substring(as.character(summaryTable[trueRow(),'T']),0,25),'...') , 
                                                            O = paste0(substring(as.character(summaryTable[trueRow(),'O']),0,25),'...')  )), 
@@ -148,6 +150,7 @@ server <- shiny::shinyServer(function(input, output, session) {
       intPlot <- getORC(eval, input$slider1)
       threshold <- intPlot$threshold
       prefthreshold <- intPlot$prefthreshold
+      
       TP <- intPlot$TP
       FP <- intPlot$FP
       TN <- intPlot$TN
@@ -168,6 +171,25 @@ server <- shiny::shinyServer(function(input, output, session) {
          PPV = TP/(TP+FP),
          NPV = TN/(TN+FN) )
   })
+  
+  #nbPlot
+  output$nbPlot <- shiny::renderPlot({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      nbSummary <- plpResult()$performanceEvaluation$nbSummary
+      
+      nbSummary <- reshape2::melt(nbSummary, id.vars = c('analysisId','time','threshold'))
+      
+      nbPlot <- ggplot2::ggplot(nbSummary, ggplot2::aes(x=threshold, y=value, color = variable))+
+        #ggplot2::geom_point() + 
+        ggplot2::geom_line() +
+        ggplot2::facet_wrap(time ~ ., scales = 'free')
+      return(nbPlot)
+    }
+    
+  })
+
   
   
   # preference plot
