@@ -116,29 +116,6 @@ server <- shiny::shinyServer(function(input, output, session) {
                                               rownames = T, colnames = F)
   
   
-  # PLOTTING FUNCTION
-  plotters <- shiny::reactive({
-    
-    eval <- plpResult()$performanceEvaluation
-    if(is.null(eval)){return(NULL)}
-    
-    calPlot <- NULL 
-    rocPlot <- NULL
-    prPlot <- NULL
-    f1Plot <- NULL
-    
-    if(!is.null(eval)){
-      #intPlot <- plotShiny(eval, input$slider1) -- RMS
-      intPlot <- plotShiny(eval)
-      rocPlot <- intPlot$roc
-      prPlot <- intPlot$pr
-      f1Plot <- intPlot$f1score
-      
-      list(rocPlot= rocPlot,
-           prPlot=prPlot, f1Plot=f1Plot)
-    }
-  })
-  
   
   performance <- shiny::reactive({
     
@@ -175,6 +152,7 @@ server <- shiny::shinyServer(function(input, output, session) {
          estat10 = estat10)
   })
   
+  # nb @ thresholds
   #nbPlot
   output$nbPlot <- shiny::renderPlot({
     if(is.null(plpResult()$performanceEvaluation)){
@@ -193,36 +171,29 @@ server <- shiny::shinyServer(function(input, output, session) {
     }
     
   })
+  
+  
+  #nbPlot
+  nbVals <- shiny::reactive({
+    if(is.null(plpResult()$performanceEvaluation$nbSummary)){
+      return(NULL)
+    } else{
+      
+      nb10 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.075 & plpResult()$performanceEvaluation$nbSummary$time==10]
+      nb5 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.038 & plpResult()$performanceEvaluation$nbSummary$time==5]
+      nb3 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.023 & plpResult()$performanceEvaluation$nbSummary$time==3]
+      nb2 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.015 & plpResult()$performanceEvaluation$nbSummary$time==2]
+      
+      
+    }
+    
+    list(nb10 = nb10,
+         nb5 = nb5,
+         nb3 = nb3,
+         nb2 = nb2)
+    
+  })
 
-  
-  
-  # preference plot
-  output$prefdist <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPreferencePDF(plpResult()$performanceEvaluation) #+ 
-        # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
-    }
-  })
-  
-  output$preddist <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPredictedPDF(plpResult()$performanceEvaluation) # + 
-        #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
-    }
-  })
-  
-  output$box <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPredictionDistribution(plpResult()$performanceEvaluation)
-    }
-  })
-  
   output$cal <- shiny::renderPlot({
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
@@ -230,33 +201,6 @@ server <- shiny::shinyServer(function(input, output, session) {
       plotSparseCalibration2(plpResult()$performanceEvaluation)
     }
   })
-  
-  output$demo <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      tryCatch(plotDemographicSummary(plpResult()$performanceEvaluation),
-               error= function(cond){return(NULL)})
-    }
-  })
-  
-  
-  
-  # Do the tables and plots:
-  
-  output$roc <- plotly::renderPlotly({
-    plotters()$rocPlot
-  })
-  
-  output$pr <- plotly::renderPlotly({
-    plotters()$prPlot
-  })
-  output$f1 <- plotly::renderPlotly({
-    plotters()$f1Plot
-  })
-  
-  
-  
   
   
   
@@ -284,15 +228,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   output$cstat2 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "C-statistic", paste0(round(performance()$cstat2*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      "C-statistic", paste0(round(performance()$cstat2*1000)/10, "%"), icon = shiny::icon("filter"),
       color = "orange"
     )
   })
   
   output$estat2 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "E-statistic", paste0(round(performance()$estat2*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      "E-statistic", paste0(signif(performance()$estat2*100, digits = 4), "%"), icon = shiny::icon("bullseye"),
       color = "purple"
+    )
+  })
+  
+  output$netben2 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Net Benefit", paste0(signif(nbVals()$nb2*100, digits = 4), "%"), icon = shiny::icon("balance-scale"),
+      color = "blue"
     )
   })
   
@@ -305,15 +256,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   output$cstat3 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "C-statistic", paste0(round(performance()$cstat3*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      "C-statistic", paste0(round(performance()$cstat3*1000)/10, "%"), icon = shiny::icon("filter"),
       color = "orange"
     )
   })
   
   output$estat3 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "E-statistic", paste0(round(performance()$estat3*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      "E-statistic", paste0(signif(performance()$estat3*100, digits = 4), "%"), icon = shiny::icon("bullseye"),
       color = "purple"
+    )
+  })
+  
+  output$netben3 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Net Benefit", paste0(signif(nbVals()$nb3*100, digits = 4), "%"), icon = shiny::icon("balance-scale"),
+      color = "blue"
     )
   })
   
@@ -326,15 +284,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   output$cstat5 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "C-statistic", paste0(round(performance()$cstat5*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      "C-statistic", paste0(round(performance()$cstat5*1000)/10, "%"), icon = shiny::icon("filter"),
       color = "orange"
     )
   })
   
   output$estat5 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "E-statistic", paste0(round(performance()$estat5*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      "E-statistic", paste0(signif(performance()$estat5*100, digits = 4), "%"), icon = shiny::icon("bullseye"),
       color = "purple"
+    )
+  })
+  
+  output$netben5 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Net Benefit", paste0(signif(nbVals()$nb5*100, digits = 4), "%"), icon = shiny::icon("balance-scale"),
+      color = "blue"
     )
   })
 
@@ -347,15 +312,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   output$cstat10 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "C-statistic", paste0(round(performance()$cstat10*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
+      "C-statistic", paste0(round(performance()$cstat10*1000)/10, "%"), icon = shiny::icon("filter"),
       color = "orange"
     )
   })
   
   output$estat10 <- shinydashboard::renderInfoBox({
     shinydashboard::infoBox(
-      "E-statistic", paste0(round(performance()$estat10*1000)/10, "%"), icon = shiny::icon("bullseye"),
+      "E-statistic", paste0(signif(performance()$estat10*100, digits = 4), "%"), icon = shiny::icon("bullseye"),
       color = "purple"
+    )
+  })
+  
+  output$netben10 <- shinydashboard::renderInfoBox({
+    shinydashboard::infoBox(
+      "Net Benefit", paste0(signif(nbVals()$nb10*100, digits = 4), "%"), icon = shiny::icon("balance-scale"),
+      color = "blue"
     )
   })
   

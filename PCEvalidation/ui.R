@@ -177,33 +177,37 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                              shinydashboard::box(width = 12,
                                                                                                                  title = "2-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("survival2"),
-                                                                                                                 shinydashboard::infoBoxOutput("cstat2"),
-                                                                                                                 shinydashboard::infoBoxOutput("estat2")
+                                                                                                                 shinydashboard::infoBoxOutput("survival2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben2", width = 3)
                                                                                                                  
                                                                                              ),
                                                                                              shinydashboard::box(width = 12,
                                                                                                                  title = "3-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("survival3"),
-                                                                                                                 shinydashboard::infoBoxOutput("cstat3"),
-                                                                                                                 shinydashboard::infoBoxOutput("estat3")
+                                                                                                                 shinydashboard::infoBoxOutput("survival3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben3", width = 3)
                                                                                                                  
                                                                                              ),
                                                                                              shinydashboard::box(width = 12,
                                                                                                                  title = "5-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("survival5"),
-                                                                                                                 shinydashboard::infoBoxOutput("cstat5"),
-                                                                                                                 shinydashboard::infoBoxOutput("estat5")
+                                                                                                                 shinydashboard::infoBoxOutput("survival5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben5", width = 3)
                                                                                                                  
                                                                                              ),
                                                                                              shinydashboard::box(width = 12,
                                                                                                                  title = "10-Year Dashboard",
                                                                                                                  status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("survival10"),
-                                                                                                                 shinydashboard::infoBoxOutput("cstat10"),
-                                                                                                                 shinydashboard::infoBoxOutput("estat10")
+                                                                                                                 shinydashboard::infoBoxOutput("survival10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben10", width = 3)
                                                                                                                  
                                                                                              )
                                                                                )
@@ -211,43 +215,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                              
                                                                              
                                                                     ), # end summary
-                                                                    tabPanel("Discrimination", 
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box( status = 'info',
-                                                                                                    title = actionLink("rocHelp", "ROC Plot", icon = icon("info")),
-                                                                                                    solidHeader = TRUE,
-                                                                                                    shinycssloaders::withSpinner(plotly::plotlyOutput('roc'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("prcHelp", "Precision recall plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('pr')))),
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("f1Help", "F1 Score Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('f1'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("boxHelp","Box Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('box')))),
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("predDistHelp","Prediction Score Distribution", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('preddist'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("prefDistHelp","Preference Score Distribution", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('prefdist'))))
-                                                                             
-                                                                             
-                                                                    ),
+                                                                    
                                                                     
                                                                     tabPanel("Net Benefit", 
                                                                              shiny::fluidRow(
