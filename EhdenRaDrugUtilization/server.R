@@ -3,6 +3,7 @@ library(shinydashboard)
 library(DT)
 library(htmltools)
 library(ggplot2)
+library(dplyr)
 
 stackedBarChart <- function(table, rows, cols, title, show.legend=F, legend.position="top") {
   # Note: drugLevels is a global variable
