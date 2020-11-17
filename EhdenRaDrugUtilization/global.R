@@ -84,7 +84,7 @@ databaseList <- rbind(databaseList,data.frame(databaseId="Optum_DOD", databaseDe
 databaseList <- rbind(databaseList,data.frame(databaseId="Optum_Panther", databaseDescription=formatDbName("OPTUM EHR - EMR, US", "Optum_Panther", countByDB)))
 
 drugLevels <- c("methotrexate", "hydroxychloroquine", "sulfasalazine", "leflunomide", "methotrexate +  hydroxychloroquine", "Other DMARDs & Minocycline")
-drugLevelsColorBrew <- scale_fill_brewer(palette = "RdYlBu", direction = 1)
+drugLevelsColorBrew <- ggplot2::scale_fill_brewer(palette = "RdYlBu", direction = 1)
 
 dmardsByYearAndDatabase <- merge(dmardsByYear, database, by.x = "database", by.y = "databaseId")
 dmardsByYearAndDatabase <- merge(dmardsByYearAndDatabase, databaseList, by.x = "database", by.y = "databaseId")
