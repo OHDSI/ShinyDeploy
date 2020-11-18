@@ -36,3 +36,18 @@ myResultList <- lapply(1:nrow(summaryTable), function(i){paste('Val:',as.charact
                                                                'Predictor:', as.character(summaryTable$covariateSettingId[i]))})
 
 
+getTable1 <- function(tn='Persons who are statin-risk eligible'){
+  if(file.exists('data/table1.csv')){
+    tab1 <- read.csv('data/table1.csv')
+    tab1 <- tab1[tab1$targetName==tn,colnames(tab1)!='X']
+  } else{
+    tab1 <- NULL
+  }
+  return(tab1)
+}
+
+myCohortList <- list('Persons who are statin-risk eligible',
+                     'Non-Black Female Persons who are statin-risk eligible', 
+                     'Non-Black Male Persons who are statin-risk eligible')
+
+# Non-Black Female Persons who are statin-risk eligible, Non-Black Male Persons who are statin-risk eligible

@@ -46,6 +46,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(id ='menu',
                                                                   addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Table1", tabName = "Table1", icon = shiny::icon("table")), "TableInfo"),
                                                                   addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
                                                                   addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
                                                                   addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
@@ -83,6 +84,14 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                        #  choices = myResultList
                                                        #)            
                                                        
+                                      ),
+                                      conditionalPanel(condition = "input.menu=='Table1'",
+                                                       
+                                                       
+                                                       shiny::selectInput('selectCohort', 
+                                                                          'Cohort:', 
+                                                                          myCohortList)    
+                                                       
                                       )
                                       
                                       
@@ -90,6 +99,11 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardBody(
                                       shinydashboard::tabItems(
+                                        
+                                        # table 1
+                                        shinydashboard::tabItem(tabName = "Table1", 
+                                                                DT::dataTableOutput('table1Table')
+                                        ),
                                         
                                         # help tab
                                         shinydashboard::tabItem(tabName = "Help",
