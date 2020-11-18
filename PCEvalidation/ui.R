@@ -232,12 +232,18 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                     
                                                                     
                                                                     tabPanel("Net Benefit", 
+                                                                             
+                                                                             shiny::selectInput('selectTime', 
+                                                                                                'Time:', 
+                                                                                                list(2,3,5,10)),
+                                                                             
                                                                              shiny::fluidRow(
                                                                     shinydashboard::box(status = 'info', width = 12,
                                                                                         title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
                                                                                         solidHeader = TRUE,
                                                                                         side = "right",
-                                                                                        shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
+                                                                                        #shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
+                                                                                        shinycssloaders::withSpinner(plotly::plotlyOutput('nbPlot')))
                                                                              )),
                                                                     
                                                                     tabPanel("Calibration", 

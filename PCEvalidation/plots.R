@@ -1,6 +1,13 @@
 #============  DYNAMIC PLOTS ======================
 #++++++++++++++++++++++++++++++++++++++++++++++++++
 
+plotDC <- function(nb, time = '2', xlim = 1){
+  nb <- reshape2::melt(nb[nb$time==time,colnames(nb)!='X'], id.vars = c('analysisId' ,'time','threshold'))
+  nb <- nb[nb$threshold < xlim,]
+  nb %>% plot_ly(x= ~threshold, y=~value) %>%
+    add_lines(linetype = ~variable, linetypes = ~variable) 
+}
+
 plotShiny <- function(eval){
   
   data <- eval$thresholdSummary[eval$thresholdSummary$Eval%in%c('test','validation'),]

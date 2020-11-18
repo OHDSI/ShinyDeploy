@@ -170,7 +170,16 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   # nb @ thresholds
   #nbPlot
-  output$nbPlot <- shiny::renderPlot({
+  output$nbPlot <- plotly::renderPlotly({
+    if(is.null(plpResult()$performanceEvaluation)){
+      return(NULL)
+    } else{
+      nbSummary <- plpResult()$performanceEvaluation$nbSummary
+      plotDC(nb = nbSummary, time = input$selectTime, xlim = 1)
+    }
+  })
+  
+  output$nbPlot2 <- shiny::renderPlot({
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
