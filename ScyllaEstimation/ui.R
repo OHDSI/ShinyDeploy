@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Scylla Estimation Evidence Explorer", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Evidence Explorer", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -21,6 +21,7 @@ shinyUI(
                                  ")),
             conditionalPanel(condition = "$('html').hasClass('shiny-busy')",
                              tags$div("Procesing...",id = "loadmessage")),
+            
             tabsetPanel(
               tabPanel("About",
                        br(),
@@ -30,11 +31,16 @@ shinyUI(
               tabPanel("Study diagnostics",
                        fluidRow(
                          column(3,
-                                selectInput("target", "Target", unique(exposureOfInterest$exposureName)),
-                                selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[2]),
+                                selectInput("model", "Design", designs$label, selected = designs$label[1]),
+                                selectInput("target", "Target", unique(exposureOfInterest$shortName)),
+                                selectInput("comparator", "Comparator", unique(exposureOfInterest$shortName)),
                                 selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
                                 checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
-                                checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)
+                                checkboxGroupInput("match", "Matching", c("Crude", "1-to-1 matched", "1-to-many matched", "Stratified"), selected = c("Crude", "1-to-1 matched", "1-to-many matched", "Stratified")),
+                                checkboxGroupInput("tar", "Time-at-risk", c("7 days", "30 days", "on treatment"), selected = c("7 days", "30 days", "on treatment")),
+                                checkboxGroupInput("om", "Model", c("logistic", "cox"), selected =  c("logistic", "cox"))
+                                # ,
+                                # checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)
                          ),
                          column(9,
                                 dataTableOutput("mainTable"),
@@ -43,8 +49,9 @@ shinyUI(
                                                              tabPanel("Power",
                                                                       uiOutput("powerTableCaption"),
                                                                       tableOutput("powerTable"),
-                                                                      uiOutput("timeAtRiskTableCaption"),
-                                                                      tableOutput("timeAtRiskTable")
+                                                                      conditionalPanel("output.isMetaAnalysis == false",
+                                                                                       uiOutput("timeAtRiskTableCaption"),
+                                                                                       tableOutput("timeAtRiskTable"))
                                                              ),
                                                              tabPanel("Attrition",
                                                                       plotOutput("attritionPlot", width = 600, height = 600),
@@ -109,4 +116,3 @@ shinyUI(
             )
   )
 )
-  
