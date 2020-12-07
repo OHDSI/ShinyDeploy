@@ -145,6 +145,26 @@ shinyServer(function(input, output, session) {
   })
   outputOptions(output, "isCrude", suspendWhenHidden = FALSE)
   
+  output$isMetaAnalysis <- reactive({
+    row <- selectedRow()
+    isMetaAnalysis <- (!is.null(row) && row$databaseId == "Meta-analysis")
+    if (isMetaAnalysis) {
+      hideTab("detailsTabsetPanel", "Attrition")
+      hideTab("detailsTabsetPanel", "Population characteristics")
+      hideTab("detailsTabsetPanel", "Propensity scores")
+      hideTab("detailsTabsetPanel", "Propensity model")
+      hideTab("detailsTabsetPanel", "Covariate balance")
+    } else {
+      showTab("detailsTabsetPanel", "Attrition")
+      showTab("detailsTabsetPanel", "Population characteristics")
+      showTab("detailsTabsetPanel", "Propensity scores")
+      showTab("detailsTabsetPanel", "Propensity model")
+      showTab("detailsTabsetPanel", "Covariate balance")
+    }
+    return(isMetaAnalysis)
+  })
+  outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
+  
   balance <- reactive({
     row <- selectedRow()
     if (is.null(row)) {
