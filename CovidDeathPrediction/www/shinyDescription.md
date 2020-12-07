@@ -30,7 +30,7 @@ Below is the abstract of the manuscript that summarizes the findings:
 
 
 ### Study Packages
-- Study design: [Here](http://atlas-covid19.ohdsi.org/#/cohortdefinition/1455)
+- Study design: [Here](http://atlas-covid19.ohdsi.org/#/prediction/39)
 - Model development: [Here](https://github.com/ohdsi-studies/CovidDeath/tree/master/CovidDeathDe)
 - Model validation: [Here](https://github.com/ohdsi-studies/CovidDeath)
 
