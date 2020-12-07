@@ -1,4 +1,4 @@
-﻿# Data Information 
+# Data Information 
 
 #
 
@@ -9,17 +9,13 @@ The following databases were used in this study:
 | Database       | Name | Country  | Type | Years
 |--------|----------|-----|-----|-----|
 | 
-*OptumDoD* | Optum® De-Identified Clinformatic Data Mart Database – Date of Death (DOD) &nbsp; &nbsp;  | USA &nbsp; &nbsp; | Claims &nbsp; &nbsp; | 2000-2019 |
+*OptumClaims* | Optum® De-Identified Clinformatic Data Mart Database – Date of Death (DOD) &nbsp; &nbsp;  | USA &nbsp; &nbsp; | Claims &nbsp; &nbsp; | 2000-2020 |
 | 
-*CCAE* &nbsp; &nbsp; | IBM MarketScan® Commercial Database &nbsp; &nbsp; | USA &nbsp; &nbsp; | Claims | 2000-2019 |
+*HIRA* &nbsp; &nbsp; | Health Insurance and Review Assessment &nbsp; &nbsp; | Korea &nbsp; &nbsp; | Claims | 2013-2020 |
 | 
-*MDCD* &nbsp; &nbsp; | IBM MarketScan® Multi-State Medicaid Database &nbsp; &nbsp;  | USA &nbsp; &nbsp; | Claims | 2006-2019 |
+*SIDIAP* &nbsp; &nbsp; | The Information System for Research in Primary Care (SIDIAP) &nbsp; &nbsp;  | Spain &nbsp; &nbsp; | GP | 2006-2020 |
 | 
-*MDCR* &nbsp; &nbsp; | IBM MarketScan® Medicare Supplemental Database &nbsp; &nbsp;  | USA &nbsp; &nbsp; | Claims | 2000-2019 |
-| 
-*JMDC* &nbsp; &nbsp; | Japan Medical Data Center &nbsp; &nbsp; | Japan &nbsp; &nbsp; | Claims &nbsp; &nbsp; | 2000-2019 |
-| 
-*optumEhr* &nbsp; &nbsp; | Optum® de-identified Electronic Health Record Dataset &nbsp; &nbsp;  | USA | EHR &nbsp; &nbsp; | 2006-2019 |
+*optumEhr* &nbsp; &nbsp; | Optum® de-identified Electronic Health Record Dataset &nbsp; &nbsp;  | USA | EHR &nbsp; &nbsp; | 2006-2020 |
 | 
 
 
