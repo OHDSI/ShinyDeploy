@@ -30,9 +30,9 @@ getSummary  <- function(result,inputType,validation){
   #sumTab <- sumTab[,c('analysisId','devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','riskWindowStart', 'riskWindowEnd', 'AUC','AUPRC', 'populationSize','outcomeCount','incidence',
   #                    'addExposureDaysToStart','addExposureDaysToEnd','plpResultLocation', 'plpResultLoad')]
   #colnames(sumTab) <- c('Analysis','Dev', 'Val', 'T', 'O','Model', 'TAR start', 'TAR end', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')
-  sumTab <- sumTab[,c('devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','covariateSettingId','TAR', 'AUC','AUPRC', 'populationSize','outcomeCount','valPercent','incidence','timeStamp',
+  sumTab <- sumTab[,c('devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','covariateSettingId','TAR', 'AUC','AUPRC','Emean', 'populationSize','outcomeCount','valPercent','incidence','timeStamp',
                       'plpResultLocation', 'plpResultLoad')]
-  colnames(sumTab) <- c('Dev', 'Val', 'T', 'O','Model','covariateSettingId', 'TAR', 'AUC','AUPRC', 'T Size','O Count','% used for Eval','O Incidence (%)','timeStamp', 'plpResultLocation', 'plpResultLoad')
+  colnames(sumTab) <- c('Dev', 'Val', 'T', 'O','Model','covariateSettingId', 'TAR', 'AUC','AUPRC','Emean', 'T Size','O Count','% used for Eval','O Incidence (%)','timeStamp', 'plpResultLocation', 'plpResultLoad')
   
   return(sumTab)
 } 
@@ -203,7 +203,7 @@ getPerformance <- function(analysisLocation){
       
       analysisId <- strsplit(analysisLocation, '/')[[1]]
       return(data.frame(analysisId=analysisId[length(analysisId)], 
-                        AUC=0.000, AUPRC=0, outcomeCount=0,
+                        AUC=0.000, AUPRC=0,Emean =0, outcomeCount=0,
                         populationSize=0,valPercent = 0,incidence=0, timeStamp = as.Date('1900-01-01'),
                         plpResultLocation=location, 
                         plpResultLoad='loadPlpResult', TAR = '?'))
@@ -273,10 +273,11 @@ getPerformance <- function(analysisLocation){
   res$AUPRC <- signif(as.double(as.character(res$AUPRC,3)))
   res$incidence <- signif(as.double(as.character(res$incidence,3)))
   res$timeStamp <- as.Date(ifelse(is.null(timeV), '1900-01-01', as.character(timeV)))
+  res$Emean <- signif(as.double(as.character(res$Emean.Eavg,3)))
   
   res$plpResultLocation <- location
   res$plpResultLoad <- plpResultLoad
-  return(res[,c('analysisId', 'AUC', 'AUPRC', 'outcomeCount','populationSize','valPercent','incidence','timeStamp','plpResultLocation', 'plpResultLoad', 'TAR')])
+  return(res[,c('analysisId', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp','plpResultLocation', 'plpResultLoad', 'TAR')])
 }
 
 getValidationPerformance <- function(validationLocation){
@@ -336,10 +337,11 @@ getValidationPerformance <- function(validationLocation){
   }
   valPerformance$AUC <- paste0(signif(valPerformance$AUC.auc,3), ' (', signif(valPerformance$AUC.auc_lb95ci,3),'-', signif(valPerformance$AUC.auc_ub95ci,3),')')
   valPerformance$AUPRC <- signif(as.double(as.character(valPerformance$AUPRC,3)))
+  valPerformance$Emean <- signif(as.double(as.character(valPerformance$Emean.Eavg,3)))
   
   valPerformance$analysisId <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])]]
   valPerformance$valDatabase <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])-1]]
-  valPerformance <- valPerformance[,c('analysisId','valDatabase', 'AUC', 'AUPRC', 'outcomeCount','populationSize','valPercent','incidence','timeStamp')]
+  valPerformance <- valPerformance[,c('analysisId','valDatabase', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp')]
   valPerformance$plpResultLocation <- file.path(validationLocation,'validationResult.rds')
   valPerformance$plpResultLoad <- 'readRDS'
   valPerformance$TAR <- TAR
