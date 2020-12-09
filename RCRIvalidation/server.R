@@ -377,7 +377,28 @@ server <- shiny::shinyServer(function(input, output, session) {
   observeEvent(input$demoHelp, {
     showInfoBox("Demographic Help", "html/demoHelp.html")
   })
-
   
+  
+  
+  
+  # Decision curves
+  
+  # nb @ thresholds
+  #nbPlot
+  output$nbPlot <- plotly::renderPlotly({
+    if(is.null(plpResult()$nb)){
+      return(NULL)
+    } else{
+      nb <- plpResult()$nb
+      xlim <- max(0.05,max(nb$threshold[nb$value!=0]))
+      nb <- reshape2::melt(nb, id.vars = c('threshold'))
+      nb <- nb[nb$threshold <= xlim,]
+      nb %>% plotly::plot_ly(x= ~threshold, y=~value) %>%
+          add_lines(linetype = ~variable, linetypes = ~variable) 
+    }
+  })
+  
+  output$nbTab <- DT::renderDataTable(plpResult()$nb)
+
   
 })

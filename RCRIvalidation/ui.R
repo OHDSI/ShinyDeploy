@@ -261,7 +261,26 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                    side = "right",
                                                                                                    shinycssloaders::withSpinner(shiny::plotOutput('demo')))
                                                                              )
-                                                                    )
+                                                                    ),
+                                                                    
+                                                                    tabPanel("Net Benefit", 
+                                                                             
+                                                                             shiny::fluidRow(
+                                                                               shinydashboard::box(status = 'info', width = 12,
+                                                                                                   title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
+                                                                                                   side = "right",
+                                                                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('nbPlot'))),
+                                                                               
+                                                                               shinydashboard::box(status = 'info', width = 12,
+                                                                                                   title = 'Net-Benefit Table',
+                                                                                                   solidHeader = TRUE,
+                                                                               DT::dataTableOutput('nbTab')
+                                                                               )
+                                                                               
+                                                                             ))
+                                                                    
+                                                                    
                                                                   ))),
                                         
                                         # 3rd tab
