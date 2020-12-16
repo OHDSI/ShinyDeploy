@@ -31,8 +31,8 @@ getSummary  <- function(result,inputType,validation){
   #                    'addExposureDaysToStart','addExposureDaysToEnd','plpResultLocation', 'plpResultLoad')]
   #colnames(sumTab) <- c('Analysis','Dev', 'Val', 'T', 'O','Model', 'TAR start', 'TAR end', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')
   sumTab <- sumTab[,c('devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','covariateSettingId','TAR', 'AUC','AUPRC','Emean', 'populationSize','outcomeCount','valPercent','incidence','timeStamp',
-                      'plpResultLocation', 'plpResultLoad')]
-  colnames(sumTab) <- c('Dev', 'Val', 'T', 'O','Model','covariateSettingId', 'TAR', 'AUC','AUPRC','Emean', 'T Size','O Count','% used for Eval','O Incidence (%)','timeStamp', 'plpResultLocation', 'plpResultLoad')
+                      'plpResultLocation', 'plpResultLoad', 'intercept', 'gradient')]
+  colnames(sumTab) <- c('Dev', 'Val', 'T', 'O','Model','covariateSettingId', 'TAR', 'AUC','AUPRC','Emean', 'T Size','O Count','% used for Eval','O Incidence (%)','timeStamp', 'plpResultLocation', 'plpResultLoad', 'intercept', 'gradient')
   
   return(sumTab)
 } 
@@ -186,11 +186,6 @@ summaryPlpAnalyses <- function(analysesLocation){
     allPerformance <- devPerformance
   }
   
-  #allPerformance$AUC <- as.double(allPerformance$AUC)
-  #allPerformance$AUPRC <- as.double(allPerformance$AUPRC)
-  #allPerformance$outcomeCount <- as.double(allPerformance$outcomeCount)
-  #allPerformance$populationSize <- as.double(allPerformance$populationSize)
-  #allPerformance$incidence <- as.double(allPerformance$incidence)
   return(allPerformance)
 }
 
@@ -206,7 +201,8 @@ getPerformance <- function(analysisLocation){
                         AUC=0.000, AUPRC=0,Emean =0, outcomeCount=0,
                         populationSize=0,valPercent = 0,incidence=0, timeStamp = as.Date('1900-01-01'),
                         plpResultLocation=location, 
-                        plpResultLoad='loadPlpResult', TAR = '?'))
+                        plpResultLoad='loadPlpResult', TAR = '?',
+                        intercept = 0, gradient = 0))
     } else {
       require(PatientLevelPrediction)
       res <- loadPlpResult(file.path(analysisLocation,'plpResult'))
@@ -277,7 +273,15 @@ getPerformance <- function(analysisLocation){
   
   res$plpResultLocation <- location
   res$plpResultLoad <- plpResultLoad
-  return(res[,c('analysisId', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp','plpResultLocation', 'plpResultLoad', 'TAR')])
+  
+  if(is.null(res$intercept)){
+    res$intercept <- 0
+  }
+  if(is.null(res$gradient)){
+    res$gradient <- 0
+  }
+  
+  return(res[,c('analysisId', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp','plpResultLocation', 'plpResultLoad', 'TAR','intercept', 'gradient')])
 }
 
 getValidationPerformance <- function(validationLocation){
@@ -312,8 +316,6 @@ getValidationPerformance <- function(validationLocation){
   valPerformance$incidence <- signif(valPerformance$outcomeCount/valPerformance$populationSize*100,3)
   valPerformance$timeStamp <- as.Date(ifelse(is.null(timeV), '1900-01-01', as.character(timeV)))
   valPerformance$valPercent <- 100
-  #valPerformance[, !colnames(valPerformance)%in%c('analysisId','outcomeCount','populationSize')] <- 
-  #  format(as.double(valPerformance[, !colnames(valPerformance)%in%c('analysisId','outcomeCount','populationSize')]), digits = 2, scientific = F) 
   
   if(sum(colnames(valPerformance)=='AUC.auc')==0){
     valPerformance$AUC.auc <- valPerformance$AUC
@@ -341,12 +343,18 @@ getValidationPerformance <- function(validationLocation){
   
   valPerformance$analysisId <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])]]
   valPerformance$valDatabase <- strsplit(validationLocation, '/')[[1]][[length(strsplit(validationLocation, '/')[[1]])-1]]
-  valPerformance <- valPerformance[,c('analysisId','valDatabase', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp')]
+  
+  if(is.null(valPerformance$intercept)){
+    valPerformance$intercept <- 0
+  }
+  if(is.null(valPerformance$gradient)){
+    valPerformance$gradient <- 0
+  }
+  
+  valPerformance <- valPerformance[,c('analysisId','valDatabase', 'AUC', 'AUPRC','Emean', 'outcomeCount','populationSize','valPercent','incidence','timeStamp','intercept', 'gradient')]
   valPerformance$plpResultLocation <- file.path(validationLocation,'validationResult.rds')
   valPerformance$plpResultLoad <- 'readRDS'
   valPerformance$TAR <- TAR
-  #valPerformance$rocplot <- file.path(validationLocation,'plots','sparseROC.pdf')
-  #valPerformance$calplot <- file.path(validationLocation,'plots','sparseCalibrationConventional.pdf')
   return(valPerformance)
 }
 
