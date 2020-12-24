@@ -214,16 +214,11 @@ if (databaseMode) {
 if (exists("cohort")) {
   cohort <- get("cohort") %>%
     dplyr::arrange(.data$cohortId) %>%
-    dplyr::mutate(cohortName = stringr::str_remove(.data$cohortName, "\\[.+?\\] "))
-  
-  if (exists("phenotypeDescription")) {
-    cohort <- cohort %>%
-      dplyr::mutate(shortName = paste0("C", .data$cohortId - .data$phenotypeId)) 
-  } else {
-    cohort <- cohort %>%
-      dplyr::mutate(shortName = paste0("C", dplyr::row_number())) 
-  }
-  cohort <- cohort %>%
+    dplyr::mutate(cohortName = stringr::str_remove(.data$cohortName, "\\[.+?\\] ")) %>%
+    dplyr::group_by(.data$phenotypeId) %>% 
+    dplyr::arrange(.data$cohortId) %>% 
+    dplyr::mutate(shortName = paste0("C", dplyr::row_number())) %>% 
+    dplyr::ungroup() %>%
     dplyr::mutate(compoundName = paste(shortName, cohortName, sep = ": "))
 }
 
