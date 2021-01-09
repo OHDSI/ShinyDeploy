@@ -6,7 +6,25 @@ output:
     theme: null
 ---
 
-## 2020-Oct-7
+## 2021-Jan-7
+
+This release contains new data sets and updates to existing ones:
+
+### Additions
+
+#### Hospital del Mar (hdm)
+
+Anonymized data from the Electronic Medical Records from Hospital del Mar (Barcelona, Spain). Hospital belonging to the Spanish National Health System (public), attending the Eastern area of Barcelona City. Includes hospital data collected routinely in the clinical practice, both structured and unstructured information, extracted using a free text analysis tool (with natural language processing): Inpatient (hospital) care,  Outpatient specialist care, Emergency Room Visits and partial information from other settings like primary care and pharmacy care present in free text notes from EMRs. All subjects with at least one healthcare encounter with the Hospital within approximately last 20 years are included (approximately 0.6 M subjects, with more than 5 M hospitalizations/visits). Hospital del Mar data are made available through collaboration with TFS / IOMED.
+
+### Updates
+
+The following data sets were updated in this release:
+
+- DA GERMANY
+- Premier
+- Optum EHR
+
+## 2020-Oct-9
 
 This release contains new data sets and updates to existing ones:
 
