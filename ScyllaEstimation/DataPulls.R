@@ -375,16 +375,35 @@ getPs <- function(connectionPool, targetIds, comparatorIds, analysisId, database
   }
   return(ps)
 }
-# 
-# getKaplanMeier <- function(connectionPool, targetId, comparatorId, outcomeId, databaseId, analysisId) {
-#   file <- sprintf("kaplan_meier_dist_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
-#   km <- readRDS(file.path(dataFolder, file))
-#   colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
-#   km <- km[km$outcomeId == outcomeId & km$analysisId == analysisId, ]
-# 
-#   return(km)
-# }
-# 
+
+getKaplanMeier <- function(connectionPool, targetId, comparatorId, outcomeId, databaseId, analysisId) {
+  sql <- "SELECT time,
+  target_at_risk,
+  comparator_at_risk,
+  target_survival,
+  target_survival_lb,
+  target_survival_ub,
+  comparator_survival,
+  comparator_survival_lb,
+  comparator_survival_ub
+  FROM @results_database_schema.kaplan_meier_dist
+  WHERE target_id = @target_id
+  AND comparator_id = @comparator_id
+  AND outcome_id = @outcome_id
+  AND database_id = '@database_id'
+  AND analysis_id = @analysis_id"
+  sql <- SqlRender::render(sql,
+                           target_id = targetId,
+                           comparator_id = comparatorId,
+                           outcome_id = outcomeId,
+                           database_id = databaseId,
+                           analysis_id = analysisId,
+                           results_database_schema = resultsDatabaseSchema)
+  ps <- DatabaseConnector::dbGetQuery(connectionPool, sql)
+  colnames(ps) <- SqlRender::snakeCaseToCamelCase(colnames(ps))
+  return(ps)
+}
+
 getAttrition <- function(connectionPool, targetId, comparatorId, outcomeId, analysisId, databaseId) {
   sql <- "SELECT exposure_id,
   sequence_number,

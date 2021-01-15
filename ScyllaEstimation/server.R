@@ -24,9 +24,7 @@ mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
                      "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
 
 shinyServer(function(input, output, session) {
-  if (blind) {
-    hideTab(inputId = "detailsTabsetPanel", target = "Kaplan-Meier")
-  }
+
   if (!exists("cmInteractionResult")) {
     hideTab(inputId = "detailsTabsetPanel", target = "Subgroups")
   }
@@ -92,18 +90,26 @@ shinyServer(function(input, output, session) {
                               analysisIds = analysisIds)
     results <- results[order(results$analysisId), ]
     if (blind) {
-      results$rr <- rep(NA, nrow(results))
-      results$ci95Ub <- rep(NA, nrow(results))
-      results$ci95Lb <- rep(NA, nrow(results))
-      results$logRr <- rep(NA, nrow(results))
-      results$seLogRr <- rep(NA, nrow(results))
-      results$p <- rep(NA, nrow(results))
-      results$calibratedRr <- rep(NA, nrow(results))
-      results$calibratedCi95Ub <- rep(NA, nrow(results))
-      results$calibratedCi95Lb <- rep(NA, nrow(results))
-      results$calibratedLogRr <- rep(NA, nrow(results))
-      results$calibratedSeLogRr <- rep(NA, nrow(results))
-      results$calibratedP <- rep(NA, nrow(results))
+      if (is.null(unblind)) {
+        results$unblind <- FALSE
+      } else {
+        results <- merge(results, unblind, all.x = TRUE)
+        results$unblind[is.na(results$unblind)] <- FALSE
+      } 
+      idx <- !results$unblind
+      nas <- rep(NA, sum(idx))
+      results$rr[idx] <- nas
+      results$ci95Ub[idx] <- nas
+      results$ci95Lb[idx] <- nas
+      results$logRr[idx] <- nas
+      results$seLogRr[idx] <- nas
+      results$p[idx] <- nas
+      results$calibratedRr[idx] <- nas
+      results$calibratedCi95Ub[idx] <- nas
+      results$calibratedCi95Lb[idx] <- nas
+      results$calibratedLogRr[idx] <- nas
+      results$calibratedSeLogRr[idx] <- nas
+      results$calibratedP[idx] <- nas
     }
     return(results)
   })
@@ -164,6 +170,18 @@ shinyServer(function(input, output, session) {
     return(isMetaAnalysis)
   })
   outputOptions(output, "isMetaAnalysis", suspendWhenHidden = FALSE)
+  
+  output$isUnblinded <- reactive({
+    row <- selectedRow()
+    isUnblinded <- nrow(merge(row, unblind)) != 0
+    if (isUnblinded) {
+      showTab(inputId = "detailsTabsetPanel", target = "Kaplan-Meier")
+    } else {
+      hideTab(inputId = "detailsTabsetPanel", target = "Kaplan-Meier")
+    }
+    return(isUnblinded)
+  })
+  outputOptions(output, "isUnblinded", suspendWhenHidden = FALSE)
   
   balance <- reactive({
     row <- selectedRow()

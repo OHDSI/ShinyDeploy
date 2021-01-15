@@ -179,7 +179,7 @@ preparePowerTable <- function(mainResults, analyses) {
   zBeta <- -qnorm(1 - power)
   pA <- table$targetSubjects/(table$targetSubjects + table$comparatorSubjects)
   pB <- 1 - pA
-  totalEvents <- abs(table$targetOutcomes) + (table$comparatorOutcomes)
+  totalEvents <- abs(table$targetOutcomes) + abs(table$comparatorOutcomes)
   table$mdrr <- exp(sqrt((zBeta + z1MinAlpha)^2/(totalEvents * pA * pB)))
   table$targetYears <- table$targetDays/365.25
   table$comparatorYears <- table$comparatorDays/365.25
