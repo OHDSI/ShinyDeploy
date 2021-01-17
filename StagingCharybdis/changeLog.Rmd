@@ -6,7 +6,7 @@ output:
     theme: null
 ---
 
-## 2021-Jan-10
+## 2021-Jan-17
 
 This release contains new data sets and updates to existing ones:
 
@@ -25,6 +25,7 @@ Hospital charge data masters (CDM) are collected from resource management softwa
 The following data sets were updated in this release:
 
 - DA GERMANY
+- IQVIA OpenClaims
 - Premier
 - Optum EHR
 
