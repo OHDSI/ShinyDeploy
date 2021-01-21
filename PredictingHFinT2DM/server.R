@@ -1,6 +1,6 @@
 # @file server.R
 #
-# Copyright 2018 Observational Health Data Sciences and Informatics
+# Copyright 2020 Observational Health Data Sciences and Informatics
 #
 # This file is part of PatientLevelPrediction
 #
@@ -27,23 +27,36 @@ server <- shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(shiny::stopApp)
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
-  print(summaryTable)
-
+  #print(summaryTable)
+  
   # need to remove over columns:
-  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
-                                                           rownames= FALSE, selection = 'single'))
+  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('Analysis','addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
+                                                           rownames= FALSE, selection = 'single',
+                                             extensions = 'Buttons', options = list(
+                                               dom = 'Blfrtip' , 
+                                               buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ) 
+                                               #pageLength = 100, lengthMenu=c(10, 50, 100,200)
+                                             ),
+                                             
+                                             container = htmltools::withTags(table(
+                                               class = 'display',
+                                               thead(
+                                                 #tags$th(title=active_columns[i], colnames(data)[i])
+                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model','Covariate setting',
+                                                                                'TAR', 'AUC', 'AUPRC', 
+                                                                                'T Size', 'O Count', 'O Incidence (%)'), 
+                                                                     labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
+                                                                     'Model type','Id for the covariate/settings used','Time-at-risk period', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
+                                                                     'Target population size of test or validation set', 'Outcome count in test or validation set', 'Percentage of target population that have outcome during time-at-risk')), 1,
+                                                          function(x) th(title=x[2], x[1])))
+                                               )
+                                             ))
+                                                          
+                                             )
+  )
+                                             
   
-  selectedRow <- shiny::reactive({
-    if(is.null(input$summaryTable_rows_selected[1])){
-      return(1)
-    }else{
-      return(input$summaryTable_rows_selected[1])
-    }
-  })
-  
-  
-  
-  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,filterIndex(), selectedRow())})
+  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType,trueRow())})
   
   # covariate table
   output$modelView <- DT::renderDataTable(editCovariates(plpResult()$covariateSummary)$table,  
@@ -52,12 +65,21 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   output$modelCovariateInfo <- DT::renderDataTable(data.frame(covariates = nrow(plpResult()$covariateSummary),
                                                               nonZeroCount = sum(plpResult()$covariateSummary$covariateValue!=0)))
+  # Download plpresult
+  output$plpResult <- shiny::downloadHandler(
+    filename = function(){
+      "plpResult.rds"
+    },
+    content = function(file) {
+      saveRDS(plpResult(), file)
+    }
+  )
   
   # Downloadable csv of model ----
   output$downloadData <- shiny::downloadHandler(
     filename = function(){'model.csv'},
     content = function(file) {
-      write.csv(plpResult()$covariateSummary[plpResult()$covariateSummary$covariateValue!=0,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
+      write.csv(plpResult()$covariateSummary[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
                 , file, row.names = FALSE)
     }
   )
@@ -71,13 +93,23 @@ server <- shiny::shinyServer(function(input, output, session) {
   
   
   # prediction text
-  output$info <- shiny::renderText(paste0('Within ', summaryTable[filterIndex(),'T'][selectedRow()],
-                                          ' predict who will develop ',  summaryTable[filterIndex(),'O'][selectedRow()],
-                                          ' during ',summaryTable[filterIndex(),'TAR start'][selectedRow()], ' day/s',
-                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToStart'][selectedRow()]==0, ' cohort start ', ' cohort end '),
-                                          ' and ', summaryTable[filterIndex(),'TAR end'][selectedRow()], ' day/s',
-                                          ' after ', ifelse(summaryTable[filterIndex(),'addExposureDaysToEnd'][selectedRow()]==0, ' cohort start ', ' cohort end '))
-  )
+  #output$info <- shiny::renderUI(shiny::HTML(paste0(shiny::strong('Model: '), summaryTable[trueRow(),'Model'], ' with covariate setting id ',summaryTable[trueRow(),'covariateSettingId'] , '<br/>',
+  #                                                  shiny::strong('Question:'), ' Within ', summaryTable[trueRow(),'T'],
+  #                                        ' predict who will develop ',  summaryTable[trueRow(),'O'],
+  #                                        ' during ',summaryTable[trueRow(),'TAR'], '<br/>',
+  #                                        ' Developed in database: ', shiny::strong(summaryTable[trueRow(),'Dev']), ' and ',
+  #                                        ' validated in database:  ', shiny::strong(summaryTable[trueRow(),'Val'])
+  #                                 ))
+  #)
+  
+  output$sideSettings  <- shiny::renderTable(t(data.frame(Development = as.character(summaryTable[trueRow(),'Dev']), 
+                                                        Validation = as.character(summaryTable[trueRow(),'Val']),
+                                                        Model = as.character(summaryTable[trueRow(),'Model']))), rownames = T, colnames = F)
+  
+  output$sideSettings2  <- shiny::renderTable(t(data.frame(T = paste0(substring(as.character(summaryTable[trueRow(),'T']),0,25),'...') , 
+                                                           O = paste0(substring(as.character(summaryTable[trueRow(),'O']),0,25),'...')  )), 
+                                              rownames = T, colnames = F)
+  
   
   # PLOTTING FUNCTION
   plotters <- shiny::reactive({
@@ -140,8 +172,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
-      plotPreferencePDF(plpResult()$performanceEvaluation, 
-                        type=plpResult()$type ) #+ 
+      plotPreferencePDF(plpResult()$performanceEvaluation) #+ 
         # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
     }
   })
@@ -150,8 +181,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
-      plotPredictedPDF(plpResult()$performanceEvaluation, 
-                       type=plpResult()$type ) # + 
+      plotPredictedPDF(plpResult()$performanceEvaluation) # + 
         #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
     }
   })
@@ -160,7 +190,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
-      plotPredictionDistribution(plpResult()$performanceEvaluation, type=plpResult()$type )
+      plotPredictionDistribution(plpResult()$performanceEvaluation)
     }
   })
   
@@ -168,7 +198,7 @@ server <- shiny::shinyServer(function(input, output, session) {
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
-      plotSparseCalibration2(plpResult()$performanceEvaluation, type=plpResult()$type )
+      plotSparseCalibration2(plpResult()$performanceEvaluation)
     }
   })
   
@@ -176,12 +206,60 @@ server <- shiny::shinyServer(function(input, output, session) {
     if(is.null(plpResult()$performanceEvaluation)){
       return(NULL)
     } else{
-      tryCatch(plotDemographicSummary(plpResult()$performanceEvaluation, 
-                                      type=plpResult()$type ),
+      tryCatch(plotDemographicSummary(plpResult()$performanceEvaluation),
                error= function(cond){return(NULL)})
     }
   })
   
+  # validation table and selection
+  validationTable <- shiny::reactive(dplyr::filter(summaryTable[filterIndex(),],
+                                                   Analysis == summaryTable[filterIndex(),'Analysis'][trueRow()]))
+  
+  output$validationTable <- DT::renderDataTable(dplyr::select(validationTable(),c(Analysis, Dev, Val, AUC)), rownames= FALSE)
+  
+  valFilterIndex <- shiny::reactive({getFilter(validationTable(), input)})
+  valSelectedRow <- shiny::reactive({
+    if(is.null(input$validationTable_rows_selected[1])){
+      return(1)
+    }else{
+      # return(input$validationTable_rows_selected[1])
+      return(input$validationTable_rows_selected)
+    }
+  })
+  
+  # plots for the validation section. todo: add the development?
+  
+  valResult <- shiny::reactive({
+    valtemplist <- list()
+    valTable <- validationTable()
+    rows <- sort(valSelectedRow())
+    names <- valTable[rows, "Val"]
+    for (i in 1:length(rows)){
+      valtemplist[[i]] <- getPlpResult(result,validation,valTable, inputType, rows[i])
+    }
+    list(valtemplist, names)
+  })
+  
+  valPlots <- shiny::reactive({
+    results <- valResult()
+    if(is.null(results[[1]][[1]]$performanceEvaluation)){
+      # list(valRocPlot= NULL, valCalPlot = NULL)
+      return(NULL)
+    } else{
+      
+      valCalPlot <- PredictionComparison::plotMultipleCal(results[[1]], names = results[[2]])
+      valRocPlot <- PredictionComparison::plotMultipleRoc(results[[1]], names = results[[2]], grid = F)
+      list(valRocPlot= valRocPlot, valCalPlot = valCalPlot)
+      
+    }
+  })
+  
+  output$valRoc <- shiny::renderPlot({
+    try(valPlots()$valRocPlot)
+  })
+  output$valCal <- shiny::renderPlot({
+    try(valPlots()$valCalPlot)
+  })
   
   
   # Do the tables and plots:
@@ -266,5 +344,95 @@ server <- shiny::shinyServer(function(input, output, session) {
       color = "black"
     )
   })
+  
+  
+  # SELECTING RESULTS - for PERFORMANCE/MODEl
+  ##selectedRow <- shiny::reactiveVal(value = 1)
+  trueRow <- shiny::reactiveVal(value = 1)
+  
+  # row selection updates dropdowns
+  shiny::observeEvent(input$summaryTable_rows_selected,{
+    #selectedRow(input$summaryTable_rows_selected)
+    trueRow(filterIndex()[input$summaryTable_rows_selected])
+    shiny::updateSelectInput(session, "selectResult",
+                           selected = myResultList[[trueRow()]]
+                           )
+  })
+  
+  #drop downs update row and other drop down
+  sumProxy <- DT::dataTableProxy("summaryTable", session = session)
+
+  shiny::observeEvent(input$selectResult,{
+    val <- which(myResultList==input$selectResult)
+    trueRow(val)
+    DT::selectRows(sumProxy, which(filterIndex()==val)) # reset filter here?
+  })
+  
+
+  
+  # HELPER INFO
+  showInfoBox <- function(title, htmlFileName) {
+    shiny::showModal(shiny::modalDialog(
+      title = title,
+      easyClose = TRUE,
+      footer = NULL,
+      size = "l",
+      shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
+    ))
+  }
+  
+  
+  observeEvent(input$DescriptionInfo, {
+    showInfoBox("Description", "html/Description.html")
+  })
+  observeEvent(input$SummaryInfo, {
+    showInfoBox("Summary", "html/Summary.html")
+  })
+  observeEvent(input$PerformanceInfo, {
+    showInfoBox("Performance", "html/Performance.html")
+  })
+  observeEvent(input$ModelInfo, {
+    showInfoBox("Model", "html/Model.html")
+  })
+  observeEvent(input$LogInfo, {
+    showInfoBox("Log", "html/Log.html")
+  })
+  observeEvent(input$SettingsInfo, {
+    showInfoBox("Settings", "html/Settings.html")
+  })
+  observeEvent(input$DataInfoInfo, {
+    showInfoBox("DataInfo", "html/DataInfo.html")
+  })
+  observeEvent(input$HelpInfo, {
+    showInfoBox("HelpInfo", "html/Help.html")
+  })
+  
+  
+  observeEvent(input$rocHelp, {
+    showInfoBox("ROC Help", "html/rocHelp.html")
+  })
+  observeEvent(input$prcHelp, {
+    showInfoBox("PRC Help", "html/prcHelp.html")
+  })
+  observeEvent(input$f1Help, {
+    showInfoBox("F1 Score Plot Help", "html/f1Help.html")
+  })
+  observeEvent(input$boxHelp, {
+    showInfoBox("Box Plot Help", "html/boxHelp.html")
+  })
+  observeEvent(input$predDistHelp, {
+    showInfoBox("Predicted Risk Distribution Help", "html/predDistHelp.html")
+  })
+  observeEvent(input$prefDistHelp, {
+    showInfoBox("Preference Score Distribution Help", "html/prefDistHelp.html")
+  })
+  observeEvent(input$calHelp, {
+    showInfoBox("Calibration Help", "html/calHelp.html")
+  })
+  observeEvent(input$demoHelp, {
+    showInfoBox("Demographic Help", "html/demoHelp.html")
+  })
+
+  
   
 })

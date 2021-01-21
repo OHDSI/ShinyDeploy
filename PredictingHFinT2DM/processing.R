@@ -30,9 +30,9 @@ getSummary  <- function(result,inputType,validation){
   #sumTab <- sumTab[,c('analysisId','devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','riskWindowStart', 'riskWindowEnd', 'AUC','AUPRC', 'populationSize','outcomeCount','incidence',
   #                    'addExposureDaysToStart','addExposureDaysToEnd','plpResultLocation', 'plpResultLoad')]
   #colnames(sumTab) <- c('Analysis','Dev', 'Val', 'T', 'O','Model', 'TAR start', 'TAR end', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')
-  sumTab <- sumTab[,c('devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','riskWindowStart', 'riskWindowEnd', 'AUC','AUPRC', 'populationSize','outcomeCount','incidence',
-                      'addExposureDaysToStart','addExposureDaysToEnd','plpResultLocation', 'plpResultLoad')]
-  colnames(sumTab) <- c('Dev', 'Val', 'T', 'O','Model', 'TAR start', 'TAR end', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')
+  sumTab <- sumTab[,c('analysisId','devDatabase','valDatabase','cohortName','outcomeName','modelSettingName','covariateSettingId','TAR', 'AUC','AUPRC', 'populationSize','outcomeCount','incidence',
+                      'plpResultLocation', 'plpResultLoad')]
+  colnames(sumTab) <- c('Analysis','Dev', 'Val', 'T', 'O','Model','covariateSettingId', 'TAR', 'AUC','AUPRC', 'T Size','O Count','O Incidence (%)', 'plpResultLocation', 'plpResultLoad')
   
   return(sumTab)
 } 
@@ -40,6 +40,7 @@ getSummary  <- function(result,inputType,validation){
 
 getSummaryFromObject <- function(result,validation=NULL){
   
+  TAR <- getTAR(result$model$populationSettings)
   eval <- as.data.frame(result$performanceEvaluation$evaluationStatistics)
   eval <- eval[eval$Eval %in% c('test',"validation"),]
   allRes <- data.frame(analysisId = 1,
@@ -48,21 +49,20 @@ getSummaryFromObject <- function(result,validation=NULL){
                        cohortName = 'T',
                        outcomeName = 'O',
                        modelSettingName = result$model$modelSettings$model,
-                       riskWindowStart = ifelse(is.null(result$model$populationSettings$riskWindowStart), 'Missing',result$model$populationSettings$riskWindowStart), 
-                       riskWindowEnd = ifelse(is.null(result$model$populationSettings$riskWindowEnd), 'Missing',result$model$populationSettings$riskWindowEnd), 
+                       covariateSettingId = 1,
+                       TAR = TAR,
                        AUC = as.double(as.character(eval$Value[eval$Metric=='AUC.auc'])),
                        AUPRC = as.double(as.character(eval$Value[eval$Metric=='AUPRC'])),
                        populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
                        outcomeCount = as.double(as.character(eval$Value[eval$Metric=='outcomeCount'])),
                        incidence = as.double(as.character(eval$Value[eval$Metric=='outcomeCount']))/as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
-                       addExposureDaysToStart = ifelse(is.null(result$model$populationSettings$addExposureDaysToStart),'Missing',result$model$populationSettings$addExposureDaysToStart),
-                       addExposureDaysToEnd = ifelse(is.null(result$model$populationSettings$addExposureDaysToEnd), 'Missing', result$model$populationSettings$addExposureDaysToEnd),
                        plpResultLocation = 'NULL', 
                        plpResultLoad = 'NULL'
   )
   
   if(!is.null(validation)){
     for(i in 1:length(validation$validation)){
+      TAR <- getTAR(validation$validation[[i]]$model$populationSettings)
       eval <- as.data.frame(validation$validation[[i]]$performanceEvaluation$evaluationStatistics)
       tempRes <-data.frame(analysisId = 1+i,
                            devDatabase = result$inputSetting$dataExtrractionSettings$cdmDatabaseSchema,
@@ -70,15 +70,13 @@ getSummaryFromObject <- function(result,validation=NULL){
                            cohortName = 'T',
                            outcomeName = 'O',
                            modelSettingName = result$model$modelSettings$model,
-                           riskWindowStart = result$model$populationSettings$riskWindowStart, 
-                           riskWindowEnd = result$model$populationSettings$riskWindowEnd, 
+                           covariateSettingId =1,
+                           TAR = TAR,
                            AUC = as.double(as.character(eval$Value[eval$Metric=='AUC.auc'])),
                            AUPRC = as.double(as.character(eval$Value[eval$Metric=='AUPRC'])),
                            populationSize = as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
                            outcomeCount = as.double(as.character(eval$Value[eval$Metric=='outcomeCount'])),
                            incidence = as.double(as.character(eval$Value[eval$Metric=='outcomeCount']))/as.double(as.character(eval$Value[eval$Metric=='populationSize'])),
-                           addExposureDaysToStart = result$model$populationSettings$addExposureDaysToStart,
-                           addExposureDaysToEnd = result$model$populationSettings$addExposureDaysToEnd,
                            plpResultLocation = 'NULL', 
                            plpResultLoad = 'NULL'
       )
@@ -97,6 +95,7 @@ summaryPlpAnalyses <- function(analysesLocation){
   #========================================
   settings <- read.csv(file.path(analysesLocation,'settings.csv'))
   settings <- settings[,!colnames(settings)%in%c('plpDataFolder','studyPopFile','plpResultFolder')]
+  settings$analysisId <- gsub('Analysis_','', settings$analysisId) # fixing if Analysis_id in settings
   settings$analysisId <- paste0('Analysis_',  settings$analysisId)
   
   analysisIds <- dir(file.path(analysesLocation), recursive = F, full.names = T)
@@ -104,12 +103,13 @@ summaryPlpAnalyses <- function(analysesLocation){
   if(is.null(settings$devDatabase)){
     settings$devDatabase <- 'Missing'
   }
-  settings$valDatabase <- settings$devDatabase
+  if(is.null(settings$valDatabase)){
+    settings$valDatabase <- settings$devDatabase
+  }
   devPerformance <- do.call(rbind,lapply(file.path(analysisIds), getPerformance))
-  devPerformance <- merge(settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
-                                      'populationSettingId','modelSettingName','addExposureDaysToStart',
-                                      'riskWindowStart', 'addExposureDaysToEnd',
-                                      'riskWindowEnd','devDatabase','valDatabase')],
+  # updated this for TAR
+  devPerformance <- merge(settings[,c('analysisId','modelSettingsId','covariateSettingId', 'cohortName', 'outcomeName',
+                                      'populationSettingId','modelSettingName','devDatabase','valDatabase')],
                           devPerformance, by='analysisId', all.x=T)
   
   validationLocation <- file.path(analysesLocation,'Validation')
@@ -124,11 +124,8 @@ summaryPlpAnalyses <- function(analysesLocation){
       valAnalyses <-  dir(valDatabase, recursive = F, full.names = T)
       valAnalyses <-  valAnalyses[grep('Analysis_', valAnalyses)]
       valPerformance <- do.call(rbind,lapply(file.path(valAnalyses), function(x) getValidationPerformance(x)))
-      valSettings <- settings[,c('analysisId','modelSettingsId', 'cohortName', 'outcomeName',
-                                 'populationSettingId','modelSettingName','addExposureDaysToStart',
-                                 'riskWindowStart', 'addExposureDaysToEnd',
-                                 'riskWindowEnd','devDatabase')]
-      #valSettings$devDatabase <- settings$devDatabase[1]  
+      valSettings <- settings[,c('analysisId','modelSettingsId','covariateSettingId', 'cohortName', 'outcomeName',
+                                 'populationSettingId','modelSettingName','devDatabase')] # removed TAR bits
       valPerformance <- merge(valSettings,
                               valPerformance, by='analysisId')
       valPerformance <- valPerformance[,colnames(devPerformance)] # make sure same order
@@ -163,10 +160,11 @@ getPerformance <- function(analysisLocation){
       return(data.frame(analysisId=analysisId[length(analysisId)], 
                         AUC=0.000, AUPRC=0, outcomeCount=0,
                         populationSize=0,incidence=0,plpResultLocation=location, 
-                        plpResultLoad='loadPlpResult'))
+                        plpResultLoad='loadPlpResult', TAR = '?'))
     } else {
       require(PatientLevelPrediction)
       res <- loadPlpResult(file.path(analysisLocation,'plpResult'))
+      TAR <- getTAR(res$model$populationSettings)
       res <- as.data.frame(res$performanceEvaluation$evaluationStatistics)
       location <- file.path(analysisLocation, 'plpResult')
       plpResultLoad <- 'loadPlpResult'
@@ -175,13 +173,14 @@ getPerformance <- function(analysisLocation){
   } else{
     # read rds here
     res <- readRDS(file.path(analysisLocation,'plpResult.rds'))
+    TAR <- getTAR(res$model$populationSettings)
     res <- as.data.frame(res$performanceEvaluation$evaluationStatistics)
     plpResultLoad <- 'readRDS'
   }
   
   #if empty do edit?
   
-  res <- tryCatch(reshape2::dcast(res[res$Eval=='test',], analysisId ~ Metric, value.var='Value'),
+  res <- tryCatch(reshape2::dcast(res[res$Eval%in%c('test','validation'),], analysisId ~ Metric, value.var='Value'),
                   error = function(cont) return(NULL))
   if(is.null(res)){
     return(NULL) }
@@ -189,7 +188,7 @@ getPerformance <- function(analysisLocation){
   res$incidence <- as.double(res$outcomeCount)/as.double(res$populationSize)*100
   res[, !colnames(res)%in%c('analysisId','outcomeCount','populationSize')] <- 
     format(as.double(res[, !colnames(res)%in%c('analysisId','outcomeCount','populationSize')]), digits = 2, scientific = F) 
-  
+  res$TAR <- TAR
   if(sum(colnames(res)=='AUC.auc_ub95ci')>0){
     res$AUC <- res$AUC.auc
     #res$AUC <- paste0(res$AUC.auc, ' (', res$AUC.auc_lb95ci,'-', res$AUC.auc_ub95ci,')')
@@ -197,7 +196,7 @@ getPerformance <- function(analysisLocation){
   
   res$plpResultLocation <- location
   res$plpResultLoad <- plpResultLoad
-  return(res[,c('analysisId', 'AUC', 'AUPRC', 'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad')])
+  return(res[,c('analysisId', 'AUC', 'AUPRC', 'outcomeCount','populationSize','incidence','plpResultLocation', 'plpResultLoad', 'TAR')])
 }
 
 getValidationPerformance <- function(validationLocation){
@@ -205,9 +204,11 @@ getValidationPerformance <- function(validationLocation){
   if("performanceEvaluation"%in%names(val)){
     valPerformance <- reshape2::dcast(as.data.frame(val$performanceEvaluation$evaluationStatistics), 
                                       analysisId ~ Metric, value.var='Value')
+    TAR <- getTAR(val$model$populationSettings)
   } else {
     valPerformance <- reshape2::dcast(as.data.frame(val[[1]]$performanceEvaluation$evaluationStatistics), 
                                       analysisId ~ Metric, value.var='Value')  
+    TAR <- getTAR(val[[1]]$model$populationSettings)
   }
   valPerformance$incidence <- as.double(valPerformance$outcomeCount)/as.double(valPerformance$populationSize)*100
   valPerformance[, !colnames(valPerformance)%in%c('analysisId','outcomeCount','populationSize')] <- 
@@ -222,9 +223,23 @@ getValidationPerformance <- function(validationLocation){
   valPerformance <- valPerformance[,c('analysisId','valDatabase', 'AUC', 'AUPRC', 'outcomeCount','populationSize','incidence')]
   valPerformance$plpResultLocation <- file.path(validationLocation,'validationResult.rds')
   valPerformance$plpResultLoad <- 'readRDS'
+  valPerformance$TAR <- TAR
   #valPerformance$rocplot <- file.path(validationLocation,'plots','sparseROC.pdf')
   #valPerformance$calplot <- file.path(validationLocation,'plots','sparseCalibrationConventional.pdf')
   return(valPerformance)
 }
 
+getTAR <- function(x){
+  starttar <- unique(x$startAnchor)
+  if(is.null(starttar)){
+    starttar <- ifelse(unique(x$addExposureDaysToStart), 'cohort end','cohort start')
+  }
+  endtar <- unique(x$endAnchor)
+  if(is.null(endtar)){
+    endtar <- ifelse(unique(x$addExposureDaysToEnd), 'cohort end','cohort start')
+  }
+  TAR <- paste0('(',starttar,' + ',unique(x$riskWindowStart),') - (', endtar,' + ',unique(x$riskWindowEnd),')')
+  return(TAR)
+  #return('cohort start + 1 - cohort start + 365')
+}
 

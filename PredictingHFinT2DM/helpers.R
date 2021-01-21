@@ -16,20 +16,18 @@ getFilter <- function(summaryTable,input){
   if(input$modelSettingName!='All'){
     ind <- intersect(ind,which(as.character(summaryTable$Model)==input$modelSettingName))
   }
-  if(input$riskWindowStart!='All'){
-    ind <- intersect(ind,which(summaryTable$`TAR start`==input$riskWindowStart))
+  if(input$TAR!='All'){
+    ind <- intersect(ind,which(as.character(summaryTable$TAR)==input$TAR))
   }
-  if(input$riskWindowEnd!='All'){
-    ind <- intersect(ind,which(summaryTable$`TAR end`==input$riskWindowEnd))
-  }
+
   
   return(ind)
 }
 
 
-getPlpResult <- function(result,validation,summaryTable, inputType,filterIndex, selectedRow){
+getPlpResult <- function(result,validation,summaryTable, inputType,trueRow){
   if(inputType == 'plpResult'){
-    i <- filterIndex[selectedRow]
+    i <- trueRow
     if(i ==1){
       tempResult <- result
       tempResult$type <- 'test'
@@ -44,8 +42,8 @@ getPlpResult <- function(result,validation,summaryTable, inputType,filterIndex, 
     tempResult$log <- 'log not available'
   }else if( inputType == 'file') {
     tempResult <- NULL
-    loc <- summaryTable[filterIndex,][selectedRow,]$plpResultLocation
-    locLoaderFunc <- summaryTable[filterIndex,][selectedRow,]$plpResultLoad
+    loc <- summaryTable[trueRow,]$plpResultLocation
+    locLoaderFunc <- summaryTable[trueRow,]$plpResultLoad
     logLocation <- gsub('plpResult','plpLog.txt', gsub('validationResult.rds','plpLog.txt',gsub('plpResult.rds','plpLog.txt', as.character(loc))))
     if(file.exists(logLocation)){
       txt <- readLines(logLocation)
@@ -69,7 +67,7 @@ getPlpResult <- function(result,validation,summaryTable, inputType,filterIndex, 
 formatModSettings <- function(modelSettings){
   modelset <- data.frame(Setting = c('Model',names(modelSettings[[2]])),
                          Value = c(modelSettings[[1]], unlist(lapply(modelSettings[[2]], 
-                                                                     function(x) paste0(x, collapse='')))))
+                                                                     function(x) paste0(x, collapse=',')))))
   row.names(modelset) <- NULL
   return(modelset)
 }
@@ -122,29 +120,19 @@ formatPopSettings <- function(populationSettings){
 
 # format covariate summary table
 formatCovariateTable <- function(covariateSummary){
+  covariateSummary <- as.data.frame(covariateSummary)
   for(coln in c('covariateValue','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome','StandardizedMeanDiff')){
     if(sum(colnames(covariateSummary)==coln)>0){
       covariateSummary[,coln] <- format(round(covariateSummary[,coln], 4), nsmall = 4)
       class(covariateSummary[,coln]) <- "numeric"
     }
   }
-  
-  # edit the simple model names:
-  covariateSummary$covariateName <- gsub('\\[COVID v1\\] Persons with ', '', covariateSummary$covariateName)
-  covariateSummary$covariateName <- gsub('\\[Covid v1\\] Persons with ', '', covariateSummary$covariateName)
-  covariateSummary$covariateName <- gsub('\\[covid v1\\] Persons with ', '', covariateSummary$covariateName)
-  
-
   return(covariateSummary)
 }
 
 
 
 editCovariates <- function(covs){
-  
-  # remove Custom ATLAS variable during day -9999 through -1 days relative to index:
-  covs$covariateName <- gsub('Custom ATLAS variable during day -9999 through -1 days relative to index: ','History of ', covs$covariateName)
-  
   if(!is.null(covs$StandardizedMeanDiff)){
     return(list(table = formatCovariateTable(covs[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome','StandardizedMeanDiff')]),
                 colnames = c('Covariate Name', 'Value','Count', 'Outcome Mean', 'Non-outcome Mean','Std Mean Diff')
@@ -153,68 +141,6 @@ editCovariates <- function(covs){
     return(list(table = formatCovariateTable(covs[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome')]),
                 colnames = c('Covariate Name', 'Value','Count', 'Outcome Mean', 'Non-outcome Mean')
     ))
-  }
-}
-
-ageCalc <- function(age, model){
-  
-  if(model == 'Hospitalization'){
-    if(age < 20)                  { value = -7}
-    if(dplyr::between(age,20, 24)){ value = -4}
-    if(dplyr::between(age,25, 29)){ value = -2}
-    if(dplyr::between(age,30, 34)){ value = -2}
-    if(dplyr::between(age,35, 39)){ value = 0}
-    if(dplyr::between(age,40, 44)){ value = 3}
-    if(dplyr::between(age,45, 49)){ value = 6}
-    if(dplyr::between(age,50, 54)){ value = 9}
-    if(dplyr::between(age,55, 59)){ value = 13}
-    if(dplyr::between(age,60, 64)){ value = 15}
-    if(dplyr::between(age,65, 69)){ value = 19}
-    if(dplyr::between(age,70, 74)){ value = 20}
-    if(dplyr::between(age,75, 79)){ value = 23}
-    if(dplyr::between(age,80, 84)){ value = 24}
-    if(dplyr::between(age,85, 89)){ value = 27}
-    if(dplyr::between(age,90, 94)){ value = 25}
-    return(value)
-  }
-  if(model == 'Intensive Care'){
-    if(age < 20)                  { value = -10}
-    if(dplyr::between(age,20, 24)){ value = -2}
-    if(dplyr::between(age,25, 29)){ value = -1}
-    if(dplyr::between(age,30, 34)){ value = 0}
-    if(dplyr::between(age,35, 39)){ value = 0}
-    if(dplyr::between(age,40, 44)){ value = 3}
-    if(dplyr::between(age,45, 49)){ value = 5}
-    if(dplyr::between(age,50, 54)){ value = 10}
-    if(dplyr::between(age,55, 59)){ value = 12}
-    if(dplyr::between(age,60, 64)){ value = 16}
-    if(dplyr::between(age,65, 69)){ value = 22}
-    if(dplyr::between(age,70, 74)){ value = 21}
-    if(dplyr::between(age,75, 79)){ value = 22}
-    if(dplyr::between(age,80, 84)){ value = 21}
-    if(dplyr::between(age,85, 89)){ value = 25}
-    if(dplyr::between(age,90, 94)){ value = 21}
-    return(value)
-  }
-  
-  if(model == 'Death'){
-    if(age < 20)                  { value = -15}
-    if(dplyr::between(age,20, 24)){ value = -8}
-    if(dplyr::between(age,25, 29)){ value = -20}
-    if(dplyr::between(age,30, 34)){ value = -5}
-    if(dplyr::between(age,35, 39)){ value = 0}
-    if(dplyr::between(age,40, 44)){ value = -6}
-    if(dplyr::between(age,45, 49)){ value = 1}
-    if(dplyr::between(age,50, 54)){ value = 15}
-    if(dplyr::between(age,55, 59)){ value = 12}
-    if(dplyr::between(age,60, 64)){ value = 16}
-    if(dplyr::between(age,65, 69)){ value = 27}
-    if(dplyr::between(age,70, 74)){ value = 31}
-    if(dplyr::between(age,75, 79)){ value = 35}
-    if(dplyr::between(age,80, 84)){ value = 40}
-    if(dplyr::between(age,85, 89)){ value = 45}
-    if(dplyr::between(age,90, 94)){ value = 30}
-    return(value)
   }
 }
     
