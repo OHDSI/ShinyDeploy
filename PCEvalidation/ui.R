@@ -1,0 +1,289 @@
+# @file Ui.R
+#
+# Copyright 2020 Observational Health Data Sciences and Informatics
+#
+# This file is part of PatientLevelPrediction
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+library(shiny)
+library(plotly)
+library(shinycssloaders)
+library(shinydashboard)
+
+addInfo <- function(item, infoId) {
+  infoTag <- tags$small(class = "badge pull-right action-button",
+                        style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+                        type = "button", 
+                        id = infoId,
+                        "i")
+  item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
+  return(item)
+}
+
+ui <- shinydashboard::dashboardPage(skin = 'black',
+                                    
+                                    shinydashboard::dashboardHeader(title = "PLP Viewer", 
+                                                                    
+                                                                    tags$li(div(img(src = 'logo.png',
+                                                                                    title = "OHDSI PLP", height = "40px", width = "40px"),
+                                                                                style = "padding-top:0px; padding-bottom:0px;"),
+                                                                            class = "dropdown")
+                                                                    
+                                                                    
+                                    ), 
+                                    
+                                    shinydashboard::dashboardSidebar(
+                                      shinydashboard::sidebarMenu(id ='menu',
+                                                                  addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Table1", tabName = "Table1", icon = shiny::icon("table")), "TableInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingsInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
+                                      ),
+                                      
+                                      # scroller performanace - make conditional
+                                      conditionalPanel(condition = "input.menu=='Performance'",
+                                                       shiny::tags$script(shiny::HTML("
+                                                                                      $(document).ready(function() {setTimeout(function() {
+                                                                                      supElement = document.getElementById('slider1').parentElement;
+                                                                                      $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
+                                                                                      }, 50);})
+                                                                                      "))
+                                      ),
+                                      
+                                      conditionalPanel(condition = "input.menu=='Performance' || input.menu=='Model' || input.menu=='Settings' || input.menu=='Log'",
+                                                       
+                                                       shinyWidgets::pickerInput("selectResult", "Result:",
+                                                                                 choices = myResultList,
+                                                                                 selected = myResultList[[1]],
+                                                                                 options = shinyWidgets::pickerOptions(liveSearch = TRUE, dropupAuto = FALSE, header = 'Select a result here to view...'),
+                                                                                 multiple = FALSE),
+                                                       
+                                                       shiny::tableOutput("sideSettings"),
+                                                       shiny::tableOutput("sideSettings2")
+                                                       
+                                                       
+                                                       #shiny::selectInput(
+                                                       #  "selectResult",
+                                                       #  label = shiny::h4("Result:"),
+                                                       #  choices = myResultList
+                                                       #)            
+                                                       
+                                      ),
+                                      conditionalPanel(condition = "input.menu=='Table1'",
+                                                       
+                                                       
+                                                       shiny::selectInput('selectCohort', 
+                                                                          'Cohort:', 
+                                                                          myCohortList)    
+                                                       
+                                      )
+                                      
+                                      
+                                    ), # end sidebar
+                                    
+                                    shinydashboard::dashboardBody(
+                                      shinydashboard::tabItems(
+                                        
+                                        # table 1
+                                        shinydashboard::tabItem(tabName = "Table1", 
+                                                                DT::dataTableOutput('table1Table')
+                                        ),
+                                        
+                                        # help tab
+                                        shinydashboard::tabItem(tabName = "Help",
+                                                                shiny::h2("Information"),
+                                                                shiny::p("Click on a row to explore the results for that model.  When you wish to explore a different model, then select the new result row and the tabs will be updated."),
+                                                                shiny::a("Demo Video", href = 'https://youtu.be/StpV40yl1UE', target='_blank')
+                                        ),
+                                        
+                                        # First tab content
+                                        shinydashboard::tabItem(tabName = "Description",
+                                                                shiny::includeMarkdown(path = "./www/shinyDescription.md")
+                                                                
+                                        ),
+                                        shinydashboard::tabItem(tabName = "DataInfo",
+                                                                shiny::includeMarkdown(path = "./www/dataInfo.md")
+                                                                
+                                        ),
+                                        shinydashboard::tabItem(tabName = "Summary",
+                                                                
+                                                                shiny::fluidRow(
+                                                                  shiny::column(2, 
+                                                                                shiny::h4('Filters'),
+                                                                                shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model)))),
+                                                                                shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
+                                                                                shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
+                                                                                shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
+                                                                                shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
+                                                                                shiny::selectInput('TAR', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$TAR))))
+                                                                  ),  
+                                                                  shiny::column(10, style = "background-color:#F3FAFC;",
+                                                                                shiny::div(DT::dataTableOutput('summaryTable'), 
+                                                                                           style = "font-size:70%")
+                                                                                
+                                                                  ))),
+                                        
+                                        
+                                        shinydashboard::tabItem(tabName = "Settings",
+                                                                
+                                                                shiny::fluidRow(
+                                                                  
+                                                                  shiny::column(10, style = "background-color:#F3FAFC;",
+                                                                                
+                                                                                # do this inside tabs:
+                                                                                shiny::tabsetPanel(id = "tabs",
+                                                                                                   
+                                                                                                   shiny::tabPanel("Model Settings",
+                                                                                                                   shiny::h3('Model Settings: ', 
+                                                                                                                             shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('modelTable')),
+                                                                                                   
+                                                                                                   shiny::tabPanel("Population Settings",
+                                                                                                                   shiny::h3('Population Settings: ', 
+                                                                                                                             shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/createStudyPopulation.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('populationTable')),
+                                                                                                   
+                                                                                                   shiny::tabPanel("Covariate Settings", 
+                                                                                                                   shiny::h3('Covariate Settings: ', 
+                                                                                                                             shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank") 
+                                                                                                                   ),
+                                                                                                                   DT::dataTableOutput('covariateTable'))
+                                                                                )
+                                                                                
+                                                                  )
+                                                                  
+                                                                )),
+                                        # second tab
+                                        shinydashboard::tabItem(tabName = "Performance", 
+                                                                
+                                                                shiny::fluidRow(
+                                                                  #shinydashboard::box(width = 12,
+                                                                  #                    title = tagList(shiny::icon("question"),"Prediction Question"), status = "info", solidHeader = TRUE,
+                                                                  #                    shiny::htmlOutput('info')
+                                                                  #),
+                                                                  tabBox(
+                                                                    title = "Performance", 
+                                                                    # The id lets us use input$tabset1 on the server to find the current tab
+                                                                    id = "tabset1", height = "100%", width='100%',
+                                                                    
+                                                                    tabPanel("Aggregate", 
+                                                                             
+                                                                             shiny::fluidRow(
+                                                                               shiny::column(width = 12,
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "2-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat2", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben2", width = 3)
+                                                                                                                 
+                                                                                             ),
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "3-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat3", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben3", width = 3)
+                                                                                                                 
+                                                                                             ),
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "5-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat5", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben5", width = 3)
+                                                                                                                 
+                                                                                             ),
+                                                                                             shinydashboard::box(width = 12,
+                                                                                                                 title = "10-Year Dashboard",
+                                                                                                                 status = "warning", solidHeader = TRUE,
+                                                                                                                 shinydashboard::infoBoxOutput("survival10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("cstat10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("estat10", width = 3),
+                                                                                                                 shinydashboard::infoBoxOutput("netben10", width = 3)
+                                                                                                                 
+                                                                                             )
+                                                                               )
+                                                                             )
+                                                                             
+                                                                             
+                                                                    ), # end summary
+                                                                    
+                                                                    
+                                                                    tabPanel("Net Benefit", 
+                                                                             
+                                                                             shiny::selectInput('selectTime', 
+                                                                                                'Time:', 
+                                                                                                list(2,3,5,10)),
+                                                                             
+                                                                             shiny::fluidRow(
+                                                                    shinydashboard::box(status = 'info', width = 12,
+                                                                                        title = actionLink("demoHelp","Net-Benefit Plot", icon = icon("info")),
+                                                                                        solidHeader = TRUE,
+                                                                                        side = "right",
+                                                                                        #shinycssloaders::withSpinner(shiny::plotOutput('nbPlot')))
+                                                                                        shinycssloaders::withSpinner(plotly::plotlyOutput('nbPlot')))
+                                                                             )),
+                                                                    
+                                                                    tabPanel("Calibration", 
+                                                                             shiny::fluidRow(
+                                                                               shinydashboard::box(status = 'info', width = 12,
+                                                                                                   title = actionLink("calHelp","10-year Calibration Plot", icon = icon("info")),
+                                                                                                   solidHeader = TRUE,
+                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('cal')))
+                                                                             )
+                                                                    )
+                                                                  ))),
+                                        
+                                        # 3rd tab
+                                        shinydashboard::tabItem(tabName = "Model", 
+                                                                
+                                                                shiny::fluidRow(
+                                                                  shinydashboard::box( status = 'info',
+                                                                                       title = "Binary", solidHeader = TRUE,
+                                                                                       shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryBinary'))),
+                                                                  shinydashboard::box(status = 'info',
+                                                                                      title = "Measurements", solidHeader = TRUE,
+                                                                                      side = "right",
+                                                                                      shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryMeasure')))),
+                                                                shiny::fluidRow(width=12,
+                                                                                shinydashboard::box(status = 'info', width = 12,
+                                                                                                    title = "Covariates", solidHeader = TRUE,
+                                                                                                    DT::dataTableOutput('modelCovariateInfo'))),
+                                                                shiny::fluidRow(width=12,
+                                                                                shinydashboard::box(status = 'info', width = 12,
+                                                                                                    title = "Model Table", solidHeader = TRUE,
+                                                                                                    shiny::downloadButton("downloadData", "Download Model"),
+                                                                                                    DT::dataTableOutput('modelView')))
+                                        ),
+                                        
+                                        # 4th tab
+                                        shinydashboard::tabItem(tabName = "Log", 
+                                                                shiny::verbatimTextOutput('log')
+                                        )
+                                        
+                                        
+                                      )
+                                    )
+)

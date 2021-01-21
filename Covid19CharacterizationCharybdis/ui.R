@@ -43,6 +43,7 @@ dashboardPage(
                 if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
                 menuItem("Database information", tabName = "databaseInformation"), 
+                menuItem("Change Log", tabName="changeLog"),
                 conditionalPanel(condition = "input.tabs=='compareCohortCharacterization'",
                    selectInput("database", "Database", database$databaseId, selectize = FALSE)
                 ),
@@ -66,7 +67,7 @@ dashboardPage(
                                              options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
                                              multiple = TRUE)
                 ),
-                conditionalPanel(condition = "input.tabs!='about' & input.tabs!='cohorts' & input.tabs!='cohortCounts' & input.tabs!='databaseInformation'",
+                conditionalPanel(condition = "input.tabs!='about' & input.tabs!='cohorts' & input.tabs!='cohortCounts' & input.tabs!='databaseInformation' & input.tabs!='changeLog'" ,
                    shinyWidgets::pickerInput("targetCohort", "Cohort (Target)",
                                              choices = characterizationTargetCohort$targetName,
                                              selected = targetName,
@@ -181,7 +182,9 @@ dashboardPage(
               downloadButton("dlDatabaseInformation", "Download Data"),
               htmlOutput("borderDatabaseInformation"),
               dataTableOutput("databaseInformationTable")
-      )
+      ),
+      tabItem(tabName = "changeLog",
+              includeHTML("changeLog.html"))
     )
   )
 )

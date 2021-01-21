@@ -64,7 +64,7 @@ server <- function(input, output) {
       }
       
       convertHyperlinks <- function(markdown) {
-        mdLinks <- regmatches(markdown, gregexpr("\\[[^\\[]*\\]\\(http[^\\(]*\\)", markdown))[[1]]
+        mdLinks <- regmatches(markdown, gregexpr("\\[[^\\[]*\\]\\(http[^\\(]*?\\)", markdown))[[1]]
         html <- markdown
         if (length(mdLinks) > 0) {
           for (i in 1:length(mdLinks)) {

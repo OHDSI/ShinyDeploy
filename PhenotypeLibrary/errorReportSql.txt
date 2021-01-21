@@ -1,0 +1,29 @@
+DBMS:
+postgresql
+
+Error:
+org.postgresql.util.PSQLException: ERROR: permission denied for table cohort_extra
+
+SQL:
+GRANT ALL PRIVILEGES ON results.cohort_extra TO phoebe
+
+R version:
+R version 4.0.3 (2020-10-10)
+
+Platform:
+x86_64-w64-mingw32
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- DatabaseConnector (3.0.0)
+- gdtools (0.2.2)
+- magrittr (1.5)
+- shiny (1.5.0)

@@ -1,0 +1,46 @@
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 4.2.3
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_8
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		CohortID:           17780
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          16741
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        22663
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Covariates:         57627
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Population size:    22654
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Cases:              3541
+2020-11-03 16:27:24	[Main thread]	WARN	PatientLevelPrediction	personSplitter	deprecatedWarning: 'personSplitter' is deprecated. Use 'randomSplitter' instead. See help("Deprecated") 
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Creating a 25% test and 75% train (into 3 folds) random stratified split by class
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Data split into 5663 test cases and 16991 train cases (5665, 5663, 5663)
+2020-11-03 16:27:24	[Main thread]	INFO	PatientLevelPrediction		Training AdaBoost model
+2020-11-03 16:28:31	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 2 redundant covariates
+2020-11-03 16:28:31	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 35094 infrequent covariates
+2020-11-03 16:28:31	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Normalizing covariates
+2020-11-03 16:30:04	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Tidying covariates took 2.66 mins
+2020-11-03 16:55:41	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2020-11-03 16:56:14	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2020-11-03 16:56:25	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Mapping covariates...
+2020-11-03 16:56:51	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Executing prediction...
+2020-11-03 16:57:09	[Main thread]	INFO	PatientLevelPrediction	predict.pythonReticulate	Returning results...
+2020-11-03 16:57:09	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2020-11-03 16:57:09	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                73.33
+2020-11-03 16:57:09	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              30.76
+2020-11-03 16:57:09	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.22
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration in large- Mean predicted risk 0.4514 : observed risk 0.1563
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Weak calibration intercept: -1.4932 - gradient:2.5225
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Hosmer-Lemeshow calibration gradient: 4.91 intercept:         -2.06
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.31
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                73.22
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      71.56
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      74.88
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              30.60
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.22
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration in large- Mean predicted risk 0.4517 : observed risk 0.1563
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Weak calibration intercept: -1.4947 - gradient:2.4974
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Hosmer-Lemeshow calibration gradient: 5.04 intercept:         -2.12
+2020-11-03 16:57:10	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.31
+2020-11-03 16:57:11	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2020-11-03 16:57:11
+2020-11-03 16:57:11	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2020-11-03 16:58:54	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2020-11-03 16:58:54
+2020-11-03 16:58:54	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2020-11-03 16:58:56	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\D:/covidDeathResults/Analysis_8\plpResult
+2020-11-03 16:58:56	[Main thread]	INFO	PatientLevelPrediction		Log saved to D:/covidDeathResults/Analysis_8/plplog.txt
+2020-11-03 16:58:56	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.

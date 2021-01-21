@@ -52,8 +52,55 @@ styleAbsColorBar <- function(maxValue, colorPositive, colorNegative, angle = 90)
                  angle, maxValue, maxValue, colorPositive, colorNegative, maxValue, maxValue))
 }
 
+showTermsOfUseModal <- function() {
+  showModal(
+    modalDialog(
+      title="Terms of Use", 
+      includeMarkdown("md/terms_of_use.md"),
+      footer = tagList(
+        actionButton("termsOfUseReject", "Reject", style="color: white", class="btn-danger"),
+        actionButton("termsOfUseAccept", "Accept", style="color: white", class="btn-success")
+      )
+    )
+  )
+}
+
+TERMS_OF_USE_ACCEPTED <- "accepted"
 shiny::shinyServer(function(input, output, session) {
+  # Terms Of Use Modal -------------------
+  observe({
+    # Show this modal whenever the user has not accepted the terms of use
+    if (!is.null(input$jscookie)) {
+      if (input$jscookie != TERMS_OF_USE_ACCEPTED) {
+        showTermsOfUseModal()
+      }
+    }
+  })
   
+  observeEvent(input$termsOfUseReject, {
+    session$sendCustomMessage("alert", "You must accept the terms of use to use the application.")
+  })
+  
+  observeEvent(input$termsOfUseAccept, {
+    writeLines("Set cookie")
+    session$sendCustomMessage("setCookie", TERMS_OF_USE_ACCEPTED)
+    removeModal()
+  })  
+  # Used for testing cookie set/removal
+  # observeEvent(input$cookieGetVal, {
+  #   if (!is.null(input$jscookie)) {
+  #     writeLines(input$jscookie)
+  #   } else {
+  #     writeLines("NULL")
+  #   }
+  # })
+  # 
+  # observeEvent(input$cookieRmVal, {
+  #   writeLines("Cookie removed")
+  #   session$sendCustomMessage("rmCookie", "")
+  #   writeLines("----------------")
+  # })
+    
   cohortId <- shiny::reactive({
     return(cohort$cohortId[cohort$cohortFullName == input$cohort])
   })
