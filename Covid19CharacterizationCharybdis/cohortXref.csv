@@ -835,6 +835,402 @@ cohortId,targetId,targetName,strataId,strataName,cohortType
 139000161,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,16,with Index date: Jun 2020,TwS
 140000161,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,16,with Index date: Jun 2020,TwS
 141000161,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,16,with Index date: Jun 2020,TwS
+111000171,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+112000171,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,17,with Index date: Jul 2020,TwS
+113000171,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+114000171,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,17,with Index date: Jul 2020,TwS
+115000171,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+116000171,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,17,with Index date: Jul 2020,TwS
+126000171,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+127000171,127,Persons tested for SARS-CoV-2 with no required prior observation,17,with Index date: Jul 2020,TwS
+128000171,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+129000171,129,Persons tested positive for SARS-CoV-2 with no required prior observation,17,with Index date: Jul 2020,TwS
+130000171,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+131000171,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+132000171,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+133000171,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+134000171,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+135000171,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+136000171,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+137000171,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+138000171,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+139000171,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+140000171,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,17,with Index date: Jul 2020,TwS
+141000171,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,17,with Index date: Jul 2020,TwS
+111000181,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+112000181,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,18,with Index date: Aug 2020,TwS
+113000181,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+114000181,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,18,with Index date: Aug 2020,TwS
+115000181,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+116000181,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,18,with Index date: Aug 2020,TwS
+126000181,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+127000181,127,Persons tested for SARS-CoV-2 with no required prior observation,18,with Index date: Aug 2020,TwS
+128000181,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+129000181,129,Persons tested positive for SARS-CoV-2 with no required prior observation,18,with Index date: Aug 2020,TwS
+130000181,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+131000181,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+132000181,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+133000181,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+134000181,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+135000181,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+136000181,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+137000181,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+138000181,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+139000181,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+140000181,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,18,with Index date: Aug 2020,TwS
+141000181,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,18,with Index date: Aug 2020,TwS
+111000191,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+112000191,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,19,with Index date: Sep 2020,TwS
+113000191,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+114000191,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,19,with Index date: Sep 2020,TwS
+115000191,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+116000191,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,19,with Index date: Sep 2020,TwS
+126000191,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+127000191,127,Persons tested for SARS-CoV-2 with no required prior observation,19,with Index date: Sep 2020,TwS
+128000191,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+129000191,129,Persons tested positive for SARS-CoV-2 with no required prior observation,19,with Index date: Sep 2020,TwS
+130000191,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+131000191,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+132000191,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+133000191,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+134000191,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+135000191,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+136000191,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+137000191,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+138000191,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+139000191,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+140000191,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,19,with Index date: Sep 2020,TwS
+141000191,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,19,with Index date: Sep 2020,TwS
+111000201,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+112000201,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,20,with Index date: Oct 2020,TwS
+113000201,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+114000201,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,20,with Index date: Oct 2020,TwS
+115000201,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+116000201,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,20,with Index date: Oct 2020,TwS
+126000201,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+127000201,127,Persons tested for SARS-CoV-2 with no required prior observation,20,with Index date: Oct 2020,TwS
+128000201,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+129000201,129,Persons tested positive for SARS-CoV-2 with no required prior observation,20,with Index date: Oct 2020,TwS
+130000201,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+131000201,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+132000201,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+133000201,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+134000201,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+135000201,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+136000201,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+137000201,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+138000201,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+139000201,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+140000201,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,20,with Index date: Oct 2020,TwS
+141000201,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,20,with Index date: Oct 2020,TwS
+111000211,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+112000211,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,21,with Index date: Nov 2020,TwS
+113000211,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+114000211,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,21,with Index date: Nov 2020,TwS
+115000211,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+116000211,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,21,with Index date: Nov 2020,TwS
+126000211,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+127000211,127,Persons tested for SARS-CoV-2 with no required prior observation,21,with Index date: Nov 2020,TwS
+128000211,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+129000211,129,Persons tested positive for SARS-CoV-2 with no required prior observation,21,with Index date: Nov 2020,TwS
+130000211,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+131000211,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+132000211,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+133000211,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+134000211,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+135000211,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+136000211,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+137000211,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+138000211,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+139000211,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+140000211,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,21,with Index date: Nov 2020,TwS
+141000211,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,21,with Index date: Nov 2020,TwS
+111000221,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+112000221,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,22,with Index date: Dec 2020,TwS
+113000221,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+114000221,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,22,with Index date: Dec 2020,TwS
+115000221,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+116000221,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,22,with Index date: Dec 2020,TwS
+126000221,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+127000221,127,Persons tested for SARS-CoV-2 with no required prior observation,22,with Index date: Dec 2020,TwS
+128000221,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+129000221,129,Persons tested positive for SARS-CoV-2 with no required prior observation,22,with Index date: Dec 2020,TwS
+130000221,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+131000221,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+132000221,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+133000221,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+134000221,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+135000221,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+136000221,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+137000221,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+138000221,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+139000221,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+140000221,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,22,with Index date: Dec 2020,TwS
+141000221,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,22,with Index date: Dec 2020,TwS
+111000231,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+112000231,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,23,with Index date: Jan 2021,TwS
+113000231,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+114000231,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,23,with Index date: Jan 2021,TwS
+115000231,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+116000231,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,23,with Index date: Jan 2021,TwS
+126000231,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+127000231,127,Persons tested for SARS-CoV-2 with no required prior observation,23,with Index date: Jan 2021,TwS
+128000231,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+129000231,129,Persons tested positive for SARS-CoV-2 with no required prior observation,23,with Index date: Jan 2021,TwS
+130000231,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+131000231,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+132000231,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+133000231,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+134000231,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+135000231,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+136000231,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+137000231,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+138000231,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+139000231,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+140000231,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,23,with Index date: Jan 2021,TwS
+141000231,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,23,with Index date: Jan 2021,TwS
+111000241,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+112000241,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,24,with Index date: Feb 2021,TwS
+113000241,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+114000241,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,24,with Index date: Feb 2021,TwS
+115000241,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+116000241,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,24,with Index date: Feb 2021,TwS
+126000241,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+127000241,127,Persons tested for SARS-CoV-2 with no required prior observation,24,with Index date: Feb 2021,TwS
+128000241,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+129000241,129,Persons tested positive for SARS-CoV-2 with no required prior observation,24,with Index date: Feb 2021,TwS
+130000241,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+131000241,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+132000241,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+133000241,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+134000241,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+135000241,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+136000241,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+137000241,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+138000241,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+139000241,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+140000241,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,24,with Index date: Feb 2021,TwS
+141000241,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,24,with Index date: Feb 2021,TwS
+111000251,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+112000251,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,25,with Index date: Mar 2021,TwS
+113000251,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+114000251,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,25,with Index date: Mar 2021,TwS
+115000251,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+116000251,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,25,with Index date: Mar 2021,TwS
+126000251,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+127000251,127,Persons tested for SARS-CoV-2 with no required prior observation,25,with Index date: Mar 2021,TwS
+128000251,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+129000251,129,Persons tested positive for SARS-CoV-2 with no required prior observation,25,with Index date: Mar 2021,TwS
+130000251,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+131000251,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+132000251,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+133000251,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+134000251,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+135000251,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+136000251,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+137000251,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+138000251,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+139000251,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+140000251,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,25,with Index date: Mar 2021,TwS
+141000251,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,25,with Index date: Mar 2021,TwS
+111000261,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+112000261,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,26,with Index date: Apr 2021,TwS
+113000261,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+114000261,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,26,with Index date: Apr 2021,TwS
+115000261,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+116000261,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,26,with Index date: Apr 2021,TwS
+126000261,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+127000261,127,Persons tested for SARS-CoV-2 with no required prior observation,26,with Index date: Apr 2021,TwS
+128000261,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+129000261,129,Persons tested positive for SARS-CoV-2 with no required prior observation,26,with Index date: Apr 2021,TwS
+130000261,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+131000261,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+132000261,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+133000261,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+134000261,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+135000261,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+136000261,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+137000261,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+138000261,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+139000261,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+140000261,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,26,with Index date: Apr 2021,TwS
+141000261,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,26,with Index date: Apr 2021,TwS
+111000271,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,27,with Index date: May 2021,TwS
+112000271,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,27,with Index date: May 2021,TwS
+113000271,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,27,with Index date: May 2021,TwS
+114000271,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,27,with Index date: May 2021,TwS
+115000271,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,27,with Index date: May 2021,TwS
+116000271,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,27,with Index date: May 2021,TwS
+126000271,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,27,with Index date: May 2021,TwS
+127000271,127,Persons tested for SARS-CoV-2 with no required prior observation,27,with Index date: May 2021,TwS
+128000271,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,27,with Index date: May 2021,TwS
+129000271,129,Persons tested positive for SARS-CoV-2 with no required prior observation,27,with Index date: May 2021,TwS
+130000271,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+131000271,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+132000271,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+133000271,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+134000271,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+135000271,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+136000271,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+137000271,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+138000271,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+139000271,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+140000271,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,27,with Index date: May 2021,TwS
+141000271,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,27,with Index date: May 2021,TwS
+111000281,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+112000281,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,28,with Index date: Jun 2021,TwS
+113000281,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+114000281,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,28,with Index date: Jun 2021,TwS
+115000281,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+116000281,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,28,with Index date: Jun 2021,TwS
+126000281,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+127000281,127,Persons tested for SARS-CoV-2 with no required prior observation,28,with Index date: Jun 2021,TwS
+128000281,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+129000281,129,Persons tested positive for SARS-CoV-2 with no required prior observation,28,with Index date: Jun 2021,TwS
+130000281,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+131000281,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+132000281,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+133000281,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+134000281,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+135000281,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+136000281,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+137000281,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+138000281,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+139000281,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+140000281,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,28,with Index date: Jun 2021,TwS
+141000281,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,28,with Index date: Jun 2021,TwS
+111000291,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+112000291,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,29,with Index date: Jul 2021,TwS
+113000291,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+114000291,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,29,with Index date: Jul 2021,TwS
+115000291,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+116000291,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,29,with Index date: Jul 2021,TwS
+126000291,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+127000291,127,Persons tested for SARS-CoV-2 with no required prior observation,29,with Index date: Jul 2021,TwS
+128000291,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+129000291,129,Persons tested positive for SARS-CoV-2 with no required prior observation,29,with Index date: Jul 2021,TwS
+130000291,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+131000291,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+132000291,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+133000291,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+134000291,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+135000291,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+136000291,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+137000291,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+138000291,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+139000291,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+140000291,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,29,with Index date: Jul 2021,TwS
+141000291,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,29,with Index date: Jul 2021,TwS
+111000301,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+112000301,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,30,with Index date: Aug 2021,TwS
+113000301,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+114000301,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,30,with Index date: Aug 2021,TwS
+115000301,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+116000301,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,30,with Index date: Aug 2021,TwS
+126000301,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+127000301,127,Persons tested for SARS-CoV-2 with no required prior observation,30,with Index date: Aug 2021,TwS
+128000301,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+129000301,129,Persons tested positive for SARS-CoV-2 with no required prior observation,30,with Index date: Aug 2021,TwS
+130000301,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+131000301,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+132000301,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+133000301,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+134000301,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+135000301,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+136000301,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+137000301,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+138000301,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+139000301,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+140000301,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,30,with Index date: Aug 2021,TwS
+141000301,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,30,with Index date: Aug 2021,TwS
+111000311,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+112000311,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,31,with Index date: Sep 2021,TwS
+113000311,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+114000311,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,31,with Index date: Sep 2021,TwS
+115000311,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+116000311,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,31,with Index date: Sep 2021,TwS
+126000311,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+127000311,127,Persons tested for SARS-CoV-2 with no required prior observation,31,with Index date: Sep 2021,TwS
+128000311,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+129000311,129,Persons tested positive for SARS-CoV-2 with no required prior observation,31,with Index date: Sep 2021,TwS
+130000311,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+131000311,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+132000311,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+133000311,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+134000311,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+135000311,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+136000311,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+137000311,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+138000311,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+139000311,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+140000311,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,31,with Index date: Sep 2021,TwS
+141000311,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,31,with Index date: Sep 2021,TwS
+111000321,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+112000321,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,32,with Index date: Oct 2021,TwS
+113000321,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+114000321,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,32,with Index date: Oct 2021,TwS
+115000321,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+116000321,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,32,with Index date: Oct 2021,TwS
+126000321,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+127000321,127,Persons tested for SARS-CoV-2 with no required prior observation,32,with Index date: Oct 2021,TwS
+128000321,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+129000321,129,Persons tested positive for SARS-CoV-2 with no required prior observation,32,with Index date: Oct 2021,TwS
+130000321,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+131000321,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+132000321,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+133000321,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+134000321,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+135000321,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+136000321,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+137000321,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+138000321,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+139000321,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+140000321,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,32,with Index date: Oct 2021,TwS
+141000321,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,32,with Index date: Oct 2021,TwS
+111000331,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+112000331,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,33,with Index date: Nov 2021,TwS
+113000331,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+114000331,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,33,with Index date: Nov 2021,TwS
+115000331,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+116000331,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,33,with Index date: Nov 2021,TwS
+126000331,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+127000331,127,Persons tested for SARS-CoV-2 with no required prior observation,33,with Index date: Nov 2021,TwS
+128000331,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+129000331,129,Persons tested positive for SARS-CoV-2 with no required prior observation,33,with Index date: Nov 2021,TwS
+130000331,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+131000331,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+132000331,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+133000331,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+134000331,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+135000331,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+136000331,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+137000331,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+138000331,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+139000331,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+140000331,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,33,with Index date: Nov 2021,TwS
+141000331,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,33,with Index date: Nov 2021,TwS
+111000341,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+112000341,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,34,with Index date: Dec 2021,TwS
+113000341,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+114000341,114,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with no required prior observation,34,with Index date: Dec 2021,TwS
+115000341,115,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+116000341,116,Persons hospitalized with influenza diagnosis or positive test and requiring intensive services 2017-2018 with no required prior observation,34,with Index date: Dec 2021,TwS
+126000341,126,Persons tested for SARS-CoV-2 with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+127000341,127,Persons tested for SARS-CoV-2 with no required prior observation,34,with Index date: Dec 2021,TwS
+128000341,128,Persons tested positive for SARS-CoV-2 with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+129000341,129,Persons tested positive for SARS-CoV-2 with no required prior observation,34,with Index date: Dec 2021,TwS
+130000341,130,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+131000341,131,Persons tested with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
+132000341,132,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+133000341,133,Persons with a COVID-19 diagnosis or a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
+134000341,134,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+135000341,135,Persons hospitalized with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
+136000341,136,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+137000341,137,Persons hospitalized and requiring intensive services with a COVID-19 diagnosis record or a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
+138000341,138,Persons hospitalized with a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+139000341,139,Persons hospitalized with a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
+140000341,140,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with at least 365d prior observation,34,with Index date: Dec 2021,TwS
+141000341,141,Persons hospitalized and requiring intensive services with a SARS-CoV-2 positive test with no required prior observation,34,with Index date: Dec 2021,TwS
 111001001,111,Persons with Influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,100,with Prevalent Type 2 Diabetes Mellitus,TwS
 112001001,112,Persons with Influenza diagnosis or positive test 2017-2018 with no required prior observation,100,with Prevalent Type 2 Diabetes Mellitus,TwS
 113001001,113,Persons hospitalized with influenza diagnosis or positive test 2017-2018 with at least 365d prior observation,100,with Prevalent Type 2 Diabetes Mellitus,TwS
