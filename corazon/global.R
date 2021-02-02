@@ -1,7 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-load("data/PreMerged.RData")
+load("./data/PreMerged.RData")
+
 shinySettings <- list(dataFolder = file.path(getwd(),"data"), blind = FALSE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
