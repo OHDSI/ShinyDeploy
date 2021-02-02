@@ -1,8 +1,6 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-load("./data/PreMerged.RData")
-
 shinySettings <- list(dataFolder = file.path(getwd(),"data"), blind = FALSE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
@@ -34,7 +32,7 @@ loadFile <- function(file, removePart) {
   camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
   if (!(tableName %in% splittableTables)) {
     newData <- readRDS(file.path(dataFolder, file))
-    colnames(newData) <- SqlRender::snakeCaseToCamelCase(colnames(newData))
+    #colnames(newData) <- SqlRender::snakeCaseToCamelCase(colnames(newData))
     if (exists(camelCaseName, envir = .GlobalEnv)) {
       existingData <- get(camelCaseName, envir = .GlobalEnv)
       newData <- rbind(existingData, newData)
