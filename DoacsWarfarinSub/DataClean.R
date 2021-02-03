@@ -23,7 +23,7 @@ exposureOfInterest <- exposureOfInterest[!drops, ]
 
 exposureOfInterest$exposureName <- gsub("\\[680\\] Female ", "", exposureOfInterest$exposureName)
 exposureOfInterest$exposureName <- gsub(" new users with prior", "", exposureOfInterest$exposureName)
-exposureOfInterest$exposureName[grep("non-valvular atrial fibrillation", exposureOfInterest$exposureName)] <- paste("NVAF:", exposureOfInterest$exposureName[grep("non-valvular atrial fibrillation", exposureOfInterest$exposureName)])
+exposureOfInterest$exposureName[grep("non-valvular atrial fibrillation", exposureOfInterest$exposureName)] <- paste("AF:", exposureOfInterest$exposureName[grep("non-valvular atrial fibrillation", exposureOfInterest$exposureName)])
 exposureOfInterest$exposureName[grep("venous thromboembolism", exposureOfInterest$exposureName)] <- paste("VTE:", exposureOfInterest$exposureName[grep("venous thromboembolism", exposureOfInterest$exposureName)])
 exposureOfInterest$exposureName[grep("knee or hip replacement surgery", exposureOfInterest$exposureName)] <- paste("TKR/THR:", exposureOfInterest$exposureName[grep("knee or hip replacement surgery", exposureOfInterest$exposureName)])
 exposureOfInterest$exposureName <- gsub(" non-valvular atrial fibrillation", "", exposureOfInterest$exposureName)
@@ -32,10 +32,10 @@ exposureOfInterest$exposureName <- gsub(" coronary artery disease or peripheral 
 exposureOfInterest$exposureName <- gsub(" knee or hip replacement surgery", "", exposureOfInterest$exposureName)
 exposureOfInterest$exposureName <- gsub(", sens TAR1", " (30d gap)", exposureOfInterest$exposureName)
 exposureOfInterest$exposureName <- gsub(", sen TAR1", " (30d gap)", exposureOfInterest$exposureName)
-exposureOrder <- c("NVAF: rivaroxaban",
-                   "NVAF: apixaban",
-                   "NVAF: dabigatran",
-                   "NVAF: warfarin",
+exposureOrder <- c("AF: rivaroxaban",
+                   "AF: apixaban",
+                   "AF: dabigatran",
+                   "AF: warfarin",
                    "VTE: rivaroxaban",
                    "VTE: apixaban",
                    "VTE: dabigatran",
@@ -44,10 +44,10 @@ exposureOrder <- c("NVAF: rivaroxaban",
                    "TKR/THR: apixaban",
                    "TKR/THR: dabigatran",
                    "TKR/THR: warfarin",
-                   "NVAF: rivaroxaban (30d gap)",
-                   "NVAF: apixaban (30d gap)",
-                   "NVAF: dabigatran (30d gap)",
-                   "NVAF: warfarin (30d gap)",
+                   "AF: rivaroxaban (30d gap)",
+                   "AF: apixaban (30d gap)",
+                   "AF: dabigatran (30d gap)",
+                   "AF: warfarin (30d gap)",
                    "VTE: rivaroxaban (30d gap)",
                    "VTE: apixaban (30d gap)",
                    "VTE: dabigatran (30d gap)",
