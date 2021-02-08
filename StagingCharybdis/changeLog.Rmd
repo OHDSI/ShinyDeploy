@@ -6,6 +6,26 @@ output:
     theme: null
 ---
 
+## 2021-Feb-7
+
+This release contains new data sets and updates to existing ones:
+
+### Additions
+
+#### Oregon Health and Science University (OHSU)
+
+Oregon Health & Science University’s Research Data Warehouse that contains over 3 million patients over more than 10 years; the Oregon Clinical & Translational Research Institute derives the warehouse from Electronic Health Record data.
+
+#### University of Florida Health COVID-19 Patient Dataset (UFHealth)
+
+The UF Health COVID dataset contains diagnoses, treatments, resource utilization and outcomes information on UF Health patients with COVID-19-like symptoms or who have undergone COVID-19 clinical testing. The data include qualifying patients seen at UF Health locations in Gainesville and Jacksonville since Jan. 1, 2020.
+
+### Updates
+
+The following data sets were updated in this release:
+
+- HM Hospitals
+
 ## 2021-Jan-17
 
 This release contains new data sets and updates to existing ones:
