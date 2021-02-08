@@ -34,7 +34,7 @@ connectionPool <- pool::dbPool(
 
 onStop(function() {
   if (DBI::dbIsValid(connectionPool)) {
-    writeLines("Closing database pool")
+    writeLines("Closing the database pool")
     pool::poolClose(connectionPool)
   }
 })
@@ -57,6 +57,13 @@ loadResultsTable("database")
 loadResultsTable("exposure_of_interest")
 loadResultsTable("outcome_of_interest")
 loadResultsTable("cohort_method_analysis")
+
+if (DBI::dbExistsTable(connectionPool, "unblind")) {
+  unblind <- loadResultsTable("unblind") 
+  unblind$unblind <- TRUE
+} else {
+  unblind <- NULL
+}
 
 tcos <- DatabaseConnector::dbGetQuery(connectionPool, 
                                                     sprintf("SELECT DISTINCT target_id, comparator_id, outcome_id FROM %s.cohort_method_result;", resultsDatabaseSchema))
