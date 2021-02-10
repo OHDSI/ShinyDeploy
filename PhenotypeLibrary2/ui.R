@@ -204,35 +204,42 @@ bodyTabItems <- shinydashboard::tabItems(
                                     conditionalPanel(
                                       "output.cohortSearchResultsCountOfSelected > 0&input.compareCohorts=='No Comparision'",
                                       shiny::tabsetPanel(
+                                        id = "cohortDetails",
                                         type = "tab",
                                         shiny::tabPanel(title = "Description",
+                                                        value = "descriptionFirst",
                                                         copyToClipboardButton(toCopyId = "cohortDetailsTextFirst", 
                                                                               style = "margin-top: 5px; margin-bottom: 5px;"),
                                                         shiny::htmlOutput("cohortDetailsTextFirst")),
                                           shiny::tabPanel(
+                                            value = "cohortDefinitionFirst",
                                             title = "Cohort definition",
                                             copyToClipboardButton(toCopyId = "cohortDefinitionDetailsFirst", 
                                                                   style = "margin-top: 5px; margin-bottom: 5px;"),
                                             shiny::htmlOutput(outputId = "cohortDefinitionDetailsFirst")
                                           ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionConceptsetFirst",
                                           title = "Concept Sets",
                                           DT::DTOutput(outputId = "cohortDefinitionConceptSetsTableFirst"),
                                           shiny::conditionalPanel(
                                             condition = "output.cohortConceptSetsSelectedFirstRowIsSelected == true",
                                             shiny::tabsetPanel(
-                                              id = "conceptsetExpressionTab",
+                                              id = "conceptsetExpressionTabFirst",
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionFirst",
                                                 title = "Expression",
                                                 DT::DTOutput(outputId = "cohortConceptsetExpressionDataTableFirst")
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionJsonFirst",
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonFirst", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
                                                 shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst")
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionResoledFirst",
                                                 title = "Resolved",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -245,6 +252,7 @@ bodyTabItems <- shinydashboard::tabItems(
                                                   )),
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionOptimizedFirst",
                                                 title = "Optimized",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -257,6 +265,7 @@ bodyTabItems <- shinydashboard::tabItems(
                                                   )),
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionRecommendedFirst",
                                                 title = "Recommended",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -272,12 +281,14 @@ bodyTabItems <- shinydashboard::tabItems(
                                           )
                                         ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionJsonFirst",
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
                                           shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst")
                                         ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionSqlFirst",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
@@ -291,35 +302,42 @@ bodyTabItems <- shinydashboard::tabItems(
                                     conditionalPanel(
                                       "output.cohortSearchResultsCountOfSelected == 2&input.compareCohorts=='No Comparision'",
                                       shiny::tabsetPanel(
+                                        id = "cohortDetailsSecond",
                                         type = "tab",
                                         shiny::tabPanel(title = "Description",
+                                                        value = "descriptionSecond",
                                                         copyToClipboardButton(toCopyId = "cohortDetailsTextSecond", 
                                                                               style = "margin-top: 5px; margin-bottom: 5px;"),
                                                         shiny::htmlOutput(outputId = "cohortDetailsTextSecond")),
                                           shiny::tabPanel(
+                                            value = "cohortDefinitionSecond",
                                             title = "Cohort definition",
                                             copyToClipboardButton(toCopyId = "cohortDefinitionDetailsSecond", 
                                                                   style = "margin-top: 5px; margin-bottom: 5px;"),
                                             shiny::htmlOutput(outputId = "cohortDefinitionDetailsSecond")
                                           ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionConceptsetSecond",
                                           title = "Concept Sets",
                                           DT::DTOutput(outputId = "cohortDefinitionConceptSetsTableSecond"),
                                           shiny::conditionalPanel(
                                             condition = "output.cohortConceptSetsSelectedSecondRowIsSelected == true",
                                             shiny::tabsetPanel(
-                                              id = "conceptsetExpressionTab",
+                                              id = "conceptsetExpressionTabSecond",
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionSecond",
                                                 title = "Expression",
                                                 DT::DTOutput(outputId = "cohortConceptsetExpressionDataTableSecond")
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptetExpressionJsonSecond",
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonSecond", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
                                                 shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond")
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionResolvedSecond",
                                                 title = "Resolved",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -332,6 +350,7 @@ bodyTabItems <- shinydashboard::tabItems(
                                                   )),
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionOptimizedSecond",
                                                 title = "Optimized",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -344,6 +363,7 @@ bodyTabItems <- shinydashboard::tabItems(
                                                   )),
                                               ),
                                               shiny::tabPanel(
+                                                value = "conceptsetExpressionRecommendedSecond",
                                                 title = "Recommended",
                                                 shiny::tabsetPanel(
                                                   shiny::tabPanel(
@@ -359,12 +379,14 @@ bodyTabItems <- shinydashboard::tabItems(
                                           )
                                         ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionJsonSecond",
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
                                           shiny::verbatimTextOutput("cohortDefinitionJsonSecond")
                                         ),
                                         shiny::tabPanel(
+                                          value = "cohortDefinitionSqlSecond",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),

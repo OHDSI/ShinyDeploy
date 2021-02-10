@@ -4,26 +4,51 @@ shiny::shinyServer(function(input, output, session) {
   # Cohort search results
   cohortSearchResults <- shiny::reactive(x = {
     if (input$searchText != "") {
-      # to do -
-      # check if multiple words, then split each word stringr::str_split(pattern = " ")
-      # iterate over each word.
-      # if all iterations are TRUE then return
-      data <-   cohort %>%
-        dplyr::mutate(
-          searchTerms = paste(
-            .data$cohortName,
-            .data$logicDescription,
-            .data$referentConceptIdsSearchTerms,
-            .data$phenotypeName,
-            .data$cohortType,
-            .data$json
-          )
-        ) %>%
-        dplyr::filter(stringr::str_detect(
-          string = tolower(.data$searchTerms),
-          pattern = tolower(input$searchText)
-        ))
-    } else {
+      searchString <- input$searchText
+      searchFieldWeight <- dplyr::tibble(
+        searchFields = c("cohortName","referentConceptIdsSearchTerms",
+                         "json","logicDescription","phenotypeName",
+                         "cohortType"),
+        searchPoints = c(5,3,2,1,2,1))
+      
+      searchStringSplit <-
+        stringr::str_split(string = tolower(searchString),
+                           pattern = " ")[[1]]
+      
+      searchInField <- function(searchTable = 'cohort',
+                                searchString,
+                                searchField,
+                                points) {
+        data <- searchTable %>% 
+          dplyr::filter(stringr::str_detect(string = tolower(.data[[searchField]]),
+                                            pattern = tolower(searchString))) %>% 
+          dplyr::select(.data$cohortId) %>% 
+          dplyr::mutate(points = points)
+        return(data)
+      }
+      
+        
+      searchResultByWords <- list()
+      for (i in (1:length(searchStringSplit))) {
+        word <- searchStringSplit[[i]]
+        searchResult <- list()
+        for (j in (1:nrow(searchFieldWeight))) {
+          searchResult[[j]] <- searchInField(searchTable = cohort,
+                                             searchField = searchFieldWeight[j,]$searchFields,
+                                             searchString = word,
+                                             points = searchWeight[j,]$searchPoints) %>% 
+            dplyr::mutate(wordSearched = word)
+        }
+        searchResultByWords[[i]] <- dplyr::bind_rows(searchResult)
+      }
+      data <- dplyr::bind_rows(searchResultByWords) %>% 
+        dplyr::group_by(.data$cohortId) %>%
+        dplyr::summarise(points = sum(points))  %>% 
+        dplyr::inner_join(y = cohort, by = "cohortId") %>% 
+        dplyr::arrange(dplyr::desc(points)) %>% 
+        dplyr::select(-.data$points) %>% 
+        dplyr::distinct()
+      } else {
       data <- cohort
     }
     return(data)
@@ -85,12 +110,38 @@ shiny::shinyServer(function(input, output, session) {
   cohortSearchResultsCountOfSelectedReactive <- shiny::reactive({
     return(length(input$cohortSearchTableResults_rows_selected))
   })
-  output$cohortSearchResultsCountOfSelected<- shiny::reactive({
+  output$cohortSearchResultsCountOfSelected <- shiny::reactive({
     return(cohortSearchResultsCountOfSelectedReactive())
   })
   shiny::outputOptions(x = output,
                 name = "cohortSearchResultsCountOfSelected",
                 suspendWhenHidden = FALSE)
+
+  shiny::observe({
+    if (input$cohortDetails == "descriptionFirst") {    
+      shiny::updateTabsetPanel(session, inputId = "cohortDetailsSecond", selected = "descriptionSecond")
+    } else if (input$cohortDetails == "cohortDefinitionFirst")  {
+      shiny::updateTabsetPanel(session, inputId = "cohortDetailsSecond", selected = "cohortDefinitionSecond")
+    } else if (input$cohortDetails == "cohortDefinitionConceptsetFirst") {
+      shiny::updateTabsetPanel(session, inputId = "cohortDetailsSecond", selected = "cohortDefinitionConceptsetSecond")
+    } else if (input$cohortDetails == "cohortDefinitionJsonFirst") {
+      shiny::updateTabsetPanel(session, inputId = "cohortDetailsSecond", selected = "cohortDefinitionJsonSecond")
+    } else if (input$cohortDetails == "cohortDefinitionSqlFirst") {
+      shiny::updateTabsetPanel(session, inputId = "cohortDetailsSecond", selected = "cohortDefinitionSqlSecond")
+    }
+    
+    if (input$conceptsetExpressionTabFirst == "conceptsetExpressionFirst") {
+      shiny::updateTabsetPanel(session, inputId = "conceptsetExpressionTabSecond", selected = "conceptsetExpressionSecond")
+    } else if (input$conceptsetExpressionTabFirst == "conceptsetExpressionJsonFirst") {
+      shiny::updateTabsetPanel(session, inputId = "conceptsetExpressionTabSecond", selected = "conceptetExpressionJsonSecond")
+    } else if (input$conceptsetExpressionTabFirst == "conceptsetExpressionResoledFirst") {
+      shiny::updateTabsetPanel(session, inputId = "conceptsetExpressionTabSecond", selected = "conceptsetExpressionResolvedSecond")
+    } else if (input$conceptsetExpressionTabFirst == "conceptsetExpressionOptimizedFirst") {
+      shiny::updateTabsetPanel(session, inputId = "conceptsetExpressionTabSecond", selected = "conceptsetExpressionOptimizedSecond")
+    } else if (input$conceptsetExpressionTabFirst == "conceptsetExpressionRecommendedFirst") {
+      shiny::updateTabsetPanel(session, inputId = "conceptsetExpressionTabSecond", selected = "conceptsetExpressionRecommendedSecond")
+    }
+  })
   
   shiny::observeEvent(eventExpr = cohortSearchResultsCountOfSelectedReactive() != 2,
                       handlerExpr = {
@@ -229,28 +280,36 @@ shiny::shinyServer(function(input, output, session) {
   
   
   output$cohortDetailsTextSecond <- shiny::renderUI(expr = {
-    if (!is.null(cohortDetailsTextReactive()[[2]])) {
+    if (!is.null(cohortDetailsTextReactive()) &&
+        length(cohortDetailsTextReactive()) == 2 &&
+        !is.null(cohortDetailsTextReactive()[[2]])) {
       return(cohortDetailsTextReactive()[[2]])
     } else {
       return(NULL)
     }
   })
   output$cohortDefinitionJsonSecond <- shiny::renderText({
-    if (!is.null(cohortDetailsTextReactive()[[2]])) {
+    if (!is.null(cohortDetailsTextReactive()) &&
+        length(cohortDetailsTextReactive()) == 2 &&
+        !is.null(cohortDetailsTextReactive()[[2]])) {
       return(cohortSearchRowsSelectedDetails()[2,]$json)
     } else {
       return(NULL)
     }
   }) 
   output$cohortDefinitionSqlSecond <- shiny::renderText({
-    if (!is.null(cohortSearchRowsSelectedDetails()[[2]])) {
+    if (!is.null(cohortSearchRowsSelectedDetails()) &&
+        length(cohortSearchRowsSelectedDetails()) == 2 &&
+        !is.null(cohortSearchRowsSelectedDetails()[[2]])) {
       return(cohortSearchRowsSelectedDetails()[2,]$sql)
     } else {
       return(NULL)
     }
   })
   output$cohortDefinitionDetailsSecond <- shiny::renderUI(expr = {
-    if (!is.null(cohortDetailsTextReactive()[[2]])) {
+    if (!is.null(cohortDetailsTextReactive()) &&
+        length(cohortDetailsTextReactive()) == 2 &&
+        !is.null(cohortDetailsTextReactive()[[2]])) {
       return(cohortSearchRowsSelectedDetails()[2, ]$htmlExpressionCohort %>%
                shiny::HTML())
     } else {
@@ -335,7 +394,7 @@ shiny::shinyServer(function(input, output, session) {
     DT::renderDT(expr = {
       if (!is.null(cohortConceptSetsSelectedSecond())) {
         data <- cohortConceptSetsSelectedSecond()
-        data <- cohortConceptSets()[[1]]$conceptSetExpressionDetails
+        data <- cohortConceptSets()[[2]]$conceptSetExpressionDetails
         data <- data %>%
           dplyr::filter(.data$id == cohortConceptSetsSelectedSecond()$id)
         dataTable <- standardDataTable(data = data, selectionMode = "single")
@@ -529,8 +588,7 @@ shiny::shinyServer(function(input, output, session) {
         conceptIds <- c(resolvedConcepts$conceptId, mappedConcepts$conceptId) %>% unique()
         if (length(conceptIds) > 0) {
           data <- loadRecommenderSourceFromDatabase(dataSource = dataSource,
-                                                      conceptList = conceptIds) %>% 
-            dplyr::select(-.data$standard)
+                                                      conceptList = conceptIds)
         }
       }
       return(data)
