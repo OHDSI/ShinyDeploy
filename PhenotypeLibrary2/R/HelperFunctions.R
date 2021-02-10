@@ -206,7 +206,8 @@ getConceptSetDetailsFromCohortDefinition <-
         getConceptSetDataFrameFromConceptSetExpression(conceptSetExpression = 
                                                          conceptSetExpression[i, ]$expression$items) %>%
         dplyr::mutate(id = conceptSetExpression[i,]$id) %>%
-        dplyr::relocate(.data$id)
+        dplyr::relocate(.data$id) %>% 
+        dplyr::arrange(.data$id)
     }
     conceptSetExpressionDetails <-
       dplyr::bind_rows(conceptSetExpressionDetails)

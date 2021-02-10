@@ -351,7 +351,7 @@ shiny::shinyServer(function(input, output, session) {
   resolvedConceptSetExpressionReactiveFirst <-
    shiny::reactive(x = {
      if (!is.null(cohortConceptSets()[[1]]$conceptSetExpression$json)) {
-       expression <- cohortConceptSets()[[1]]$conceptSetExpression$json %>% RJSONIO::fromJSON()
+       expression <- cohortConceptSetsSelectedFirst()$expression
        data <- resolveConceptSetExpressionUsingDatabase(dataSource = dataSource,
                                                         conceptSetExpression = expression)
        return(data)
@@ -383,14 +383,11 @@ shiny::shinyServer(function(input, output, session) {
   resolvedConceptSetExpressionReactiveSecond <-
     shiny::reactive(x = {
       if (length(cohortConceptSets()) == 2) {
-        expression <- cohortConceptSets()[[2]]$conceptSetExpression$json
-        if (!is.null(expression)) {
-          expression <- expression %>% RJSONIO::fromJSON()
+        expression <- cohortConceptSetsSelectedSecond()$expression
           data <-
             resolveConceptSetExpressionUsingDatabase(dataSource = dataSource,
                                                      conceptSetExpression = expression)
           return(data)
-        }
       } else {
         return(NULL)
       }
@@ -425,7 +422,7 @@ shiny::shinyServer(function(input, output, session) {
   optimizedConceptSetExpressionReactiveFirst <-
     shiny::reactive(x = {
       if (!is.null(cohortConceptSets()[[1]]$conceptSetExpression$json)) {
-        expression <- cohortConceptSets()[[1]]$conceptSetExpression$json %>% RJSONIO::fromJSON()
+        expression <- cohortConceptSetsSelectedFirst()$expression
         data <- getOptimizationRecommendationForConceptSetExpression(dataSource = dataSource,
                                                                      conceptSetExpression = expression)
         return(data)
@@ -467,7 +464,7 @@ shiny::shinyServer(function(input, output, session) {
   optimizedConceptSetExpressionReactiveSecond <-
     shiny::reactive(x = {
       if (!is.null(cohortConceptSets()[[2]]$conceptSetExpression$json)) {
-        expression <- cohortConceptSets()[[2]]$conceptSetExpression$json %>% RJSONIO::fromJSON()
+        expression <- cohortConceptSetsSelectedSecond()$expression
         data <- getOptimizationRecommendationForConceptSetExpression(dataSource = dataSource,
                                                                      conceptSetExpression = expression)
         return(data)
@@ -532,7 +529,8 @@ shiny::shinyServer(function(input, output, session) {
         conceptIds <- c(resolvedConcepts$conceptId, mappedConcepts$conceptId) %>% unique()
         if (length(conceptIds) > 0) {
           data <- loadRecommenderSourceFromDatabase(dataSource = dataSource,
-                                                      conceptList = conceptIds)
+                                                      conceptList = conceptIds) %>% 
+            dplyr::select(-.data$standard)
         }
       }
       return(data)

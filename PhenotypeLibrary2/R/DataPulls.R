@@ -18,7 +18,8 @@ loadRecommenderStandardFromDatabase <-
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE
         ) %>% 
-        dplyr::filter(!.data$conceptId %in% conceptList)
+        dplyr::filter(!.data$conceptId %in% conceptList) %>% 
+        dplyr:::arrange(dplyr::desc(.data$descendantRecordCount))
       return(data)
     }
   }
@@ -44,7 +45,8 @@ loadRecommenderSourceFromDatabase <-
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE
         ) %>% 
-        dplyr::filter(!.data$conceptId %in% conceptList)
+        dplyr::filter(!.data$conceptId %in% conceptList)  %>% 
+        dplyr::arrange(dplyr::desc(.data$descendantRecordCount))
       return(data)
     }
   }
@@ -155,7 +157,8 @@ getOptimizationRecommendationForConceptSetExpression <-
           connection = dataSource$connection,
           sql = retrieveSql,
           snakeCaseToCamelCase = TRUE
-        )
+        ) %>% 
+        dplyr::arrange(1)
       return(data)
     }
   }
@@ -182,7 +185,8 @@ getDescendantConceptsFromDatabase <-
           conceptsIdsToGetDescendants = descendantConceptId,
           sql = sql, 
           snakeCaseToCamelCase = TRUE
-        )
+        ) %>% 
+        dplyr::arrange(1)
       return(data)
     }
   }
@@ -208,7 +212,8 @@ getMappedConceptsFromDatabase <-
           conceptsIdsToGetMapped = mappedConceptId,
           sql = sql, 
           snakeCaseToCamelCase = TRUE
-        )
+        ) %>% 
+        dplyr::arrange(1)
       return(data)
     }
   }
@@ -261,6 +266,7 @@ resolveConceptSetExpressionUsingDatabase <- function(dataSource = .GlobalEnv,
   
   #get all resolved concept Ids as data frame
   resolvedConceptIds <- dplyr::union(conceptSetExpressionTable %>% 
+                                       dplyr::filter(.data$isExcluded == FALSE) %>% 
                                        dplyr::select(.data$conceptId, .data$conceptName, .data$conceptCode,
                                                      .data$domainId, .data$vocabularyId, .data$conceptClassId,
                                                      .data$standardConcept, .data$invalidReason),
@@ -281,7 +287,16 @@ resolveConceptSetExpressionUsingDatabase <- function(dataSource = .GlobalEnv,
       dataSource = dataSource,
       mappedConceptId =  resolvedConceptIds %>% 
         dplyr::pull(.data$conceptId)
-    )
+    ) %>% 
+    dplyr::filter(.data$standardConceptId != .data$conceptId) %>% 
+    dplyr::distinct() %>% 
+    dplyr::left_join(y = resolvedConceptIds %>% 
+                       dplyr::select(.data$conceptId, 
+                                     .data$conceptName) %>% 
+                       dplyr::rename(standardConceptName = .data$conceptName),
+                     by = c("standardConceptId" = "conceptId")) %>% 
+    dplyr::relocate(.data$standardConceptId, .data$standardConceptName) %>% 
+    dplyr::arrange(.data$standardConceptId, .data$standardConceptName)
   
   output <- list(resolvedConcepts = resolvedConceptIds,
                  mappedConcepts = mappedConcepts)
@@ -324,7 +339,8 @@ getConceptSetDetailsFromCohortDefinition <-
           include_mapped = .data$includeMapped
         ) %>%
         dplyr::mutate(id = id) %>%
-        dplyr::relocate(.data$id)
+        dplyr::relocate(.data$id) %>% 
+        dplyr::arrange(.data$id)
     }
     conceptSetExpressionDetails <-
       dplyr::bind_rows(conceptSetExpressionDetails)
@@ -384,6 +400,7 @@ getDetailsForConceptIds <- function(dataSource = dataSource,
       oncept_id_list = conceptIds,
       sql = sql, 
       snakeCaseToCamelCase = TRUE
-    )
+    ) %>%  
+    dplyr::arrange(1)
   return(data)
 }
