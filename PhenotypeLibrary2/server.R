@@ -36,7 +36,7 @@ shiny::shinyServer(function(input, output, session) {
           searchResult[[j]] <- searchInField(searchTable = cohort,
                                              searchField = searchFieldWeight[j,]$searchFields,
                                              searchString = word,
-                                             points = searchWeight[j,]$searchPoints) %>% 
+                                             points = searchFieldWeight[j,]$searchPoints) %>% 
             dplyr::mutate(wordSearched = word)
         }
         searchResultByWords[[i]] <- dplyr::bind_rows(searchResult)
