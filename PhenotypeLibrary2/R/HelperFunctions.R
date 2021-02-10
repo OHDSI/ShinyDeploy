@@ -7,6 +7,7 @@ cohortReference <- function(outputId) {
 
 standardDataTable <- function(data, 
                               selectionMode = "single",
+                              selected = c(1),
                               searching = TRUE) {
   
   dataTableFilter =
@@ -89,7 +90,7 @@ standardDataTable <- function(data,
     filter = dataTableFilter,
     # style = 'bootstrap4',
     escape = FALSE,
-    selection = list(mode = selectionMode, target = "row"),
+    selection = list(mode = selectionMode, target = "row", selected = selected),
     editable = FALSE,
     # container = sketch,
     extensions = c('Buttons', 'ColReorder', 'FixedColumns', 'FixedHeader'),
