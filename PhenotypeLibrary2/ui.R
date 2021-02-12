@@ -607,7 +607,7 @@ bodyTabItems <- shinydashboard::tabItems(
       status = "primary",
       collapsible = TRUE,
       collapsed = FALSE,
-      DT::DTOutput("indexEventBreakDown")
+      DT::DTOutput("indexEventBreakDownTable")
     )
     #cohortReference("indexEventBreakdownSelectedCohort"),
   ),
