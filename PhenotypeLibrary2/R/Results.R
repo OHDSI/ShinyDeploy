@@ -1,10 +1,12 @@
 createDatabaseDataSource <-
   function(connection,
+           connectionDetails,
            resultsDatabaseSchema,
            vocabularyDatabaseSchema = resultsDatabaseSchema) {
     return(
       list(
         connection = connection,
+        connectionDetails = connectionDetails,
         resultsDatabaseSchema = resultsDatabaseSchema,
         vocabularyDatabaseSchema = vocabularyDatabaseSchema
       )
@@ -503,6 +505,34 @@ getCohortOverlapResult <- function(dataSource = .GlobalEnv,
   return(data)
 }
 
+getCovariateReference <- function(dataSource = .GlobalEnv,
+                                    table = "covariate_ref") {
+  # Perform error checks for input variables
+  errorMessage <- checkmate::makeAssertCollection()
+  checkmate::assertCharacter(x = table, add = errorMessage)
+  checkmate::assertChoice(x = table, 
+                          choices = c("covariate_ref",
+                                      "temporal_covariate_ref")
+                          , add = errorMessage)
+  checkmate::reportAssertions(collection = errorMessage)
+  
+  if (is(dataSource, "environment")) {
+    data <- get(table, envir = dataSource) %>%
+      dplyr::filter(.data$cohortId %in% !!cohortIds)
+  } else {
+    sql <- "
+    SELECT *
+    FROM @results_database_schema.@table;
+    "
+    data <- renderTranslateQuerySql(connection = dataSource$connection,
+                            sql = sql,
+                            table = camelCaseToSnakeCase(table),
+                            results_database_schema = dataSource$resultsDatabaseSchema,
+                            snakeCaseToCamelCase = TRUE)
+  }
+  return(data)
+}
+
 getCovariateValueResult <- function(dataSource = .GlobalEnv,
                                     table = "covariate_value",
                                     cohortIds) {
@@ -533,11 +563,11 @@ getCovariateValueResult <- function(dataSource = .GlobalEnv,
     WHERE cohort_id IN (@cohort_ids);
     "
     data <- renderTranslateQuerySql(connection = dataSource$connection,
-                            sql = sql,
-                            table = camelCaseToSnakeCase(table),
-                            results_database_schema = dataSource$resultsDatabaseSchema,
-                            cohort_ids = cohortIds,
-                            snakeCaseToCamelCase = TRUE)
+                                    sql = sql,
+                                    table = camelCaseToSnakeCase(table),
+                                    results_database_schema = dataSource$resultsDatabaseSchema,
+                                    cohort_ids = cohortIds,
+                                    snakeCaseToCamelCase = TRUE)
   }
   return(data)
 }

@@ -1,3 +1,5 @@
+future::plan(strategy = multisession)
+
 shiny::shinyServer(function(input, output, session) {
   
   shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
@@ -14,6 +16,85 @@ shiny::shinyServer(function(input, output, session) {
     width	= TRUE,
     windowPadding = 2
   )
+  
+  showAllMenuItem <- reactiveVal(FALSE)
+  
+  output$menuItems <- shinydashboard::renderMenu({
+    menuList <- list(
+      shinydashboard::menuItem(text = "Search", tabName = "search")
+    )
+    
+    menuList[[2]] <- 
+      if (exists(x = "aboutText"))
+        shinydashboard::menuItem(text = "About", tabName = "about")
+    
+    if (showAllMenuItem()) {
+      menuList[[3]] <- 
+        if (exists(x = "cohortCount"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Cohort Counts", tabName = "cohortCounts"),
+            infoId = "cohortCountsInfo"
+          )
+      
+      menuList[[4]] <- 
+        if (exists(x = "incidenceRate"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Incidence Rate", tabName = "incidenceRate"),
+            infoId = "incidenceRateInfo"
+          )
+      
+      menuList[[5]] <- 
+        if (exists(x = "timeDistribution"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Time Distributions", tabName = "timeDistribution"),
+            infoId = "timeDistributionInfo"
+          )
+      
+      menuList[[6]] <-
+        if (exists(x = "inclusionRuleStats"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Inclusion Rule Statistics", tabName = "inclusionRuleStats"),
+            infoId = "inclusionRuleStatsInfo"
+          )
+      menuList[[7]] <-
+        if (exists(x = "indexEventBreakdown"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
+            infoId = "indexEventBreakdownInfo"
+          )
+      menuList[[8]] <- 
+        if (exists(x = "visitContext"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Visit Context", tabName = "visitContext"),
+            infoId = "visitContextInfo"
+          )
+      
+      # menuList[[9]] <- 
+      #   if (exists(x = "covariateValue"))
+      #     addInfo(
+      #       shinydashboard::menuItem(text = "Cohort Characterization", tabName = "cohortCharacterization"),
+      #       infoId = "cohortCharacterizationInfo"
+      #     )
+      menuList[[10]] <- 
+        if (exists(x = "temporalCovariateValue"))
+          addInfo(
+            shinydashboard::menuItem(text = "Temporal Characterization", tabName = "temporalCharacterization"),
+            infoId = "temporalCharacterizationInfo"
+          )
+      
+      menuList[[11]] <- 
+        if (exists(x = "cohortOverlap"))
+          addInfo(
+            shinydashboard::menuItem(text = "Cohort Overlap", tabName = "cohortOverlap"),
+            infoId = "cohortOverlapInfo"
+          )
+    }
+    
+    menuList[[12]] <-
+      shinydashboard::menuItem(text = "Database information", tabName = "databaseInformation")
+    
+    shinydashboard::sidebarMenu(menuList)
+  })
   
   ############### search tab ######################################
   rvCohortSearch <- shiny::reactiveValues()
@@ -82,8 +163,7 @@ shiny::shinyServer(function(input, output, session) {
       dplyr::select(.data$phenotypeId,
                     .data$phenotypeName,
                     .data$cohortId,
-                    .data$cohortName) %>% 
-      dplyr::rename("clinicalGroup" = .data$phenotypeName)
+                    .data$cohortName)
     table <- standardDataTable(data = data,
                                selectionMode = "multiple")
     return(table)
@@ -106,7 +186,10 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   #circeR human readable description
-  cohortSearchResultRecentTwoSelectionDetails <- shiny::reactive(x = {
+  cohortSearchResultRecentTwoSelectionCirceRDetails <- shiny::reactive(x = {
+    shiny::withProgress(
+      message = "Calling CirceR. Rendering human readable description.",
+      expr = {
     data <- cohortSearchResultRecentTwoSelection()
     if (nrow(cohortSearchResultRecentTwoSelection()) > 0) {
       details <- list()
@@ -130,6 +213,7 @@ shiny::shinyServer(function(input, output, session) {
       return(NULL)
     }
     return(details)
+      })
   })
   
   # count number of rows selected
@@ -145,7 +229,7 @@ shiny::shinyServer(function(input, output, session) {
 
   # Details of cohort
   cohortDetailsTextReactive <- shiny::reactive(x = {
-    data <- cohortSearchResultRecentTwoSelectionDetails()
+    data <- cohortSearchResultRecentTwoSelection()
     if (!is.null(data) && nrow(data) > 0) {
       if (exists("phenotypeDescription")) {
         phenotypeDetails <- phenotypeDescription %>%
@@ -155,7 +239,8 @@ shiny::shinyServer(function(input, output, session) {
                         .data$presentation,
                         .data$assessment,
                         .data$plan,
-                        .data$prognosis)
+                        .data$prognosis,
+                        .data$phenotypeSynonyms)
         data <- data %>%
           dplyr::left_join(y = phenotypeDetails,
                            by = "phenotypeId")
@@ -166,6 +251,7 @@ shiny::shinyServer(function(input, output, session) {
         data$presentation <- ""
         data$assessment <- ""
         data$plan <- ""
+        data$phenotypeSynonyms <- ""
       }
       if (is.null(data)) {
         return(NULL)
@@ -195,9 +281,14 @@ shiny::shinyServer(function(input, output, session) {
               tags$td(data[i, ]$referentConceptIdsSearchTerms)
             ),
             tags$tr(
-              tags$td(tags$strong("Clinical Group: ")),
+              tags$td(tags$strong("Phenotype Name: ")),
               tags$td(HTML("&nbsp;&nbsp;")),
               tags$td(paste(data[i, ]$phenotypeName, " (",data[i, ]$phenotypeId,")"))
+            ),
+            tags$tr(
+              tags$td(tags$strong("Phenotype Synonyms: ")),
+              tags$td(HTML("&nbsp;&nbsp;")),
+              tags$td(paste(data[i, ]$phenotypeSynonyms, " (",data[i, ]$phenotypeSynonyms,")"))
             ),
             tags$tr(
               tags$td(tags$strong("Overview: ")),
@@ -232,14 +323,14 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   cohortConceptSets <- shiny::reactive(x = {
-    if (is.null(cohortSearchResultRecentTwoSelectionDetails())) {
+    if (is.null(cohortSearchResultRecentTwoSelection())) {
       return(NULL)
     } else {
       details <- list()
-      for (i in 1:nrow(cohortSearchResultRecentTwoSelectionDetails())) {
+      for (i in 1:nrow(cohortSearchResultRecentTwoSelection())) {
         details[[i]] <- getConceptSetDetailsFromCohortDefinition(
           cohortDefinitionExpression =
-            RJSONIO::fromJSON(cohortSearchResultRecentTwoSelectionDetails()[i,]$json)
+            RJSONIO::fromJSON(cohortSearchResultRecentTwoSelection()[i,]$json)
         )
       }
       return(details)
@@ -250,13 +341,13 @@ shiny::shinyServer(function(input, output, session) {
     return(cohortDetailsTextReactive()[[1]])
   })
   output$cohortDefinitionJsonFirst <- shiny::renderText({
-    cohortSearchResultRecentTwoSelectionDetails()[1,]$json
+    cohortSearchResultRecentTwoSelection()[1,]$json
   }) 
   output$cohortDefinitionSqlFirst <- shiny::renderText({
-    cohortSearchResultRecentTwoSelectionDetails()[1,]$sql
+    cohortSearchResultRecentTwoSelection()[1,]$sql
   })
   output$cohortDefinitionDetailsFirst <- shiny::renderUI(expr = {
-    cohortSearchResultRecentTwoSelectionDetails()[1, ]$htmlExpressionCohort %>%
+    cohortSearchResultRecentTwoSelectionCirceRDetails()[1, ]$htmlExpressionCohort %>%
       shiny::HTML()
   })
   output$cohortDefinitionConceptSetsTableFirst <-
@@ -286,16 +377,16 @@ shiny::shinyServer(function(input, output, session) {
     if (!is.null(cohortDetailsTextReactive()) &&
         length(cohortDetailsTextReactive()) == 2 &&
         !is.null(cohortDetailsTextReactive()[[2]])) {
-      return(cohortSearchResultRecentTwoSelectionDetails()[2,]$json)
+      return(cohortSearchResultRecentTwoSelection()[2,]$json)
     } else {
       return(NULL)
     }
   }) 
   output$cohortDefinitionSqlSecond <- shiny::renderText({
-    if (!is.null(cohortSearchResultRecentTwoSelectionDetails()) &&
-        length(cohortSearchResultRecentTwoSelectionDetails()) == 2 &&
-        !is.null(cohortSearchResultRecentTwoSelectionDetails()[[2]])) {
-      return(cohortSearchResultRecentTwoSelectionDetails()[2,]$sql)
+    if (!is.null(cohortSearchResultRecentTwoSelection()) &&
+        length(cohortSearchResultRecentTwoSelection()) == 2 &&
+        !is.null(cohortSearchResultRecentTwoSelection()[[2]])) {
+      return(cohortSearchResultRecentTwoSelection()[2,]$sql)
     } else {
       return(NULL)
     }
@@ -304,7 +395,7 @@ shiny::shinyServer(function(input, output, session) {
     if (!is.null(cohortDetailsTextReactive()) &&
         length(cohortDetailsTextReactive()) == 2 &&
         !is.null(cohortDetailsTextReactive()[[2]])) {
-      return(cohortSearchResultRecentTwoSelectionDetails()[2, ]$htmlExpressionCohort %>%
+      return(cohortSearchResultRecentTwoSelectionCirceRDetails()[2, ]$htmlExpressionCohort %>%
                shiny::HTML())
     } else {
       return(NULL)
@@ -701,8 +792,8 @@ shiny::shinyServer(function(input, output, session) {
   
   # compare the differences between two cohort definitions using diffr
   output$logicDifferenceBetweenCohorts <- diffr::renderDiffr({
-    cohort1 <- cohortSearchResultRecentTwoSelectionDetails()[1,]
-    cohort2 <- cohortSearchResultRecentTwoSelectionDetails()[2,]
+    cohort1 <- cohortSearchResultRecentTwoSelection()[1,]
+    cohort2 <- cohortSearchResultRecentTwoSelection()[2,]
     if (is.null(cohort1) || is.null(cohort2)) {
       return(NULL)
     }
@@ -723,8 +814,8 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   output$jsonDifferenceBetweenCohorts <- diffr::renderDiffr({
-    cohort1 <- cohortSearchResultRecentTwoSelectionDetails()[1,]
-    cohort2 <- cohortSearchResultRecentTwoSelectionDetails()[2,]
+    cohort1 <- cohortSearchResultRecentTwoSelection()[1,]
+    cohort2 <- cohortSearchResultRecentTwoSelection()[2,]
   
     if (is.null(cohort1) || is.null(cohort2)) {
       return(NULL)
@@ -747,8 +838,8 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   output$sqlDifferenceBetweenCohorts <- diffr::renderDiffr({
-    cohort1 <- cohortSearchResultRecentTwoSelectionDetails()[1,]
-    cohort2 <- cohortSearchResultRecentTwoSelectionDetails()[2,]
+    cohort1 <- cohortSearchResultRecentTwoSelection()[1,]
+    cohort2 <- cohortSearchResultRecentTwoSelection()[2,]
   
     if (is.null(cohort1) || is.null(cohort2)) {
       return(NULL)
@@ -773,7 +864,7 @@ shiny::shinyServer(function(input, output, session) {
 
   # phenotype description text
   # output$phenotypeDescriptionText <- shiny::renderUI(expr = {
-  #   row <- cohortSearchResultRecentTwoSelectionDetails()[1,]
+  #   row <- cohortSearchResultRecentTwoSelection()[1,]
   #   if (is.null(row)) {
   #     return(NULL)
   #   } else {
@@ -797,7 +888,7 @@ shiny::shinyServer(function(input, output, session) {
   # })
 
   # output$phenotypeLiteratureReviewText <- shiny::renderUI(expr = {
-  #   row <- cohortSearchResultRecentTwoSelectionDetails()[1,]
+  #   row <- cohortSearchResultRecentTwoSelection()[1,]
   #   if (is.null(row)) {
   #     return(NULL)
   #   } else {
@@ -813,7 +904,7 @@ shiny::shinyServer(function(input, output, session) {
   # })
 
   # output$phenotypeEvaluationText <- shiny::renderUI(expr = {
-  #   row <- cohortSearchResultRecentTwoSelectionDetails()[1,]
+  #   row <- cohortSearchResultRecentTwoSelection()[1,]
   #   if (is.null(row)) {
   #     return(NULL)
   #   } else {
@@ -829,7 +920,7 @@ shiny::shinyServer(function(input, output, session) {
   # })
 
   # output$phenotypeNotesText <- shiny::renderUI(expr = {
-  #   row <- cohortSearchResultRecentTwoSelectionDetails()[1,]
+  #   row <- cohortSearchResultRecentTwoSelection()[1,]
   #   if (is.null(row)) {
   #     return(NULL)
   #   } else {
@@ -888,50 +979,68 @@ shiny::shinyServer(function(input, output, session) {
   label = "drop down options")
   
   optionsForDropDownDatabase <- shiny::reactive(x = {
-    if (length(cohortsSelectedByActionButton()) > 0) {
+    if (length(cohortsSelectedByActionButton()) > 0 &&
+        !is.null(headerFilterOptionsPhenotypeDatabaseCohort())) {
       data <- headerFilterOptionsPhenotypeDatabaseCohort() %>%
-        dplyr::select(.data$databaseId, .data$databaseName) %>%
+        dplyr::select(.data$databaseName) %>%
         dplyr::distinct() %>%
-        dplyr::arrange(.data$databaseName)
+        dplyr::pull()
       return(data)
     }
   })
   optionsForDropDownCohort <- shiny::reactive(x = {
-    if (length(cohortsSelectedByActionButton()) > 0) {
+    if (length(cohortsSelectedByActionButton()) > 0 &&
+        !is.null(headerFilterOptionsPhenotypeDatabaseCohort())) {
       data <- headerFilterOptionsPhenotypeDatabaseCohort() %>%
-        dplyr::select(.data$cohortId, .data$cohortName) %>%
+        dplyr::select(.data$cohortName) %>%
         dplyr::distinct() %>%
-        dplyr::arrange(.data$cohortName)
+        dplyr::pull()
       return(data)
     }
   })
   optionsForDropDownPhenotype <- shiny::reactive(x = {
-    if (length(cohortsSelectedByActionButton()) > 0) {
+    if (length(cohortsSelectedByActionButton()) > 0 &&
+        !is.null(headerFilterOptionsPhenotypeDatabaseCohort())) {
       data <- headerFilterOptionsPhenotypeDatabaseCohort() %>%
-        dplyr::select(.data$phenotypeId, .data$phenotypeName) %>%
+        dplyr::select(.data$phenotypeName) %>%
         dplyr::distinct() %>%
-        dplyr::arrange(.data$phenotypeName)
+        dplyr::pull()
       return(data)
     }
   })
 
   # cohorts selected by action button
-  cohortsSelectedByActionButton <- shiny::reactive(x = {
-    idx <- input$cohortSearchTableResults_rows_selected
-    if (length(idx) > 0 && !is.null(input$loadSelectedCohorts)) {
-      return(cohortSearchResults()[idx, ]$cohortId %>% unique())
-    } else {
-      return(NULL)
-    }
-  })
+  cohortsSelectedByActionButton <-
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           idx <- input$cohortSearchTableResults_rows_selected
+                           if (length(idx) > 0) {
+                             return(cohortSearchResults()[idx,]$cohortId %>% unique())
+                           } else {
+                             return(NULL)
+                           }
+                         })
   
   # Pre-fetch data --------------------------------------------------------------------------
+  progressBarMessagePreFetchCohortCount <- shiny::reactive(x = {
+    length(unique(combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId()$cohortId))
+  })
+  progressBarMessagePreFetchDatabaseCount <- shiny::reactive(x = {
+    length(unique(combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId()$databaseId))
+  })
+  progressBarMessagePreFetchTemplateFirst <- shiny::reactive(x = {
+    paste0("Working on combination of ", 
+           progressBarMessagePreFetchCohortCount(), 
+           " cohorts on ", 
+           progressBarMessagePreFetchDatabaseCount(), 
+           " data sources.")
+  })
   cohortCountsPreFetch <-
     shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
                          valueExpr = {
                            shiny::withProgress(
                              message = paste0(
-                               progressBarMessageTemplateFirst(),
+                               progressBarMessagePreFetchTemplateFirst(),
                                "\n",
                                "Pre-fetching cohort count data."
                              ),
@@ -953,7 +1062,7 @@ shiny::shinyServer(function(input, output, session) {
                          valueExpr = {
                            shiny::withProgress(
                              message = paste0(
-                               progressBarMessageTemplateFirst(),
+                               progressBarMessagePreFetchTemplateFirst(),
                                "\n",
                                "Pre-fetching incidence rate data."
                              ),
@@ -971,54 +1080,98 @@ shiny::shinyServer(function(input, output, session) {
                          })
   
   timeDistributionPreFetch <-
-    shiny::reactive(x = {
-      if (length(cohortsSelectedByActionButton()) != 0) {
-        data <- getTimeDistributionResult(dataSource = dataSource,
-                                          cohortIds = cohortsSelectedByActionButton())
-        return(data)
-      } else {
-        return(dplyr::tibble())
-      }
-    })
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           shiny::withProgress(
+                             message = paste0(
+                               progressBarMessagePreFetchTemplateFirst(),
+                               "\n",
+                               "Pre-fetching time distribution rate data."
+                             ),
+                             value = 0,
+                             {
+                               if (length(cohortsSelectedByActionButton()) != 0) {
+                                 data <- getTimeDistributionResult(dataSource = dataSource,
+                                                                   cohortIds = cohortsSelectedByActionButton())
+                                 return(data)
+                               } else {
+                                 return(dplyr::tibble())
+                               }
+                             }
+                           )
+                         })
   
   inclusionRuleTablePreFetch <-
-    shiny::reactive(x = {
-      if (length(cohortsSelectedByActionButton()) != 0) {
-        data <- getInclusionRuleStats(dataSource = dataSource,
-                                      cohortIds = cohortsSelectedByActionButton())
-        return(data)
-      } else {
-        return(dplyr::tibble())
-      }
-    })
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           shiny::withProgress(
+                             message = paste0(
+                               progressBarMessagePreFetchTemplateFirst(),
+                               "\n",
+                               "Pre-fetching inclusion rule table data."
+                             ),
+                             value = 0,
+                             {
+                               if (length(cohortsSelectedByActionButton()) != 0) {
+                                 data <- getInclusionRuleStats(dataSource = dataSource,
+                                                               cohortIds = cohortsSelectedByActionButton())
+                                 return(data)
+                               } else {
+                                 return(dplyr::tibble())
+                               }
+                             }
+                           )
+                         })
   
   indexEventBreakDownDataPreFetch <-
-    shiny::reactive(x = {
-      if (length(cohortsSelectedByActionButton()) != 0) {
-        data <- getIndexEventBreakdown(
-          dataSource = dataSource,
-          cohortIds = cohortsSelectedByActionButton(),
-          cohortCounts = cohortCountsPreFetch()
-        )
-        return(data)
-      } else {
-        return(dplyr::tibble())
-      }
-    })
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           shiny::withProgress(
+                             message = paste0(
+                               progressBarMessagePreFetchTemplateFirst(),
+                               "\n",
+                               "Pre-fetching index event breakdown data."
+                             ),
+                             value = 0,
+                             {
+                               if (length(cohortsSelectedByActionButton()) != 0) {
+                                 data <- getIndexEventBreakdown(
+                                   dataSource = dataSource,
+                                   cohortIds = cohortsSelectedByActionButton(),
+                                   cohortCounts = cohortCountsPreFetch()
+                                 )
+                                 return(data)
+                               } else {
+                                 return(dplyr::tibble())
+                               }
+                             }
+                           )
+                         })
   
   visitContextDataPreFetch <-
-    shiny::reactive(x = {
-      if (length(cohortsSelectedByActionButton()) != 0) {
-        data <- getVisitContextResults(
-          dataSource = dataSource,
-          cohortIds = cohortsSelectedByActionButton(),
-          cohortCounts = cohortCountsPreFetch()
-        )
-        return(data)
-      } else {
-        return(dplyr::tibble())
-      }
-    })
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           shiny::withProgress(
+                             message = paste0(
+                               progressBarMessagePreFetchTemplateFirst(),
+                               "\n",
+                               "Pre-fetching visit context data."
+                             ),
+                             value = 0,
+                             {
+                               if (length(cohortsSelectedByActionButton()) != 0) {
+                                 data <- getVisitContextResults(
+                                   dataSource = dataSource,
+                                   cohortIds = cohortsSelectedByActionButton(),
+                                   cohortCounts = cohortCountsPreFetch()
+                                 )
+                                 return(data)
+                               } else {
+                                 return(dplyr::tibble())
+                               }
+                             }
+                           )
+                         })
   # 
   # characterizationDataPreFetch <-
   #   shiny::reactive(x = {
@@ -1034,21 +1187,21 @@ shiny::shinyServer(function(input, output, session) {
   #     }
   #   })
   # 
-  # temporalCharacterizationDataPreFetch <-
-  #   shiny::reactive(x = {
-  #     if (length(cohortsSelectedByActionButton()) != 0) {
-  #       data <- getCovariateValueResult(
-  #         dataSource = dataSource,
-  #         table = "temporalCovariateValue",
-  #         cohortIds = cohortsSelectedByActionButton()
-  #       )
-  #       return(data)
-  #     } else {
-  #       return(dplyr::tibble())
-  #     }
-  #   })
+  temporalCharacterizationDataPreFetch <-
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           if (length(cohortsSelectedByActionButton()) != 0) {
+                             data <- getCovariateValueResult(dataSource = dataSource,
+                                                             table = "temporalCovariateValue",
+                                                             cohortIds = cohortsSelectedByActionButton())
+                             return(data)
+                           } else {
+                             return(dplyr::tibble())
+                           }
+                         })
   
-  cohortOverlapPreFetch <- shiny::reactive({
+  cohortOverlapPreFetch <- shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                                                valueExpr = {
     if (length(cohortsSelectedByActionButton()) > 1) {
       combisOfTargetComparator <-
         tidyr::crossing(
@@ -1067,159 +1220,103 @@ shiny::shinyServer(function(input, output, session) {
       return(dplyr::tibble())
     }
   })
-  
-  # temporalCharacterizationDataFilterOptions <-
-  #   shiny::reactive({
-  #     data <- temporalCharacterizationDataPreFetch() %>%
-  #       dplyr::select(.data$timeId,
-  #                     .data$covariateId) %>%
-  #       dplyr::distinct() %>%
-  #       dplyr::left_join(temporalCovariateChoices, by = "timeId") %>%
-  #       dplyr::left_join(temporalCovariateRef, by = "covariateId") %>%
-  #       dplyr::left_join(
-  #         temporalAnalysisRef %>%
-  #           dplyr::select(.data$analysisId,
-  #                         .data$analysisName,
-  #                         .data$domainId),
-  #         by = "analysisId"
-  #       )
-  #     return(data)
-  #   })
+
   
   # filter combinations to filter 'PreFetch' data.
   combinationToFilterPreFetchDataBasedOnUserChoice <- shiny::reactive(x = {
+    if (!is.null(headerFilterOptionsPhenotypeDatabaseCohort())) {
     data <- headerFilterOptionsPhenotypeDatabaseCohort() %>% 
-      dplyr::filter(.data$cohortName %in% input$selectedCohorts &
-                      .data$databaseName %in% input$selectedDatabases &
-                      .data$phenotypeName %in% input$selectedPhenotypes) %>% 
+      dplyr::filter(.data$cohortId %in% cohortsSelectedByActionButton()) %>% 
       dplyr::distinct() 
     return(data)
+    } else {
+      return(NULL)
+    }
   })
   combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId <- shiny::reactive(x = {
+    if (!is.null(combinationToFilterPreFetchDataBasedOnUserChoice())) {
     return(combinationToFilterPreFetchDataBasedOnUserChoice() %>% 
              dplyr::select(.data$cohortId,
                            .data$databaseId) %>% 
              dplyr::distinct())
+    } else {
+      return(NULL)
+    }
   })
-  progressBarMessageCohortCount <- shiny::reactive(x = {
-    length(unique(combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId()$cohortId))
-  })
-  progressBarMessageDatabaseCount <- shiny::reactive(x = {
-    length(unique(combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId()$databaseId))
-  })
-  progressBarMessageTemplateFirst <- shiny::reactive(x = {
-    paste0("Working on combination of ", 
-           progressBarMessageCohortCount(), 
-           " cohorts on ", 
-           progressBarMessageDatabaseCount(), 
-           " data sources.")
-  })
+
 
   # observe event that gets trigger when select cohorts button is pressed
   shiny::observeEvent(eventExpr = input$loadSelectedCohorts,
                       handlerExpr = {
-                        shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
-                                            "\n",
-                                            "Initiating"), 
-                                            value = 0, {
-                        shinyWidgets::updatePickerInput(
-                          session = session,
-                          inputId = "selectedDatabases",
-                          label = "Database",
-                          choices = optionsForDropDownDatabase()$databaseName,
-                          selected = optionsForDropDownDatabase()$databaseName[c(1,2)]
+                        shiny::withProgress(
+                          message = paste0(
+                            progressBarMessagePreFetchTemplateFirst(),
+                            "\n",
+                            "Initiating"
+                          ),
+                          value = 0,
+                          {
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "selectedDatabases",
+                              label = "Database",
+                              choices = optionsForDropDownDatabase(),
+                              selected = optionsForDropDownDatabase()[c(1, 2)]
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "selectedCohorts",
+                              label = "Cohort",
+                              choices = optionsForDropDownCohort(),
+                              selected = optionsForDropDownCohort()[c(1, 2)]
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "selectedPhenotypes",
+                              choicesOpt = list(style = rep_len("color: black;", 999)),
+                              choices = optionsForDropDownPhenotype(),
+                              selected = optionsForDropDownPhenotype()[c(1, 2)]
+                            )
+                            
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "incidenceRateAgeFilter",
+                              label = "Age filter",
+                              choices = incidenceRateAgeFilter() %>% sort(),
+                              selected = incidenceRateAgeFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "incidenceRateGenderFilter",
+                              label = "Gender",
+                              choices = incidenceRateGenderFilter()[stringr::str_detect(string = incidenceRateGenderFilter(), 
+                                                                                              pattern = "Male|Female")] %>% sort(),
+                              selected = incidenceRateGenderFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "incidenceRateCalendarFilter",
+                              label = "Calendar Year",
+                              choices = incidenceRateCalendarYearFilter()  %>% sort(),
+                              selected = incidenceRateCalendarYearFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "temporalCharacterizationAnalysisNameFilter",
+                              label = "Analysis Choices",
+                              choices = temporalCharacterizationAnalysisNameFilter() %>% sort(),
+                              selected = temporalCharacterizationAnalysisNameFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "temporalCharacterizationDomainFilter",
+                              label = "Domain Choices",
+                              choices = temporalCharacterizationDomainFilter() %>% sort(),
+                              selected = temporalCharacterizationDomainFilter()
+                            )
+                          }
                         )
-                        shinyWidgets::updatePickerInput(
-                          session = session,
-                          inputId = "selectedCohorts",
-                          label = "Cohort",
-                          selected = optionsForDropDownCohort()$cohortName,
-                          choices = optionsForDropDownCohort()$cohortName[c(1,2)]
-                        )
-                        shinyWidgets::updatePickerInput(
-                          session = session,
-                          inputId = "selectedPhenotypes",
-                          choicesOpt = list(style = rep_len("color: black;", 999)),
-                          choices = optionsForDropDownPhenotype()$phenotypeName,
-                          selected = optionsForDropDownPhenotype()$phenotypeName[c(1,2)]
-                        )
-                        
-                        if (nrow(incidenceRateDataPreFetch()) > 0) {
-                          ageFilter <-
-                            incidenceRateDataPreFetch()$ageGroup %>% unique()
-                          ageFilter <-
-                            ageFilter[!ageFilter == 'All']
-                          genderFilter <-
-                            incidenceRateDataPreFetch()$gender %>% unique()
-                          genderFilter <-
-                            genderFilter[!genderFilter == 'All']
-                          calendarFilter <-
-                            incidenceRateDataPreFetch()$calendarYear %>% unique()
-                          calendarFilter <-
-                            calendarFilter[!calendarFilter == 'All']
-                        } else {
-                          ageFilter <- NULL
-                          genderFilter <- NULL
-                          calendarFilter <- NULL
-                        }
-                        
-                        shiny::updateSelectizeInput(
-                          session = session,
-                          inputId = "incidenceRateAgeFilter",
-                          label = "Age",
-                          selected = ageFilter,
-                          choices = ageFilter,
-                          server = TRUE
-                        )
-                        shiny::updateSelectizeInput(
-                          session = session,
-                          inputId = "incidenceRateGenderFilter",
-                          label = "Gender",
-                          selected = genderFilter,
-                          choices = genderFilter,
-                          server = TRUE
-                        )
-                        shiny::updateSelectizeInput(
-                          session = session,
-                          inputId = "incidenceRateCalenderFilter",
-                          label = "Calendar Year",
-                          selected = calendarFilter,
-                          choices = calendarFilter,
-                          server = TRUE
-                        )
-                        
-                        
-                        
-                        
-                        # if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
-                        #   temporalAnalysisNameFilter <-
-                        #     temporalCharacterizationDataFilterOptions()$analysisName %>% unique()
-                        #   temporalDomainFilter <-
-                        #     temporalCharacterizationDataFilterOptions()$domainId %>% unique()
-                        # } else {
-                        #   temporalAnalysisNameFilter <- NULL
-                        #   temporalDomainFilter <- NULL
-                        # }
-                        
-                        # shiny::updateSelectizeInput(
-                        #   session = session,
-                        #   inputId = "temporalAnalysisNameFilter",
-                        #   label = "Analysis Choices",
-                        #   selected = temporalAnalysisNameFilter,
-                        #   choices = temporalAnalysisNameFilter,
-                        #   server = TRUE
-                        # )
-                        # shiny::updateSelectizeInput(
-                        #   session = session,
-                        #   inputId = "temporalDomainFilter",
-                        #   label = "Domain Choices",
-                        #   selected = temporalDomainFilter,
-                        #   choices = temporalDomainFilter,
-                        #   server = TRUE
-                        # )
-                      })
-  
-                        
+                        showAllMenuItem(TRUE)
                       })
   
   # cohortId <- shiny::reactive(x = {
@@ -1444,12 +1541,52 @@ shiny::shinyServer(function(input, output, session) {
   # }, server = TRUE)
   
 
+  # filter pre fetch data
+  progressBarMessageFilterCohortCount <- shiny::reactive(x = {
+    length(input$selectedCohorts)
+  })
+  progressBarMessageFilterDatabaseCount <- shiny::reactive(x = {
+    length(input$selectedDatabases)
+  })
+  progressBarMessageFilter <- shiny::reactive(x = {
+    paste0("Working on combination of ", 
+           progressBarMessageFilterCohortCount(), 
+           " cohorts on ", 
+           progressBarMessageFilterDatabaseCount(), 
+           " data sources.")
+  })
+  
+  selectedCohortIds <- shiny::reactive(x = {
+    return(cohort %>% 
+             dplyr::filter(.data$cohortName %in% input$selectedCohorts) %>% 
+             dplyr::select(.data$cohortId) %>% 
+             dplyr::pull())
+  })
+  selectedDatabaseIds <- shiny::reactive(x = {
+    return(database %>% 
+             dplyr::filter(.data$databaseName %in% input$selectedDatabases) %>% 
+             dplyr::select(.data$databaseId) %>% 
+             dplyr::pull())
+  })
   # cohort count--------------------------------
   cohortCountsDataFiltered <- reactive({
-    data <- cohortCountsPreFetch() %>%
-      dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
-                        by = c("cohortId", "databaseId"))
-    return(data)
+    shiny::withProgress(
+      message = paste0(progressBarMessageFilter(),
+                       ". ",
+                       "Getting cohort counts data"),
+      value = 0,
+      {
+        filter <-
+          combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+            .data$cohortId %in% selectedCohortIds(),
+            .data$databaseId %in% selectedDatabaseIds()
+          )
+        data <- cohortCountsPreFetch() %>%
+          dplyr::inner_join(y = filter,
+                            by = c("cohortId", "databaseId"))
+        return(data)
+      }
+    )
   })
   output$cohortCountsTable <- DT::renderDT(expr = {
     data <- cohortCountsDataFiltered()
@@ -1461,56 +1598,107 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # Incidence rate --------------------------------------------------------------------------------
+  incidenceRateAgeFilter <- shiny::reactive(x = {
+    if (nrow(incidenceRateDataPreFetch()) > 0) {
+      ageFilter <-
+        incidenceRateDataPreFetch()$ageGroup %>% unique()
+      ageFilter <-
+        ageFilter[!ageFilter == 'All']
+    } else {
+      ageFilter <- NULL
+    }
+    return(ageFilter)
+  })
+  incidenceRateGenderFilter <- shiny::reactive(x = {
+    if (nrow(incidenceRateDataPreFetch()) > 0) {
+      genderFilter <-
+        incidenceRateDataPreFetch()$gender %>% unique()
+      genderFilter <-
+        genderFilter[!genderFilter == 'All']
+    } else {
+      genderFilter <- NULL
+    }
+    return(genderFilter)
+  })
+  incidenceRateCalendarYearFilter <- shiny::reactive(x = {
+    if (nrow(incidenceRateDataPreFetch()) > 0) {
+      calendarYear <-
+        incidenceRateDataPreFetch()$calendarYear %>% unique()
+      calendarYear <-
+        calendarYear[!calendarYear == 'All']
+    } else {
+      calendarYear <- NULL
+    }
+    return(calendarYear)
+  })
+  
   incidenceRateDataFiltered <- reactive({
-    stratifyByAge <- "Age" %in% input$irStratification
-    stratifyByGender <- "Gender" %in% input$irStratification
-    stratifyByCalendarYear <-
-      "Calendar Year" %in% input$irStratification
-    
-    data <- incidenceRateDataPreFetch() %>%
-      dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
-                        by = c("cohortId", "databaseId"))
-    
-    if (stratifyByAge) {
-      data <- data %>%
-        dplyr::filter(.data$ageGroup %in% input$incidenceRateAgeFilter)
-    }
-    if (stratifyByCalendarYear) {
-      data <- data %>%
-        dplyr::filter(.data$calendarYear %in% input$incidenceRateCalenderFilter)
-    }
-    if (stratifyByGender) {
-      data <- data %>%
-        dplyr::filter(.data$gender %in% input$incidenceRateGenderFilter)
-    }
-    return(data)
+    shiny::withProgress(
+      message = paste0(
+        progressBarMessageFilter(),
+        "\n",
+        "Getting incidence rate data"
+      ),
+      value = 0,
+      {
+        stratifyByAge <- "Age" %in% input$irStratification
+        stratifyByGender <- "Gender" %in% input$irStratification
+        stratifyByCalendarYear <-
+          "Calendar Year" %in% input$irStratification
+        filter <-
+          combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+            .data$cohortId %in% selectedCohortIds(),
+            .data$databaseId %in% selectedDatabaseIds()
+          )
+        data <- incidenceRateDataPreFetch() %>%
+          dplyr::inner_join(y = filter,
+                            by = c("cohortId", "databaseId"))
+        if (stratifyByAge) {
+          data <- data %>%
+            dplyr::filter(.data$ageGroup %in% input$incidenceRateAgeFilter)
+        }
+        if (stratifyByCalendarYear) {
+          data <- data %>%
+            dplyr::filter(.data$calendarYear %in% input$incidenceRateCalendarFilter)
+        }
+        if (stratifyByGender) {
+          data <- data %>%
+            dplyr::filter(.data$gender %in% input$incidenceRateGenderFilter)
+        }
+        return(data)
+      }
+    )
   })
   
   output$incidenceRatePlot <- ggiraph::renderggiraph(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
+    shiny::withProgress(message = paste0(progressBarMessageFilter(),
                         "\n",
                         "Generating Incidence Rate plot(S)"), 
                         value = 0, {
       data <- incidenceRateDataFiltered()
-      stratifyByAge <- "Age" %in% input$irStratification
-      stratifyByGender <- "Gender" %in% input$irStratification
-      stratifyByCalendarYear <-
-        "Calendar Year" %in% input$irStratification
-      plot <- plotIncidenceRate(
-        data = data,
-        shortNameRef = cohort,
-        stratifyByAgeGroup = stratifyByAge,
-        stratifyByGender = stratifyByGender,
-        stratifyByCalendarYear = stratifyByCalendarYear,
-        yscaleFixed = input$irYscaleFixed,
-        minPersonYears = 1000
-      )
-      return(plot)
+      if (nrow(data) > 0) {
+        stratifyByAge <- "Age" %in% input$irStratification
+        stratifyByGender <- "Gender" %in% input$irStratification
+        stratifyByCalendarYear <-
+          "Calendar Year" %in% input$irStratification
+        plot <- plotIncidenceRate(
+          data = data,
+          shortNameRef = cohort,
+          stratifyByAgeGroup = stratifyByAge,
+          stratifyByGender = stratifyByGender,
+          stratifyByCalendarYear = stratifyByCalendarYear,
+          yscaleFixed = input$irYscaleFixed,
+          minPersonYears = 1000
+        )
+        return(plot)
+      } else {
+        NULL
+      }
     })
   })
   
   output$incidenceRateTable <- DT::renderDT(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
+    shiny::withProgress(message = paste0(progressBarMessageFilter(),
                         "\n",
                         "Creating incidence rate data table."), 
                         value = 0, {
@@ -1530,9 +1718,13 @@ shiny::shinyServer(function(input, output, session) {
   # Time distribution -----------------------------------------------------------------------------
   timeDistributionFiltered <- reactive({
     data <- timeDistributionPreFetch()
+    filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+      .data$cohortId %in% selectedCohortIds(),
+      .data$databaseId %in% selectedDatabaseIds()
+    )
     if (nrow(data) > 0) {
       data <- timeDistributionPreFetch() %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
+        dplyr::inner_join(y = filter,
                           by = c("cohortId", "databaseId"))
     } else {
       data <- dplyr::tibble()
@@ -1540,7 +1732,7 @@ shiny::shinyServer(function(input, output, session) {
     return(data)
   })
   output$timeDistributionPlot <- ggiraph::renderggiraph(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
+    shiny::withProgress(message = paste0(progressBarMessageFilter(),
                         "\n",
                         "Generating Time Distribution plot(S)"), 
                         value = 0, {
@@ -1552,7 +1744,7 @@ shiny::shinyServer(function(input, output, session) {
     })
   })
   output$timeDistributionTable <- DT::renderDT(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
+    shiny::withProgress(message = paste0(progressBarMessageFilter(),
                         "\n",
                         "Generating Time Distribution Data Table."), 
                         value = 0, {
@@ -1793,8 +1985,12 @@ shiny::shinyServer(function(input, output, session) {
   # Inclusion rules table -----------------------------------------------------------------------
   inclusionRuleFiltered <- reactive({
     if (nrow(inclusionRuleTablePreFetch()) > 0) {
+      filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+        .data$cohortId %in% selectedCohortIds(),
+        .data$databaseId %in% selectedDatabaseIds()
+      )
       data <- inclusionRuleTablePreFetch() %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
+        dplyr::inner_join(y = filter,
                           by = c("cohortId", "databaseId"))
     } else {
       data <- dplyr::tibble()
@@ -1802,22 +1998,36 @@ shiny::shinyServer(function(input, output, session) {
     return(data)
   })
   output$inclusionRuleTable <- DT::renderDT(expr = {
-    if (nrow(inclusionRuleFiltered()) > 0) {
-      data <- inclusionRuleFiltered()
-      data <- addMetaDataInformationToResults(data)
-      table <- standardDataTable(data)
-      return(table)
-    } else {
-      return(dplyr::tibble())
-    }
+    shiny::withProgress(
+      message = paste0(
+        progressBarMessageFilter(),
+        ". ",
+        "Creating inclusion rule table."
+      ),
+      value = 0,
+      {
+        if (nrow(inclusionRuleFiltered()) > 0) {
+          data <- inclusionRuleFiltered()
+          data <- addMetaDataInformationToResults(data)
+          table <- standardDataTable(data)
+          return(table)
+        } else {
+          return(dplyr::tibble("No Inclusion rules data for the selected combination."))
+        }
+      }
+    )
   }, server = TRUE)
   
   
   # Index event breakdown ----------------------------------------------------------------
   indexEventBreakDownDataFiltered <- reactive({
     if (nrow(indexEventBreakDownDataPreFetch()) > 0) {
+      filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+        .data$cohortId %in% selectedCohortIds(),
+        .data$databaseId %in% selectedDatabaseIds()
+      )
       data <- indexEventBreakDownDataPreFetch() %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
+        dplyr::inner_join(y = filter,
                           by = c("cohortId", "databaseId"))
     } else {
       data <- dplyr::tibble()
@@ -1825,10 +2035,14 @@ shiny::shinyServer(function(input, output, session) {
     return(data)
   })
   output$indexEventBreakDownTable <- DT::renderDT(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
-                        "\n",
-                        "Generating index event breakdown table."), 
-                        value = 0, {
+    shiny::withProgress(
+      message = paste0(
+        progressBarMessageFilter(),
+        "\n",
+        "Generating index event breakdown table"
+      ),
+      value = 0,
+      {
       data <-
         addMetaDataInformationToResults(indexEventBreakDownDataFiltered()) %>%
         dplyr::arrange(dplyr::desc(.data$percent))
@@ -1841,19 +2055,38 @@ shiny::shinyServer(function(input, output, session) {
   # Visit Context --------------------------------------------------------------------------------------------
   visitContextDataFiltered <- reactive({
     if (nrow(visitContextDataPreFetch()) > 0) {
-      data <- visitContextDataPreFetch() %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
-                          by = c("cohortId", "databaseId"))
+      shiny::withProgress(
+        message = paste0(
+          progressBarMessageFilter(),
+          ". ",
+          "Getting visit context data. "
+        ),
+        value = 0,
+        {
+          filter <-
+            combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+              .data$cohortId %in% selectedCohortIds(),
+              .data$databaseId %in% selectedDatabaseIds()
+            )
+          data <- visitContextDataPreFetch() %>%
+            dplyr::inner_join(y = filter,
+                              by = c("cohortId", "databaseId"))
+        }
+      )
     } else {
       data <- dplyr::tibble()
     }
     return(data)
   })
   output$visitContextTable <- DT::renderDT(expr = {
-    shiny::withProgress(message = paste0(progressBarMessageTemplateFirst(),
-                        "\n",
-                        "Generating Visit Context Table."), 
-                        value = 0, {
+    shiny::withProgress(
+      message = paste0(
+        progressBarMessageFilter(),
+        "\n",
+        "Generating visit context table"
+      ),
+      value = 0,
+      {
       data <-
         addMetaDataInformationToResults(visitContextDataFiltered())
       table <- standardDataTable(data)
@@ -1952,53 +2185,88 @@ shiny::shinyServer(function(input, output, session) {
   #     covariateIdArray(c(covariateIdArray(), input$rows[[2]]))
   # })
   
+
   # Temporal characterization -----------------------------------------------------------------
-  # temporalCharacterizationDataFiltered <- shiny::reactive(x = {
-  #   if (all(
-  #     is.null(input$temporalChoicesFilter),
-  #     is.null(input$temporalAnalysisNameFilter),
-  #     is.null(input$temporalDomainFilter)
-  #   )) {
-  #     return(dplyr::tibble())
-  #   }
-  #   dataFilterOptions <-
-  #     temporalCharacterizationDataFilterOptions() %>%
-  #     dplyr::filter(
-  #       # choices %in% input$timeIdChoices,
-  #       analysisName %in% input$temporalAnalysisNameFilter,
-  #       domainId %in% input$temporalDomainFilter
-  #     )
-  #   
-  #   data <- temporalCharacterizationDataPreFetch() %>%
-  # dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
-                    # by = c("cohortId", "databaseId"))
-  #     dplyr::filter(databaseId %in% input$selectedDatabases) %>%
-  #     dplyr::inner_join(y = dataFilterOptions,
-  #                       by = c("timeId" = "timeId",
-  #                              "covariateId" = "covariateId")) %>%
-  #     dplyr::rename(temporalChoices = .data$choices) %>%
-  #     dplyr::relocate(
-  #       .data$temporalChoices,
-  #       .data$analysisName,
-  #       .data$domainId,
-  #       .data$covariateName
-  #     )
-  #   return(data)
-  # })
-  # 
-  # output$temporalCharacterizationTable <-
-  #   DT::renderDT(expr = {
-  #     shiny::withProgress(message = 'Loading, Please wait. .', value = 0, {
-  #       data <- temporalCharacterizationDataFiltered() %>%
-  #         dplyr::select(-.data$timeId,
-  #                       -.data$covariateId,
-  #                       -.data$analysisId)
-  #       data <- addMetaDataInformationToResults(data = data)
-  #       table <- standardDataTable(data = data)
-  #       return(table)
-  #     })
-  #   }, server = TRUE)
-  # 
+  temporalCharacterizationDataFilterOptions <-
+    shiny::reactive({
+      data <- temporalCharacterizationDataPreFetch() %>%
+        dplyr::select(.data$timeId,
+                      .data$covariateId) %>%
+        dplyr::distinct() %>%
+        dplyr::left_join(temporalTimeRef, by = "timeId") %>%
+        dplyr::left_join(temporalCovariateRef, by = "covariateId") %>%
+        dplyr::mutate(temporalChoices = paste0("Start ", .data$startDay, " to end ", .data$endDay)) %>%
+        dplyr::left_join(
+          temporalAnalysisRef %>%
+            dplyr::select(.data$analysisId,
+                          .data$analysisName,
+                          .data$domainId),
+          by = "analysisId"
+        )
+      return(data)
+    })
+  temporalCharacterizationAnalysisNameFilter <- shiny::reactive(x = {
+    if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+      temporalCharacterizationAnalysisNameFilter <-
+        temporalCharacterizationDataFilterOptions()$analysisName %>% unique()
+      return(temporalCharacterizationAnalysisNameFilter)
+    } else {
+      return(NULL)
+    }
+  })
+  temporalCharacterizationDomainFilter <- shiny::reactive(x = {
+    if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+      temporalCharacterizationDomainFilter <-
+        temporalCharacterizationDataFilterOptions()$domainId %>% unique()
+      return(temporalCharacterizationDomainFilter)
+    } else {
+      return(NULL)
+    }
+  })
+  
+  temporalCharacterizationDataFiltered <- shiny::reactive(x = {
+    dataFilterOptions <-
+      temporalCharacterizationDataFilterOptions() %>%
+      dplyr::filter(
+        # temporalChoices %in% input$timeIdChoices,
+        analysisName %in% input$temporalCharacterizationAnalysisNameFilter,
+        domainId %in% input$temporalCharacterizationDomainFilter
+      )
+    filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+      .data$cohortId %in% selectedCohortIds(),
+      .data$databaseId %in% selectedDatabaseIds()
+    )
+    data <- temporalCharacterizationDataPreFetch() %>%
+      dplyr::inner_join(y = filter,
+                        by = c("cohortId", "databaseId")) %>%
+      dplyr::inner_join(y = dataFilterOptions,
+                        by = c("timeId" = "timeId",
+                               "covariateId" = "covariateId")) %>%
+      dplyr::relocate(.data$databaseId,
+                      .data$temporalChoices,
+                      .data$analysisName,
+                      .data$domainId,
+                      .data$covariateName) %>% 
+      dplyr::select(-.data$timeId,
+                    -.data$covariateId,
+                    -.data$analysisId,
+                    -.data$startDay,
+                    -.data$endDay)
+    return(data)
+  })
+
+  output$temporalCharacterizationTable <-
+    DT::renderDT(expr = {
+      shiny::withProgress(message = 'Loading, Please wait. .', value = 0, {
+        data <- temporalCharacterizationDataFiltered()
+        if (nrow(data) > 0) {
+          data <- addMetaDataInformationToResults(data = data)
+        }
+        table <- standardDataTable(data = data)
+        return(table)
+      })
+    }, server = TRUE)
+
   
   
   #
@@ -2124,11 +2392,15 @@ shiny::shinyServer(function(input, output, session) {
   #Cohort Overlap ------------------------
   cohortOverlaDataFiltered <- shiny::reactive(x = {
     if (nrow(cohortOverlapPreFetch()) > 0) {
+      filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+        .data$cohortId %in% selectedCohortIds(),
+        .data$databaseId %in% selectedDatabaseIds()
+      )
       data <- cohortOverlapPreFetch() %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
+        dplyr::inner_join(y = filter,
                           by = c("databaseId" = "databaseId",
                                  "targetCohortId" = "cohortId")) %>%
-        dplyr::inner_join(y = combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId(),
+        dplyr::inner_join(y =filter,
                           by = c("databaseId" = "databaseId",
                                  "comparatorCohortId" = "cohortId"))
       return(data)
@@ -2143,7 +2415,7 @@ shiny::shinyServer(function(input, output, session) {
     if (!is.null(cohortOverlaDataFiltered())) {
       shiny::withProgress(
         message = paste0(
-          progressBarMessageTemplateFirst(),
+          progressBarMessageFilter(),
           "\n",
           "Generating Cohort Overlap plot(S)"
         ),
@@ -2164,11 +2436,15 @@ shiny::shinyServer(function(input, output, session) {
   
   output$cohortOverlapData <-
     DT::renderDT(expr = {
+      shiny::withProgress(message = paste0(progressBarMessageFilter(),
+                                           ". ",
+                                           "Generating cohort overlap table."), 
+                          value = 0, {
       data <- cohortOverlaDataFiltered()
       # data <- addMetaDataInformationToResults(data = data)
       table <- standardDataTable(data = data)
       return(table)
-    }, server = TRUE)
+    })}, server = TRUE)
   
   # Compare cohort characteristics --------------------------------------------
   # computeBalance <- shiny::reactive(x = {
@@ -2298,10 +2574,10 @@ shiny::shinyServer(function(input, output, session) {
                 htmlFileName = "html/visitContext.html")
   })
   
-  shiny::observeEvent(input$cohortCharacterizationInfo, {
-    showInfoBox(title = "Cohort Characterization",
-                htmlFileName = "html/cohortCharacterization.html")
-  })
+  # shiny::observeEvent(input$cohortCharacterizationInfo, {
+  #   showInfoBox(title = "Cohort Characterization",
+  #               htmlFileName = "html/cohortCharacterization.html")
+  # })
   
   shiny::observeEvent(input$temporalCharacterizationInfo, {
     showInfoBox(title = "Temporal Characterization",
@@ -2312,10 +2588,10 @@ shiny::shinyServer(function(input, output, session) {
     showInfoBox(title = "Cohort Overlap", htmlFileName = "html/cohortOverlap.html")
   })
   
-  shiny::observeEvent(input$compareCohortCharacterizationInfo, {
-    showInfoBox(title = "Compare Cohort Characteristics",
-                htmlFileName = "html/compareCohortCharacterization.html")
-  })
+  # shiny::observeEvent(input$compareCohortCharacterizationInfo, {
+  #   showInfoBox(title = "Compare Cohort Characteristics",
+  #               htmlFileName = "html/compareCohortCharacterization.html")
+  # })
   
   # Cohort labels --------------------------------------------------------------------------------------------
   # targetCohortCount <- shiny::reactive(x = {

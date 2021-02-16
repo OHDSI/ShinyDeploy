@@ -1,4 +1,7 @@
 library(magrittr)
+# library(promises)
+# library(future)
+# future::plan(strategy = multisession)
 # library(reactlog)
 # reactlog::reactlog_enable()
 appVersion <- "2.1.0"
@@ -12,6 +15,7 @@ source("R/DataPulls.R")
 source("R/Connections.R")
 source("R/HelperFunctions.R")
 source("R/ModifyDataSource.R")
+
 
 # Settings when running on server:
 assign(x = "defaultLocalDataFolder", value = "data", envir = .GlobalEnv)
@@ -90,14 +94,14 @@ if (!exists("shinySettings")) {
       assign(x = "isValidConnection",
              value = TRUE,
              envir = .GlobalEnv)
-      # connectionDetails <-
-      #   DatabaseConnector::createConnectionDetails(
-      #     dbms = dbms,
-      #     server = server,
-      #     port = port,
-      #     user = username,
-      #     password = password
-      #   )
+      connectionDetails <-
+        DatabaseConnector::createConnectionDetails(
+          dbms = dbms,
+          server = server,
+          port = port,
+          user = username,
+          password = password
+        )
       # connection <-
       #   DatabaseConnector::connect(connectionDetails = connectionDetails)
       # writeLines(text = "Database Connector Connection.")
@@ -168,8 +172,8 @@ if (!exists("shinySettings")) {
           user = username,
           password = password
         )
-      connection <-
-        DatabaseConnector::connect(connectionDetails = connectionDetails)
+      # connection <-
+      #   DatabaseConnector::connect(connectionDetails = connectionDetails)
       connectionPool <- NULL
       connectionPool <- pool::dbPool(
         drv = DatabaseConnector::DatabaseConnectorDriver(),
@@ -218,52 +222,74 @@ shiny::onStop(function() {
     if (DBI::dbIsValid(dbObj = connectionPool)) {
       pool::poolClose(pool = connectionPool)
     }
-    if (DBI::dbIsValid(dbObj = connection)) {
-      DatabaseConnector::disconnect(connection = connection)
-    }
+    # if (DBI::dbIsValid(dbObj = connection)) {
+    #   DatabaseConnector::disconnect(connection = connection)
+    # }
   }
 })
 
 
 if (isValidConnection) {
+  loadTimeStart <- Sys.time()
   resultsTablesOnServer <-
     tolower(x = DatabaseConnector::dbListTables(conn = connectionPool,
                                                 schema = resultsDatabaseSchema))
   
   # the code section below instantiates set of tables in R memory.
   # some tables are 'dummy' tables.
+  writeLines("Loading Database Table")
   loadRequiredTables(tableName = "database",
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      required = TRUE,
                      connection = connectionPool)
+  writeLines("Loading Cohort Table")
   loadRequiredTables(tableName = "cohort",
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      required = TRUE,
                      connection = connectionPool)
-  loadRequiredTables(tableName = "cohort_extra", 
-                     databaseSChema = resultsDatabaseSchema,
+  # writeLines("Loading Cohort Extra Table")
+  #   loadRequiredTables(tableName = "cohort_extra", 
+  #                      databaseSchema = resultsDatabaseSchema,
+  #                      connection = connectionPool)
+  # writeLines("Loading Concept set Table - future")
+  # loadRequiredTables(tableName = "concept_sets", 
+  #                    databaseSchema = resultsDatabaseSchema,
+  #                    connection = connectionPool)
+  
+  # Downloading covariate_ref and temporal_covariate_ref in global R because
+  # it is now a shared resource across multiple R sessions
+  # temporariliy commenting this during app development - because it take a long time to load 
+  # writeLines("Loading Covariate reference Table")
+  # loadRequiredTables(tableName = "covariate_ref",
+  #                    databaseSchema = resultsDatabaseSchema,
+  #                    connection = connectionPool)
+  writeLines("Loading Temporal Covariate reference Table")
+  loadRequiredTables(tableName = "temporal_covariate_ref",
+                     databaseSchema = resultsDatabaseSchema,
                      connection = connectionPool)
+  
+  
+  writeLines("Loading Phenotype Description Table")
   loadRequiredTables(tableName = "phenotype_description", 
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      connection = connectionPool)
+  writeLines("Loading Temporal Time Reference Table")
   loadRequiredTables(tableName = "temporal_time_ref", 
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      connection = connectionPool)
-  loadRequiredTables(tableName = "concept_sets", 
-                     databaseSChema = resultsDatabaseSchema,
-                     connection = connectionPool)
+  writeLines("Loading analysis ref Table")
   loadRequiredTables(tableName = "analysis_ref", 
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      connection = connectionPool)
+  writeLines("Loading Temporal analysis reference Table")
   loadRequiredTables(tableName = "temporal_analysis_ref", 
-                     databaseSChema = resultsDatabaseSchema,
+                     databaseSchema = resultsDatabaseSchema,
                      connection = connectionPool)
-  loadRequiredTables(tableName = "covariate_ref", 
-                     databaseSChema = resultsDatabaseSchema,
-                     connection = connectionPool)
-  loadRequiredTables(tableName = "temporal_covariate_ref", 
-                     databaseSChema = resultsDatabaseSchema,
-                     connection = connectionPool)
+  writeLines(paste("All Tables are loaded in", 
+                    scales::comma(as.numeric(difftime(time1 = Sys.time(), 
+                                           time2 = loadTimeStart, 
+                                           units = "secs"))), 
+                    "seconds."))
   
   for (table in c(dataModelSpecifications$tableName, "recommender_set")) {
     if (table %in% resultsTablesOnServer &&
@@ -283,6 +309,7 @@ if (isValidConnection) {
   dataSource <-
     createDatabaseDataSource(
       connection = connectionPool,
+      connectionDetails = connectionDetails,
       resultsDatabaseSchema = resultsDatabaseSchema,
       vocabularyDatabaseSchema = vocabularyDatabaseSchema
     )
@@ -297,13 +324,13 @@ if (isValidConnection) {
 
 
 # create memory variables based on
-if (exists("temporalTimeRef")) {
-  temporalCovariateChoices <- get("temporalTimeRef") %>%
-    dplyr::mutate(choices = paste0("Start ", .data$startDay, " to end ", .data$endDay)) %>%
-    dplyr::select(.data$timeId, .data$choices) %>%
-    dplyr::arrange(.data$timeId)
-  assign(x = "temporalCovariateChoices", value = temporalCovariateChoices, envir = .GlobalEnv)
-}
+# if (exists("temporalTimeRef")) {
+#   temporalCovariateChoices <- get("temporalTimeRef") %>%
+#     dplyr::mutate(choices = paste0("Start ", .data$startDay, " to end ", .data$endDay)) %>%
+#     dplyr::select(.data$timeId, .data$choices) %>%
+#     dplyr::arrange(.data$timeId)
+#   assign(x = "temporalCovariateChoices", value = temporalCovariateChoices, envir = .GlobalEnv)
+# }
 if (exists("covariateRef")) {
   specifications <- readr::read_csv(
     file = "Table1Specs.csv",
@@ -318,6 +345,8 @@ if (exists("covariateRef")) {
 
 referentConceptIds <- c(0)
 # modify tables in memory - process cohort table.
+writeLines("Post processing downloaded tables.")
+postProcessingStartTime <- Sys.time()
 if (exists("cohort")) {
   # this table is required for app to work.
   cohort <- get("cohort") %>%
@@ -353,8 +382,6 @@ if (exists("cohort")) {
 } else {
   writeLines("Cohort table not found")
 }
-
-
 if (exists("phenotypeDescription")) {
   cohort <- cohort %>% 
     dplyr::left_join(y = phenotypeDescription %>% 
@@ -447,8 +474,14 @@ if (exists("phenotypeDescription")) {
     c(referentConceptIds,
       phenotypeDescription$referentConceptId) %>% unique()
 }
+writeLines(paste("Post processing cohort table completed in", 
+                 scales::comma(as.numeric(difftime(time1 = Sys.time(), 
+                                                   time2 = postProcessingStartTime, 
+                                                   units = "secs"))), 
+                 "seconds."))
 
 if (isValidConnection) {
+  referentTimeStart <- Sys.time()
   referentConceptIdsDataFrame <-
     renderTranslateQuerySql(
       connection = dataSource$connection,
@@ -458,6 +491,11 @@ if (isValidConnection) {
       snakeCaseToCamelCase = TRUE
     ) %>%
     dplyr::arrange(.data$conceptId)
+  writeLines(paste("Downloading details for referent concepts took", 
+                   scales::comma(as.numeric(difftime(time1 = Sys.time(), 
+                                                     time2 = referentTimeStart, 
+                                                     units = "secs"))), 
+                   "seconds."))
 } else {
   referentConceptIdsDataFrame <-
     dplyr::tibble(conceptId = 0, conceptSynonymName = 'No matching concept')
@@ -518,8 +556,8 @@ if (exists('phenotypeDescription')) {
       dplyr::left_join(referentConceptIdsSearchTerms,
                        by = c('referentConceptId' = 'conceptId')) %>%
       dplyr::select(-.data$referentConceptId) %>%
-      dplyr::mutate(
-        referentConceptIdsSearchTerms = paste0(.data$conceptNameSearchTerms, collapse = ",")
+      dplyr::rename(
+        phenotypeSynonyms = .data$conceptNameSearchTerms
       )
   }
 }

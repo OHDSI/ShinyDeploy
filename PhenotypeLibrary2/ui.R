@@ -10,7 +10,8 @@ shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
   selectOnTab = TRUE,
   showTick = TRUE,
   width	= TRUE,
-  windowPadding = 2
+  windowPadding = 2,
+  dropdownAlignRight = TRUE
 )
 
 defaultHeaderbars <- 
@@ -62,11 +63,11 @@ defaultHeaderbars <-
 header <-
   shinydashboard::dashboardHeader(
     title = appTitle,
-    shinydashboard::dropdownMenu(
-      type = "notifications",
-      badgeStatus = "info",
-      shinydashboard::notificationItem(text = userNotification)
-    ),
+    # shinydashboard::dropdownMenu(
+    #   type = "notifications",
+    #   badgeStatus = "info",
+    #   shinydashboard::notificationItem(text = userNotification)
+    # ),
     tags$li(
       tags$div(
         defaultHeaderbars
@@ -79,28 +80,13 @@ header <-
 sidebarMenu <-
   shinydashboard::sidebarMenu(
     id = "tabs",
-    shinydashboard::menuItem(text = "Search", tabName = "search"),
-    if (exists(x = "aboutText"))
-      shinydashboard::menuItem(text = "About", tabName = "about"),
+    shinydashboard::sidebarMenuOutput(outputId = "menuItems")
     # if (exists(x = "phenotypeDescription"))
       # shinydashboard::menuItem(text = "Phenotype Description", tabName = "phenotypeDescription"),
     # if (exists(x = "cohort"))
       # shinydashboard::menuItem(text = "Cohort Definition", tabName = "cohortDefinition"),
-    if (exists(x = "cohortCount"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Cohort Counts", tabName = "cohortCounts"),
-        infoId = "cohortCountsInfo"
-      ),
-    if (exists(x = "incidenceRate"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Incidence Rate", tabName = "incidenceRate"),
-        infoId = "incidenceRateInfo"
-      ),
-    if (exists(x = "timeDistribution"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Time Distributions", tabName = "timeDistribution"),
-        infoId = "timeDistributionInfo"
-      ),
+    
+    
     # if (exists(x = "includedSourceConcept"))
     #   addInfo(
     #     item = shinydashboard::menuItem(text = "Included (Source) Concepts", tabName = "includedConcepts"),
@@ -116,42 +102,12 @@ sidebarMenu <-
     #     item = shinydashboard::menuItem(text = "Concept Set Diagnostics MOVE TO COHORTS", tabName = "conceptSetDiagnostics"),
     #     infoId = "conceptSetDiagnosticsInfo"
     #   ),
-    if (exists(x = "inclusionRuleStats"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Inclusion Rule Statistics", tabName = "inclusionRuleStats"),
-        infoId = "inclusionRuleStatsInfo"
-      ),
-    if (exists(x = "indexEventBreakdown"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
-        infoId = "indexEventBreakdownInfo"
-      ),
-    if (exists(x = "visitContext"))
-      addInfo(
-        item = shinydashboard::menuItem(text = "Visit Context", tabName = "visitContext"),
-        infoId = "visitContextInfo"
-      ),
-    if (exists(x = "covariateValue"))
-      addInfo(
-        shinydashboard::menuItem(text = "Cohort Characterization", tabName = "cohortCharacterization"),
-        infoId = "cohortCharacterizationInfo"
-      ),
-    if (exists(x = "temporalCovariateValue"))
-      addInfo(
-        shinydashboard::menuItem(text = "Temporal Characterization", tabName = "temporalCharacterization"),
-        infoId = "temporalCharacterizationInfo"
-      ),
-    if (exists(x = "cohortOverlap"))
-      addInfo(
-        shinydashboard::menuItem(text = "Cohort Overlap", tabName = "cohortOverlap"),
-        infoId = "cohortOverlapInfo"
-      ),
     # if (exists(x = "covariateValue"))
     #   addInfo(
     #     item = shinydashboard::menuItem(text = "Compare Cohort Char.", tabName = "compareCohortCharacterization"),
     #     infoId = "compareCohortCharacterizationInfo"
     #   ),
-    shinydashboard::menuItem(text = "Database information", tabName = "databaseInformation")
+    
   )
 
 #Side bar code
@@ -484,38 +440,44 @@ bodyTabItems <- shinydashboard::tabItems(
                )),
     tags$table(tags$tr(
       tags$td(
-        shiny::conditionalPanel(
-          condition = "input.irStratification.indexOf('Age') > -1",
-          shiny::selectizeInput(
+        # shiny::conditionalPanel(
+          # condition = "input.irStratification.indexOf('Age') > -1",
+          shinyWidgets::pickerInput(
             inputId = "incidenceRateAgeFilter",
-            choices = NULL,
             label = NULL,
+            choices = NULL,
+            inline = TRUE,
             multiple = TRUE,
+            options = shinyWidgetsPickerOptions
           )
-        )
+        # )
       ),
       tags$td(
-        shiny::conditionalPanel(
-          condition = "input.irStratification.indexOf('Gender') > -1",
-          shiny::selectizeInput(
-            inputId = "incidenceRateGenderFilter",
-            choices = NULL,
-            label = NULL,
-            multiple = TRUE
-          )
+        # shiny::conditionalPanel(
+          # condition = "input.irStratification.indexOf('Gender') > -1",
+        shinyWidgets::pickerInput(
+          inputId = "incidenceRateGenderFilter",
+          label = NULL,
+          choices = NULL,
+          inline = TRUE,
+          multiple = TRUE,
+          options = shinyWidgetsPickerOptions
         )
+        # )
       ),
       tags$td(
         style = "width:30% !important",
-        shiny::conditionalPanel(
-          condition = "input.irStratification.indexOf('Calendar Year') > -1",
-          shiny::selectizeInput(
-            inputId = "incidenceRateCalenderFilter",
-            choices = NULL,
-            label = NULL,
-            multiple = TRUE
-          )
+        # shiny::conditionalPanel(
+          # condition = "input.irStratification.indexOf('Calendar Year') > -1",
+        shinyWidgets::pickerInput(
+          inputId = "incidenceRateCalendarFilter",
+          label = NULL,
+          choices = NULL,
+          inline = TRUE,
+          multiple = TRUE,
+          options = shinyWidgetsPickerOptions
         )
+        # )
       )
     )),
     # shiny::htmlOutput(outputId = "hoverInfoIr"),
@@ -623,40 +585,47 @@ bodyTabItems <- shinydashboard::tabItems(
     )
     #cohortReference("visitContextSelectedCohort"),
   ),
-  shinydashboard::tabItem(
-    tabName = "cohortCharacterization",
-    #cohortReference("characterizationSelectedCohort"),
-    shinydashboard::box(
-      title = "Data (Raw)",
-      width = NULL,
-      status = "primary",
-      collapsible = TRUE,
-      collapsed = TRUE,
-      DT::DTOutput("characterizationTableRaw")
-    ),
-    shinydashboard::box(
-      title = "Data (Pretty)",
-      width = NULL,
-      status = "primary",
-      collapsible = TRUE,
-      collapsed = FALSE,
-      DT::DTOutput("characterizationTablePretty")
-    )
-  ),
+  # shinydashboard::tabItem(
+  #   tabName = "cohortCharacterization",
+  #   #cohortReference("characterizationSelectedCohort"),
+  #   shinydashboard::box(
+  #     title = "Data (Raw)",
+  #     width = NULL,
+  #     status = "primary",
+  #     collapsible = TRUE,
+  #     collapsed = TRUE,
+  #     DT::DTOutput("characterizationTableRaw")
+  #   ),
+  #   shinydashboard::box(
+  #     title = "Data (Pretty)",
+  #     width = NULL,
+  #     status = "primary",
+  #     collapsible = TRUE,
+  #     collapsed = FALSE,
+  #     DT::DTOutput("characterizationTablePretty")
+  #   )
+  # ),
   shinydashboard::tabItem(
     tabName = "temporalCharacterization",
-      shiny::selectizeInput(
-        inputId = "temporalAnalysisNameFilter",
-        choices = NULL,
-        label = NULL,
-        multiple = TRUE,
-      ),
-      shiny::selectizeInput(
-        inputId = "temporalDomainFilter",
-        choices = NULL,
-        label = NULL,
-        multiple = TRUE,
-      ),
+    tags$table(tags$tr(
+      tags$td(
+    shinyWidgets::pickerInput(
+      inputId = "temporalCharacterizationAnalysisNameFilter",
+      label = NULL,
+      choices = NULL,
+      inline = TRUE,
+      multiple = TRUE,
+      options = shinyWidgetsPickerOptions
+    )),
+    tags$td(
+    shinyWidgets::pickerInput(
+      inputId = "temporalCharacterizationDomainFilter",
+      label = NULL,
+      choices = NULL,
+      inline = TRUE,
+      multiple = TRUE,
+      options = shinyWidgetsPickerOptions
+    )))),
     #cohortReference("temporalCharacterizationSelectedCohort"),
     shinydashboard::box(
       title = "Temporal Characterization",

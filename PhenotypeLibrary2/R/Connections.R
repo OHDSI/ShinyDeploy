@@ -11,19 +11,20 @@ isConnectionValid <- function(dbms,
                     password = password) 
 }
 
-loadRequiredTables <- function(databaseSChema,
+loadRequiredTables <- function(databaseSchema,
                                tableName, 
                                required = FALSE,
                                connection) {
+  sql <- "SELECT * FROM @databaseSchema."
   if (required) {
     tryCatch(expr = {
       table <- DatabaseConnector::dbReadTable(conn = connection, 
-                                              name = paste(databaseSChema, tableName, sep = "."))
+                                              name = paste(databaseSchema, tableName, sep = "."))
     }, error = function(err) {
-      stop("Error reading from ", paste(databaseSChema, tableName, sep = "."), ": ", err$message)
+      stop("Error reading from ", paste(databaseSchema, tableName, sep = "."), ": ", err$message)
     })} else {
       table <- DatabaseConnector::dbReadTable(conn = connection, 
-                                              name = paste(databaseSChema, tableName, sep = "."))
+                                              name = paste(databaseSchema, tableName, sep = "."))
     }
   colnames(table) <- snakeCaseToCamelCase(colnames(table))
   table <- dplyr::tibble(table)

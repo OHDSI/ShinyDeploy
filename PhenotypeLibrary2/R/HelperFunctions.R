@@ -65,20 +65,20 @@ standardDataTable <- function(data,
                                            'analysisId',
                                            'temporalChoices',
                                            'covariateName',
-                                           'conceptId'
+                                           'conceptId',
+                                           'databaseId'
                                            )
   
   convertVariableToFactor <- function(data, variables) {
     for (i in (1:length(variables))) {
       variable <- variables[i]
       if (variable %in% colnames(data)) {    
-        data[[variable]] <- as.factor(data[[variable]]) %>%
-          dplyr::tibble()
+        data[[variable]] <- as.factor(data[[variable]])
       }
     }
-    return(data)
+    return(data %>% dplyr::tibble())
   }
-  data <- convertVariableToFactor(data = data, 
+  data <- convertVariableToFactor(data = data,
                                   variables = listOfVariablesThatAreAlwaysFactors)
   
   dataTable <- DT::datatable(
