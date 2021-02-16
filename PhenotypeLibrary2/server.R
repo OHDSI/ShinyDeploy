@@ -1,5 +1,3 @@
-future::plan(strategy = multisession)
-
 shiny::shinyServer(function(input, output, session) {
   
   shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
