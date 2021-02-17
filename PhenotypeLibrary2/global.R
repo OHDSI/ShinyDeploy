@@ -6,6 +6,22 @@ library(magrittr)
 # reactlog::reactlog_enable()
 appVersion <- "2.1.0"
 
+
+userName <- Sys.getenv("phoebedbUser")
+password <- Sys.getenv("phoebedbPw")
+databaseServer <- Sys.getenv("phoebedbServer")
+databaseName <- Sys.getenv("phoebedb")
+resultsSchema <- Sys.getenv("phoebedbTargetSchema")
+vocabularySchema <- Sys.getenv("phoebedbVocabSchema")
+  
+# userName <- Sys.getenv("ownerUser")
+# password <- Sys.getenv("ownerPassword")
+# databaseServer <- Sys.getenv("ohdsiShinyServer")
+# databaseName <- Sys.getenv("ohdsiShinyDatabase")
+# resultsSchema <- Sys.getenv("studySchemaMskai")
+# vocabularySchema <- Sys.getenv("ohdsiShinyDbVocabularySchema")
+
+
 source("R/DisplayFunctions.R")
 source("R/Tables.R")
 source("R/Plots.R")
@@ -45,35 +61,35 @@ if (!exists("shinySettings")) {
   # shinySettings object is from CohortDiagnostics::launchDiagnosticsExplorer()
   writeLines("Using default settings -- attempting to connect to OHDSI phenotype library")
   assign(x = "usingUserProvidedSettings", value = FALSE, envir = .GlobalEnv)
-  if (Sys.getenv("phoebedbUser") != '') {
-    assign("username", Sys.getenv("phoebedbUser"), envir = .GlobalEnv)
+  if (userName != '') {
+    assign("username", userName, envir = .GlobalEnv)
   }
-  if (Sys.getenv("phoebedbPw") != '') {
-    assign("password", Sys.getenv("phoebedbPw"), envir = .GlobalEnv)
+  if (password != '') {
+    assign("password", password, envir = .GlobalEnv)
   }
-  if (Sys.getenv("phoebedbServer") != '') {
-    assign("server", Sys.getenv("phoebedbServer"), envir = .GlobalEnv)
+  if (databaseServer != '') {
+    assign("server", databaseServer, envir = .GlobalEnv)
   }
-  if (Sys.getenv("phoebedb") != '') {
-    assign("database", Sys.getenv("phoebedb"), envir = .GlobalEnv)
+  if (databaseName != '') {
+    assign("database", databaseName, envir = .GlobalEnv)
   }
-  if (all((Sys.getenv("phoebedbServer") != ''),
-          (Sys.getenv("phoebedb") != ''))) {
+  if (all((databaseServer != ''),
+          (database != ''))) {
     assign("server", paste(
-      Sys.getenv("phoebedbServer"),
-      Sys.getenv("phoebedb"),
+      databaseServer,
+      database,
       sep = "/"
     ),
     envir = .GlobalEnv)
   }
-  if (Sys.getenv("phoebedbVocabSchema") != '') {
+  if (vocabularySchema != '') {
     assign("vocabularyDatabaseSchema",
-           Sys.getenv("phoebedbVocabSchema"),
+           vocabularySchema,
            envir = .GlobalEnv)
   }
-  if (Sys.getenv("phoebedbTargetSchema") != '') {
+  if (resultsSchema != '') {
     assign("resultsDatabaseSchema",
-           Sys.getenv("phoebedbTargetSchema"),
+           resultsSchema,
            envir = .GlobalEnv)
   }
   
@@ -324,13 +340,11 @@ if (isValidConnection) {
 
 
 # create memory variables based on
-# if (exists("temporalTimeRef")) {
-#   temporalCovariateChoices <- get("temporalTimeRef") %>%
-#     dplyr::mutate(choices = paste0("Start ", .data$startDay, " to end ", .data$endDay)) %>%
-#     dplyr::select(.data$timeId, .data$choices) %>%
-#     dplyr::arrange(.data$timeId)
-#   assign(x = "temporalCovariateChoices", value = temporalCovariateChoices, envir = .GlobalEnv)
-# }
+if (exists("temporalTimeRef")) {
+  temporalTimeRef <- get("temporalTimeRef") %>%
+    dplyr::mutate(temporalChoices = paste0("Start ", .data$startDay, " to end ", .data$endDay))
+  assign(x = "temporalTimeRef", value = temporalTimeRef, envir = .GlobalEnv)
+}
 if (exists("covariateRef")) {
   specifications <- readr::read_csv(
     file = "Table1Specs.csv",
@@ -360,7 +374,7 @@ if (exists("cohort")) {
     for (i in 1:nrow(cohort)) {
       x <- RJSONIO::fromJSON(cohort[i, ]$metadata)
       for (j in 1:length(x)) {
-        if (!any(is.null(x[[j]]), is.na(x[[j]]))) {
+        if (!any(is.null(x[[j]]), is.na(x[[j]]), names(x[j]) == "sql")) {
           x[[j]] <- stringr::str_split(string = x[[j]], pattern = ";")[[1]]
         }
       }
@@ -382,7 +396,7 @@ if (exists("cohort")) {
 } else {
   writeLines("Cohort table not found")
 }
-if (exists("phenotypeDescription")) {
+if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
   cohort <- cohort %>% 
     dplyr::left_join(y = phenotypeDescription %>% 
                        dplyr::select(.data$phenotypeId, .data$phenotypeName),
@@ -392,7 +406,7 @@ if (exists("phenotypeDescription")) {
 }
 
  
-if (exists("phenotypeDescription")) { 
+if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) { 
   phenotypeDescription <- phenotypeDescription %>%
     dplyr::mutate(clinicalDescription = 
                     stringr::str_squish(.data$clinicalDescription)) %>%

@@ -80,13 +80,26 @@ standardDataTable <- function(data,
   }
   data <- convertVariableToFactor(data = data,
                                   variables = listOfVariablesThatAreAlwaysFactors)
-  
+  colNamesData <- colnames(data)
+  if (exists("database")) {
+    for (i in (1:length(colNamesData))) {
+      if (!colNamesData[[i]] %in% database$databaseId) {
+        if (exists("temporalTimeRef") &&
+            colNamesData[[i]] %in% temporalTimeRef$temporalChoices) {
+          # do nothing
+        } else {
+          colNamesData[[i]] <- camelCaseToTitleCase(colNamesData[[i]])
+        }
+      }
+    }
+  }
+
   dataTable <- DT::datatable(
     data = data,
     class = "stripe compact order-column hover",
     rownames = FALSE,
     options = dataTableOption,
-    colnames = colnames(data) %>% camelCaseToTitleCase(),
+    colnames = colNamesData,
     filter = dataTableFilter,
     # style = 'bootstrap4',
     escape = FALSE,
@@ -100,14 +113,16 @@ standardDataTable <- function(data,
   
   colNames <- colnames(data)
   listRounds <-
-    colNames[stringr::str_detect(string = tolower(colNames),
-                                 pattern = 'entries|subjects|count|min|max|p10|p25|median|p75|p90|max|before|onvisitstart|after|duringvisit')]
+    c(colNames[stringr::str_detect(string = tolower(colNames),
+                                   pattern = 'entries|subjects|count|min|max|p10|p25|median|p75|p90|max|before|onvisitstart|after|duringvisit')]
+      , colNames[stringr::str_detect(string = colNames,
+                                     pattern = paste0(database$databaseId, collapse = "|"))])
   listDecimal <-
     colNames[stringr::str_detect(string = tolower(colNames),
                                  pattern = 'average|standarddeviation|mean|sd|personyears|incidencerate')]
   listPercent <-
     colNames[stringr::str_detect(string = tolower(colNames),
-                                 pattern = 'percent')]
+                                 pattern = 'percent|start')]
   if (length(listRounds) > 0) {
     dataTable <- DT::formatRound(table = dataTable,
                                  columns = listRounds,
