@@ -16,10 +16,10 @@ appVersion <- "2.1.0"
   
 userName <- Sys.getenv("charybdisdbUser")
 password <- Sys.getenv("charybdisdbPw")
-databaseServer <- Sys.getenv("ohdsiShinyServer")
-databaseName <- Sys.getenv("ohdsiShinyDatabase")
-resultsSchema <- Sys.getenv("studySchemaMskai")
-vocabularySchema <- Sys.getenv("ohdsiShinyDbVocabularySchema")
+databaseServer <- Sys.getenv("shinydbServer")
+databaseName <- Sys.getenv("shinydbDatabase")
+resultsSchema <- 'mskai'
+vocabularySchema <- 'vocabulary'
 
 
 source("R/DisplayFunctions.R")
