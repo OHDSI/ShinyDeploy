@@ -646,7 +646,17 @@ bodyTabItems <- shinydashboard::tabItems(
       width = NULL,
       status = "primary",
       collapsible = TRUE,
-      collapsed = FALSE
+      collapsed = FALSE,
+      shiny::textOutput(outputId = "temporalCharacterizationPlotText"),
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "temporalCharacterizationPlotCohorts",
+                      label = "Cohorts for plotting",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    ))
       # shiny::htmlOutput(outputId = "hoverInfoIr"),
       # ggiraph::ggiraphOutput(
       #   outputId = "temporalCharacterizationPlot",

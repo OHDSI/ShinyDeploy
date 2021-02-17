@@ -2346,6 +2346,29 @@ shiny::shinyServer(function(input, output, session) {
     }, server = TRUE)
 
   
+  output$temporalCharacterizationPlotText <- shiny::renderText(expr = {
+    text <- "This compares two different cohort definitions, computed on the same data source. Under development."
+    return(text)
+  })
+  
+  shiny::reactive(x = {
+    shinyWidgets::updatePickerInput(
+      session = session,
+      inputId = "temporalCharacterizationPlotCohorts",
+      choices = temporalCharacterizationDataFilteredPlotCompareCohorts(),
+      selected = temporalCharacterizationDataFilteredPlotCompareCohorts()[c(1,2)]
+    )
+  })
+  
+  temporalCharacterizationDataFilteredForPlotting <- shiny::reactive(x = {
+    if (nrow(temporalCharacterizationDataFiltered()) > 0) {
+      data <- temporalCharacterizationDataFiltered %>% 
+        dplyr::filter(.data$cohortId %in% input$temporalCharacterizationPlotCohorts)
+      return(data)
+    } else {
+      return(NULL)
+    }
+  })
   
   #
   #
