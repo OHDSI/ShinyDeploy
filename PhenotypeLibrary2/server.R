@@ -1684,14 +1684,23 @@ shiny::shinyServer(function(input, output, session) {
         if (stratifyByAge) {
           data <- data %>%
             dplyr::filter(.data$ageGroup %in% input$incidenceRateAgeFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$ageGroup %in% 'All')
         }
         if (stratifyByCalendarYear) {
           data <- data %>%
             dplyr::filter(.data$calendarYear %in% input$incidenceRateCalendarFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$calendarYear %in% 'All')
         }
         if (stratifyByGender) {
           data <- data %>%
             dplyr::filter(.data$gender %in% input$incidenceRateGenderFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$gender %in% 'All')
         }
         return(data)
       }
