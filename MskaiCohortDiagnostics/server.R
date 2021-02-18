@@ -256,12 +256,20 @@ shiny::shinyServer(function(input, output, session) {
         data$presentation <- ""
         data$assessment <- ""
         data$plan <- ""
+        data$prognosis <- ""
         data$phenotypeSynonyms <- ""
       }
       if (is.null(data)) {
         return(NULL)
       } else {
         details <- list()
+        colNamesData <- colnames(data)
+        if (!'logicDescription' %in% colNamesData) {
+          data$logicDescription <- "Not given."
+        }
+        if (!'referentConceptIdsSearchTerms' %in% colNamesData) {
+          data$referentConceptIdsSearchTerms <- 0
+        }
         for (i in (1:nrow(data))) {
           details[[i]] <-       tags$table(
             style = "margin-top: 5px;",
@@ -1618,17 +1626,33 @@ shiny::shinyServer(function(input, output, session) {
     if (input$pivotCohortCount == 'None') {
       data <- data
     } else if (input$pivotCohortCount == 'Subjects') {
-      data <- data %>% 
-        dplyr::select(-.data$cohortEntries) %>% 
-        tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
-                           values_from = .data$cohortSubjects,
-                           names_from = .data$databaseId)
+      if ('phenotypeId' %in% colnames(data)) {
+        data <- data %>% 
+          dplyr::select(-.data$cohortEntries) %>% 
+          tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
+                             values_from = .data$cohortSubjects,
+                             names_from = .data$databaseId)
+      } else {
+        data <- data %>% 
+          dplyr::select(-.data$cohortEntries) %>% 
+          tidyr::pivot_wider(id_cols = c(.data$cohortId, .data$cohortName),
+                             values_from = .data$cohortSubjects,
+                             names_from = .data$databaseId)
+      }
     } else if (input$pivotCohortCount == 'Entries') {
-      data <- data %>% 
-        dplyr::select(-.data$cohortSubjects) %>% 
-        tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
-                           values_from = .data$cohortEntries,
-                           names_from = .data$databaseId)
+      if ('phenotypeId' %in% colnames(data)) {
+        data <- data %>% 
+          dplyr::select(-.data$cohortSubjects) %>% 
+          tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
+                             values_from = .data$cohortSubjects,
+                             names_from = .data$databaseId)
+      } else {
+        data <- data %>% 
+          dplyr::select(-.data$cohortSubjects) %>% 
+          tidyr::pivot_wider(id_cols = c(.data$cohortId, .data$cohortName),
+                             values_from = .data$cohortSubjects,
+                             names_from = .data$databaseId)
+      }
     }
     dataTable <- standardDataTable(data = data)
     return(dataTable)

@@ -13,7 +13,7 @@ appVersion <- "2.1.0"
 # databaseName <- Sys.getenv("phoebedb")
 # resultsSchema <- Sys.getenv("phoebedbTargetSchema")
 # vocabularySchema <- Sys.getenv("phoebedbVocabSchema")
-  
+
 userName <- Sys.getenv("charybdisdbUser")
 password <- Sys.getenv("charybdisdbPw")
 databaseServer <- Sys.getenv("shinydbServer")
