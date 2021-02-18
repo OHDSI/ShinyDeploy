@@ -14,12 +14,12 @@ appVersion <- "2.1.0"
 # resultsSchema <- Sys.getenv("phoebedbTargetSchema")
 # vocabularySchema <- Sys.getenv("phoebedbVocabSchema")
   
-userName <- Sys.getenv("ownerUser")
-password <- Sys.getenv("ownerPassword")
-databaseServer <- Sys.getenv("ohdsiShinyServer")
-databaseName <- Sys.getenv("ohdsiShinyDatabase")
-resultsSchema <- Sys.getenv("studySchemaMskai")
-vocabularySchema <- Sys.getenv("ohdsiShinyDbVocabularySchema")
+userName <- Sys.getenv("charybdisdbUser")
+password <- Sys.getenv("charybdisdbPw")
+databaseServer <- Sys.getenv("shinydbServer")
+databaseName <- Sys.getenv("shinydbDatabase")
+resultsSchema <- 'mskai'
+vocabularySchema <- 'vocabulary'
 
 
 source("R/DisplayFunctions.R")
