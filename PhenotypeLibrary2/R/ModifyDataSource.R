@@ -18,34 +18,51 @@ addShortName <-
   }
 
 
-addMetaDataInformationToResults <- function(data) {
+addMetaDataInformationToResults <- function(data, isPhenotypeLibraryMode) {
   if (is.null(data) || nrow(data) == 0) {
     return(dplyr::tibble(Note = paste0(
       "No data available for selected databases and cohorts"
     )))
   }
   if (nrow(data) > 0) {
-    data <- data %>%
-      dplyr::left_join(
-        y = cohort %>%
-          dplyr::select(.data$cohortId,
-                        .data$phenotypeId,
-                        .data$cohortName),
-        by = c('cohortId')
-      ) %>%
-      dplyr::left_join(
-        y = phenotypeDescription %>%
-          dplyr::select(.data$phenotypeId, .data$phenotypeName),
-        by = "phenotypeId"
-      ) %>%
-      dplyr::relocate(
-        .data$databaseId,
-        .data$phenotypeId,
-        .data$phenotypeName,
-        .data$cohortId,
-        .data$cohortName
-      ) %>%
-      dplyr::arrange(.data$phenotypeName, .data$cohortName)
+    if (!isPhenotypeLibraryMode) {
+      data <- data %>%
+        dplyr::left_join(
+          y = cohort %>%
+            dplyr::select(.data$cohortId,
+                          .data$cohortName),
+          by = c('cohortId')
+        ) %>%
+        dplyr::relocate(
+          .data$databaseId,
+          .data$cohortId,
+          .data$cohortName
+        ) %>%
+        dplyr::arrange(.data$cohortName)
+    } else {
+      data <- data %>%
+        dplyr::left_join(
+          y = cohort %>%
+            dplyr::select(.data$cohortId,
+                          .data$phenotypeId,
+                          .data$cohortName),
+          by = c('cohortId')
+        ) %>%
+        dplyr::left_join(
+          y = phenotypeDescription %>%
+            dplyr::select(.data$phenotypeId, .data$phenotypeName),
+          by = "phenotypeId"
+        ) %>%
+        dplyr::relocate(
+          .data$databaseId,
+          .data$phenotypeId,
+          .data$phenotypeName,
+          .data$cohortId,
+          .data$cohortName
+        ) %>%
+        dplyr::arrange(.data$phenotypeName, .data$cohortName)
+    }
+    
   }
   return(data)
 }

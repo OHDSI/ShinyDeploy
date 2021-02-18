@@ -54,12 +54,12 @@ shiny::shinyServer(function(input, output, session) {
             item = shinydashboard::menuItem(text = "Inclusion Rule Statistics", tabName = "inclusionRuleStats"),
             infoId = "inclusionRuleStatsInfo"
           )
-      menuList[[7]] <-
-        if (exists(x = "indexEventBreakdown"))
-          addInfo(
-            item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
-            infoId = "indexEventBreakdownInfo"
-          )
+      # menuList[[7]] <-
+      #   if (exists(x = "indexEventBreakdown"))
+      #     addInfo(
+      #       item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
+      #       infoId = "indexEventBreakdownInfo"
+      #     )
       menuList[[8]] <- 
         if (exists(x = "visitContext"))
           addInfo(
@@ -67,12 +67,12 @@ shiny::shinyServer(function(input, output, session) {
             infoId = "visitContextInfo"
           )
       
-      # menuList[[9]] <- 
-      #   if (exists(x = "covariateValue"))
-      #     addInfo(
-      #       shinydashboard::menuItem(text = "Cohort Characterization", tabName = "cohortCharacterization"),
-      #       infoId = "cohortCharacterizationInfo"
-      #     )
+      menuList[[9]] <-
+        if (exists(x = "covariateValue"))
+          addInfo(
+            shinydashboard::menuItem(text = "Cohort Characterization", tabName = "cohortCharacterization"),
+            infoId = "cohortCharacterizationInfo"
+          )
       menuList[[10]] <- 
         if (exists(x = "temporalCovariateValue"))
           addInfo(
@@ -275,53 +275,51 @@ shiny::shinyServer(function(input, output, session) {
               tags$td(HTML("&nbsp;&nbsp;")),
               tags$td(data[i, ]$cohortName)
             ),
-            if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
               tags$tr(
                 tags$td(tags$strong("Logic: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$logicDescription)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Synonyms: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$referentConceptIdsSearchTerms)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Phenotype Name: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(paste(data[i, ]$phenotypeName, " (",data[i, ]$phenotypeId,")"))
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Phenotype Synonyms: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(paste(data[i, ]$phenotypeSynonyms, " (",data[i, ]$phenotypeSynonyms,")"))
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Overview: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$overview)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Presentation: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$presentation)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Assessment: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$assessment)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Plan: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$plan)
-              )
+              ),
               tags$tr(
                 tags$td(tags$strong("Prognosis: ")),
                 tags$td(HTML("&nbsp;&nbsp;")),
                 tags$td(data[i, ]$prognosis)
               )
-            }
           )
         }
         return(details)
@@ -1133,30 +1131,30 @@ shiny::shinyServer(function(input, output, session) {
                            )
                          })
   
-  indexEventBreakDownDataPreFetch <-
-    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
-                         valueExpr = {
-                           shiny::withProgress(
-                             message = paste0(
-                               progressBarMessagePreFetchTemplateFirst(),
-                               "\n",
-                               "Pre-fetching index event breakdown data."
-                             ),
-                             value = 0,
-                             {
-                               if (length(cohortsSelectedByActionButton()) != 0) {
-                                 data <- getIndexEventBreakdown(
-                                   dataSource = dataSource,
-                                   cohortIds = cohortsSelectedByActionButton(),
-                                   cohortCounts = cohortCountsPreFetch()
-                                 )
-                                 return(data)
-                               } else {
-                                 return(dplyr::tibble())
-                               }
-                             }
-                           )
-                         })
+  # indexEventBreakDownDataPreFetch <-
+  #   shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+  #                        valueExpr = {
+  #                          shiny::withProgress(
+  #                            message = paste0(
+  #                              progressBarMessagePreFetchTemplateFirst(),
+  #                              "\n",
+  #                              "Pre-fetching index event breakdown data."
+  #                            ),
+  #                            value = 0,
+  #                            {
+  #                              if (length(cohortsSelectedByActionButton()) != 0) {
+  #                                data <- getIndexEventBreakdown(
+  #                                  dataSource = dataSource,
+  #                                  cohortIds = cohortsSelectedByActionButton(),
+  #                                  cohortCounts = cohortCountsPreFetch()
+  #                                )
+  #                                return(data)
+  #                              } else {
+  #                                return(dplyr::tibble())
+  #                              }
+  #                            }
+  #                          )
+  #                        })
   
   visitContextDataPreFetch <-
     shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
@@ -1182,21 +1180,20 @@ shiny::shinyServer(function(input, output, session) {
                              }
                            )
                          })
-  # 
-  # characterizationDataPreFetch <-
-  #   shiny::reactive(x = {
-  #     if (length(cohortsSelectedByActionButton()) != 0) {
-  #       data <- getCovariateValueResult(
-  #         dataSource = dataSource,
-  #         table = "covariateValue",
-  #         cohortIds = cohortsSelectedByActionButton()
-  #       )
-  #       return(data)
-  #     } else {
-  #       return(dplyr::tibble())
-  #     }
-  #   })
-  # 
+  characterizationDataPreFetch <-
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           if (length(cohortsSelectedByActionButton()) != 0) {
+                             data <- getCovariateValueResult(dataSource = dataSource,
+                                                             table = "covariateValue",
+                                                             cohortIds = cohortsSelectedByActionButton())
+                             return(data)
+                           } else {
+                             return(dplyr::tibble())
+                           }
+                         })
+  
+  
   temporalCharacterizationDataPreFetch <-
     shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
                          valueExpr = {
@@ -1316,16 +1313,26 @@ shiny::shinyServer(function(input, output, session) {
                             shinyWidgets::updatePickerInput(
                               session = session,
                               inputId = "temporalCharacterizationAnalysisNameFilter",
-                              label = "Analysis Choices",
                               choices = temporalCharacterizationAnalysisNameFilter() %>% sort(),
                               selected = temporalCharacterizationAnalysisNameFilter()
                             )
                             shinyWidgets::updatePickerInput(
                               session = session,
                               inputId = "temporalCharacterizationDomainFilter",
-                              label = "Domain Choices",
                               choices = temporalCharacterizationDomainFilter() %>% sort(),
                               selected = temporalCharacterizationDomainFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "characterizationAnalysisNameFilter",
+                              choices = characterizationAnalysisNameFilter() %>% sort(),
+                              selected = characterizationAnalysisNameFilter()
+                            )
+                            shinyWidgets::updatePickerInput(
+                              session = session,
+                              inputId = "characterizationDomainFilter",
+                              choices = characterizationDomainFilter() %>% sort(),
+                              selected = characterizationDomainFilter()
                             )
                           }
                         )
@@ -1603,9 +1610,25 @@ shiny::shinyServer(function(input, output, session) {
   })
   output$cohortCountsTable <- DT::renderDT(expr = {
     data <- cohortCountsDataFiltered()
+    
     if (nrow(data) > 0) {
-      isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-      data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeMOde)
+      isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+      data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+    }
+    if (input$pivotCohortCount == 'None') {
+      data <- data
+    } else if (input$pivotCohortCount == 'Subjects') {
+      data <- data %>% 
+        dplyr::select(-.data$cohortEntries) %>% 
+        tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
+                           values_from = .data$cohortSubjects,
+                           names_from = .data$databaseId)
+    } else if (input$pivotCohortCount == 'Entries') {
+      data <- data %>% 
+        dplyr::select(-.data$cohortSubjects) %>% 
+        tidyr::pivot_wider(id_cols = c(.data$phenotypeId, .data$phenotypeName, .data$cohortId, .data$cohortName),
+                           values_from = .data$cohortEntries,
+                           names_from = .data$databaseId)
     }
     dataTable <- standardDataTable(data = data)
     return(dataTable)
@@ -1670,14 +1693,23 @@ shiny::shinyServer(function(input, output, session) {
         if (stratifyByAge) {
           data <- data %>%
             dplyr::filter(.data$ageGroup %in% input$incidenceRateAgeFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$ageGroup %in% 'All')
         }
         if (stratifyByCalendarYear) {
           data <- data %>%
             dplyr::filter(.data$calendarYear %in% input$incidenceRateCalendarFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$calendarYear %in% 'All')
         }
         if (stratifyByGender) {
           data <- data %>%
             dplyr::filter(.data$gender %in% input$incidenceRateGenderFilter)
+        } else {
+          data <- data %>% 
+            dplyr::filter(.data$gender %in% 'All')
         }
         return(data)
       }
@@ -1718,8 +1750,8 @@ shiny::shinyServer(function(input, output, session) {
                         value = 0, {
       data <- incidenceRateDataFiltered()
       if (nrow(data) > 0) {
-        isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-        data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeMOde)
+        isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
         colnames(data) <-
           colnames(data) %>% stringr::str_replace_all(string = .,
                                                       pattern = "Value",
@@ -1765,9 +1797,9 @@ shiny::shinyServer(function(input, output, session) {
                         value = 0, {
       data <- timeDistributionFiltered()
       if (nrow(data) > 0) {
-        isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
         data <- data %>% dplyr::relocate(.data$timeMetric)
-        data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeMOde)
+        data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
         colnames(data) <-
           colnames(data) %>% stringr::str_replace_all(string = .,
                                                       pattern = "Value",
@@ -2023,9 +2055,9 @@ shiny::shinyServer(function(input, output, session) {
       value = 0,
       {
         if (nrow(inclusionRuleFiltered()) > 0) {
-          isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
           data <- inclusionRuleFiltered()
-          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeMOde)
+          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
           table <- standardDataTable(data)
           return(table)
         } else {
@@ -2037,38 +2069,38 @@ shiny::shinyServer(function(input, output, session) {
   
   
   # Index event breakdown ----------------------------------------------------------------
-  indexEventBreakDownDataFiltered <- reactive({
-    if (nrow(indexEventBreakDownDataPreFetch()) > 0) {
-      filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
-        .data$cohortId %in% selectedCohortIds(),
-        .data$databaseId %in% selectedDatabaseIds()
-      )
-      data <- indexEventBreakDownDataPreFetch() %>%
-        dplyr::inner_join(y = filter,
-                          by = c("cohortId", "databaseId"))
-    } else {
-      data <- dplyr::tibble()
-    }
-    return(data)
-  })
-  output$indexEventBreakDownTable <- DT::renderDT(expr = {
-    shiny::withProgress(
-      message = paste0(
-        progressBarMessageFilter(),
-        "\n",
-        "Generating index event breakdown table"
-      ),
-      value = 0,
-      {
-      isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-      data <-
-        addMetaDataInformationToResults(data = indexEventBreakDownDataFiltered(), isPhenotypeLibraryMode = isPhenotypeMOde) %>%
-        dplyr::arrange(dplyr::desc(.data$percent))
-      dataTable <- standardDataTable(data)
-    return(dataTable)
-    })
-  }, server = TRUE)
-  
+  # indexEventBreakDownDataFiltered <- reactive({
+  #   if (nrow(indexEventBreakDownDataPreFetch()) > 0) {
+  #     filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+  #       .data$cohortId %in% selectedCohortIds(),
+  #       .data$databaseId %in% selectedDatabaseIds()
+  #     )
+  #     data <- indexEventBreakDownDataPreFetch() %>%
+  #       dplyr::inner_join(y = filter,
+  #                         by = c("cohortId", "databaseId"))
+  #   } else {
+  #     data <- dplyr::tibble()
+  #   }
+  #   return(data)
+  # })
+  # output$indexEventBreakDownTable <- DT::renderDT(expr = {
+  #   shiny::withProgress(
+  #     message = paste0(
+  #       progressBarMessageFilter(),
+  #       "\n",
+  #       "Generating index event breakdown table"
+  #     ),
+  #     value = 0,
+  #     {
+  #     isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+  #     data <-
+  #       addMetaDataInformationToResults(data = indexEventBreakDownDataFiltered(), isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>%
+  #       dplyr::arrange(dplyr::desc(.data$percent))
+  #     dataTable <- standardDataTable(data)
+  #   return(dataTable)
+  #   })
+  # }, server = TRUE)
+  # 
   
   # Visit Context --------------------------------------------------------------------------------------------
   visitContextDataFiltered <- reactive({
@@ -2089,6 +2121,16 @@ shiny::shinyServer(function(input, output, session) {
           data <- visitContextDataPreFetch() %>%
             dplyr::inner_join(y = filter,
                               by = c("cohortId", "databaseId"))
+          
+          if (input$pivotVisitContext == 'None') {
+            data <- data
+          } else if (input$pivotVisitContext == 'Percent') {
+            data <- data %>% 
+              dplyr::select(-dplyr::contains("subjects"))
+          } else if (input$pivotVisitContext == 'Subjects') {
+            data <- data %>% 
+              dplyr::select(-dplyr::contains("percent"))
+          }
         }
       )
     } else {
@@ -2105,9 +2147,9 @@ shiny::shinyServer(function(input, output, session) {
       ),
       value = 0,
       {
-        isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
       data <-
-        addMetaDataInformationToResults(data = visitContextDataFiltered(), isPhenotypeLibraryMode = isPhenotypeMOde)
+        addMetaDataInformationToResults(data = visitContextDataFiltered(), isPhenotypeLibraryMode = isPhenotypeLibraryMode)
       table <- standardDataTable(data)
     })
   }, server = TRUE)
@@ -2128,57 +2170,7 @@ shiny::shinyServer(function(input, output, session) {
   #   return(data)
   # })
   # 
-  # characterizationTablePretty <- shiny::reactive(x = {
-  #   data <- characterizationDataFiltered()
-  #   analysisIds <- prettyAnalysisIds
-  #   table <- data %>%
-  #     prepareTable1(covariateRef = covariateRef) %>%
-  #     dplyr::rename(percent = .data$value)
-  #   characteristics <- table %>%
-  #     dplyr::select(.data$characteristic,
-  #                   .data$position,
-  #                   .data$header,
-  #                   .data$sortOrder) %>%
-  #     dplyr::distinct() %>%
-  #     dplyr::group_by(.data$characteristic, .data$position, .data$header) %>%
-  #     dplyr::summarise(sortOrder = max(.data$sortOrder)) %>%
-  #     dplyr::ungroup() %>%
-  #     dplyr::arrange(.data$position, desc(.data$header)) %>%
-  #     dplyr::mutate(sortOrder = dplyr::row_number()) %>%
-  #     dplyr::distinct()
-  #   
-  #   characteristics <- dplyr::bind_rows(
-  #     tidyr::crossing(
-  #       characteristics %>%
-  #         dplyr::filter(.data$header == 1),
-  #       dplyr::tibble(cohortId = cohortSearchForComparison()$cohortId),
-  #       dplyr::tibble(databaseId = input$selectedDatabases)
-  #     ),
-  #     characteristics %>%
-  #       dplyr::filter(.data$header == 0) %>%
-  #       tidyr::crossing(dplyr::tibble(databaseId = input$selectedDatabases)) %>%
-  #       tidyr::crossing(
-  #         dplyr::tibble(cohortId = cohortSearchForComparison()$cohortId)
-  #       )
-  #   )
-  #   data <- characteristics %>%
-  #     dplyr::left_join(
-  #       table %>%
-  #         dplyr::select(-.data$sortOrder),
-  #       by = c(
-  #         "databaseId",
-  #         "cohortId",
-  #         "characteristic",
-  #         "position",
-  #         "header"
-  #       )
-  #     )  %>%
-  #     dplyr::arrange(.data$databaseId, .data$cohortId, .data$sortOrder) %>%
-  #     dplyr::select(-.data$position, -.data$header) %>%
-  #     dplyr::relocate(.data$sortOrder, .after = dplyr::last_col())
-  #   data <- addMetaDataInformationToResults(data)
-  #   return(data)
-  # })
+
   # 
   # output$characterizationTablePretty <- DT::renderDT(expr = {
   #   shiny::withProgress(message = 'Loading, Please wait. .', value = 0, {
@@ -2204,7 +2196,187 @@ shiny::shinyServer(function(input, output, session) {
   #     covariateIdArray(c(covariateIdArray(), input$rows[[2]]))
   # })
   
-
+  
+  # Characterization -----------------------------------------------------------------
+  characterizationDataFilterOptions <-
+    shiny::reactive({
+      data <- characterizationDataPreFetch()
+      data <- data %>%
+        dplyr::select(.data$covariateId) %>%
+        dplyr::distinct() %>%
+        dplyr::left_join(covariateRef, by = "covariateId") %>%
+        dplyr::left_join(
+          analysisRef %>%
+            dplyr::select(.data$analysisId,
+                          .data$analysisName,
+                          .data$domainId,
+                          .data$isBinary),
+          by = "analysisId"
+        )
+      return(data)
+    })
+  characterizationAnalysisNameFilter <- shiny::reactive(x = {
+    if (nrow(characterizationDataFilterOptions()) > 0) {
+      characterizationAnalysisNameFilter <-
+        characterizationDataFilterOptions()$analysisName %>% unique()
+      return(characterizationAnalysisNameFilter)
+    } else {
+      return(NULL)
+    }
+  })
+  characterizationDomainFilter <- shiny::reactive(x = {
+    if (nrow(characterizationDataFilterOptions()) > 0) {
+      characterizationDomainFilter <-
+        characterizationDataFilterOptions()$domainId %>% unique()
+      return(characterizationDomainFilter)
+    } else {
+      return(NULL)
+    }
+  })
+  
+  characterizationDataFiltered <- shiny::reactive(x = {
+    dataFilterOptions <-
+      characterizationDataFilterOptions() %>%
+      dplyr::filter(
+        analysisName %in% input$characterizationAnalysisNameFilter,
+        domainId %in% input$characterizationDomainFilter
+      )
+    filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+      .data$cohortId %in% selectedCohortIds(),
+      .data$databaseId %in% selectedDatabaseIds()
+    )
+    data <- characterizationDataPreFetch() %>%
+      dplyr::inner_join(y = filter,
+                        by = c("cohortId", "databaseId")) %>%
+      dplyr::inner_join(y = dataFilterOptions,
+                        by = c("covariateId" = "covariateId")) %>%
+      dplyr::relocate(.data$databaseId,
+                      .data$analysisId,
+                      .data$analysisName,
+                      .data$domainId,
+                      .data$covariateId,
+                      .data$covariateName,
+                      .data$conceptId,
+                      .data$conceptName,
+                      .data$isBinary) %>% 
+      dplyr::arrange(dplyr::desc(.data$mean)) %>% 
+      dplyr::distinct()
+    return(data)
+  })
+  
+  characterizationTablePretty <- shiny::reactive(x = {
+    data <- characterizationDataFiltered()
+    if (nrow(data) > 0) {
+      isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+      data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+    }
+    analysisIds <- prettyAnalysisIds
+    table <- data %>%
+      prepareTable1() %>%
+      dplyr::rename(percent = .data$value)
+    characteristics <- table %>%
+      dplyr::select(.data$characteristic,
+                    .data$position,
+                    .data$header,
+                    .data$sortOrder) %>%
+      dplyr::distinct() %>%
+      dplyr::group_by(.data$characteristic, .data$position, .data$header) %>%
+      dplyr::summarise(sortOrder = max(.data$sortOrder)) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(.data$position, desc(.data$header)) %>%
+      dplyr::mutate(sortOrder = dplyr::row_number()) %>%
+      dplyr::distinct()
+    
+    characteristics <- dplyr::bind_rows(
+      tidyr::crossing(
+        characteristics %>%
+          dplyr::filter(.data$header == 1),
+        dplyr::tibble(cohortId = unique(data$cohortId)),
+        dplyr::tibble(databaseId = unique(data$databaseId))
+      ),
+      characteristics %>%
+        dplyr::filter(.data$header == 0) %>%
+        tidyr::crossing(dplyr::tibble(databaseId = unique(data$databaseId)) %>%
+        tidyr::crossing(
+          dplyr::tibble(cohortId = unique(data$cohortId))
+        )
+    ))
+    data <- characteristics %>%
+      dplyr::left_join(
+        table %>%
+          dplyr::select(-.data$sortOrder),
+        by = c(
+          "databaseId",
+          "cohortId",
+          "characteristic",
+          "position",
+          "header"
+        )
+      )  %>%
+      dplyr::arrange(.data$databaseId, .data$cohortId, .data$sortOrder) %>%
+      dplyr::select(-.data$position, -.data$header) %>%
+      dplyr::relocate(.data$sortOrder, .after = dplyr::last_col())
+    return(data)
+  })
+  
+    output$characterizationTablePrettyDt <-
+    DT::renderDT(expr = {
+      shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
+        data <- characterizationTablePretty()
+        if (nrow(data) > 0) {
+          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+        }
+        table <- standardDataTable(data = data)
+        return(table)
+      })
+    }, server = TRUE)
+  
+  
+  output$characterizationTableRaw <-
+    DT::renderDT(expr = {
+      shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
+        data <- characterizationDataFiltered()
+        if (nrow(data) > 0) {
+          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+        }
+        table <- standardDataTable(data = data)
+        return(table)
+      })
+    }, server = TRUE)
+  
+  
+  # output$characterizationTable <-
+  #   DT::renderDT(expr = {
+  #     shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
+  #       data <- characterizationDataFiltered()
+  #       if (nrow(data) > 0) {
+  #         isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+  #         data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+  #       }
+  #       data <- data %>% 
+  #         dplyr::select(-.data$sd) %>% 
+  #         dplyr::rename('percent' = .data$mean) %>% 
+  #         dplyr::select(-.data$conceptId) %>% 
+  #         dplyr::distinct()
+  #       # colnamesData <- colnames(data)
+  #       # colnamesData <- colnamesData[stringr::str_detect(string = colnamesData,
+  #       #                                                  pattern = "mean|sd|percent", 
+  #       #                                                  negate = TRUE)]s
+  #       # 
+  #       # data <- tidyr::pivot_wider(data = data %>% dplyr::distinct(),
+  #       #                            id_cols = colnamesData,
+  #       #                            names_from = .data$temporalChoices,
+  #       #                            values_from = .data$percent
+  #       # )
+  #       table <- standardDataTable(data = data)
+  #       return(table)
+  #     })
+  #   }, server = TRUE)
+  
+  
+  
   # Temporal characterization -----------------------------------------------------------------
   temporalCharacterizationDataFilterOptions <-
     shiny::reactive({
@@ -2214,12 +2386,12 @@ shiny::shinyServer(function(input, output, session) {
         dplyr::distinct() %>%
         dplyr::left_join(temporalTimeRef, by = "timeId") %>%
         dplyr::left_join(temporalCovariateRef, by = "covariateId") %>%
-        dplyr::mutate(temporalChoices = paste0("Start ", .data$startDay, " to end ", .data$endDay)) %>%
         dplyr::left_join(
           temporalAnalysisRef %>%
             dplyr::select(.data$analysisId,
                           .data$analysisName,
-                          .data$domainId),
+                          .data$domainId,
+                          .data$isBinary),
           by = "analysisId"
         )
       return(data)
@@ -2263,31 +2435,92 @@ shiny::shinyServer(function(input, output, session) {
                                "covariateId" = "covariateId")) %>%
       dplyr::relocate(.data$databaseId,
                       .data$temporalChoices,
+                      .data$startDay,
+                      .data$endDay,
+                      .data$analysisId,
                       .data$analysisName,
                       .data$domainId,
-                      .data$covariateName) %>% 
-      dplyr::select(-.data$timeId,
-                    -.data$covariateId,
-                    -.data$analysisId,
-                    -.data$startDay,
-                    -.data$endDay)
+                      .data$covariateId,
+                      .data$covariateName,
+                      .data$conceptId,
+                      .data$conceptName,
+                      .data$isBinary) %>% 
+      dplyr::arrange(dplyr::desc(.data$mean)) %>% 
+      dplyr::distinct()
     return(data)
   })
 
-  output$temporalCharacterizationTable <-
+  
+  output$temporalCharacterizationTableRaw <-
     DT::renderDT(expr = {
-      shiny::withProgress(message = 'Loading, Please wait. .', value = 0, {
+      shiny::withProgress(message = 'Rendering temporal characterization data table.', value = 0, {
         data <- temporalCharacterizationDataFiltered()
         if (nrow(data) > 0) {
-          isPhenotypeMOde <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeMOde)
+          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
         }
+        table <- standardDataTable(data = data)
+        return(table)
+      })
+    }, server = TRUE)
+  
+  
+  output$temporalCharacterizationTable <-
+    DT::renderDT(expr = {
+      shiny::withProgress(message = 'Rendering temporal characterization data table.', value = 0, {
+        data <- temporalCharacterizationDataFiltered()
+        if (nrow(data) > 0) {
+          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+        }
+        data <- data %>% 
+          dplyr::select(-.data$sd) %>% 
+          dplyr::rename('percent' = .data$mean) %>% 
+          dplyr::select(-.data$timeId) %>% 
+          dplyr::distinct()
+        colnamesData <- colnames(data)
+        colnamesData <- colnamesData[stringr::str_detect(string = colnamesData,
+                                                          pattern = "mean|sd|percent|temporalChoices|Day", 
+                                                          negate = TRUE)]
+        data <- data %>% 
+          dplyr::group_by(dplyr::across(.cols = colnamesData)) %>% 
+          dplyr::arrange(.data$startDay, .data$endDay, by_group = TRUE) %>% 
+          dplyr::ungroup()
+        
+        data <- tidyr::pivot_wider(data = data %>% dplyr::distinct(),
+                                   id_cols = colnamesData,
+                                   names_from = .data$temporalChoices,
+                                   values_from = .data$percent
+                                   )
         table <- standardDataTable(data = data)
         return(table)
       })
     }, server = TRUE)
 
   
+  output$temporalCharacterizationPlotText <- shiny::renderText(expr = {
+    text <- "This compares two different cohort definitions, computed on the same data source. Under development."
+    return(text)
+  })
+  
+  shiny::reactive(x = {
+    shinyWidgets::updatePickerInput(
+      session = session,
+      inputId = "temporalCharacterizationPlotCohorts",
+      choices = temporalCharacterizationDataFilteredPlotCompareCohorts(),
+      selected = temporalCharacterizationDataFilteredPlotCompareCohorts()[c(1,2)]
+    )
+  })
+  
+  temporalCharacterizationDataFilteredForPlotting <- shiny::reactive(x = {
+    if (nrow(temporalCharacterizationDataFiltered()) > 0) {
+      data <- temporalCharacterizationDataFiltered %>% 
+        dplyr::filter(.data$cohortId %in% input$temporalCharacterizationPlotCohorts)
+      return(data)
+    } else {
+      return(NULL)
+    }
+  })
   
   #
   #
@@ -2594,10 +2827,10 @@ shiny::shinyServer(function(input, output, session) {
                 htmlFileName = "html/visitContext.html")
   })
   
-  # shiny::observeEvent(input$cohortCharacterizationInfo, {
-  #   showInfoBox(title = "Cohort Characterization",
-  #               htmlFileName = "html/cohortCharacterization.html")
-  # })
+  shiny::observeEvent(input$cohortCharacterizationInfo, {
+    showInfoBox(title = "Cohort Characterization",
+                htmlFileName = "html/cohortCharacterization.html")
+  })
   
   shiny::observeEvent(input$temporalCharacterizationInfo, {
     showInfoBox(title = "Temporal Characterization",

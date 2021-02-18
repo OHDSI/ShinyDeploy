@@ -292,15 +292,11 @@ getVisitContextResults <- function(dataSource = .GlobalEnv,
       ),
       names_from = .data$visitContext,
       names_sep = "",
-      values_from = c(.data$subjects, .data$cohortSubjects, .data$percent)
+      values_from = c(.data$subjects, .data$percent)
     ) %>% dplyr::relocate(.data$databaseId,
                           .data$cohortId,
                           .data$visitConceptId,
                           .data$visitConceptName) %>%
-    dplyr::mutate(
-      visitConceptName = as.factor(.data$visitConceptName),
-      visitConceptId = as.factor(.data$visitConceptId)
-    ) %>% 
     dplyr::rename(visit = .data$visitConceptName)
   columnNames <- stringr::str_replace_all(string = colnames(data),
                              pattern = "cohortSubjects",

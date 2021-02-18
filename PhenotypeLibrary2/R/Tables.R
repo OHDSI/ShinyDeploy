@@ -1,21 +1,7 @@
 library(magrittr)
 
 prepareTable1 <- function(covariates,
-                          covariateRef,
                           pathToCsv = "Table1Specs.csv") {
-  covariates <- covariates %>%
-    dplyr::left_join(y = covariateRef %>% 
-                       dplyr::select(.data$covariateId,
-                                     .data$analysisId,
-                                     .data$covariateName), 
-                     by = "covariateId") %>% 
-    dplyr::mutate(covariateName = stringr::str_to_sentence(
-      stringr::str_replace_all(
-        string = .data$covariateName,
-        pattern = "^.*: ",
-        replacement = ""
-      )
-    ))
   space <- "&nbsp;"
   specifications <- readr::read_csv(
     file = pathToCsv,

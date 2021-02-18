@@ -2,16 +2,17 @@ shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
   actionsBox = TRUE,
   liveSearch = TRUE,
   liveSearchNormalize = TRUE,
-  size = 10,
+  size = 'auto',
   liveSearchStyle = "contains",
   liveSearchPlaceholder = "Not selected",
   virtualScroll = 50,
   # mobile = TRUE,
   selectOnTab = TRUE,
   showTick = TRUE,
-  width	= TRUE,
+  width	= 'auto',
   windowPadding = 2,
-  dropdownAlignRight = TRUE
+  dropdownAlignRight = 'auto',
+  dropupAuto = TRUE
 )
 
 defaultHeaderbars <- 
@@ -45,14 +46,16 @@ defaultHeaderbars <-
       ),
       tags$li(
         tags$div(
-          shinyWidgets::pickerInput(
-            inputId = "selectedPhenotypes",
-            label = "Phenotype",
-            choices = NULL,
-            inline = TRUE,
-            multiple = TRUE,
-            options = shinyWidgetsPickerOptions
-          )
+          if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
+            shinyWidgets::pickerInput(
+              inputId = "selectedPhenotypes",
+              label = "Phenotype",
+              choices = NULL,
+              inline = TRUE,
+              multiple = TRUE,
+              options = shinyWidgetsPickerOptions
+            )
+          }
         ),
         class = "dropdown"
       )
@@ -407,6 +410,16 @@ bodyTabItems <- shinydashboard::tabItems(
   # ),
   shinydashboard::tabItem(
     tabName = "cohortCounts",
+    shiny::radioButtons(
+      inputId = "pivotCohortCount",
+      label = "Pivot data over data sources with value from",
+      selected = "Subjects",
+      inline = TRUE,
+      choices = c(
+        "None",
+        "Subjects",
+        "Entries"
+      )),
     shinydashboard::box(
       title = "Data",
       width = NULL,
@@ -419,74 +432,62 @@ bodyTabItems <- shinydashboard::tabItems(
   shinydashboard::tabItem(
     tabName = "incidenceRate",
     #cohortReference("incidenceRateSelectedCohort"),
-    tags$table(style = "width: 100%",
-               tags$tr(
-                 tags$td(
-                   valign = "bottom",
-                   shiny::checkboxGroupInput(
-                     inputId = "irStratification",
-                     label = "Stratify by",
-                     choices = c("Age", "Gender", "Calendar Year"),
-                     selected = c("Age", "Gender", "Calendar Year"),
-                     inline = TRUE
-                   )
-                 ),
-                 tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;")),
-                 tags$td(
-                   valign = "bottom",
-                   style = "text-align: right",
-                   shiny::checkboxInput("irYscaleFixed", "Use same y-scale across databases")
-                 )
-               )),
-    tags$table(tags$tr(
-      tags$td(
-        # shiny::conditionalPanel(
-          # condition = "input.irStratification.indexOf('Age') > -1",
-          shinyWidgets::pickerInput(
-            inputId = "incidenceRateAgeFilter",
-            label = NULL,
-            choices = NULL,
-            inline = TRUE,
-            multiple = TRUE,
-            options = shinyWidgetsPickerOptions
-          )
-        # )
+    shinydashboard::box(
+      title = NULL,
+      width = NULL,
+      status = "primary",
+      collapsible = FALSE,
+      shiny::column(width =  3,
+                     shiny::checkboxGroupInput(
+                       inputId = "irStratification",
+                       label = "Stratify by",
+                       choices = c("Age", "Gender", "Calendar Year"),
+                       selected = c("Age", "Gender", "Calendar Year"),
+                       inline = TRUE
+                     )
+                   ),
+      shiny::column(width = 3,
+                    shinyWidgets::pickerInput(
+                      inputId = "incidenceRateAgeFilter",
+                      label = "Select Age Range",
+                      choices = NULL,
+                      inline = FALSE,
+                      multiple = TRUE,
+                      width = 'auto',
+                      options = shinyWidgetsPickerOptions
+                    )
       ),
-      tags$td(
-        # shiny::conditionalPanel(
-          # condition = "input.irStratification.indexOf('Gender') > -1",
-        shinyWidgets::pickerInput(
-          inputId = "incidenceRateGenderFilter",
-          label = NULL,
-          choices = NULL,
-          inline = TRUE,
-          multiple = TRUE,
-          options = shinyWidgetsPickerOptions
-        )
-        # )
-      ),
-      tags$td(
-        style = "width:30% !important",
-        # shiny::conditionalPanel(
-          # condition = "input.irStratification.indexOf('Calendar Year') > -1",
-        shinyWidgets::pickerInput(
-          inputId = "incidenceRateCalendarFilter",
-          label = NULL,
-          choices = NULL,
-          inline = TRUE,
-          multiple = TRUE,
-          options = shinyWidgetsPickerOptions
-        )
-        # )
-      )
-    )),
-    # shiny::htmlOutput(outputId = "hoverInfoIr"),
+      shiny::column(width = 3,
+                    shinyWidgets::pickerInput(
+                      inputId = "incidenceRateGenderFilter",
+                      label = "select Gender",
+                      choices = NULL,
+                      inline = FALSE,
+                      multiple = TRUE,
+                      width = 'auto',
+                      options = shinyWidgetsPickerOptions
+                    )),
+      shiny::column(width = 3,
+                    shinyWidgets::pickerInput(
+                      inputId = "incidenceRateCalendarFilter",
+                      label = "Select Calendar Year",
+                      choices = NULL,
+                      inline = FALSE,
+                      multiple = TRUE,
+                      width = 'auto',
+                      options = shinyWidgetsPickerOptions
+                    ))
+    ),
     shinydashboard::box(
       title = "Plot",
       width = NULL,
       status = "primary",
       collapsible = TRUE,
       collapsed = FALSE,
+      shiny::column(width = 12, 
+                    shiny::checkboxInput(inputId = "irYscaleFixed", 
+                                         label = "Use same y-scale across databases",
+                                         value = FALSE)),
       ggiraph::ggiraphOutput(
         outputId = "incidenceRatePlot",
         width = "100%",
@@ -575,6 +576,16 @@ bodyTabItems <- shinydashboard::tabItems(
   ),
   shinydashboard::tabItem(
     tabName = "visitContext",
+    shiny::radioButtons(
+      inputId = "pivotVisitContext",
+      label = "Show only",
+      selected = "Percent",
+      inline = TRUE,
+      choices = c(
+        "All",
+        "Percent",
+        "Subjects"
+      )),
     shinydashboard::box(
       title = "Data",
       width = NULL,
@@ -585,59 +596,115 @@ bodyTabItems <- shinydashboard::tabItems(
     )
     #cohortReference("visitContextSelectedCohort"),
   ),
-  # shinydashboard::tabItem(
-  #   tabName = "cohortCharacterization",
-  #   #cohortReference("characterizationSelectedCohort"),
-  #   shinydashboard::box(
-  #     title = "Data (Raw)",
-  #     width = NULL,
-  #     status = "primary",
-  #     collapsible = TRUE,
-  #     collapsed = TRUE,
-  #     DT::DTOutput("characterizationTableRaw")
-  #   ),
-  #   shinydashboard::box(
-  #     title = "Data (Pretty)",
-  #     width = NULL,
-  #     status = "primary",
-  #     collapsible = TRUE,
-  #     collapsed = FALSE,
-  #     DT::DTOutput("characterizationTablePretty")
-  #   )
-  # ),
   shinydashboard::tabItem(
-    tabName = "temporalCharacterization",
-    tags$table(tags$tr(
-      tags$td(
-    shinyWidgets::pickerInput(
-      inputId = "temporalCharacterizationAnalysisNameFilter",
-      label = NULL,
-      choices = NULL,
-      inline = TRUE,
-      multiple = TRUE,
-      options = shinyWidgetsPickerOptions
-    )),
-    tags$td(
-    shinyWidgets::pickerInput(
-      inputId = "temporalCharacterizationDomainFilter",
-      label = NULL,
-      choices = NULL,
-      inline = TRUE,
-      multiple = TRUE,
-      options = shinyWidgetsPickerOptions
-    )))),
-    #cohortReference("temporalCharacterizationSelectedCohort"),
+    tabName = "cohortCharacterization",
     shinydashboard::box(
-      title = "Temporal Characterization",
+      title = NULL,
       width = NULL,
       status = "primary",
+      collapsible = FALSE,
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationAnalysisNameFilter",
+                      label = "Analysis Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    )),
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationDomainFilter",
+                      label = "Domain Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    ))
+    ),
+    shinydashboard::box(
+      title = "Data (Pretty)",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = FALSE,
+      DT::DTOutput("characterizationTablePrettyDt")
+    ),
+    #cohortReference("characterizationSelectedCohort"),
+    shinydashboard::box(
+      title = "Data (Raw)",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = TRUE,
+      DT::DTOutput("characterizationTableRaw")
+    )
+  ),
+  shinydashboard::tabItem(
+    tabName = "temporalCharacterization",
+    shinydashboard::box(
+      title = NULL,
+      width = NULL,
+      status = "primary",
+      collapsible = FALSE,
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "temporalCharacterizationAnalysisNameFilter",
+                      label = "Analysis Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    )),
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "temporalCharacterizationDomainFilter",
+                      label = "Domain Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    ))
+    ),
+    #cohortReference("temporalCharacterizationSelectedCohort"),
+    shinydashboard::box(
+      title = "Temporal Characterization Plot",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = FALSE,
+      shiny::textOutput(outputId = "temporalCharacterizationPlotText"),
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "temporalCharacterizationPlotCohorts",
+                      label = "Cohorts for plotting",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    ))
       # shiny::htmlOutput(outputId = "hoverInfoIr"),
       # ggiraph::ggiraphOutput(
-      #   outputId = "incidenceRatePlot",
+      #   outputId = "temporalCharacterizationPlot",
       #   width = "100%",
       #   height = "100%"
-      # ),
+      # )
+    ),
+    shinydashboard::box(
+      title = "Temporal Characterization Data",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = FALSE,
       DT::DTOutput("temporalCharacterizationTable")
+    ),
+    shinydashboard::box(
+      title = "Raw data",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE, 
+      collapsed = TRUE,
+      DT::DTOutput("temporalCharacterizationTableRaw")
     )
     
     
