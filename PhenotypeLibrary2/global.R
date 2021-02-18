@@ -275,10 +275,10 @@ if (isValidConnection) {
   # Downloading covariate_ref and temporal_covariate_ref in global R because
   # it is now a shared resource across multiple R sessions
   # temporariliy commenting this during app development - because it take a long time to load 
-  # writeLines("Loading Covariate reference Table")
-  # loadRequiredTables(tableName = "covariate_ref",
-  #                    databaseSchema = resultsDatabaseSchema,
-  #                    connection = connectionPool)
+  writeLines("Loading Covariate reference Table")
+  loadRequiredTables(tableName = "covariate_ref",
+                     databaseSchema = resultsDatabaseSchema,
+                     connection = connectionPool)
   writeLines("Loading Temporal Covariate reference Table")
   loadRequiredTables(tableName = "temporal_covariate_ref",
                      databaseSchema = resultsDatabaseSchema,
@@ -345,7 +345,25 @@ if (exists("temporalTimeRef")) {
     dplyr::mutate(temporalChoices = paste0("Start ", .data$startDay, " to end ", .data$endDay))
   assign(x = "temporalTimeRef", value = temporalTimeRef, envir = .GlobalEnv)
 }
+if (exists("temporalCovariateRef")) {
+  temporalCovariateRef <- temporalCovariateRef %>% 
+    dplyr::mutate(conceptName = stringr::str_to_sentence(
+      stringr::str_replace_all(
+        string = .data$covariateName,
+        pattern = "^.*: ",
+        replacement = ""
+      )
+    ))
+}
 if (exists("covariateRef")) {
+  covariateRef <- covariateRef %>% 
+    dplyr::mutate(conceptName = stringr::str_to_sentence(
+      stringr::str_replace_all(
+        string = .data$covariateName,
+        pattern = "^.*: ",
+        replacement = ""
+      )
+    ))
   specifications <- readr::read_csv(
     file = "Table1Specs.csv",
     col_types = readr::cols(),

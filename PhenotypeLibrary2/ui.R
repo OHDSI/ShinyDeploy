@@ -484,8 +484,10 @@ bodyTabItems <- shinydashboard::tabItems(
       status = "primary",
       collapsible = TRUE,
       collapsed = FALSE,
-      shiny::column(width = 12, shiny::checkboxInput(inputId = "irYscaleFixed", 
-                                         label = "Use same y-scale across databases")),
+      shiny::column(width = 12, 
+                    shiny::checkboxInput(inputId = "irYscaleFixed", 
+                                         label = "Use same y-scale across databases",
+                                         value = FALSE)),
       ggiraph::ggiraphOutput(
         outputId = "incidenceRatePlot",
         width = "100%",
@@ -594,26 +596,50 @@ bodyTabItems <- shinydashboard::tabItems(
     )
     #cohortReference("visitContextSelectedCohort"),
   ),
-  # shinydashboard::tabItem(
-  #   tabName = "cohortCharacterization",
-  #   #cohortReference("characterizationSelectedCohort"),
-  #   shinydashboard::box(
-  #     title = "Data (Raw)",
-  #     width = NULL,
-  #     status = "primary",
-  #     collapsible = TRUE,
-  #     collapsed = TRUE,
-  #     DT::DTOutput("characterizationTableRaw")
-  #   ),
-  #   shinydashboard::box(
-  #     title = "Data (Pretty)",
-  #     width = NULL,
-  #     status = "primary",
-  #     collapsible = TRUE,
-  #     collapsed = FALSE,
-  #     DT::DTOutput("characterizationTablePretty")
-  #   )
-  # ),
+  shinydashboard::tabItem(
+    tabName = "cohortCharacterization",
+    shinydashboard::box(
+      title = NULL,
+      width = NULL,
+      status = "primary",
+      collapsible = FALSE,
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationAnalysisNameFilter",
+                      label = "Analysis Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    )),
+      shiny::column(width = 6,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationDomainFilter",
+                      label = "Domain Choices",
+                      choices = NULL,
+                      multiple = TRUE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    ))
+    ),
+    shinydashboard::box(
+      title = "Data (Pretty)",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = FALSE,
+      DT::DTOutput("characterizationTablePrettyDt")
+    ),
+    #cohortReference("characterizationSelectedCohort"),
+    shinydashboard::box(
+      title = "Data (Raw)",
+      width = NULL,
+      status = "primary",
+      collapsible = TRUE,
+      collapsed = TRUE,
+      DT::DTOutput("characterizationTableRaw")
+    )
+  ),
   shinydashboard::tabItem(
     tabName = "temporalCharacterization",
     shinydashboard::box(
@@ -676,7 +702,7 @@ bodyTabItems <- shinydashboard::tabItems(
       title = "Raw data",
       width = NULL,
       status = "primary",
-      collapsible =TRUE, 
+      collapsible = TRUE, 
       collapsed = TRUE,
       DT::DTOutput("temporalCharacterizationTableRaw")
     )
