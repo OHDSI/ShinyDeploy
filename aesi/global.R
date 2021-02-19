@@ -444,7 +444,7 @@ if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
                        dplyr::select(.data$phenotypeId, .data$phenotypeName),
                      by = "phenotypeId")
 } else {
-  cohort$phenotyeName <- ""
+  cohort$phenotypeName <- ""
 }
 
  
@@ -602,6 +602,8 @@ if (exists('cohortMetaData')) {
       dplyr::left_join(y = cohortType, by = c('cohortId'))
     
     remove(cohortType)
+  } else {
+    cohort$cohortType <- ""
   }
 }
 remove(cohortMetaData)

@@ -257,15 +257,29 @@ shiny::shinyServer(function(input, output, session) {
         data <- data %>%
           dplyr::left_join(y = phenotypeDetails,
                            by = "phenotypeId")
-      }
-      if (!"phenotypeName" %in% colnames(data)) {
-        data$phenotypeName <- "Unassigned"
-        data$overview <- ""
-        data$presentation <- ""
-        data$assessment <- ""
-        data$plan <- ""
-        data$prognosis <- ""
-        data$phenotypeSynonyms <- ""
+      } else {
+        colnamesInData <- colnames(data)
+        if (!'phenotypeName' %in% colnamesInData) {
+          data$phenotypeName <- "Unassigned"
+        }
+        if (!'overview' %in% colnamesInData) {
+          data$overview <- ""
+        }
+        if (!'presentation' %in% colnamesInData) {
+          data$presentation <- ""
+        }
+        if (!'assessment' %in% colnamesInData) {
+          data$assessment <- ""
+        }
+        if (!'plan' %in% colnamesInData) {
+          data$plan <- ""
+        }
+        if (!'prognosis' %in% colnamesInData) {
+          data$prognosis <- ""
+        }
+        if (!'phenotypeSynonyms' %in% colnamesInData) {
+          data$phenotypeSynonyms <- ""
+        }
       }
       if (is.null(data)) {
         return(NULL)
@@ -405,7 +419,7 @@ shiny::shinyServer(function(input, output, session) {
   }) 
   output$cohortDefinitionSqlSecond <- shiny::renderText({
     if (!is.null(cohortSearchResultRecentTwoSelection()) &&
-        length(cohortSearchResultRecentTwoSelection()) == 2 &&
+        nrow(cohortSearchResultRecentTwoSelection()) == 2 &&
         !is.null(cohortSearchResultRecentTwoSelection()[[2]])) {
       return(cohortSearchResultRecentTwoSelection()[2,]$sql)
     } else {

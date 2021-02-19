@@ -206,7 +206,12 @@ bodyTabItems <- shinydashboard::tabItems(
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonFirst", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst")
+                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst"),
+                                                tags$head(
+                                                  tags$style(
+                                                    "#cohortConceptsetExpressionJsonFirst { max-height:400px};"
+                                                  )
+                                                )
                                               ),
                                               shiny::tabPanel(
                                                 value = "conceptsetExpressionResoledFirst",
@@ -255,14 +260,24 @@ bodyTabItems <- shinydashboard::tabItems(
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst")
+                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionJsonFirst { max-height:400px};"
+                                            )
+                                          )
                                         ),
                                         shiny::tabPanel(
                                           value = "cohortDefinitionSqlFirst",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionSqlFirst")
+                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionSqlFirst"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionSqlFirst { max-height:400px};"
+                                            )
+                                          )
                                         )
                                       )
                                     )
@@ -304,7 +319,12 @@ bodyTabItems <- shinydashboard::tabItems(
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonSecond", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond")
+                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond"),
+                                                tags$head(
+                                                  tags$style(
+                                                    "#cohortConceptsetExpressionJsonSecond { max-height:400px};"
+                                                  )
+                                                )
                                               ),
                                               shiny::tabPanel(
                                                 value = "conceptsetExpressionResolvedSecond",
@@ -353,14 +373,24 @@ bodyTabItems <- shinydashboard::tabItems(
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionJsonSecond")
+                                          shiny::verbatimTextOutput("cohortDefinitionJsonSecond"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionJsonSecond { max-height:400px};"
+                                            )
+                                          )
                                         ),
                                         shiny::tabPanel(
                                           value = "cohortDefinitionSqlSecond",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionSqlSecond")
+                                          shiny::verbatimTextOutput("cohortDefinitionSqlSecond"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionSqlSecond { max-height:400px};"
+                                            )
+                                          )
                                         )
                                       )
                                     )
