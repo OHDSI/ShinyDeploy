@@ -37,7 +37,7 @@ assign(x = "defaultLocalDataFolder", value = "data", envir = .GlobalEnv)
 assign(x = "defaultLocalDataFile", value = "PreMerged.RData", envir = .GlobalEnv)
 assign(x = "isValidConnection", value = FALSE, envir = .GlobalEnv)
 
-assign(x = "defaultDatabaseMode", value = FALSE, envir = .GlobalEnv) # Set to FALSE if using file system.
+assign(x = "defaultDatabaseMode", value = TRUE, envir = .GlobalEnv) # Set to FALSE if using file system.
 assign(x = "dbms", value = "postgresql", envir = .GlobalEnv)
 assign(x = "port", value = 5432, envir = .GlobalEnv)
 

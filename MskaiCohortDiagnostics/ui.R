@@ -11,7 +11,7 @@ shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
   showTick = TRUE,
   width	= 'auto',
   windowPadding = 2,
-  dropdownAlignRight = 'auto',
+  dropdownAlignRight = TRUE,
   dropupAuto = TRUE
 )
 
