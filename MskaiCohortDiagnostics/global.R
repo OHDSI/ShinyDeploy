@@ -37,7 +37,7 @@ assign(x = "defaultLocalDataFolder", value = "data", envir = .GlobalEnv)
 assign(x = "defaultLocalDataFile", value = "PreMerged.RData", envir = .GlobalEnv)
 assign(x = "isValidConnection", value = FALSE, envir = .GlobalEnv)
 
-assign(x = "defaultDatabaseMode", value = TRUE, envir = .GlobalEnv) # Set to FALSE if using file system.
+assign(x = "databaseModeWhenPossible", value = TRUE, envir = .GlobalEnv) # Set to FALSE if using file system.
 assign(x = "dbms", value = "postgresql", envir = .GlobalEnv)
 assign(x = "port", value = 5432, envir = .GlobalEnv)
 
@@ -64,195 +64,158 @@ options(future.rng.onMisue = "ignore")
 
 
 ############################################
-# connection information
-if (!exists("shinySettings")) {
-  if (userName != '') {
-    assign("username", userName, envir = .GlobalEnv)
-  }
-  if (password != '') {
-    assign("password", password, envir = .GlobalEnv)
-  }
-  if (databaseServer != '') {
-    assign("server", databaseServer, envir = .GlobalEnv)
-  }
-  if (databaseName != '') {
-    assign("database", databaseName, envir = .GlobalEnv)
-  }
-  if (all((databaseServer != ''),
-          (database != ''))) {
-    assign("server", paste(
-      databaseServer,
-      database,
-      sep = "/"
-    ),
-    envir = .GlobalEnv)
-  }
-  if (vocabularySchema != '') {
-    assign("vocabularyDatabaseSchema",
-           vocabularySchema,
-           envir = .GlobalEnv)
-  }
-  if (resultsSchema != '') {
-    assign("resultsDatabaseSchema",
-           resultsSchema,
-           envir = .GlobalEnv)
-  }
-  if (server != "" &&
-      database != "" &&
-      username != "" &&
-      password != "" &&
-      port != "") {
-    connectionDetails <-
-      DatabaseConnector::createConnectionDetails(
-        dbms = dbms,
-        server = server,
-        port = port,
-        user = username,
-        password = password
-      )
-    connectionIsValid <- try(isConnectionValid(
-      dbms = dbms,
-      server = server,
-      port = port,
-      username = username,
-      password = password
-    ))
-  } else {
-    connectionIsValid <- FALSE
-  }
-  assign(x = "isValidConnection",
-         value = connectionIsValid,
-         envir = .GlobalEnv)
-  
-  if (isValidConnection) {
-    # connection <-
-    #   DatabaseConnector::connect(connectionDetails = connectionDetails)
-    # writeLines(text = "Database Connector Connection.")
-    connectionPool <- NULL
-    # writeLines(text = "Connecting to Pool.")
-    connectionPool <- pool::dbPool(
-      drv = DatabaseConnector::DatabaseConnectorDriver(),
-      dbms = dbms,
-      server = paste(server, database, sep = "/"),
-      port = port,
-      user = username,
-      password = password
-    )
-  }
-  if (defaultDatabaseMode) {
-    databaseMode <- defaultDatabaseMode
-    assign(x = "usingUserProvidedSettings", value = FALSE, envir = .GlobalEnv)
-    # shinySettings object is from CohortDiagnostics::launchDiagnosticsExplorer()
-    writeLines(text = paste0("This app is executing most likely by passing shinySettings using CohortDiagnostics::launchDiagnosticsExplorer(). \n",
-                             "Database connection has been set to TRUE, i.e. app will attempt to connect to a database to find results."))
-    if (isValidConnection) {
-      writeLines(text = "Connected using dbPool.")
-    }
-  } else {
-    writeLines(text = paste0("This app is executing in local mode. Most likely using the 'Run App' function in R-studio. \n",
-                             "Database connection has been set to FALSE, i.e. app will look for premerged file in data folder."))
-    dataFolder = file.path(defaultLocalDataFolder, defaultLocalDataFile)
-    if (file.exists(dataFolder)) {
-      foundPremergedFile <- TRUE
-      writeLines(text = paste0("Found premerged file."))
-    } else {
-      foundPremergedFile <- FALSE
-      writeLines(text = paste0("Did not find premerged file."))
-    }
-  }
-  aboutText <- defaultAboutTextPhenotypeLibrary
-} else {
+
+if (exists("shinySettings")) {
   assign(x = "usingUserProvidedSettings", value = TRUE, envir = .GlobalEnv)
-  if (!is.null(x = shinySettings$aboutText)) {
-    aboutText <- shinySettings$aboutText
-  } else {
-    aboutText <- defaultAboutTextPhenotypeLibrary
-  }
-  databaseMode <- !is.null(x = shinySettings$connectionDetails)
-  writeLines(text = "Found Using user provided settings.")
-  if (databaseMode) {
+  writelines("User provided settings found.")
+} else {
+  assign(x = "usingUserProvidedSettings", value = FALSE, envir = .GlobalEnv)
+}
+
+# Database Connection information
+if (databaseModeWhenPossible) {
+  writeLines("Attempting to connect to Database.")
+  if (exists("shinySettings") && !is.null(shinySettings$connectionDetails)) {
+    writeLines(text = "Connection details has been provided by user.")
     connectionDetails <- shinySettings$connectionDetails
     writeLines(text = "User setting has database connection details. \n - attempting to connect to database in dbms mode.")
     
     if (is(object = connectionDetails$server, class2 = "function")) {
-      drv <- DatabaseConnector::DatabaseConnectorDriver()
-      dbms <- connectionDetails$dbms()
-      server <- connectionDetails$server()
-      port <- connectionDetails$port()
-      user <- connectionDetails$user()
-      password <- connectionDetails$password()
+      assign("drv", DatabaseConnector::DatabaseConnectorDriver(), envir = .GlobalEnv)
       connectionString <- connectionDetails$connectionString()
+      assign("username", connectionDetails$user(), envir = .GlobalEnv)
+      assign("password", connectionDetails$password(), envir = .GlobalEnv)
+      assign("server", connectionDetails$server(), envir = .GlobalEnv)
+      # assign("dbms", connectionDetails$dbms(), envir = .GlobalEnv)
+      # assign("port", connectionDetails$port(), envir = .GlobalEnv)
     } else {
       # For backwards compatibility with older versions of DatabaseConnector:
-      drv <- DatabaseConnector::DatabaseConnectorDriver()
-      dbms <- connectionDetails$dbms
-      server <- connectionDetails$server
-      port <- connectionDetails$port
-      user <- connectionDetails$user
-      password <- connectionDetails$password
+      assign("drv", DatabaseConnector::DatabaseConnectorDriver(), envir = .GlobalEnv)
       connectionString <- connectionDetails$connectionString
+      assign("username", connectionDetails$user, envir = .GlobalEnv)
+      assign("password", connectionDetails$password, envir = .GlobalEnv)
+      assign("server", connectionDetails$server, envir = .GlobalEnv)
+      # assign("dbms", connectionDetails$dbms, envir = .GlobalEnv)
+      # assign("port", connectionDetails$port, envir = .GlobalEnv)
+      drv <- DatabaseConnector::DatabaseConnectorDriver()
     }
-    connectionIsValid <- isConnectionValid(
+    if (is.null(shinySettingssresultsDatabaseSchema)) {
+      stop("Use provided connection settings is incomplete - resultsDatabaseSchema.")
+    } else {
+      resultsDatabaseSchema <- shinySettings$resultsDatabaseSchema
+    }
+    if (!is.null(x = shinySettings$vocabularyDatabaseSchema)) {
+      stop("Use provided connection settings is incomplete - vocabularyDatabaseSchema.")
+    } else {
+      vocabularyDatabaseSchema <- shinySettings$vocabularyDatabaseSchema
+    }
+  } else {
+    writeLines(text = "Connection details has not been provided by user, using default connection settings.")
+    requiredFieldsToConnectToDatabase <- c('userName', 'password', 'databaseServer', 'databaseName', 'vocabularySchema')
+    lengthGet <- function(x) {length(get(x))}
+    if (all((all(unlist(lapply(X = requiredFieldsToConnectToDatabase, FUN = exists)))),
+                 !0 %in% (unlist(lapply(X = requiredFieldsToConnectToDatabase, FUN = lengthGet))))) {
+      assign("username", userName, envir = .GlobalEnv)
+      assign("password", password, envir = .GlobalEnv)
+      assign("dbms", dbms, envir = .GlobalEnv)
+      assign("server", paste(databaseServer,
+                             databaseName,
+                             sep = "/"),
+             envir = .GlobalEnv)
+      assign("vocabularyDatabaseSchema",
+             vocabularySchema,
+             envir = .GlobalEnv)
+      assign("resultsDatabaseSchema",
+             resultsSchema,
+             envir = .GlobalEnv)
+    } else {
+      stop("Default connection settings is incomplete.")
+    }
+  }
+  connectionDetails <-
+    DatabaseConnector::createConnectionDetails(
       dbms = dbms,
       server = server,
       port = port,
-      username = username,
+      user = username,
       password = password
     )
-    if (connectionIsValid) {
-      assign(x = "isValidConnection",
-             value = TRUE,
-             envir = .GlobalEnv)
-      connectionDetails <-
-        DatabaseConnector::createConnectionDetails(
-          dbms = dbms,
-          server = server,
-          port = port,
-          user = username,
-          password = password
-        )
-      # connection <-
-      #   DatabaseConnector::connect(connectionDetails = connectionDetails)
-      connectionPool <- NULL
-      connectionPool <- pool::dbPool(
-        drv = DatabaseConnector::DatabaseConnectorDriver(),
-        dbms = database,
-        server = paste(server, database, sep = "/"),
-        port = port,
-        user = user,
-        password = password
-      )
-      writeLines(text = "Connected using user provided connection settings.")
-      if (!is.null(x = shinySettings$resultsDatabaseSchema)) {
-        writeLines(text = "No results database schema provided.")
-      } else {
-        resultsDatabaseSchema <- shinySettings$resultsDatabaseSchema
-      }
-      if (!is.null(x = shinySettings$vocabularyDatabaseSchema)) {
-        writeLines(text = "No results database schema provided.")
-      } else {
-        vocabularyDatabaseSchema <- shinySettings$vocabularyDatabaseSchema
-      }
-    } else {
-      writeLines(text = "User provided connection parameters are not valid.")
-    }
+  connectionIsValid <- try(isConnectionValid(
+    dbms = dbms,
+    server = server,
+    port = port,
+    username = username,
+    password = password
+  ))
+  assign(x = "isValidConnection",
+         value = connectionIsValid,
+         envir = .GlobalEnv)
+  if (isValidConnection) {
+    # connection <-
+    #   DatabaseConnector::connect(connectionDetails = connectionDetails)
+    databaseMode <- TRUE
+    connectionPool <- NULL
+    writeLines(text = "Connecting to Pool.")
+    connectionPool <- pool::dbPool(
+      drv = DatabaseConnector::DatabaseConnectorDriver(),
+      dbms = dbms,
+      server = server,
+      port = port,
+      user = username,
+      password = password
+    )
+    writeLines("Connected to database.")
   } else {
-    writeLines(text = "No database connection details found. ")
+    writeLines("No valid connection to database. Database mode is not possible.")
+    databaseMode <- FALSE
   }
+}
+
+##### looking for pre merged file #############  
+if (!exists("shinySettings")) {
+  locationOfPremergedFile = file.path(defaultLocalDataFolder, defaultLocalDataFile)
+  if (file.exists(locationOfPremergedFile)) {
+    foundPremergedFile <- TRUE
+    writeLines(text = "Found premerged file.")
+  } else {
+    foundPremergedFile <- FALSE
+    writeLines(text = "Did not find premerged file.")
+  }
+} else {
+  if (!is.null(x = shinySettings$dataFolder) &&
+      !is.null(x = shinySettings$dataFile)) {
+    locationOfPremergedFile = file.path(shinySettings$dataFolder, shinySettings$dataFile)
+    if (file.exists(locationOfPremergedFile)) {
+      foundPremergedFile <- TRUE
+      writeLines(text = "Found premerged file.")
+    } else {
+      writeLines(text = "Did not find premerged file.")
+      foundPremergedFile <- FALSE
+    }
+  }
+}
   
-    if (!is.null(x = shinySettings$dataFolder)) {
-      dataFolder <- shinySettings$dataFolder
-      writeLines(text = "Checking for premerged file.")
-    } else {
-      writeLines(text = "No data folder provided. No database connection provided. User provided settings are not valid.")
-      dataFolder <- NULL
-    }
-    if (!is.null(x = shinySettings$dataFile)) {
-      writeLines(text = "No data file provided. User provided settings are not valid.")
-      dataFile <- shinySettings$dataFile
-    } else {
-      dataFile <- NULL
-    }
+##### About #############   
+aboutText <- defaultAboutTextPhenotypeLibrary
+if (exists("shinySettings") && !is.null(shinySettings$aboutText)) {
+  aboutText <- shinySettings$aboutText
+}
+
+if (databaseMode && !foundPremergedFile) {
+  writeLines("App will run in pure database mode.")
+}
+if (databaseMode && foundPremergedFile) {
+  writeLines("App will run in local mode. TO DO: hybrid mode using both premerged files and vocabulary tables in database.")
+  dataSource <-
+    createFileDataSource(premergedDataFile = locationOfPremergedFile, envir = .GlobalEnv)
+}
+if (!databaseMode && foundPremergedFile) {
+  writeLines("App will run in local file mode.")
+  dataSource <-
+    createFileDataSource(premergedDataFile = locationOfPremergedFile, envir = .GlobalEnv)
+}
+if (!databaseMode && !foundPremergedFile) {
+  stop("App cannot run.")
 }
 
 # Cleanup connection when the application stops
@@ -269,7 +232,7 @@ shiny::onStop(function() {
 })
 
 
-if (isValidConnection) {
+if (isValidConnection && databaseMode && !foundPremergedFile) {
   loadTimeStart <- Sys.time()
   resultsTablesOnServer <-
     tolower(x = DatabaseConnector::dbListTables(conn = connectionPool,
@@ -353,13 +316,6 @@ if (isValidConnection) {
       resultsDatabaseSchema = resultsDatabaseSchema,
       vocabularyDatabaseSchema = vocabularyDatabaseSchema
     )
-} else {
-  localDataPath <- file.path(dataFolder, dataFile)
-  if (!file.exists(localDataPath)) {
-    stop(sprintf("Local data file %s does not exist.", localDataPath))
-  }
-  dataSource <-
-    createFileDataSource(premergedDataFile = localDataPath, envir = .GlobalEnv)
 }
 
 
@@ -406,24 +362,25 @@ postProcessingStartTime <- Sys.time()
 if (exists("cohort")) {
   # this table is required for app to work.
   cohort <- get("cohort") %>%
-    dplyr::arrange(.data$cohortId) %>%
-    dplyr::mutate(cohortName = stringr::str_remove(.data$cohortName, "\\[.+?\\] "))
-  
-  fixCohortTableMetadataForBackwardCompatibility()
+    dplyr::arrange(.data$cohortId) 
+  # %>%
+  #   dplyr::mutate(cohortName = stringr::str_remove(.data$cohortName, "\\[.+?\\] "))
   
   if ('metadata' %in% colnames(cohort)) {
     cohortMetaData <- list()
     for (i in 1:nrow(cohort)) {
       x <- RJSONIO::fromJSON(cohort[i, ]$metadata)
-      for (j in 1:length(x)) {
-        if (!any(is.null(x[[j]]), is.na(x[[j]]), names(x[j]) == "sql")) {
-          x[[j]] <- stringr::str_split(string = x[[j]], pattern = ";")[[1]]
+      if (length(names(x)) > 0) {
+        for (j in 1:length(x)) {
+          if (!any(is.null(x[[j]]), is.na(x[[j]]), names(x[j]) == "sql")) {
+            x[[j]] <- stringr::str_split(string = x[[j]], pattern = ";")[[1]]
+          }
         }
+        x <- dplyr::bind_rows(x)
+        x$cohort_id <- cohort[i, ]$cohortId
+        x$phenotype_id <- cohort[i, ]$phenotypeId
+        cohortMetaData[[i]] <- x
       }
-      x <- dplyr::bind_rows(x)
-      x$cohort_id <- cohort[i, ]$cohortId
-      x$phenotype_id <- cohort[i, ]$phenotypeId
-      cohortMetaData[[i]] <- x
     }
     cohortMetaData <- dplyr::bind_rows(cohortMetaData) %>%
       readr::type_convert(col_types = readr::cols())
@@ -436,7 +393,7 @@ if (exists("cohort")) {
       snakeCaseToCamelCase(colnames(cohortMetaData))
   }
 } else {
-  writeLines("Cohort table not found")
+  stop("Cohort table not found in data source")
 }
 if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
   cohort <- cohort %>% 

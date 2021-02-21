@@ -252,21 +252,21 @@ convertMdToHtml <- function(markdown) {
   # html <- stringi::stri_unescape_unicode(html)
   return(html)
 }
-
-fixCohortTableMetadataForBackwardCompatibility <- function() {
-  if (!'metadata' %in% colnames(cohort)) {
-    data <- list()
-    for (i in (1:nrow(cohort))) {
-      data[[i]] <- cohort[i, ]
-      colnames <- colnames(data[[i]])
-      metaDataList <- list()
-      for (j in (1:length(colnames))) {
-        metaDataList[[colnames[[j]]]] = data[[i]][colnames[[j]]] %>% dplyr::pull()
-      }
-      data[[i]]$metadata <-
-        RJSONIO::toJSON(metaDataList, pretty = TRUE)
-    }
-    cohort <- dplyr::bind_rows(data)
-  }
-  return(cohort)
-}
+# 
+# fixCohortTableMetadataForBackwardCompatibility <- function() {
+#   if (!'metadata' %in% colnames(cohort)) {
+#     data <- list()
+#     for (i in (1:nrow(cohort))) {
+#       data[[i]] <- cohort[i, ]
+#       colnames <- colnames(data[[i]])
+#       metaDataList <- list()
+#       for (j in (1:length(colnames))) {
+#         metaDataList[[colnames[[j]]]] = data[[i]][colnames[[j]]] %>% dplyr::pull()
+#       }
+#       data[[i]]$metadata <-
+#         RJSONIO::toJSON(metaDataList, pretty = TRUE)
+#     }
+#     cohort <- dplyr::bind_rows(data)
+#   }
+#   return(cohort)
+# }

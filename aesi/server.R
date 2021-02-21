@@ -62,12 +62,12 @@ shiny::shinyServer(function(input, output, session) {
             item = shinydashboard::menuItem(text = "Inclusion Rule Statistics", tabName = "inclusionRuleStats"),
             infoId = "inclusionRuleStatsInfo"
           )
-      # menuList[[7]] <-
-      #   if (exists(x = "indexEventBreakdown"))
-      #     addInfo(
-      #       item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
-      #       infoId = "indexEventBreakdownInfo"
-      #     )
+      menuList[[7]] <-
+        if (exists(x = "indexEventBreakdown"))
+          addInfo(
+            item = shinydashboard::menuItem(text = "Index Event Breakdown", tabName = "indexEventBreakdown"),
+            infoId = "indexEventBreakdownInfo"
+          )
       menuList[[8]] <- 
         if (exists(x = "visitContext"))
           addInfo(
@@ -1161,30 +1161,30 @@ shiny::shinyServer(function(input, output, session) {
                            )
                          })
   
-  # indexEventBreakDownDataPreFetch <-
-  #   shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
-  #                        valueExpr = {
-  #                          shiny::withProgress(
-  #                            message = paste0(
-  #                              progressBarMessagePreFetchTemplateFirst(),
-  #                              "\n",
-  #                              "Pre-fetching index event breakdown data."
-  #                            ),
-  #                            value = 0,
-  #                            {
-  #                              if (length(cohortsSelectedByActionButton()) != 0) {
-  #                                data <- getIndexEventBreakdown(
-  #                                  dataSource = dataSource,
-  #                                  cohortIds = cohortsSelectedByActionButton(),
-  #                                  cohortCounts = cohortCountsPreFetch()
-  #                                )
-  #                                return(data)
-  #                              } else {
-  #                                return(dplyr::tibble())
-  #                              }
-  #                            }
-  #                          )
-  #                        })
+  indexEventBreakDownDataPreFetch <-
+    shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
+                         valueExpr = {
+                           shiny::withProgress(
+                             message = paste0(
+                               progressBarMessagePreFetchTemplateFirst(),
+                               "\n",
+                               "Pre-fetching index event breakdown data."
+                             ),
+                             value = 0,
+                             {
+                               if (length(cohortsSelectedByActionButton()) != 0) {
+                                 data <- getIndexEventBreakdown(
+                                   dataSource = dataSource,
+                                   cohortIds = cohortsSelectedByActionButton(),
+                                   cohortCounts = cohortCountsPreFetch()
+                                 )
+                                 return(data)
+                               } else {
+                                 return(dplyr::tibble())
+                               }
+                             }
+                           )
+                         })
   
   visitContextDataPreFetch <-
     shiny::eventReactive(eventExpr = input$loadSelectedCohorts,
@@ -2109,38 +2109,38 @@ shiny::shinyServer(function(input, output, session) {
   
   
   # Index event breakdown ----------------------------------------------------------------
-  # indexEventBreakDownDataFiltered <- reactive({
-  #   if (nrow(indexEventBreakDownDataPreFetch()) > 0) {
-  #     filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
-  #       .data$cohortId %in% selectedCohortIds(),
-  #       .data$databaseId %in% selectedDatabaseIds()
-  #     )
-  #     data <- indexEventBreakDownDataPreFetch() %>%
-  #       dplyr::inner_join(y = filter,
-  #                         by = c("cohortId", "databaseId"))
-  #   } else {
-  #     data <- dplyr::tibble()
-  #   }
-  #   return(data)
-  # })
-  # output$indexEventBreakDownTable <- DT::renderDT(expr = {
-  #   shiny::withProgress(
-  #     message = paste0(
-  #       progressBarMessageFilter(),
-  #       "\n",
-  #       "Generating index event breakdown table"
-  #     ),
-  #     value = 0,
-  #     {
-  #     isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-  #     data <-
-  #       addMetaDataInformationToResults(data = indexEventBreakDownDataFiltered(), isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>%
-  #       dplyr::arrange(dplyr::desc(.data$percent))
-  #     dataTable <- standardDataTable(data)
-  #   return(dataTable)
-  #   })
-  # }, server = TRUE)
-  # 
+  indexEventBreakDownDataFiltered <- reactive({
+    if (nrow(indexEventBreakDownDataPreFetch()) > 0) {
+      filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+        .data$cohortId %in% selectedCohortIds(),
+        .data$databaseId %in% selectedDatabaseIds()
+      )
+      data <- indexEventBreakDownDataPreFetch() %>%
+        dplyr::inner_join(y = filter,
+                          by = c("cohortId", "databaseId"))
+    } else {
+      data <- dplyr::tibble()
+    }
+    return(data)
+  })
+  output$indexEventBreakDownTable <- DT::renderDT(expr = {
+    shiny::withProgress(
+      message = paste0(
+        progressBarMessageFilter(),
+        "\n",
+        "Generating index event breakdown table"
+      ),
+      value = 0,
+      {
+      isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+      data <-
+        addMetaDataInformationToResults(data = indexEventBreakDownDataFiltered(), isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>%
+        dplyr::arrange(dplyr::desc(.data$percent))
+      dataTable <- standardDataTable(data)
+    return(dataTable)
+    })
+  }, server = TRUE)
+
   
   # Visit Context --------------------------------------------------------------------------------------------
   visitContextDataFiltered <- reactive({

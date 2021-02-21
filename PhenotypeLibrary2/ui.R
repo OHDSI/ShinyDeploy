@@ -11,7 +11,7 @@ shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
   showTick = TRUE,
   width	= 'auto',
   windowPadding = 2,
-  dropdownAlignRight = 'auto',
+  dropdownAlignRight = TRUE,
   dropupAuto = TRUE
 )
 
@@ -20,42 +20,53 @@ defaultHeaderbars <-
     tags$div(
       tags$li(
         tags$div(
-            shinyWidgets::pickerInput(
-              inputId = "selectedDatabases",
-              label = "Database",
-              choices = NULL,
-              inline = TRUE,
-              multiple = TRUE,
-              options = shinyWidgetsPickerOptions
-            )
-        ),
-        class = "dropdown"
-      ),
-      tags$li(
-        tags$div(
-          shinyWidgets::pickerInput(
-            inputId = "selectedCohorts",
-            label = "Cohorts",
-            choices = NULL,
-            inline = TRUE,
-            multiple = TRUE,
-            options = shinyWidgetsPickerOptions
+          tags$li(
+            tags$div(
+              shiny::conditionalPanel(
+                condition = "output.isHeaderbarVisible == true",
+                shinyWidgets::pickerInput(
+                  inputId = "selectedDatabases",
+                  label = "Database",
+                  choices = NULL,
+                  inline = TRUE,
+                  multiple = TRUE,
+                  options = shinyWidgetsPickerOptions
+                ))
+            ),
+            class = "dropdown"
+          ),
+          tags$li(
+            tags$div(
+              shiny::conditionalPanel(
+                condition = "output.isHeaderbarVisible == true",
+                shinyWidgets::pickerInput(
+                  inputId = "selectedCohorts",
+                  label = "Cohorts",
+                  choices = NULL,
+                  inline = TRUE,
+                  multiple = TRUE,
+                  options = shinyWidgetsPickerOptions
+                ))
+            ),
+            class = "dropdown"
+          ),
+          tags$li(
+            tags$div(
+              if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
+                shiny::conditionalPanel(
+                  condition = "output.isHeaderbarVisible == true",
+                  shinyWidgets::pickerInput(
+                    inputId = "selectedPhenotypes",
+                    label = "Phenotype",
+                    choices = NULL,
+                    inline = TRUE,
+                    multiple = TRUE,
+                    options = shinyWidgetsPickerOptions
+                  ))
+              }
+            ),
+            class = "dropdown"
           )
-        ),
-        class = "dropdown"
-      ),
-      tags$li(
-        tags$div(
-          if (exists("phenotypeDescription") && nrow(phenotypeDescription) > 0) {
-            shinyWidgets::pickerInput(
-              inputId = "selectedPhenotypes",
-              label = "Phenotype",
-              choices = NULL,
-              inline = TRUE,
-              multiple = TRUE,
-              options = shinyWidgetsPickerOptions
-            )
-          }
         ),
         class = "dropdown"
       )
@@ -66,11 +77,6 @@ defaultHeaderbars <-
 header <-
   shinydashboard::dashboardHeader(
     title = appTitle,
-    # shinydashboard::dropdownMenu(
-    #   type = "notifications",
-    #   badgeStatus = "info",
-    #   shinydashboard::notificationItem(text = userNotification)
-    # ),
     tags$li(
       tags$div(
         defaultHeaderbars
@@ -83,7 +89,12 @@ header <-
 sidebarMenu <-
   shinydashboard::sidebarMenu(
     id = "tabs",
-    shinydashboard::sidebarMenuOutput(outputId = "menuItems")
+    shinydashboard::sidebarMenuOutput(outputId = "menuItems"),
+    htmltools::withTags(
+      div(style = "margin-left : 10px",
+          h5(appVersion)
+      )
+    )
     # if (exists(x = "phenotypeDescription"))
       # shinydashboard::menuItem(text = "Phenotype Description", tabName = "phenotypeDescription"),
     # if (exists(x = "cohort"))
@@ -195,7 +206,12 @@ bodyTabItems <- shinydashboard::tabItems(
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonFirst", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst")
+                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst"),
+                                                tags$head(
+                                                  tags$style(
+                                                    "#cohortConceptsetExpressionJsonFirst { max-height:400px};"
+                                                  )
+                                                )
                                               ),
                                               shiny::tabPanel(
                                                 value = "conceptsetExpressionResoledFirst",
@@ -244,14 +260,24 @@ bodyTabItems <- shinydashboard::tabItems(
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst")
+                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionJsonFirst { max-height:400px};"
+                                            )
+                                          )
                                         ),
                                         shiny::tabPanel(
                                           value = "cohortDefinitionSqlFirst",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlFirst", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionSqlFirst")
+                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionSqlFirst"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionSqlFirst { max-height:400px};"
+                                            )
+                                          )
                                         )
                                       )
                                     )
@@ -293,7 +319,12 @@ bodyTabItems <- shinydashboard::tabItems(
                                                 title = "Json",
                                                 copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonSecond", 
                                                                       style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond")
+                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond"),
+                                                tags$head(
+                                                  tags$style(
+                                                    "#cohortConceptsetExpressionJsonSecond { max-height:400px};"
+                                                  )
+                                                )
                                               ),
                                               shiny::tabPanel(
                                                 value = "conceptsetExpressionResolvedSecond",
@@ -342,14 +373,24 @@ bodyTabItems <- shinydashboard::tabItems(
                                           title = "JSON",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionJsonSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionJsonSecond")
+                                          shiny::verbatimTextOutput("cohortDefinitionJsonSecond"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionJsonSecond { max-height:400px};"
+                                            )
+                                          )
                                         ),
                                         shiny::tabPanel(
                                           value = "cohortDefinitionSqlSecond",
                                           title = "SQL",
                                           copyToClipboardButton(toCopyId = "cohortDefinitionSqlSecond", 
                                                                 style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionSqlSecond")
+                                          shiny::verbatimTextOutput("cohortDefinitionSqlSecond"),
+                                          tags$head(
+                                            tags$style(
+                                              "#cohortDefinitionSqlSecond { max-height:400px};"
+                                            )
+                                          )
                                         )
                                       )
                                     )
@@ -628,6 +669,24 @@ bodyTabItems <- shinydashboard::tabItems(
       status = "primary",
       collapsible = TRUE,
       collapsed = FALSE,
+      shiny::column(width = 4,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationTablePrettyDtDropDownDatabase",
+                      label = "Database",
+                      choices = NULL,
+                      multiple = FALSE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    )),
+      shiny::column(width = 4,
+                    shinyWidgets::pickerInput(
+                      inputId = "characterizationTablePrettyDtDropDownCohort",
+                      label = "Cohort",
+                      choices = NULL,
+                      multiple = FALSE,
+                      inline = FALSE,
+                      options = shinyWidgetsPickerOptions
+                    )),
       DT::DTOutput("characterizationTablePrettyDt")
     ),
     #cohortReference("characterizationSelectedCohort"),
@@ -672,7 +731,7 @@ bodyTabItems <- shinydashboard::tabItems(
       width = NULL,
       status = "primary",
       collapsible = TRUE,
-      collapsed = FALSE,
+      collapsed = TRUE,
       shiny::textOutput(outputId = "temporalCharacterizationPlotText"),
       shiny::column(width = 6,
                     shinyWidgets::pickerInput(
@@ -921,7 +980,12 @@ shinydashboard::dashboardPage(
       th, td {
         padding-right: 10px;
       }
-
+      
+      #sidebarItemExpanded h5 {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
     "
   ))),
   header = header,
