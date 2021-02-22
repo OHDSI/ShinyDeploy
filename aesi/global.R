@@ -6,19 +6,19 @@ library(magrittr)
 # reactlog::reactlog_enable()
 appVersion <- "Running Cohort Diagnostics 2.1.0"
 
-userName <- Sys.getenv("phoebedbUser")
-password <- Sys.getenv("phoebedbPw")
-databaseServer <- Sys.getenv("phoebedbServer")
-databaseName <- Sys.getenv("phoebedb")
-resultsSchema <- Sys.getenv("phoebedbTargetSchema")
-vocabularySchema <- Sys.getenv("phoebedbVocabSchema")
+# userName <- Sys.getenv("phoebedbUser")
+# password <- Sys.getenv("phoebedbPw")
+# databaseServer <- Sys.getenv("phoebedbServer")
+# databaseName <- Sys.getenv("phoebedb")
+# resultsSchema <- Sys.getenv("phoebedbTargetSchema")
+# vocabularySchema <- Sys.getenv("phoebedbVocabSchema")
 
-# userName <- Sys.getenv("charybdisdbUser")
-# password <- Sys.getenv("charybdisdbPw")
-# databaseServer <- Sys.getenv("shinydbServer")
-# databaseName <- Sys.getenv("shinydbDatabase")
-# resultsSchema <- 'aesi'
-# vocabularySchema <- 'vocabulary'
+userName <- Sys.getenv("charybdisdbUser")
+password <- Sys.getenv("charybdisdbPw")
+databaseServer <- Sys.getenv("shinydbServer")
+databaseName <- Sys.getenv("shinydbDatabase")
+resultsSchema <- 'aesi'
+vocabularySchema <- 'vocabulary'
 
 
 source("R/DisplayFunctions.R")
