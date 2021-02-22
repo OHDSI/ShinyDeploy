@@ -17,7 +17,7 @@ userName <- Sys.getenv("charybdisdbUser")
 password <- Sys.getenv("charybdisdbPw")
 databaseServer <- Sys.getenv("shinydbServer")
 databaseName <- Sys.getenv("shinydbDatabase")
-resultsSchema <- 'aesi'
+resultsSchema <- 'aesi3'
 vocabularySchema <- 'vocabulary'
 
 
@@ -294,13 +294,28 @@ if (isValidConnection && databaseMode && !foundPremergedFile) {
                                            units = "secs"))), 
                     "seconds."))
   
-  for (table in c(dataModelSpecifications$tableName, "recommender_set")) {
+  for (table in c(dataModelSpecifications$tableName)) {
     if (table %in% resultsTablesOnServer &&
         !exists(x = snakeCaseToCamelCase(string = table)) &&
         !isEmpty(
           connection = connectionPool,
           tableName = table,
           resultsDatabaseSchema = resultsDatabaseSchema
+        )) {
+      assign(
+        x = snakeCaseToCamelCase(table),
+        value = dplyr::tibble(),
+        envir = .GlobalEnv
+      )
+    }
+  }
+  for (table in c("recommender_set")) {
+    if (table %in% resultsTablesOnServer &&
+        !exists(x = snakeCaseToCamelCase(string = table)) &&
+        !isEmpty(
+          connection = connectionPool,
+          tableName = table,
+          resultsDatabaseSchema = 'concept_prevalence'
         )) {
       assign(
         x = snakeCaseToCamelCase(table),
@@ -384,13 +399,11 @@ if (exists("cohort")) {
     }
     cohortMetaData <- dplyr::bind_rows(cohortMetaData) %>%
       readr::type_convert(col_types = readr::cols())
-    if ('referent_concept_id' %in% colnames(cohortMetaData)) {
+    if ('referentConceptId' %in% colnames(cohortMetaData)) {
       referentConceptIds <-
         c(referentConceptIds,
-          cohortMetaData$referent_concept_id) %>% unique()
+          cohortMetaData$referentConceptId) %>% unique()
     }
-    colnames(cohortMetaData) <-
-      snakeCaseToCamelCase(colnames(cohortMetaData))
   }
 } else {
   stop("Cohort table not found in data source")
@@ -586,4 +599,3 @@ if (exists(x = "phenotypeDescription")) {
 } else {
   appTitle <- cohortDiagnosticModeDefaultTitle
 }
-

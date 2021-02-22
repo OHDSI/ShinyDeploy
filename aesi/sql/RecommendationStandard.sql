@@ -11,12 +11,12 @@ recommendations as (
   --find not included concepts found by orphan check via standards
   select rc1.concept_id, 'Not included - recommended via standard' as concept_in_set
   from list i
-         join @results_database_schema.recommender_set rc1 on i.concept_id = rc1.source_id
+         join concept_prevalence.recommender_set rc1 on i.concept_id = rc1.source_id
          join @vocabulary_database_schema.concept c1 on rc1.concept_id = c1.concept_id and c1.standard_concept = 'S'
   union
   select cr1.concept_id_2, 'Not included - recommended via source' as concept_in_set
   from list i
-         join @results_database_schema.recommender_set rc1 on i.concept_id = rc1.source_id
+         join concept_prevalence.recommender_set rc1 on i.concept_id = rc1.source_id
          join @vocabulary_database_schema.concept c1 on rc1.concept_id = c1.concept_id and c1.standard_concept is null
          join @vocabulary_database_schema.concept_relationship cr1 on c1.concept_id = cr1.concept_id_1 and cr1.relationship_id in ('Maps to', 'Maps to value')
              -- excluding those sources that already have one standard counterpart in our input list
@@ -41,8 +41,8 @@ select c.concept_id, c.concept_name,  c.vocabulary_id, c.domain_id, c.standard_c
        coalesce(cp.dbc,0) as database_count, coalesce(cp.drc,0) as descendant_record_count, coalesce(cp.ddbc,0) as descendant_database_count
 from recommendations r
 join @vocabulary_database_schema.concept c on c.concept_id = r.concept_id
-left join @results_database_schema.cp_master cp on r.concept_id = cp.concept_id
-left join @results_database_schema.recommended_blacklist rb on r.concept_id = rb.concept_id
+left join concept_prevalence.cp_master cp on r.concept_id = cp.concept_id
+left join concept_prevalence.recommended_blacklist rb on r.concept_id = rb.concept_id
 where (rb.concept_id is null 
 and  not exists   (select 1 from list l
                    join @vocabulary_database_schema.concept_relationship cr1 on l.concept_id = cr1.concept_id_2 and cr1.relationship_id = 'Maps to'
