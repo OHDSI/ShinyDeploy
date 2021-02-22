@@ -223,8 +223,7 @@ getIndexEventBreakdown <- function(dataSource = .GlobalEnv,
       .data$conceptId,
       .data$conceptName,
       .data$conceptCount
-    ) %>% 
-    dplyr::select(-.data$cohortEntries)
+    )
   return(data)
 }
 

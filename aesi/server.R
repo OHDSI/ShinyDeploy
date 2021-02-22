@@ -122,12 +122,17 @@ shiny::shinyServer(function(input, output, session) {
                                 searchString,
                                 searchField,
                                 points) {
-        data <- searchTable %>% 
-          dplyr::filter(stringr::str_detect(string = tolower(.data[[searchField]]),
-                                            pattern = tolower(searchString))) %>% 
-          dplyr::select(.data$cohortId) %>% 
-          dplyr::mutate(points = points)
-        return(data)
+        if (searchField %in% colnames(searchTable)) {
+          data <- searchTable %>%
+            dplyr::filter(stringr::str_detect(
+              string = tolower(.data[[searchField]]),
+              pattern = tolower(searchString)
+            )) %>%
+            dplyr::select(.data$cohortId) %>%
+            dplyr::mutate(points = points) %>% 
+            dplyr::mutate(wordSearched = word)
+          return(data)
+        }
       }
       
       searchResultByWords <- list()
@@ -138,8 +143,7 @@ shiny::shinyServer(function(input, output, session) {
           searchResult[[j]] <- searchInField(searchTable = cohort,
                                              searchField = searchFieldWeight[j,]$searchFields,
                                              searchString = word,
-                                             points = searchFieldWeight[j,]$searchPoints) %>% 
-            dplyr::mutate(wordSearched = word)
+                                             points = searchFieldWeight[j,]$searchPoints)
         }
         searchResultByWords[[i]] <- dplyr::bind_rows(searchResult)
       }

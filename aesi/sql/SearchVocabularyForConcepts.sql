@@ -26,5 +26,5 @@ SELECT c.CONCEPT_ID,
 	ISNULL(universe.DDBC, 0) DDBC
 FROM @vocabulary_database_schema.concept c
 INNER JOIN matched_concepts ON c.concept_id = matched_concepts.concept_id
-LEFT JOIN @results_database_schema.universe ON c.concept_id = universe.concept_id
+LEFT JOIN concept_prevalence.universe ON c.concept_id = universe.concept_id
 ORDER BY ISNULL(universe.DRC, 0) DESC;
