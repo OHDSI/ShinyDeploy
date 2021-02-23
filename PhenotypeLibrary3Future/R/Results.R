@@ -1,3 +1,6 @@
+library(promises)
+library(future)
+
 createDatabaseDataSource <-
   function(connection,
            connectionDetails,
@@ -22,13 +25,32 @@ createFileDataSource <-
 
 renderTranslateQuerySql <-
   function(connection,
+           connectionDetails = NULL,
            sql,
            ...,
-           snakeCaseToCamelCase = FALSE) {
-    if (is(connection, "Pool")) {
-      # Connection pool is used by Shiny app, which always uses PostgreSQL:
-      sql <- SqlRender::render(sql, ...)
-      sql <- SqlRender::translate(sql, targetDialect = "postgresql")
+           snakeCaseToCamelCase = FALSE,
+           futureQuery = FALSE) {
+    # results for the shiny app are always in PostgreSQL
+    sql <- SqlRender::render(sql, ...)
+    sql <- SqlRender::translate(sql, targetDialect = "postgresql")
+    
+    if (futureQuery && !is.null(connectionDetails)) {
+      return(future::future({
+        futureConnection <-
+          DatabaseConnector::connect(connectionDetails = connectionDetails)
+        result <- DatabaseConnector::querySql(
+          connection = futureConnection,
+          sql = sql,
+          snakeCaseToCamelCase = snakeCaseToCamelCase
+        ) %>% dplyr::tibble()
+        DatabaseConnector::disconnect(futureConnection)
+        result
+      },seed = TRUE))
+    }
+    else if (is(connection, "Pool")) {
+      # # Connection pool is used by Shiny app, which always uses PostgreSQL:
+      # sql <- SqlRender::render(sql, ...)
+      # sql <- SqlRender::translate(sql, targetDialect = "postgresql")
       
       tryCatch({
         data <- DatabaseConnector::dbGetQuery(connection, sql)
@@ -42,10 +64,9 @@ renderTranslateQuerySql <-
       return(data %>% dplyr::tibble())
     } else {
       return(
-        DatabaseConnector::renderTranslateQuerySql(
+        DatabaseConnector::querySql(
           connection = connection,
           sql = sql,
-          ...,
           snakeCaseToCamelCase = snakeCaseToCamelCase
         ) %>% dplyr::tibble()
       )
@@ -557,11 +578,13 @@ getCovariateValueResult <- function(dataSource = .GlobalEnv,
     WHERE cohort_id IN (@cohort_ids);
     "
     data <- renderTranslateQuerySql(connection = dataSource$connection,
+                                    connectionDetails = dataSource$connectionDetails,
                                     sql = sql,
                                     table = camelCaseToSnakeCase(table),
                                     results_database_schema = dataSource$resultsDatabaseSchema,
                                     cohort_ids = cohortIds,
-                                    snakeCaseToCamelCase = TRUE)
+                                    snakeCaseToCamelCase = TRUE,
+                                    futureQuery = TRUE)
   }
   return(data)
 }

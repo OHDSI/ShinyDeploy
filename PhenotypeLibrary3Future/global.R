@@ -1,7 +1,7 @@
 library(magrittr)
-# library(promises)
-# library(future)
-# future::plan(strategy = multisession)
+library(promises)
+library(future)
+future::plan(strategy = multisession)
 # library(reactlog)
 # reactlog::reactlog_enable()
 appVersion <- "Running Cohort Diagnostics 2.1.0"
@@ -350,24 +350,25 @@ if (exists("temporalCovariateRef")) {
       )
     ))
 }
-if (exists("covariateRef")) {
-  covariateRef <- covariateRef %>% 
-    dplyr::mutate(conceptName = stringr::str_to_sentence(
-      stringr::str_replace_all(
-        string = .data$covariateName,
-        pattern = "^.*: ",
-        replacement = ""
-      )
-    ))
-  specifications <- readr::read_csv(
-    file = "Table1Specs.csv",
-    col_types = readr::cols(),
-    guess_max = min(1e7)
-  )
-  assign(x = "prettyAnalysisIds",
-         value = specifications$analysisId,
-         envir = .GlobalEnv)
-}
+
+# if (exists("covariateRef")) {
+#   covariateRef <- covariateRef %>% 
+#     dplyr::mutate(conceptName = stringr::str_to_sentence(
+#       stringr::str_replace_all(
+#         string = .data$covariateName,
+#         pattern = "^.*: ",
+#         replacement = ""
+#       )
+#     ))
+#   specifications <- readr::read_csv(
+#     file = "Table1Specs.csv",
+#     col_types = readr::cols(),
+#     guess_max = min(1e7)
+#   )
+#   assign(x = "prettyAnalysisIds",
+#          value = specifications$analysisId,
+#          envir = .GlobalEnv)
+# }
 
 
 referentConceptIds <- c(0)

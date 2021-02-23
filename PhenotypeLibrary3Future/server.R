@@ -1,3 +1,4 @@
+
 shiny::shinyServer(function(input, output, session) {
   
   shinyWidgetsPickerOptions <- shinyWidgets::pickerOptions(
@@ -1734,19 +1735,7 @@ shiny::shinyServer(function(input, output, session) {
                               choices = incidenceRateCalendarYearFilter()  %>% sort(),
                               selected = incidenceRateCalendarYearFilter()
                             )
-                            shinyWidgets::updatePickerInput(
-                              session = session,
-                              inputId = "temporalCharacterizationAnalysisNameFilter",
-                              choices = temporalCharacterizationAnalysisNameFilter() %>% sort(),
-                              selected = temporalCharacterizationAnalysisNameFilter()
-                            )
-                            shinyWidgets::updatePickerInput(
-                              session = session,
-                              inputId = "temporalCharacterizationDomainFilter",
-                              choices = temporalCharacterizationDomainFilter() %>% sort(),
-                              selected = temporalCharacterizationDomainFilter()
-                            )
-                            rvCharacterizationPrettyTableGenerated(FALSE)
+                            
                           }
                         )
                         showAllMenuItem(TRUE)
@@ -2668,247 +2657,303 @@ shiny::shinyServer(function(input, output, session) {
   # Characterization -----------------------------------------------------------------
   characterizationDataFilterOptions <-
     shiny::reactive({
-      data <- characterizationDataPreFetch()
-      data <- data %>%
-        dplyr::select(.data$covariateId) %>%
-        dplyr::distinct() %>%
-        dplyr::left_join(covariateRef, by = "covariateId") %>%
-        dplyr::left_join(
-          analysisRef %>%
-            dplyr::select(.data$analysisId,
-                          .data$analysisName,
-                          .data$domainId,
-                          .data$isBinary),
-          by = "analysisId"
-        )
-      data <- data %>% 
+      futureInput <- characterizationDataPreFetch()
+      data <- promises::promise_all(prefetchFutureData = futureInput) %...>%  with({
+        prefetchFutureData <- prefetchFutureData %>%
+          dplyr::select(.data$covariateId) %>%
+          dplyr::distinct() %>%
+          dplyr::left_join(covariateRef, by = "covariateId") %>%
+          dplyr::left_join(
+            analysisRef %>%
+              dplyr::select(.data$analysisId,
+                            .data$analysisName,
+                            .data$domainId,
+                            .data$isBinary),
+            by = "analysisId"
+          ) %>% 
         tidyr::replace_na(list(domainId = 'Other', analysisName = 'Other'))
+        return(prefetchFutureData)
+      })
       return(data)
     })
   
-  characterizationDataFiltered <- shiny::reactive(x = {
-    dataFilterOptions <-
-      characterizationDataFilterOptions()
-    filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
-      .data$cohortId %in% selectedCohortIds(),
-      .data$databaseId %in% selectedDatabaseIds()
-    )
-    data <- characterizationDataPreFetch() %>%
-      dplyr::inner_join(y = filter,
-                        by = c("cohortId", "databaseId")) %>%
-      dplyr::inner_join(y = dataFilterOptions,
-                        by = c("covariateId" = "covariateId")) %>%
-      dplyr::relocate(.data$databaseId,
-                      .data$analysisId,
-                      .data$analysisName,
-                      .data$domainId,
-                      .data$covariateId,
-                      .data$covariateName,
-                      .data$conceptId,
-                      .data$conceptName,
-                      .data$isBinary) %>% 
-      dplyr::arrange(dplyr::desc(.data$mean)) %>% 
-      dplyr::distinct()
-    return(data)
-  })
-  
   characterizationAnalysisNameFilter <- shiny::reactive(x = {
-    if (nrow(characterizationDataFilterOptions()) > 0) {
+    # if (nrow(characterizationDataFilterOptions()) > 0) {
+    futureInput <- characterizationDataFilterOptions()
       characterizationAnalysisNameFilter <-
-        characterizationDataFilterOptions() %>% 
-        dplyr::select(.data$analysisName) %>% 
-        tidyr::replace_na(list(analysisName = 'Other')) %>% 
-        unique() %>% 
-        dplyr::pull()
+        promises::promise_all(futureDataFilterOption = futureInput) %...>%  with({
+          futureDataFilterOption <- futureDataFilterOption$analysisName %>% unique() %>% sort()
+        })
       return(characterizationAnalysisNameFilter)
-    } else {
-      return(NULL)
-    }
+    # } else {
+    #   return(NULL)
+    # }
   })
   
   characterizationDomainFilter <- shiny::reactive(x = {
-    if (nrow(characterizationDataFilterOptions()) > 0) {
+    # if (nrow(characterizationDataFilterOptions()) > 0) {
+    futureInput <- characterizationDataFilterOptions()
       characterizationDomainFilter <-
-        characterizationDataFilterOptions() %>% 
-        dplyr::select(.data$domainId) %>% 
-        tidyr::replace_na(list(domainId = 'Other')) %>% 
-        unique() %>% 
-        dplyr::pull()
+        promises::promise_all(futureDataFilterOption = futureInput) %...>%  with({
+          futureDataFilterOption <- futureDataFilterOption$domainId %>% unique() %>% sort()
+        })
       return(characterizationDomainFilter)
-    } else {
-      return(NULL)
-    }
+    # } else {
+    #   return(NULL)
+    # }
   })
   
-  characterizationTableRaw <- shiny::reactive(x = {
-    data <- characterizationDataFiltered() %>% 
-      dplyr::filter(.data$domainId %in% input$characterizationDomainFilter) %>% 
-      dplyr::filter(.data$analysisName %in% input$characterizationAnalysisNameFilter)
-    if (nrow(data) > 0) {
-      isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-      data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
-    }
+  characterizationDataFiltered <- shiny::reactive(x = {
+    futureInput1 <- characterizationDataFilterOptions()
+    futureInput2 <-  characterizationDataPreFetch()
+    dataFilterOptions <-
+      data <-
+      promises::promise_all(futureDataFiltered = futureInput1, futureDataPrefech = futureInput2) %...>%
+      with({
+        futureDataFiltered <- futureDataFiltered %>%
+          dplyr::filter(
+            analysisName %in% input$characterizationAnalysisNameFilter,
+            domainId %in% input$characterizationDomainFilter
+          )
+        
+        filter <-
+          combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
+            .data$cohortId %in% selectedCohortIds(),
+            .data$databaseId %in% selectedDatabaseIds()
+          )
+        
+        futureDataPrefech <- futureDataPrefech %>%
+          dplyr::inner_join(y = filter,
+                            by = c("cohortId", "databaseId")) %>%
+          dplyr::inner_join(y = futureDataFiltered,
+                            by = c("covariateId" = "covariateId")) %>%
+          dplyr::relocate(
+            .data$databaseId,
+            .data$analysisId,
+            .data$analysisName,
+            .data$domainId,
+            .data$covariateId,
+            .data$covariateName,
+            .data$conceptId,
+            # .data$conceptName,
+            .data$isBinary
+          ) %>%
+          dplyr::arrange(dplyr::desc(.data$mean)) %>%
+          dplyr::distinct()
+        
+        return(futureDataPrefech)
+      })
     return(data)
   })
   
-  output$characterizationTableRaw <-
-    DT::renderDT(expr = {
-      shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
-        data <- characterizationTableRaw()
-        if (nrow(data) > 0) {
-          table <- standardDataTable(data = characterizationTableRaw())
-        }
-        return(table)
-      })
-    }, server = TRUE)
   
   
   characterizationTablePretty <- shiny::reactive(x = {
-    data <- characterizationDataFiltered()
-    if (nrow(data) > 0) {
-      analysisIds <- prettyAnalysisIds
-      table <- data %>%
-        prepareTable1() %>%
-        dplyr::rename(percent = .data$value)
-      characteristics <- table %>%
-        dplyr::select(.data$characteristic,
-                      .data$position,
-                      .data$header,
-                      .data$sortOrder) %>%
-        dplyr::distinct() %>%
-        dplyr::group_by(.data$characteristic, .data$position, .data$header) %>%
-        dplyr::summarise(sortOrder = max(.data$sortOrder)) %>%
-        dplyr::ungroup() %>%
-        dplyr::arrange(.data$position, desc(.data$header)) %>%
-        dplyr::mutate(sortOrder = dplyr::row_number()) %>%
-        dplyr::distinct()
-      
-      characteristics <- dplyr::bind_rows(
-        tidyr::crossing(
+   futureInput <- characterizationDataFiltered()
+    data <-
+      promises::promise_all(futureFilteredData = futureInput) %...>%  with({
+        # isPhenotypeLibraryMode <-
+        #   exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        # analysisIds <- prettyAnalysisIds
+        if(nrow(futureFilteredData) <= 0) 
+          return(NULL)
+        # data <- futureFilteredData
+        # futureFilteredData <- futureFilteredData %>%
+        #   addMetaDataInformationToResults(isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>%
+        #   prepareTable1() %>%
+        #   dplyr::rename(percent = .data$value)
+        
+        table <- futureFilteredData %>%
+          prepareTable1() %>%
+          dplyr::rename(percent = .data$value)
+        
+        characteristics <- table %>%
+          dplyr::select(.data$characteristic,
+                        .data$position,
+                        .data$header,
+                        .data$sortOrder) %>%
+          dplyr::distinct() %>%
+          dplyr::group_by(.data$characteristic, .data$position, .data$header) %>%
+          dplyr::summarise(sortOrder = max(.data$sortOrder)) %>%
+          dplyr::ungroup() %>%
+          dplyr::arrange(.data$position, desc(.data$header)) %>%
+          dplyr::mutate(sortOrder = dplyr::row_number()) %>%
+          dplyr::distinct()
+        
+        characteristics <- dplyr::bind_rows(
+          tidyr::crossing(
+            characteristics %>%
+              dplyr::filter(.data$header == 1),
+            dplyr::tibble(cohortId = unique(futureFilteredData$cohortId)),
+            dplyr::tibble(databaseId = unique(futureFilteredData$databaseId))
+          ),
           characteristics %>%
-            dplyr::filter(.data$header == 1),
-          dplyr::tibble(cohortId = unique(data$cohortId)),
-          dplyr::tibble(databaseId = unique(data$databaseId))
-        ),
-        characteristics %>%
-          dplyr::filter(.data$header == 0) %>%
-          tidyr::crossing(dplyr::tibble(databaseId = unique(data$databaseId)) %>%
-                            tidyr::crossing(
-                              dplyr::tibble(cohortId = unique(data$cohortId))
-                            )
-          ))
-      data <- characteristics %>%
-        dplyr::left_join(
-          table %>%
-            dplyr::select(-.data$sortOrder),
-          by = c(
-            "databaseId",
-            "cohortId",
-            "characteristic",
-            "position",
-            "header"
-          )
-        )  %>%
-        dplyr::arrange(.data$databaseId, .data$cohortId, .data$sortOrder) %>%
-        dplyr::select(-.data$position, -.data$header) %>%
-        dplyr::relocate(.data$sortOrder, .after = dplyr::last_col())
-      
-      rvCharacterizationPrettyTableGenerated(TRUE)
-     
-    } else {
-      data <- dplyr::tibble()
-    }
+            dplyr::filter(.data$header == 0) %>%
+            tidyr::crossing(dplyr::tibble(databaseId = unique(futureFilteredData$databaseId)) %>%
+                              tidyr::crossing(
+                                dplyr::tibble(cohortId = unique(futureFilteredData$cohortId))
+                              )
+            ))
+        
+        data <- characteristics %>%
+          dplyr::left_join(
+            table %>%
+              dplyr::select(-.data$sortOrder),
+            by = c(
+              "databaseId",
+              "cohortId",
+              "characteristic",
+              "position",
+              "header"
+            )
+          )  %>%
+          dplyr::arrange(.data$databaseId, .data$cohortId, .data$sortOrder) %>%
+          dplyr::select(-.data$position, -.data$header) %>%
+          dplyr::relocate(.data$sortOrder, .after = dplyr::last_col())
+        
+        sortedDatabaseIds <- data$databaseId %>%
+          unique() %>%
+          sort()
+        
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "characterizationTablePrettyDtDropDownDatabase",
+          choices = sortedDatabaseIds,
+          selected = sortedDatabaseIds[1]
+        )
+        
+        sortedCohortIds <- cohort[cohort$cohortId %in% data$cohortId,]$cohortName %>%
+          unique() %>%
+          sort()
+        
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "characterizationTablePrettyDtDropDownCohort",
+          choices = sortedCohortIds,
+          selected = sortedCohortIds[1]
+        )
+        
+        return(data)
+        
+      })
     return(data)
+    # if (nrow(data) > 0) {
+    # } else {
+    #   data <- dplyr::tibble()
+    # }
+    
   })
   
   
   output$characterizationTablePrettyDt <-
     DT::renderDT(expr = {
       shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
-        data <- characterizationTablePretty() 
-        if (nrow(data) > 0) {
+        futureInput <- characterizationTablePretty()
+        # if (nrow(data) > 0) {
           isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
-        
-        if (rvCharacterizationPrettyTableGenerated()) {        
-          # data <- data %>% ## WHY IS IT NOT WORKING?
-          #   dplyr::filter(.data$databaseId %in% input$characterizationTablePrettyDtDropDownDatabase) %>%
-          #   dplyr::filter(.data$cohortId %in% input$characterizationTablePrettyDtDropDownCohort)
-        }
-          table <- standardDataTable(data = data)
-          return(table)
-        }
+          data <-  promises::promise_all(futurePrettyData = futureInput) %...>%
+            with({
+            futurePrettyData <- futurePrettyData %>%
+              addMetaDataInformationToResults(isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>%
+              standardDataTable()
+            })
+          return(data)
+        # }
       })
     }, server = TRUE)
   
   
-  characterizationPrettyDatabaseFilter <- shiny::reactive(x = {
-    if (nrow(characterizationTablePretty()) > 0) {
-      characterizationPrettyDatabaseFilter <-
-        characterizationTablePretty()$databaseId %>% 
-        unique() %>% 
-        sort()
-      return(characterizationPrettyDatabaseFilter)
-    } else {
-      return(NULL)
-    }
-  })
+  characterizationTableRaw <- shiny::reactive(x = {
+      futureInput <- characterizationDataFiltered()
+      isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+      data <-  promises::promise_all(futureFilteredData = futureInput) %...>%
+        with({
+          futureFilteredData <- futureFilteredData %>%
+            dplyr::filter(.data$domainId %in% input$characterizationDomainFilter) %>% 
+            dplyr::filter(.data$analysisName %in% input$characterizationAnalysisNameFilter)
+          if (nrow(futureFilteredData) > 0) {
+            futureFilteredData <- futureFilteredData %>% 
+              addMetaDataInformationToResults(isPhenotypeLibraryMode = isPhenotypeLibraryMode) 
+          }
+          return(futureFilteredData)
+        })
+    })
+    
   
-  characterizationPrettyCohortFilter <- shiny::reactive(x = {
-    if (nrow(characterizationTablePretty()) > 0) {
-      characterizationPrettyCohortFilter <-
-        cohort %>% dplyr::inner_join(characterizationTablePretty() %>% 
-                                       dplyr::select(.data$cohortId),
-                                     by = "cohortId") %>% 
-        dplyr::pull(.data$cohortName) %>% 
-        unique() %>% 
-        sort()
-      return(characterizationPrettyCohortFilter)
-    } else {
-      return(NULL)
-    }
-  })
-  
-  shiny::observeEvent(eventExpr = {
-    (!is.null(input$tabs) && 
-       input$tabs == "cohortCharacterization" &&
-       isTRUE(rvCharacterizationPrettyTableGenerated()))
-  },
-  handlerExpr = {
-    shinyWidgets::updatePickerInput(
-      session = session,
-      inputId = "characterizationAnalysisNameFilter",
-      choices = characterizationAnalysisNameFilter() %>% sort(),
-      selected = characterizationAnalysisNameFilter()
-    )
-    shinyWidgets::updatePickerInput(
-      session = session,
-      inputId = "characterizationDomainFilter",
-      choices = characterizationDomainFilter() %>% sort(),
-      selected = characterizationDomainFilter()
-    )
-  })
+  output$characterizationTableRaw <-
+    DT::renderDT(expr = {
+      shiny::withProgress(message = 'Rendering characterization data table.', value = 0, {
+        futureInput <- characterizationTableRaw()
+        # if (nrow(data) > 0) {
+        isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        data <-  promises::promise_all(futureFilteredData = futureInput) %...>%
+          with({
+            if (nrow(futureFilteredData) > 0) {
+              futureFilteredData <- futureFilteredData %>% 
+                standardDataTable()
+            }
+            return(futureFilteredData)
+          })
+        # }
+        return(data)
+      })
+    }, server = TRUE)
   
   
   
-  shiny::observeEvent(eventExpr = {
-    (!is.null(input$tabs) && input$tabs == "cohortCharacterization")
-  },
-  handlerExpr = {
-    shinyWidgets::updatePickerInput(
-      session = session,
-      inputId = "characterizationTablePrettyDtDropDownDatabase",
-      choices = characterizationPrettyDatabaseFilter(),
-      selected = characterizationPrettyDatabaseFilter()[1]
-    )
-    shinyWidgets::updatePickerInput(
-      session = session,
-      inputId = "characterizationTablePrettyDtDropDownCohort",
-      choices = characterizationPrettyCohortFilter(),
-      selected = characterizationPrettyCohortFilter()[1]
-    )
-  })
-
+  
+  
+  # shiny::observeEvent(eventExpr = {
+  #   (!is.null(input$tabs) && input$tabs == "cohortCharacterization")
+  # },
+  # handlerExpr = {
+  #   futureInput <- characterizationPrettyDatabaseFilter()
+  #   promises::promise_all(data_df = futureInput) %...>% with({
+  #     shinyWidgets::updatePickerInput(
+  #       session = session,
+  #       inputId = "characterizationTablePrettyDtDropDownDatabase",
+  #       choices = data_df,
+  #       selected = data_df[1]
+  #     )
+  #   })
+  #   
+  #   futureInput <- characterizationPrettyCohortFilter()
+  #   promises::promise_all(data_df = futureInput) %...>% with({
+  #     shinyWidgets::updatePickerInput(
+  #       session = session,
+  #       inputId = "characterizationTablePrettyDtDropDownCohort",
+  #       choices = data_df,
+  #       selected = data_df[1]
+  #     )
+  #   })
+  # })
+  # 
+  # characterizationPrettyDatabaseFilter <- shiny::reactive(x = {
+  #   # if (nrow(characterizationTablePretty()) > 0) {
+  #   futureInput <- characterizationTablePretty()
+  #   result <- promises::promise_all(data_df = futureInput) %...>% with({
+  #     data_df <- data_df$databaseId %>%
+  #       unique() %>%
+  #       sort()
+  #   })
+  #   return(result)
+  #   # } else {
+  #   #   return(NULL)
+  #   # }
+  # })
+  # characterizationPrettyCohortFilter <- shiny::reactive(x = {
+  #   # if (nrow(characterizationTablePretty()) > 0) {
+  #   futureInput <- characterizationTablePretty()
+  #   result <- promises::promise_all(data_df = futureInput) %...>% with({
+  #     data_df <- data_df$cohortName %>%
+  #       unique() %>%
+  #       sort()
+  #   })
+  #   return(result)
+  #   # } else {
+  #   #   return(NULL)
+  #   # }
+  # })
 
   
   # output$characterizationTable <-
@@ -2944,73 +2989,139 @@ shiny::shinyServer(function(input, output, session) {
   # Temporal characterization -----------------------------------------------------------------
   temporalCharacterizationDataFilterOptions <-
     shiny::reactive({
-      data <- temporalCharacterizationDataPreFetch() %>%
-        dplyr::select(.data$timeId,
-                      .data$covariateId) %>%
-        dplyr::distinct() %>%
-        dplyr::left_join(temporalTimeRef, by = "timeId") %>%
-        dplyr::left_join(temporalCovariateRef, by = "covariateId") %>%
-        dplyr::left_join(
-          temporalAnalysisRef %>%
-            dplyr::select(.data$analysisId,
-                          .data$analysisName,
-                          .data$domainId,
-                          .data$isBinary),
-          by = "analysisId"
-        )
+      val <- temporalCharacterizationDataPreFetch()
+      data <- promises::promise_all(prefetchedFutureData = val) %...>%  with({
+        prefetchedFutureData <- prefetchedFutureData %>% 
+          dplyr::select(.data$timeId,
+                        .data$covariateId) %>%
+          dplyr::distinct() %>%
+          dplyr::left_join(temporalTimeRef, by = "timeId") %>%
+          dplyr::left_join(temporalCovariateRef, by = "covariateId") %>%
+          dplyr::left_join(
+            temporalAnalysisRef %>%
+              dplyr::select(.data$analysisId,
+                            .data$analysisName,
+                            .data$domainId,
+                            .data$isBinary),
+            by = "analysisId"
+          )
+      })
+        
       return(data)
     })
   temporalCharacterizationAnalysisNameFilter <- shiny::reactive(x = {
-    if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+    # if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+    val = temporalCharacterizationDataFilterOptions()
       temporalCharacterizationAnalysisNameFilter <-
-        temporalCharacterizationDataFilterOptions()$analysisName %>% unique()
+        promises::promise_all(futureDataFilterOption = val) %...>%  with({
+          futureDataFilterOption <- futureDataFilterOption$analysisName %>% unique() %>% sort()  
+        })
       return(temporalCharacterizationAnalysisNameFilter)
-    } else {
-      return(NULL)
-    }
+    # } else {
+    #   return(NULL)
+    # }
   })
+
+  
   temporalCharacterizationDomainFilter <- shiny::reactive(x = {
-    if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+    # if (nrow(temporalCharacterizationDataFilterOptions()) > 0) {
+    val = temporalCharacterizationDataFilterOptions()
       temporalCharacterizationDomainFilter <-
-        temporalCharacterizationDataFilterOptions()$domainId %>% unique()
+        promises::promise_all(futureDataFilterOption = temporalCharacterizationDataFilterOptions()) %...>%  with({
+          futureDataFilterOption <- futureDataFilterOption$domainId %>% unique()  %>% sort()
+        })
       return(temporalCharacterizationDomainFilter)
-    } else {
-      return(NULL)
+    # } else {
+    #   return(NULL)
+    # }
+  })
+  
+  observeEvent(input$tabs,{
+    if (input$tabs == "temporalCharacterization") {
+      analysisName <- temporalCharacterizationAnalysisNameFilter()
+      promises::promise_all(data_df = analysisName) %...>% with({
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "temporalCharacterizationAnalysisNameFilter",
+          choices = data_df,
+          selected = data_df
+        )
+      })
+      domainName <- temporalCharacterizationDomainFilter()
+      promises::promise_all(data_df = domainName) %...>% with({
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "temporalCharacterizationDomainFilter",
+          choices = data_df,
+          selected = data_df
+        )
+      })  
+    }
+    else if(input$tabs == "cohortCharacterization") {
+      characterizationAnalysisName <- characterizationAnalysisNameFilter()
+      promises::promise_all(data_df = characterizationAnalysisName) %...>% with({
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "characterizationAnalysisNameFilter",
+          choices = data_df,
+          selected = data_df
+        )
+      })
+      
+      characterizationDomainName <- temporalCharacterizationDomainFilter()
+      promises::promise_all(data_df = characterizationDomainName) %...>% with({
+        shinyWidgets::updatePickerInput(
+          session = session,
+          inputId = "characterizationDomainFilter",
+          choices = data_df,
+          selected = data_df
+        )
+      })
+      
     }
   })
   
+ 
+  
   temporalCharacterizationDataFiltered <- shiny::reactive(x = {
     dataFilterOptions <-
-      temporalCharacterizationDataFilterOptions() %>%
-      dplyr::filter(
-        # temporalChoices %in% input$timeIdChoices,
-        analysisName %in% input$temporalCharacterizationAnalysisNameFilter,
-        domainId %in% input$temporalCharacterizationDomainFilter
-      )
+      promises::promise_all(futureDataFilterOption = temporalCharacterizationDataFilterOptions()) %...>%  with({
+        futureDataFilterOption <- futureDataFilterOption %>%
+          dplyr::filter(
+            # temporalChoices %in% input$timeIdChoices,
+            analysisName %in% input$temporalCharacterizationAnalysisNameFilter,
+            domainId %in% input$temporalCharacterizationDomainFilter
+          )
+      })
+      
     filter <- combinationToFilterPreFetchDataBasedOnUserChoiceCohortIdDatabaseId() %>% dplyr::filter(
       .data$cohortId %in% selectedCohortIds(),
       .data$databaseId %in% selectedDatabaseIds()
     )
-    data <- temporalCharacterizationDataPreFetch() %>%
-      dplyr::inner_join(y = filter,
-                        by = c("cohortId", "databaseId")) %>%
-      dplyr::inner_join(y = dataFilterOptions,
-                        by = c("timeId" = "timeId",
-                               "covariateId" = "covariateId")) %>%
-      dplyr::relocate(.data$databaseId,
-                      .data$temporalChoices,
-                      .data$startDay,
-                      .data$endDay,
-                      .data$analysisId,
-                      .data$analysisName,
-                      .data$domainId,
-                      .data$covariateId,
-                      .data$covariateName,
-                      .data$conceptId,
-                      .data$conceptName,
-                      .data$isBinary) %>% 
-      dplyr::arrange(dplyr::desc(.data$mean)) %>% 
-      dplyr::distinct()
+    data <- promises::promise_all(futurePrefetchData = temporalCharacterizationDataPreFetch(), 
+                                  futureFilterOptions = dataFilterOptions) %...>%  
+      with({
+        futurePrefetchData <- futurePrefetchData %>% 
+          dplyr::inner_join(y = filter,
+                            by = c("cohortId", "databaseId")) %>%
+          dplyr::inner_join(y = futureFilterOptions,
+                            by = c("timeId" = "timeId",
+                                   "covariateId" = "covariateId")) %>%
+          dplyr::relocate(.data$databaseId,
+                          .data$temporalChoices,
+                          .data$startDay,
+                          .data$endDay,
+                          .data$analysisId,
+                          .data$analysisName,
+                          .data$domainId,
+                          .data$covariateId,
+                          .data$covariateName,
+                          .data$conceptId,
+                          .data$conceptName,
+                          .data$isBinary) %>% 
+          dplyr::arrange(dplyr::desc(.data$mean)) %>% 
+          dplyr::distinct()
+    })
     return(data)
   })
 
@@ -3018,12 +3129,19 @@ shiny::shinyServer(function(input, output, session) {
   output$temporalCharacterizationTableRaw <-
     DT::renderDT(expr = {
       shiny::withProgress(message = 'Rendering temporal characterization data table.', value = 0, {
-        data <- temporalCharacterizationDataFiltered()
-        if (nrow(data) > 0) {
-          isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
-        }
-        table <- standardDataTable(data = data)
+        # data <- temporalCharacterizationDataFiltered()
+        # if (nrow(data) > 0) {
+        isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
+        data <- promises::promise_all(futureDatafiltered = temporalCharacterizationDataFiltered()) %...>%  
+          with({
+            futureDatafiltered <- futureDatafiltered %>% 
+              addMetaDataInformationToResults(isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>% 
+              standardDataTable()
+          })
+          
+          # data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+        # }
+        # table <- standardDataTable(data = data)
         return(table)
       })
     }, server = TRUE)
@@ -3032,32 +3150,40 @@ shiny::shinyServer(function(input, output, session) {
   output$temporalCharacterizationTable <-
     DT::renderDT(expr = {
       shiny::withProgress(message = 'Rendering temporal characterization data table.', value = 0, {
-        data <- temporalCharacterizationDataFiltered()
-        if (nrow(data) > 0) {
+        # data <- temporalCharacterizationDataFiltered()
+        # if (nrow(data) > 0) {
           isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
-          data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
-        }
-        data <- data %>% 
-          dplyr::select(-.data$sd) %>% 
-          dplyr::rename('percent' = .data$mean) %>% 
-          dplyr::select(-.data$timeId) %>% 
-          dplyr::distinct()
-        colnamesData <- colnames(data)
-        colnamesData <- colnamesData[stringr::str_detect(string = colnamesData,
-                                                          pattern = "mean|sd|percent|temporalChoices|Day", 
-                                                          negate = TRUE)]
-        data <- data %>% 
-          dplyr::group_by(dplyr::across(.cols = colnamesData)) %>% 
-          dplyr::arrange(.data$startDay, .data$endDay, by_group = TRUE) %>% 
-          dplyr::ungroup()
+          # data <- addMetaDataInformationToResults(data = data, isPhenotypeLibraryMode = isPhenotypeLibraryMode)
+        # }
+          data <- promises::promise_all(futureDatafiltered = temporalCharacterizationDataFiltered()) %...>%  
+            with({
+              futureDatafiltered <- futureDatafiltered %>% 
+                # addMetaDataInformationToResults(isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>% 
+                # standardDataTable() %>% 
+                dplyr::select(-.data$sd) %>% 
+                dplyr::rename('percent' = .data$mean) %>% 
+                dplyr::select(-.data$timeId) %>% 
+                dplyr::distinct()
+              colnamesData <- colnames(futureDatafiltered)
+              colnamesData <- colnamesData[stringr::str_detect(string = colnamesData,
+                                                               pattern = "mean|sd|percent|temporalChoices|Day", 
+                                                               negate = TRUE)]
+              futureDatafiltered <- futureDatafiltered %>% 
+                dplyr::group_by(dplyr::across(.cols = colnamesData)) %>% 
+                dplyr::arrange(.data$startDay, .data$endDay, by_group = TRUE) %>% 
+                dplyr::ungroup()
+              
+              futureDatafiltered <- futureDatafiltered %>%
+                dplyr::distinct() %>% 
+                tidyr::pivot_wider(
+                  id_cols = colnamesData,
+                  names_from = .data$temporalChoices,
+                  values_from = .data$percent
+              ) %>% 
+                standardDataTable()
+            })
         
-        data <- tidyr::pivot_wider(data = data %>% dplyr::distinct(),
-                                   id_cols = colnamesData,
-                                   names_from = .data$temporalChoices,
-                                   values_from = .data$percent
-                                   )
-        table <- standardDataTable(data = data)
-        return(table)
+        return(data)
       })
     }, server = TRUE)
 
@@ -3067,24 +3193,24 @@ shiny::shinyServer(function(input, output, session) {
     return(text)
   })
   
-  shiny::reactive(x = {
-    shinyWidgets::updatePickerInput(
-      session = session,
-      inputId = "temporalCharacterizationPlotCohorts",
-      choices = temporalCharacterizationDataFilteredPlotCompareCohorts(),
-      selected = temporalCharacterizationDataFilteredPlotCompareCohorts()[c(1,2)]
-    )
-  })
+  # shiny::reactive(x = {
+  #   shinyWidgets::updatePickerInput(
+  #     session = session,
+  #     inputId = "temporalCharacterizationPlotCohorts",
+  #     choices = temporalCharacterizationDataFilteredPlotCompareCohorts(),
+  #     selected = temporalCharacterizationDataFilteredPlotCompareCohorts()[c(1,2)]
+  #   )
+  # })
   
-  temporalCharacterizationDataFilteredForPlotting <- shiny::reactive(x = {
-    if (nrow(temporalCharacterizationDataFiltered()) > 0) {
-      data <- temporalCharacterizationDataFiltered %>% 
-        dplyr::filter(.data$cohortId %in% input$temporalCharacterizationPlotCohorts)
-      return(data)
-    } else {
-      return(NULL)
-    }
-  })
+  # temporalCharacterizationDataFilteredForPlotting <- shiny::reactive(x = {
+  #   # if (nrow(temporalCharacterizationDataFiltered()) > 0) {
+  #     data <- temporalCharacterizationDataFiltered() %>% 
+  #       dplyr::filter(.data$cohortId %in% input$temporalCharacterizationPlotCohorts)
+  #     return(data)
+  #   # } else {
+  #   #   return(NULL)
+  #   # }
+  # })
   
   #
   #
