@@ -204,10 +204,20 @@ server <- shiny::shinyServer(function(input, output, session) {
       return(NULL)
     } else{
       
-      nb10 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.075 & plpResult()$performanceEvaluation$nbSummary$time==10]
-      nb5 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.038 & plpResult()$performanceEvaluation$nbSummary$time==5]
-      nb3 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.023 & plpResult()$performanceEvaluation$nbSummary$time==3]
-      nb2 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.015 & plpResult()$performanceEvaluation$nbSummary$time==2]
+      ind <- plpResult()$performanceEvaluation$nbSummary$time==10
+      nb10 <- plpResult()$performanceEvaluation$nbSummary$p[ind][which.min(abs(plpResult()$performanceEvaluation$nbSummary$threshold[ind]-0.075))]
+      ind <- plpResult()$performanceEvaluation$nbSummary$time==5
+      nb5 <- plpResult()$performanceEvaluation$nbSummary$p[ind][which.min(abs(plpResult()$performanceEvaluation$nbSummary$threshold[ind]-0.038))]
+      ind <- plpResult()$performanceEvaluation$nbSummary$time==3
+      nb3 <- plpResult()$performanceEvaluation$nbSummary$p[ind][which.min(abs(plpResult()$performanceEvaluation$nbSummary$threshold[ind]-0.023))]
+      ind <- plpResult()$performanceEvaluation$nbSummary$time==2
+      nb2 <- plpResult()$performanceEvaluation$nbSummary$p[ind][which.min(abs(plpResult()$performanceEvaluation$nbSummary$threshold[ind]-0.015))]
+      
+      
+      #nb10 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.075 & plpResult()$performanceEvaluation$nbSummary$time==10]
+      #nb5 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.038 & plpResult()$performanceEvaluation$nbSummary$time==5]
+      #nb3 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.023 & plpResult()$performanceEvaluation$nbSummary$time==3]
+      #nb2 <- plpResult()$performanceEvaluation$nbSummary$p[plpResult()$performanceEvaluation$nbSummary$threshold==0.015 & plpResult()$performanceEvaluation$nbSummary$time==2]
       
       
     }
