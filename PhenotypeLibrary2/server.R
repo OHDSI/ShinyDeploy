@@ -2053,7 +2053,7 @@ shiny::shinyServer(function(input, output, session) {
                              names_from = .data$databaseId)
       } else {
         data <- data %>% 
-          dplyr::select(-.data$cohortSubjects) %>% 
+          dplyr::select(-.data$cohortEntries) %>% 
           tidyr::pivot_wider(id_cols = c(.data$cohortId, .data$cohortName),
                              values_from = .data$cohortSubjects,
                              names_from = .data$databaseId)
@@ -2474,7 +2474,11 @@ shiny::shinyServer(function(input, output, session) {
       )
       data <- inclusionRuleTablePreFetch() %>%
         dplyr::inner_join(y = filter,
-                          by = c("cohortId", "databaseId"))
+                          by = c("cohortId", "databaseId")) %>% 
+        dplyr::mutate(meetPercent = .data$meetSubjects/.data$totalSubjects,
+                      gainPercent = .data$gainSubjects/.data$totalSubjects,
+                      remainPercent = .data$remainSubjects/.data$totalSubjects) %>% 
+        dplyr::arrange(dplyr::desc(.data$remainPercent))
     } else {
       data <- dplyr::tibble()
     }
@@ -2530,9 +2534,19 @@ shiny::shinyServer(function(input, output, session) {
       isPhenotypeLibraryMode <- exists("phenotypeDescription") && nrow(phenotypeDescription) > 0
       data <-
         addMetaDataInformationToResults(data = indexEventBreakDownDataFiltered(), 
-                                        isPhenotypeLibraryMode = isPhenotypeLibraryMode) %>% 
-        dplyr::mutate(percentEntries =  round(x = (.data$conceptCount/.data$cohortEntries)*100, digits = 2),
-                      percentSubjects =  round(x = (.data$subjectCount/.data$cohortSubjects)*100, digits = 2))
+                                        isPhenotypeLibraryMode = isPhenotypeLibraryMode) 
+      if ('conceptCount' %in% colnames(data)) {
+        data <- data %>% 
+          dplyr::mutate(percentEntries =  round(x = (.data$conceptCount/.data$cohortEntries)*100, digits = 2)) %>% 
+          dplyr::arrange(dplyr::desc(.data$percentEntries))
+      }
+      if ('subjectCount' %in% colnames(data)) {
+        data <- data %>% 
+          dplyr::mutate(percentSubjects =  round(x = (.data$subjectCount/.data$cohortEntries)*100, digits = 2))
+      } else {
+        data <- data %>% 
+          dplyr::mutate(percentSubjects = NA)
+      }
       
       if (input$pivotIndexEventBreakDown == 'None') {
         data <- data %>% 
@@ -2563,7 +2577,6 @@ shiny::shinyServer(function(input, output, session) {
           data <- pivotIndexBreakDownData(data = data, variable = 'percentSubjects', phenotypeLibraryMode = FALSE)
         }
       }
-      
       dataTable <- standardDataTable(data)
     return(dataTable)
     })
@@ -2835,7 +2848,7 @@ shiny::shinyServer(function(input, output, session) {
           #   dplyr::filter(.data$databaseId %in% input$characterizationTablePrettyDtDropDownDatabase) %>%
           #   dplyr::filter(.data$cohortId %in% input$characterizationTablePrettyDtDropDownCohort)
         }
-          table <- standardDataTable(data = data)
+          table <- standardDataTable(data = data, pageLength = -1)
           return(table)
         }
       })

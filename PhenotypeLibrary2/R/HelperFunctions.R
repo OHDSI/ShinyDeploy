@@ -8,7 +8,8 @@ cohortReference <- function(outputId) {
 standardDataTable <- function(data, 
                               selectionMode = "single",
                               selected = c(1),
-                              searching = TRUE) {
+                              searching = TRUE,
+                              pageLength = 10) {
   
   dataTableFilter =
     list(position = 'top',
@@ -17,7 +18,7 @@ standardDataTable <- function(data,
   
   dataTableOption =
     list(
-      pageLength = 10,
+      pageLength = pageLength,
       lengthMenu = list(c(5, 10, 20, -1), c("5", "10", "20", "All")),
       lengthChange = TRUE,
       searching = searching,
@@ -287,19 +288,23 @@ pivotIndexBreakDownData <- function(data, variable, phenotypeLibraryMode = TRUE)
   pivotByPhenotypeCohort <- c('phenotypeId', 'phenotypeName', 'cohortId', 'cohortName', 'conceptId', 'conceptName')
   pivotByCohort <- c('cohortId', 'cohortName', 'conceptId', 'conceptName')
   if (phenotypeLibraryMode) {
-    data <- data %>%
-      dplyr::select(pivotByPhenotypeCohort, 'databaseId', variable) %>%
-      tidyr::pivot_wider(id_cols = pivotByPhenotypeCohort,
-                         values_from = variable,
-                         names_from = 'databaseId',
-                         values_fill = 0)
+    if (nrow(data) > 0) {
+      data <- data %>%
+        dplyr::select(dplyr::all_of(pivotByPhenotypeCohort), 'databaseId', dplyr::all_of(variable)) %>%
+        tidyr::pivot_wider(id_cols = pivotByPhenotypeCohort,
+                           values_from = dplyr::all_of(variable),
+                           names_from = 'databaseId',
+                           values_fill = 0)
+    } else {dplyr::tibble('no data')}
   } else {
+    if (nrow(data) > 0) {
     data <- data %>%
-      dplyr::select(pivotByCohort, 'databaseId', variable) %>%
+      dplyr::select(dplyr::all_of(pivotByCohort), 'databaseId', dplyr::all_of(variable)) %>%
       tidyr::pivot_wider(id_cols = pivotByCohort,
-                         values_from = variable,
+                         values_from = dplyr::all_of(variable),
                          names_from = 'databaseId',
                          values_fill = 0)
+    } else {dplyr::tibble('no data')}
   }
   return(data)
 }

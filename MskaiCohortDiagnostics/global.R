@@ -309,7 +309,21 @@ if (isValidConnection && databaseMode && !foundPremergedFile) {
       )
     }
   }
-
+  for (table in c("recommender_set")) {
+    if (table %in% resultsTablesOnServer &&
+        !exists(x = snakeCaseToCamelCase(string = table)) &&
+        !isEmpty(
+          connection = connectionPool,
+          tableName = table,
+          resultsDatabaseSchema = 'concept_prevalence'
+        )) {
+      assign(
+        x = snakeCaseToCamelCase(table),
+        value = dplyr::tibble(),
+        envir = .GlobalEnv
+      )
+    }
+  }
   dataSource <-
     createDatabaseDataSource(
       connection = connectionPool,
@@ -385,13 +399,11 @@ if (exists("cohort")) {
     }
     cohortMetaData <- dplyr::bind_rows(cohortMetaData) %>%
       readr::type_convert(col_types = readr::cols())
-    if ('referent_concept_id' %in% colnames(cohortMetaData)) {
+    if ('referentConceptId' %in% colnames(cohortMetaData)) {
       referentConceptIds <-
         c(referentConceptIds,
-          cohortMetaData$referent_concept_id) %>% unique()
+          cohortMetaData$referentConceptId) %>% unique()
     }
-    colnames(cohortMetaData) <-
-      snakeCaseToCamelCase(colnames(cohortMetaData))
   }
 } else {
   stop("Cohort table not found in data source")
@@ -587,4 +599,3 @@ if (exists(x = "phenotypeDescription")) {
 } else {
   appTitle <- cohortDiagnosticModeDefaultTitle
 }
-

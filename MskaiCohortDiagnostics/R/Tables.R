@@ -2,6 +2,13 @@ library(magrittr)
 
 prepareTable1 <- function(covariates,
                           pathToCsv = "Table1Specs.csv") {
+  if ('conceptName' %in% colnames(covariates)) {
+    covariates <- covariates %>% 
+      dplyr::mutate(covariateName = conceptName)
+  }
+  # remove negative values that are created because of minCellCount
+  covariates <- covariates %>% 
+    dplyr::filter(.data$mean > 0)
   space <- "&nbsp;"
   specifications <- readr::read_csv(
     file = pathToCsv,

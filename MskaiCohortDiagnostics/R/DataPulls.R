@@ -13,7 +13,7 @@ loadRecommenderStandardFromDatabase <-
         renderTranslateQuerySql(
           connection = dataSource$connection,
           sql = sql,
-          results_database_schema = 'concept_prevalence',
+          # results_database_schema = dataSource$resultsDatabaseSchema,
           vocabulary_database_schema = dataSource$vocabularyDatabaseSchema,
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE
@@ -40,7 +40,7 @@ loadRecommenderSourceFromDatabase <-
         renderTranslateQuerySql(
           connection = dataSource$connection,
           sql = sql,
-          results_database_schema = 'concept_prevalence',
+          # results_database_schema = dataSource$resultsDatabaseSchema,
           vocabulary_database_schema = dataSource$vocabularyDatabaseSchema,
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE
@@ -246,8 +246,8 @@ resolveConceptSetExpressionUsingDatabase <- function(dataSource = .GlobalEnv,
   # get all conceptIds (as dataframe) that are excluded in concept set expression with descendants
   excludedConceptIdsWithDescendants <- descendantConcepts %>% 
     dplyr::filter(.data$ancestorConceptId %in% (conceptSetExpressionTable %>% 
-                                                  dplyr::filter(.data$isExcluded == TRUE && 
-                                                                  .data$includeDescendants == TRUE) %>% 
+                                                  dplyr::filter(.data$isExcluded == TRUE) %>% 
+                                                  dplyr::filter(.data$includeDescendants == TRUE) %>% 
                                                   dplyr::pull(.data$conceptId)))
   
   # conceptIds in conceptSetExpression table
@@ -403,4 +403,26 @@ getDetailsForConceptIds <- function(dataSource = dataSource,
     ) %>%  
     dplyr::arrange(1)
   return(data)
+}
+
+
+getConceptPrevalenceCountsForConceptIds <- function(dataSource = .GlobalEnv,
+                                                    conceptIdsList) {
+  
+  sql <- "select *
+          from concept_prevalence.cp_master
+          where concept_id in (@concept_list);"
+  if (length(conceptIdsList) > 0) {
+    data <-
+      renderTranslateQuerySql(
+        connection = dataSource$connection,
+        concept_list = conceptIdsList,
+        sql = sql, 
+        snakeCaseToCamelCase = TRUE
+      ) %>%  
+      dplyr::arrange(1)
+    return(data) 
+  } else {
+    return(dplyr::tibble())
+  }
 }

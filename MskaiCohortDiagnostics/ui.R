@@ -169,232 +169,8 @@ bodyTabItems <- shinydashboard::tabItems(
                                       inline = TRUE
                                     )
                                   ),
-                                  column(
-                                    6,
-                                    conditionalPanel(
-                                      "output.cohortSearchResultsCountOfSelected > 0&input.compareCohorts=='No Comparision'",
-                                      shiny::tabsetPanel(
-                                        id = "cohortDetails",
-                                        type = "tab",
-                                        shiny::tabPanel(title = "Description",
-                                                        value = "descriptionFirst",
-                                                        copyToClipboardButton(toCopyId = "cohortDetailsTextFirst", 
-                                                                              style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                        shiny::htmlOutput("cohortDetailsTextFirst")),
-                                          shiny::tabPanel(
-                                            value = "cohortDefinitionFirst",
-                                            title = "Cohort definition",
-                                            copyToClipboardButton(toCopyId = "cohortDefinitionDetailsFirst", 
-                                                                  style = "margin-top: 5px; margin-bottom: 5px;"),
-                                            shiny::htmlOutput(outputId = "cohortDefinitionDetailsFirst")
-                                          ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionConceptsetFirst",
-                                          title = "Concept Sets",
-                                          DT::DTOutput(outputId = "cohortDefinitionConceptSetsTableFirst"),
-                                          shiny::conditionalPanel(
-                                            condition = "output.cohortConceptSetsSelectedFirstRowIsSelected == true",
-                                            shiny::tabsetPanel(
-                                              id = "conceptsetExpressionTabFirst",
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionFirst",
-                                                title = "Expression",
-                                                DT::DTOutput(outputId = "cohortConceptsetExpressionDataTableFirst")
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionJsonFirst",
-                                                title = "Json",
-                                                copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonFirst", 
-                                                                      style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonFirst"),
-                                                tags$head(
-                                                  tags$style(
-                                                    "#cohortConceptsetExpressionJsonFirst { max-height:400px};"
-                                                  )
-                                                )
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionResoledFirst",
-                                                title = "Resolved",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Standard",
-                                                    DT::DTOutput(outputId = "resolvedConceptSetExpressionDtStandardFirst")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Mapped",
-                                                    DT::DTOutput(outputId = "resolvedConceptSetExpressionDtMappedFirst")
-                                                  )),
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionOptimizedFirst",
-                                                title = "Optimized",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Retained",
-                                                    DT::DTOutput(outputId = "optimizedConceptSetExpressionDtRetainedFirst")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Removed",
-                                                    DT::DTOutput(outputId = "optimizedConceptSetExpressionDtRemovedFirst")
-                                                  )),
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionRecommendedFirst",
-                                                title = "Recommended",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Standard",
-                                                    DT::DTOutput(outputId = "recommendedConceptSetExpressionDtStandardFirst")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Non Standard",
-                                                    DT::DTOutput(outputId = "recommendedConceptSetExpressionDtSourceFirst")
-                                                  )),
-                                              )
-                                            )
-                                          )
-                                        ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionJsonFirst",
-                                          title = "JSON",
-                                          copyToClipboardButton(toCopyId = "cohortDefinitionJsonFirst", 
-                                                                style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionJsonFirst"),
-                                          tags$head(
-                                            tags$style(
-                                              "#cohortDefinitionJsonFirst { max-height:400px};"
-                                            )
-                                          )
-                                        ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionSqlFirst",
-                                          title = "SQL",
-                                          copyToClipboardButton(toCopyId = "cohortDefinitionSqlFirst", 
-                                                                style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput(outputId = "cohortDefinitionSqlFirst"),
-                                          tags$head(
-                                            tags$style(
-                                              "#cohortDefinitionSqlFirst { max-height:400px};"
-                                            )
-                                          )
-                                        )
-                                      )
-                                    )
-                                  ),
-                                  column(
-                                    6,
-                                    conditionalPanel(
-                                      "output.cohortSearchResultsCountOfSelected == 2&input.compareCohorts=='No Comparision'",
-                                      shiny::tabsetPanel(
-                                        id = "cohortDetailsSecond",
-                                        type = "tab",
-                                        shiny::tabPanel(title = "Description",
-                                                        value = "descriptionSecond",
-                                                        copyToClipboardButton(toCopyId = "cohortDetailsTextSecond", 
-                                                                              style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                        shiny::htmlOutput(outputId = "cohortDetailsTextSecond")),
-                                          shiny::tabPanel(
-                                            value = "cohortDefinitionSecond",
-                                            title = "Cohort definition",
-                                            copyToClipboardButton(toCopyId = "cohortDefinitionDetailsSecond", 
-                                                                  style = "margin-top: 5px; margin-bottom: 5px;"),
-                                            shiny::htmlOutput(outputId = "cohortDefinitionDetailsSecond")
-                                          ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionConceptsetSecond",
-                                          title = "Concept Sets",
-                                          DT::DTOutput(outputId = "cohortDefinitionConceptSetsTableSecond"),
-                                          shiny::conditionalPanel(
-                                            condition = "output.cohortConceptSetsSelectedSecondRowIsSelected == true",
-                                            shiny::tabsetPanel(
-                                              id = "conceptsetExpressionTabSecond",
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionSecond",
-                                                title = "Expression",
-                                                DT::DTOutput(outputId = "cohortConceptsetExpressionDataTableSecond")
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptetExpressionJsonSecond",
-                                                title = "Json",
-                                                copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJsonSecond", 
-                                                                      style = "margin-top: 5px; margin-bottom: 5px;"),
-                                                shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJsonSecond"),
-                                                tags$head(
-                                                  tags$style(
-                                                    "#cohortConceptsetExpressionJsonSecond { max-height:400px};"
-                                                  )
-                                                )
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionResolvedSecond",
-                                                title = "Resolved",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Standard",
-                                                    DT::DTOutput(outputId = "resolvedConceptSetExpressionDtStandardSecond")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Mapped",
-                                                    DT::DTOutput(outputId = "resolvedConceptSetExpressionDtMappedSecond")
-                                                  )),
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionOptimizedSecond",
-                                                title = "Optimized",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Retained",
-                                                    DT::DTOutput(outputId = "optimizedConceptSetExpressionDtRetainedSecond")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Removed",
-                                                    DT::DTOutput(outputId = "optimizedConceptSetExpressionDtRemovedSecond")
-                                                  )),
-                                              ),
-                                              shiny::tabPanel(
-                                                value = "conceptsetExpressionRecommendedSecond",
-                                                title = "Recommended",
-                                                shiny::tabsetPanel(
-                                                  shiny::tabPanel(
-                                                    title = "Standard",
-                                                    DT::DTOutput(outputId = "recommendedConceptSetExpressionDtStandardSecond")
-                                                  ),
-                                                  shiny::tabPanel(
-                                                    title = "Non Standard",
-                                                    DT::DTOutput(outputId = "recommendedConceptSetExpressionDtSourceSecond")
-                                                  )),
-                                              )
-                                            )
-                                          )
-                                        ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionJsonSecond",
-                                          title = "JSON",
-                                          copyToClipboardButton(toCopyId = "cohortDefinitionJsonSecond", 
-                                                                style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionJsonSecond"),
-                                          tags$head(
-                                            tags$style(
-                                              "#cohortDefinitionJsonSecond { max-height:400px};"
-                                            )
-                                          )
-                                        ),
-                                        shiny::tabPanel(
-                                          value = "cohortDefinitionSqlSecond",
-                                          title = "SQL",
-                                          copyToClipboardButton(toCopyId = "cohortDefinitionSqlSecond", 
-                                                                style = "margin-top: 5px; margin-bottom: 5px;"),
-                                          shiny::verbatimTextOutput("cohortDefinitionSqlSecond"),
-                                          tags$head(
-                                            tags$style(
-                                              "#cohortDefinitionSqlSecond { max-height:400px};"
-                                            )
-                                          )
-                                        )
-                                      )
-                                    )
-                                  ),
+                                  shiny::uiOutput(outputId = "dynamicUIGenerationCohortDetailsOne"),
+                                  shiny::uiOutput(outputId = "dynamicUIGenerationCohortDetailsTwo"),
                                   column(
                                     12,
                                     conditionalPanel(
@@ -605,6 +381,18 @@ bodyTabItems <- shinydashboard::tabItems(
   ),
   shinydashboard::tabItem(
     tabName = "indexEventBreakdown",
+    shiny::radioButtons(
+      inputId = "pivotIndexEventBreakDown",
+      label = "Pivot data over data sources with value from",
+      selected = "Percent entries",
+      inline = TRUE,
+      choices = c(
+        "None",
+        "Concept count",
+        "Subject count",
+        "Percent entries",
+        "Percent persons"
+      )),
     shinydashboard::box(
       title = "Data",
       width = NULL,
@@ -640,30 +428,6 @@ bodyTabItems <- shinydashboard::tabItems(
   shinydashboard::tabItem(
     tabName = "cohortCharacterization",
     shinydashboard::box(
-      title = NULL,
-      width = NULL,
-      status = "primary",
-      collapsible = FALSE,
-      shiny::column(width = 6,
-                    shinyWidgets::pickerInput(
-                      inputId = "characterizationAnalysisNameFilter",
-                      label = "Analysis Choices",
-                      choices = NULL,
-                      multiple = TRUE,
-                      inline = FALSE,
-                      options = shinyWidgetsPickerOptions
-                    )),
-      shiny::column(width = 6,
-                    shinyWidgets::pickerInput(
-                      inputId = "characterizationDomainFilter",
-                      label = "Domain Choices",
-                      choices = NULL,
-                      multiple = TRUE,
-                      inline = FALSE,
-                      options = shinyWidgetsPickerOptions
-                    ))
-    ),
-    shinydashboard::box(
       title = "Data (Pretty)",
       width = NULL,
       status = "primary",
@@ -672,7 +436,7 @@ bodyTabItems <- shinydashboard::tabItems(
       shiny::column(width = 4,
                     shinyWidgets::pickerInput(
                       inputId = "characterizationTablePrettyDtDropDownDatabase",
-                      label = "Database",
+                      label = "Database (not working)",
                       choices = NULL,
                       multiple = FALSE,
                       inline = FALSE,
@@ -681,7 +445,7 @@ bodyTabItems <- shinydashboard::tabItems(
       shiny::column(width = 4,
                     shinyWidgets::pickerInput(
                       inputId = "characterizationTablePrettyDtDropDownCohort",
-                      label = "Cohort",
+                      label = "Cohort (not working)",
                       choices = NULL,
                       multiple = FALSE,
                       inline = FALSE,
@@ -696,6 +460,30 @@ bodyTabItems <- shinydashboard::tabItems(
       status = "primary",
       collapsible = TRUE,
       collapsed = TRUE,
+      shinydashboard::box(
+        title = NULL,
+        width = NULL,
+        status = "primary",
+        collapsible = FALSE,
+        shiny::column(width = 6,
+                      shinyWidgets::pickerInput(
+                        inputId = "characterizationAnalysisNameFilter",
+                        label = "Analysis Choices",
+                        choices = NULL,
+                        multiple = TRUE,
+                        inline = FALSE,
+                        options = shinyWidgetsPickerOptions
+                      )),
+        shiny::column(width = 6,
+                      shinyWidgets::pickerInput(
+                        inputId = "characterizationDomainFilter",
+                        label = "Domain Choices",
+                        choices = NULL,
+                        multiple = TRUE,
+                        inline = FALSE,
+                        options = shinyWidgetsPickerOptions
+                      ))
+      ),
       DT::DTOutput("characterizationTableRaw")
     )
   ),

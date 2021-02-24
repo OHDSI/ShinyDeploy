@@ -384,7 +384,7 @@ bodyTabItems <- shinydashboard::tabItems(
     shiny::radioButtons(
       inputId = "pivotIndexEventBreakDown",
       label = "Pivot data over data sources with value from",
-      selected = "Subject count",
+      selected = "Percent entries",
       inline = TRUE,
       choices = c(
         "None",

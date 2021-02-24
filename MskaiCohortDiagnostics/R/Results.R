@@ -216,15 +216,13 @@ getIndexEventBreakdown <- function(dataSource = .GlobalEnv,
     dplyr::left_join(y = cohortCounts,
                      by = c("cohortId" = "cohortId",
                             "databaseId" = "databaseId")) %>% 
-    dplyr::mutate(percent = .data$conceptCount/.data$cohortEntries) %>%
     dplyr::relocate(
       .data$databaseId,
       .data$cohortId,
       .data$conceptId,
       .data$conceptName,
       .data$conceptCount
-    ) %>% 
-    dplyr::select(-.data$cohortEntries)
+    )
   return(data)
 }
 
