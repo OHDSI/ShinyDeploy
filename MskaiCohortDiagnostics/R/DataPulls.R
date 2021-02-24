@@ -13,7 +13,7 @@ loadRecommenderStandardFromDatabase <-
         renderTranslateQuerySql(
           connection = dataSource$connection,
           sql = sql,
-          results_database_schema = dataSource$resultsDatabaseSchema,
+          results_database_schema = 'concept_prevalence',
           vocabulary_database_schema = dataSource$vocabularyDatabaseSchema,
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE
@@ -40,7 +40,7 @@ loadRecommenderSourceFromDatabase <-
         renderTranslateQuerySql(
           connection = dataSource$connection,
           sql = sql,
-          results_database_schema = dataSource$resultsDatabaseSchema,
+          results_database_schema = 'concept_prevalence',
           vocabulary_database_schema = dataSource$vocabularyDatabaseSchema,
           source_list = conceptList,
           snakeCaseToCamelCase = TRUE

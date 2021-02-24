@@ -294,7 +294,7 @@ if (isValidConnection && databaseMode && !foundPremergedFile) {
                                            units = "secs"))), 
                     "seconds."))
   
-  for (table in c(dataModelSpecifications$tableName, "recommender_set")) {
+  for (table in c(dataModelSpecifications$tableName)) {
     if (table %in% resultsTablesOnServer &&
         !exists(x = snakeCaseToCamelCase(string = table)) &&
         !isEmpty(
@@ -309,6 +309,7 @@ if (isValidConnection && databaseMode && !foundPremergedFile) {
       )
     }
   }
+
   dataSource <-
     createDatabaseDataSource(
       connection = connectionPool,
