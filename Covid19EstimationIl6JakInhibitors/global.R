@@ -59,4 +59,22 @@ exposureOfInterest <- exposureOfInterest[!duplicated(exposureOfInterest), ]
 cohortMethodAnalysis$definition <- NULL
 cohortMethodAnalysis <- cohortMethodAnalysis[!duplicated(cohortMethodAnalysis), ]
 
+unblind <-
+  (cohortMethodResult$targetId == 31 & cohortMethodResult$comparatorId == 32 & cohortMethodResult$databaseId == "Open Claims") | # sari vs barci
+  (cohortMethodResult$targetId == 29 & cohortMethodResult$comparatorId == 30 & cohortMethodResult$databaseId == "Open Claims")   # toci vs adalim
+
+cohortMethodResult$rr[!unblind] <- NA
+cohortMethodResult$ci95Ub[!unblind] <- NA
+cohortMethodResult$ci95Lb[!unblind] <- NA
+cohortMethodResult$logRr[!unblind] <- NA
+cohortMethodResult$seLogRr[!unblind] <- NA
+cohortMethodResult$p[!unblind] <- NA
+cohortMethodResult$calibratedRr[!unblind] <- NA
+cohortMethodResult$calibratedCi95Ub[!unblind] <- NA
+cohortMethodResult$calibratedCi95Lb[!unblind] <- NA
+cohortMethodResult$calibratedLogRr[!unblind] <- NA
+cohortMethodResult$calibratedSeLogRr[!unblind] <- NA
+cohortMethodResult$calibratedP[!unblind] <- NA
+
+
 

@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(style = "width:1500px;",
-            titlePanel(paste("Comparative Risk Assessment of Severe Uterine Bleeding Following Exposure to Direct Oral Anticoagulants: A Network Study Across 4 US Observational Databases", if(blind) "***Blinded***" else "")),
+            titlePanel(paste("Comparative Risk Assessment of Severe Uterine Bleeding Following Exposure to Direct Oral Anticoagulants: A Network Study Across Four Observational Databases in the USA", if(blind) "***Blinded***" else "")),
             tags$head(tags$style(type = "text/css", "
              #loadmessage {
                                  position: fixed;
@@ -25,7 +25,7 @@ shinyUI(
             tabsetPanel(id = "mainTabsetPanel",
                         tabPanel("About",
                                  HTML("<br/>"),
-                                 div(p("These research results are from a retrospective, real-world, observational study. This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to a full manuscript currently in development for submission to a peer-reviewed journal. During manuscript development and the subsequent review period, these results are considered under embargo and should not be disclosed without explicit permission and consent from the authors."), style="border: 1px solid black; padding: 5px;"),
+                                 div(p("These research results are from a retrospective, real-world, observational study assessing the risk of severe uterine bleeding among women newly exposed to direct oral anticoagulants or warfarin. This web-based application provides an interactive platform to explore all analysis results generated as part of this study, as a supplement to the full manuscript published in the journal Drug Safety."), style="border: 1px solid black; padding: 5px;"),
                                  HTML("<br/>"),
                                  HTML("<p><strong>Abstract:</strong></p>"),
                                  HTML("<p><strong>Introduction: </strong>Antithrombotic therapies are associated with increased bleeding risk. Abnormal uterine bleeding data have been reported in clinical trials of patients with venous thromboembolism (VTE), but data are limited for patients with atrial fibrillation (AF).</p>"),
@@ -40,6 +40,7 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
+								                 HTML("<li>The full manuscript is available at: <a href=\"https://link.springer.com/article/10.1007/s40264-021-01060-4\">https://link.springer.com/article/10.1007/s40264-021-01060-4</a></li>"),
                                  HTML("<li>The study was registered ClinicalTrials.gov: <a href=\"https://clinicaltrials.gov/ct2/show/NCT04394234\">https://clinicaltrials.gov/ct2/show/NCT04394234</a></li>"),
                                  HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/DoacsWarfarinSub/tree/master/Protocol\">https://github.com/ohdsi-studies/DoacsWarfarinSub/tree/master/Protocol</a></li>"),
                                  HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/DoacsWarfarinSub/tree/master/DoacsWarfarinSub\">https://github.com/ohdsi-studies/DoacsWarfarinSub/tree/master/DoacsWarfarinSub</a></li>"),
