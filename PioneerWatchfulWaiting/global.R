@@ -28,17 +28,7 @@ usingDbStorage <- function() {
 
 # Data Loading Priority: Database, "/data" folder, S3
 if (!exists("shinySettings")) {
-  if (Sys.getenv("shinydbServer") != "" && Sys.getenv("charybdisdbSchema") != "") {
-    shinySettings <- list(storage = "database", 
-                          connectionDetails = DatabaseConnector::createConnectionDetails(dbms = "postgresql",
-                                                                                         server = paste(Sys.getenv("shinydbServer"),
-                                                                                                        Sys.getenv("shinydbDatabase"),
-                                                                                                        sep = "/"),
-                                                                                         port = Sys.getenv("shinydbPort"),
-                                                                                         user = Sys.getenv("charybdisdbUser"),
-                                                                                         password = Sys.getenv("charybdisdbPw"))
-    )
-  } else if (file.exists("data")) {
+ if (file.exists("data")) {
     shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
