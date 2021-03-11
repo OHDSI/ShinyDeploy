@@ -14,7 +14,3 @@ Characterizing prostate cancer and watchful waiting (PIONEER)
 
 
 **Cohort Diagnostics:**<br>
-- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagCovid/">COVID cohorts</a>
-- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagInfluenza/">Influenza cohorts</a>
-- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagStrata/">Strata cohorts</a>
-- <a href="https://data.ohdsi.org/Covid19CharacterizationCharybdisDiagFeature/">Feature cohorts</a>
