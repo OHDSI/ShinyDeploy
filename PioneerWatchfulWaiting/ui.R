@@ -25,9 +25,9 @@ dashboardPage(
   dashboardHeader(
     title = "PIONEER",
     tags$li(div(img(src = 'logo.png',
-                    title = "Characterizing Health Associated Risks, and Your Baseline Disease In SARS-COV-2", 
-                    height = "40px", 
-                    width = "40px"),
+                    title = "OHDSI", 
+                    height = "60px", 
+                    width = "200px"),
                 style = "padding-top:0px; padding-bottom:0px;"),
             class = "dropdown")    
     ),  
