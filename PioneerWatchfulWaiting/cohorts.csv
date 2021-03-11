@@ -1,0 +1,34 @@
+cohortId,name,atlasId,circeDef
+101,[PIONEER T01] new PCa,101,101
+102,[PIONEER T02] new PCa actively treated,102,102
+103,[PIONEER T03] new PCa conservative management,103,103
+104,[PIONEER T04] new PCa treatment post conservative management,104,104
+301,[PIONEER S01] High-Risk,301,301
+302,[PIONEER S02] Low-Risk,302,302
+303,[PIONEER S03] Intermediate-Risk,303,303
+304,[PIONEER S04] Metastatic Dx Extent,304,304
+305,[PIONEER S05] Locally advanced Dx Extent,305,305
+306,[PIONEER S06] Localized Dx Extent,306,306
+307,[PIONEER S07] PSA greater than 20,307,307
+308,[PIONEER S08] PSA less than 10,308,308
+309,[PIONEER S09] PSA 10-20,309,309
+310,[PIONEER S10] Stage T1,310,310
+311,[PIONEER S11] Stage T2,311,311
+312,[PIONEER S12] Stage T3,312,312
+313,[PIONEER S13] Stage T4,313,313
+314,[PIONEER S14] Grade 1 (GS 2-6),314,314
+315,[PIONEER S15] Grade 2 (GS 7 (3+4)),315,315
+316,[PIONEER S16] Grade 3 (GS 7 (4+3)),316,316
+317,[PIONEER S17] Grade 4 (GS 8),317,317
+318,[PIONEER S18] Grade 5 (GS 9-10),318,318
+319,[PIONEER S19] Family History of PCa,319,319
+320,[PIONEER S20] Total Cardiovascular Disease Event,320,320
+321,[PIONEER S21] Stroke,321,321
+322,[PIONEER S22] Type 2 Diabetes,322,322
+323,[PIONEER S23] Any malignancy except malignant neoplasm of skin,323,323
+324,[PIONEER S24] Hypertension,324,324
+325,[PIONEER S25] Obesity,325,325
+326,[PIONEER S26] Venous thromboembolism,326,326
+201,[PIONEER O01] Symptoms,201,201
+202,[PIONEER O02] Death,202,202
+203,[PIONEER O03] Treatment Initiation,203,203

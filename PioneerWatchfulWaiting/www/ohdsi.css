@@ -1,0 +1,59 @@
+.skin-blue .main-header .logo {
+ background-color: #415f74;
+}
+.skin-blue .main-header .logo:hover {
+ background-color: #415f74;
+}
+.skin-blue .main-header .navbar {
+ background-color: #415f74;
+}
+
+.skin-blue .main-sidebar {
+  background-color: #20425A;
+}
+
+.dropdown-toggle {
+  background-color: #FFFFFF;
+}
+
+.dropdown-menu.inner li > a {
+  color: #000000;
+} 
+
+.dropdown-menu.inner li > .selected {
+  color: #000000 !important;
+} 
+
+.no-border {
+  border: 0;
+  padding: 0px;
+  margin: 0px;
+}
+
+.no-padding {
+  padding: 0;
+  margin: 0;
+}
+
+.cohort-heading {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  border-bottom: 2px solid #F28F1B;
+}
+
+ul.dropdown-shinyWidgets > li {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.download-container {
+  display: block;
+  width: 140px;
+}
+
+/*
+table.dataTable > tbody > tr.odd > td {
+  
+}
+*/
