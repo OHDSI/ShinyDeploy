@@ -23,9 +23,9 @@ addInfo <- function(item, infoId, class = NULL, style = NULL) {
 
 dashboardPage(
   dashboardHeader(
-    title = "PIONEER",
+    title = "PIONEER / EHDEN / OHDSI Watchful Waiting study",
     tags$li(div(img(src = 'logo.png',
-                    title = "OHDSI", 
+                    title = "Characterizing long term outcomes of prostate cancer patients undergoing non-interventional management", 
                     height = "60px", 
                     width = "200px"),
                 style = "padding-top:0px; padding-bottom:0px;"),
@@ -41,6 +41,7 @@ dashboardPage(
                 menuItem("Cohorts", tabName = "cohorts"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
+                if (exists("cohortTimeToEvent")) addInfo(menuItem("Time To Event", tabName = "timeToEvent"), "cohortCountsInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),
                 menuItem("Database information", tabName = "databaseInformation"), 
                 menuItem("Change Log", tabName="changeLog"),
@@ -67,7 +68,26 @@ dashboardPage(
                                              options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
                                              multiple = TRUE)
                 ),
-                conditionalPanel(condition = "input.tabs!='about' & input.tabs!='cohorts' & input.tabs!='cohortCounts' & input.tabs!='databaseInformation' & input.tabs!='changeLog'" ,
+                
+                conditionalPanel(condition = "input.tabs=='timeToEvent'",
+                   shinyWidgets::pickerInput("databasesTimeToEvent", "Database",
+                                             choices = database$databaseId,
+                                             selected = database$databaseId,
+                                             options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
+                                             multiple = FALSE),
+                   shinyWidgets::pickerInput("targetTimeToEvent", "Cohort",
+                                             choices = targetCohort$targetName,
+                                             selected = 'All',
+                                             options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
+                                             multiple = FALSE),
+                   shinyWidgets::pickerInput("strataTimeToEvent", "Strata",
+                                             choices = strataCohort$strataName,
+                                             selected = 'All',
+                                             options = shinyWidgets::pickerOptions(actionsBox = TRUE, liveSearch = TRUE, dropupAuto = FALSE),
+                                             multiple = FALSE)
+                ),
+
+                conditionalPanel(condition = "input.tabs!='about' & input.tabs!='cohorts' & input.tabs!='cohortCounts' & input.tabs!='timeToEvent' & input.tabs!='databaseInformation' & input.tabs!='changeLog'" ,
                    shinyWidgets::pickerInput("targetCohort", "Cohort (Target)",
                                              choices = characterizationTargetCohort$targetName,
                                              selected = targetName,
@@ -142,6 +162,7 @@ dashboardPage(
               htmlOutput("borderCohortCounts"),
               dataTableOutput("cohortCountsTable")
       ),
+      
       tabItem(tabName = "cohortCharacterization",
               htmlOutput("cohortName"),
               htmltools::withTags(
@@ -162,6 +183,15 @@ dashboardPage(
               htmlOutput("borderCharacterization"),
               dataTableOutput("characterizationTable")
       ),
+      
+      tabItem(tabName = "timeToEvent",
+              tags$h4(textOutput('survivalHeader')),
+              tags$div(
+                plotOutput("TimeToEventDeath", height = 650, width = 1050)
+              )
+              
+      ),
+      
       tabItem(tabName = "compareCohortCharacterization",
               htmlOutput("comparisonName"),
               downloadButton("dlCharCompare", "Download Data"),
