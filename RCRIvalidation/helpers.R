@@ -145,4 +145,17 @@ editCovariates <- function(covs){
 }
 
 
-    
+  
+
+getTable1 <- function(tn='Analysis_1'){
+  if(file.exists('data/table1.csv')){
+    tab1 <- read.csv('data/table1.csv')
+    tab1 <- tab1[tab1$Analysis==tn,colnames(tab1)!='Analysis']
+  } else{
+    tab1 <- NULL
+  }
+  return(tab1)
+}
+
+myCohortList <- list(rcri_with_creatinine_plus_renal_model = 'Analysis_1',
+                     rcri_with_creatinine_model = 'Analysis_2')  
