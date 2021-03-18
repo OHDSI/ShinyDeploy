@@ -1,59 +1,34 @@
-name,atlasName,atlasId,cohortId
-new PCa,[PIONEER T1] new PCa,101,101
-new PCa,[PIONEER T1a] new PCa,102,102
-new PCa actively treated,[PIONEER T2] new PCa actively treated,103,103
-new PCa actively treated,[PIONEER T2a] new PCa actively treated,104,104
-new high_intermediate risk PCa conservative management ,[PIONEER T3.1] new high_intermediate risk PCa conservative management ,105,105
-new high_intermediate risk PCa conservative management,[PIONEER T3.1a] new high_intermediate risk PCa conservative management,106,106
-new low-risk PCa conservative management (WW),[PIONEER T3.2] new low-risk PCa conservative management (WW),107,107
-new low-risk PCa conservative management (WW),[PIONEER T3.2a] new low-risk PCa conservative management (WW),108,108
-new low risk PCa conservative management (AS),[PIONEER T3.3] new low risk PCa conservative management (AS),109,109
-new low risk PCa conservative management (AS),[PIONEER T3.3a] new low risk PCa conservative management (AS),110,110
-new PCa conservative management,[PIONEER T3] new PCa conservative management,111,111
-new PCa conservative management,[PIONEER T3a] new PCa conservative management,112,112
-Delayed Curative Management,[PIONEER T4.1] Delayed Curative Management,113,113
-Delayed Curative Management,[PIONEER T4.1a] Delayed Curative Management,114,114
-Delayed Palliative Management,[PIONEER T4.2] Delayed Palliative Management,115,115
-Delayed Palliative Management,[PIONEER T4.2a] Delayed Palliative Management,116,116
-new PCa treatment post conservative management,[PIONEER T4] new PCa treatment post conservative management,117,117
-new PCa treatment post conservative management,[PIONEER T4a] new PCa treatment post conservative management,118,118
-High-Risk,[PIONEER S01] High-Risk,301,301
-Low-Risk,[PIONEER S02] Low-Risk,302,302
-Intermediate-Risk,[PIONEER S03] Intermediate-Risk,303,303
-Metastatic Dx Extent,[PIONEER S04] Metastatic Dx Extent,304,304
-Locally advanced Dx Extent,[PIONEER S05] Locally advanced Dx Extent,305,305
-Localized Dx Extent,[PIONEER S06] Localized Dx Extent,306,306
-PSA greater than 20,[PIONEER S07] PSA greater than 20,307,307
-PSA less than 10,[PIONEER S08] PSA less than 10,308,308
-PSA 10-20,[PIONEER S09] PSA 10-20,309,309
-Stage T1,[PIONEER S10] Stage T1,310,310
-Stage T2,[PIONEER S11] Stage T2,311,311
-Stage T3 or T4,[PIONEER S12] Stage T3 or T4,312,312
-Physical Therapy,[PIONEER S13] Physical Therapy,313,313
-Grade 1 (GS 2-6),[PIONEER S14] Grade 1 (GS 2-6),314,314
-Grade 2 (GS 7 (3+4)),[PIONEER S15] Grade 2 (GS 7 (3+4)),315,315
-Grade 3 (GS 7 (4+3)),[PIONEER S16] Grade 3 (GS 7 (4+3)),316,316
-Grade 4 (GS 8),[PIONEER S17] Grade 4 (GS 8),317,317
-Grade 5 (GS 9-10),[PIONEER S18] Grade 5 (GS 9-10),318,318
-Family History of PCa,[PIONEER S19] Family History of PCa,319,319
-Mutations,[PIONEER S20] Mutations,320,320
-Age below 55,[PIONEER S21] Age below 55,321,321
-Age 55-80,[PIONEER S22] Age 55-80,322,322
-Age above 80,[PIONEER S23] Age above 80,323,323
-Charlson Comorbidity Index (cut off 0),[PIONEER S24] Charlson Comorbidity Index (cut off 0),324,324
-Charlson Comorbidity Index (cut off 1),[PIONEER S25] Charlson Comorbidity Index (cut off 1),325,325
-Charlson Comorbidity Index (cut off  greater or equals 2 ),[PIONEER S26] Charlson Comorbidity Index (cut off  greater or equals 2 ),326,326
-Other malignancies,[PIONEER S27] Other malignancies,327,327
-Total Cardiovascular Disease Event,[PIONEER S28] Total Cardiovascular Disease Event,328,328
-Stroke,[PIONEER S29] Stroke,329,329
-Type 2 Diabetes,[PIONEER S30] Type 2 Diabetes,330,330
-Hypertension,[PIONEER S31] Hypertension,331,331
-Obesity,[PIONEER S32] Obesity,332,332
-VTE,[PIONEER S33] VTE,333,333
-Symptoms,[PIONEER O1] Symptoms,201,201
-Death,[PIONEER O2] Death,202,202
-Treatment Initiation,[PIONEER O3] Treatment Initiation,203,203
-Curative Treatment Initiation,[PIONEER O4] Curative Treatment Initiation,204,204
-Palliative Treatment Initiation,[PIONEER O5] Palliative Treatment Initiation,205,205
-Hospitalization,[PIONEER O6] Hospitalization,206,206
-ER Visit,[PIONEER O7] ER Visit,207,207
+cohortId,name,atlasId,circeDef
+101,[PIONEER T01] new PCa,101,101
+102,[PIONEER T02] new PCa actively treated,102,102
+103,[PIONEER T03] new PCa conservative management,103,103
+104,[PIONEER T04] new PCa treatment post conservative management,104,104
+301,[PIONEER S01] High-Risk,301,301
+302,[PIONEER S02] Low-Risk,302,302
+303,[PIONEER S03] Intermediate-Risk,303,303
+304,[PIONEER S04] Metastatic Dx Extent,304,304
+305,[PIONEER S05] Locally advanced Dx Extent,305,305
+306,[PIONEER S06] Localized Dx Extent,306,306
+307,[PIONEER S07] PSA greater than 20,307,307
+308,[PIONEER S08] PSA less than 10,308,308
+309,[PIONEER S09] PSA 10-20,309,309
+310,[PIONEER S10] Stage T1,310,310
+311,[PIONEER S11] Stage T2,311,311
+312,[PIONEER S12] Stage T3,312,312
+313,[PIONEER S13] Stage T4,313,313
+314,[PIONEER S14] Grade 1 (GS 2-6),314,314
+315,[PIONEER S15] Grade 2 (GS 7 (3+4)),315,315
+316,[PIONEER S16] Grade 3 (GS 7 (4+3)),316,316
+317,[PIONEER S17] Grade 4 (GS 8),317,317
+318,[PIONEER S18] Grade 5 (GS 9-10),318,318
+319,[PIONEER S19] Family History of PCa,319,319
+320,[PIONEER S20] Total Cardiovascular Disease Event,320,320
+321,[PIONEER S21] Stroke,321,321
+322,[PIONEER S22] Type 2 Diabetes,322,322
+323,[PIONEER S23] Any malignancy except malignant neoplasm of skin,323,323
+324,[PIONEER S24] Hypertension,324,324
+325,[PIONEER S25] Obesity,325,325
+326,[PIONEER S26] Venous thromboembolism,326,326
+201,[PIONEER O01] Symptoms,201,201
+202,[PIONEER O02] Death,202,202
+203,[PIONEER O03] Treatment Initiation,203,203
