@@ -1,8 +1,6 @@
 # Data Information 
 
-#
-
-The following databases were used in this study:
+## The following databases were used in this study:
 
 
 
@@ -24,5 +22,9 @@ The following databases were used in this study:
 *AUSOM* &nbsp; &nbsp; | Ajou University School of Medicine Database &nbsp; &nbsp; | Korea &nbsp; &nbsp; | EHR &nbsp; &nbsp; | 1999-2018 |
 |
 *Tufts* &nbsp; &nbsp; | Tufts Researrch Data Warehouse &nbsp; &nbsp; | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; | 2006-2021 |
+|
+*CUIMC* &nbsp; &nbsp; | Columbia University Irving Medical Center Data Warehouse &nbsp; &nbsp; | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; | 1990-2021 |
+|
+*VA_OMOP* &nbsp; &nbsp; | Department of Veterans Affairs &nbsp; &nbsp; | USA &nbsp; &nbsp; | EHR &nbsp; &nbsp; |?-> |
 |
 All databases obtained IRB approval or used deidentified data that was considered exempt from IRB approval.

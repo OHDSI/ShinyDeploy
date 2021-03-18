@@ -27,6 +27,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(shiny::stopApp)
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
+  
+  #==== table 1
+  output$table1Table <- DT::renderDataTable(DT::datatable(getTable1(input$selectCohort),
+                                                          rownames= FALSE, 
+                                                          selection = 'single',
+                                                          extensions = 'Buttons', options = list(
+                                                            dom = 'Blfrtip' , 
+                                                            buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ),
+                                                            scrollX = TRUE
+                                                            #pageLength = 100, lengthMenu=c(10, 50, 100,200)
+                                                          )
+                                                          
+  ))
+  
+  #====
+  
   #print(summaryTable)
   
   # need to remove over columns:

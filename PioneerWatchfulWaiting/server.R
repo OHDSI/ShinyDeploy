@@ -133,7 +133,21 @@ shinyServer(function(input, output, session) {
     removeModal()
   })
   
+  
+  
   # Filter Options -----
+  cohortIdTimeToEvent <- reactive({
+    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdTimeToEvent() & cohortXref$strataName %in% input$strataTimeToEvent,c("cohortId")]))
+  })
+  
+  targetCohortIdTimeToEvent <- reactive({
+    return(targetCohort$targetId[targetCohort$targetName %in% input$targetTimeToEvent])
+  })
+  
+
+  
+  
+  
   cohortIdList <- reactive({
     return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdList() & cohortXref$strataName %in% input$strataCohortList,c("cohortId")]))
   })
@@ -206,7 +220,7 @@ shinyServer(function(input, output, session) {
   
   getCohortInfoTable <- reactive({
     data <- cohortInfo
-    atlasCohortUrl <- "https://atlas.ohdsi.org/#/cohortdefinition/"
+    atlasCohortUrl <- "https://pioneer-atlas.thehyve.net/#/cohortdefinition/"
     githubCohortUrl <- "https://github.com/ohdsi-studies/PioneerWatchfulWaiting/tree/master/inst/sql/sql_server/"
     data$url <- ifelse(data$circeDef == TRUE, 
                        paste0(atlasCohortUrl, data$atlasId),
@@ -250,6 +264,83 @@ shinyServer(function(input, output, session) {
     table<-getCohortInfoTable()
     write.csv(table, file, row.names = FALSE, na = "")
   })
+  
+  
+  
+  
+  # timeToEvent-----------------
+  getSurvivalInfo <- reactive({
+    table <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent & cohortCount$cohortId %in% cohortIdTimeToEvent(), ]
+    # print(cohortTimeToEvent)
+    return(table)
+  })
+  
+  output$survivalHeader <- renderText({
+    # print(cohortCount[cohortCount$databaseId %in% input$databases & cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]])
+    paste(input$targetTimeToEvent, input$strataTimeToEvent, sep=" ")
+  })
+  
+  output$TimeToEventDeath <- renderPlot({
+    target_id <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent & cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]]
+    if (length(target_id) == 0){
+      plot <- ggplot2::ggplot()
+      return(plot)
+    }
+
+    symptomsCohortId <- cohortStagingCount[cohortStagingCount$name == 'Symptoms', 'cohortId'][[1]]
+    deathCohortId <- cohortStagingCount[cohortStagingCount$name == 'Death', 'cohortId'][[1]]
+    treatmentCohortId <- cohortStagingCount[cohortStagingCount$name == 'Treatment Initiation', 'cohortId'][[1]]
+
+    targetIdTimeToEvent <- cohortTimeToEvent %>% dplyr::filter(targetId == target_id)
+    
+    if (length(symptomsCohortId)>0){
+      dataBoth <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == c(999999))
+    }
+    else{
+      dataBoth <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
+    }
+    if (length(symptomsCohortId)>0){
+      dataSymptoms <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == symptomsCohortId)
+    }
+    else{
+      dataSymptoms <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
+    }
+    if (length(deathCohortId)>0){
+      dataDeath <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == deathCohortId)
+    }
+    else{
+      dataDeath <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
+    }
+    if (length(treatmentCohortId)>0){
+      dataTreatment <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == treatmentCohortId)
+    }
+    else{
+      dataTreatment <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
+    }
+    
+    plot <- ggplot2::ggplot()
+    plot <- plot + ggplot2::geom_line(data = dataDeath,
+                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
+                                      size = 2)
+    plot <- plot + ggplot2::geom_line(data = dataSymptoms,
+                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
+                                      size = 2)
+    plot <- plot + ggplot2::geom_line(data = dataBoth, 
+                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
+                                      size = 2)
+    plot <- plot + ggplot2::geom_line(data = dataTreatment, 
+                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
+                                      size = 2)
+    plot <- plot + ggplot2::ylim(min(dataSymptoms$survival, dataDeath$survival, dataBoth$survival), 1)
+    plot <- plot + ggplot2::xlab('days')
+    plot <- plot + ggplot2::scale_color_hue(labels = c("Death", "Symptoms", "Death or Symptoms", "Treatment"))
+    plot <- plot + ggplot2::labs(color = "Time to Event \n")
+    
+    return(plot)
+  })
+  
+  
+  
 
   # Cohort Counts ---------
   output$borderCohortCounts <- renderUI({
@@ -266,7 +357,7 @@ shinyServer(function(input, output, session) {
   getCohortCountsTablePivotedByDB <- reactive({
     columnsToInclude <- c("cohortId","targetId","targetName","strataId","strataName","cohortType", "cohortSubjects")
     subjectIndex <-  match("cohortSubjects", columnsToInclude)
-    data <- getCohortCountsTable()    
+    data <- getCohortCountsTable()
     databaseIds <- unique(data$databaseId)
     databaseIds <- sort(databaseIds)
     table <- data[data$databaseId == databaseIds[1], columnsToInclude]
@@ -280,7 +371,7 @@ shinyServer(function(input, output, session) {
     }
     return(list(table = table, databaseIds = databaseIds))
   })
-  
+
   output$cohortCountsTable <- renderDataTable({
     cohortCountsByDB <- getCohortCountsTablePivotedByDB()
     databaseIds <- cohortCountsByDB$databaseIds
@@ -289,7 +380,7 @@ shinyServer(function(input, output, session) {
     table$targetId <- NULL
     table$strataId <- NULL
     table$cohortType <- NULL
-    
+
     sketch <- htmltools::withTags(table(
       class = 'display',
       thead(
@@ -303,7 +394,7 @@ shinyServer(function(input, output, session) {
         )
       )
     ))
-    
+
     sortCallback <- c(
       "var dt = table.table().node();",
       "$(dt).on('order.dt', function(e, ctx, order) {",
@@ -328,18 +419,18 @@ shinyServer(function(input, output, session) {
     )
     dtSettings <- getDataTableSettings();
     dtSettings$options <- append(dtSettings$options, list(columnDefs = columnDefs))
-    
+
     dataTable <- datatable(table,
-                           callback = JS(sortCallback),
+                           # callback = JS(sortCallback),
                            rownames = FALSE,
-                           container = sketch, 
+                           container = sketch,
                            escape = FALSE,
                            options = dtSettings$options,
                            extensions = dtSettings$extensions,
                            class = "stripe nowrap compact")
-    return(dataTable)    
+    return(dataTable)
   })
-  
+
   output$dlCohortCountsByDb <- downloadHandler(
     filename = function() {
       'cohort_counts_by_db.csv'
@@ -348,8 +439,8 @@ shinyServer(function(input, output, session) {
       table<-getCohortCountsTablePivotedByDB()$table
       write.csv(table, file, row.names = FALSE, na = "")
     }
-  ) 
-  
+  )
+
   output$dlCohortCountsFlat <- downloadHandler(
     filename = function() {
       'cohort_counts.csv'
@@ -358,7 +449,7 @@ shinyServer(function(input, output, session) {
       table<-getCohortCountsTable()
       write.csv(table, file, row.names = FALSE, na = "")
     }
-  ) 
+  )
 
   # Cohort Characterization -------
   output$borderCharacterization <- renderUI({
