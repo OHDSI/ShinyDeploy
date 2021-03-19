@@ -15,6 +15,4 @@ Long term outcomes of prostate cancer patients undergoing non-interventional man
 - All analytic code is availble at <a href="https://github.com/ohdsi-studies/PioneerWatchfulWaiting" target="_blank">GitHub</a>
 
 **Cohort Diagnostics:**<br>
-- <a href="">Target cohorts</a>
-- <a href="">Strata cohorts</a>
-- <a href="">Outcome cohorts</a>
+- <a href="https://data.ohdsi.org/PioneerWatchfulWaitingDiag/">Diagnostics explorer</a>
