@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+library(magrittr)
 
 mainColumns <- c("description", 
                  "databaseId",
@@ -442,7 +443,7 @@ shinyServer(function(input, output, session) {
                             escape = FALSE,
                             container = container,
                             class = "stripe compact")
-        table1 <- table1 %>% DT::formatRound(c(2, 3, 5, 6), 1)
+        table1 <- table1 %>% formatRound(c(2, 3, 5, 6), 1)
       }
       return(table1)
     }
