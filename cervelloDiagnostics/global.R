@@ -15,7 +15,7 @@ source("R/Results.R")
 # Settings when running on server:
 
 defaultLocalDataFolder <- "data"
-defaultLocalDataFile <- "PreMerged.RData"
+defaultLocalDataFile <- "PreMerged2.RData"
 
 connectionPool <- NULL
 defaultServer <- Sys.getenv("phenotypeLibraryDbServer")
