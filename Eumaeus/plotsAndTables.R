@@ -286,8 +286,6 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
   
   if (trueRr == "Overall") {
     forEval <- estimates
-  } else if (trueRr == ">1") {
-    forEval <- estimates[estimates$effectSize > 1, ]
   } else {
     forEval <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
   }
@@ -313,6 +311,152 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
                 specificity = round(.data$specificity, 2))
   }
   return(result)
+}
+
+plotMaxSprtSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
+  if (!"effectSize" %in% colnames(estimates))
+    stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
+  
+  if (trueRr != "Overall") {
+    estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
+  }
+  computeSensSpec <- function(subset) {
+    result <- computeMaxSprtMetricsPerPeriod(subset) %>%
+      mutate(method = subset$method[1],
+             analysisId = subset$analysisId[1])
+    return(result)
+  }
+  
+  effectSizes <- unique(estimates$effectSize)
+  effectSizes <- effectSizes[effectSizes > 1]
+  effectSizes <- effectSizes[order(effectSizes)]
+  data <- tibble()
+  for (effectSize in effectSizes) {
+    subset <- estimates[estimates$effectSize == 1 | estimates$effectSize == effectSize, ]
+    data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
+      bind_rows() %>%
+      mutate(group = sprintf("Sensitivity when\ntrue effect = %s", effectSize)) %>%
+      bind_rows(data)
+  }
+  data <- data %>%
+    filter(.data$group == data$group[1]) %>%
+    mutate(value = .data$specificity,
+           group = "Specificity") %>%
+    select(-.data$sensitivity, -.data$specificity) %>%
+    bind_rows(data %>%
+                mutate(value = .data$sensitivity) %>%
+                select(-.data$sensitivity, -.data$specificity))  
+  
+  theme <- element_text(colour = "#000000", size = 14)
+  themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
+  themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
+  yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
+  f <- function(x) {
+    -log(1.1 - x)
+  }
+  cutoff <- expand.grid(group = sprintf("Sensitivity when\ntrue effect = %s", effectSizes), method = unique(data$method)) %>%
+    mutate(value = 0.8,
+           analysisId = 1)
+  
+  
+  data$analysisId <- as.factor(data$analysisId)
+  data$group <- factor(data$group, levels = rev(c("Specificity", sprintf("Sensitivity when\ntrue effect = %s", effectSizes))))
+  plot <- ggplot(data, aes(x = .data$periodId, y = f(.data$value), group = .data$analysisId, color = .data$analysisId)) +
+    geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
+    geom_line(size = 1, alpha = 0.5) +
+    geom_point(size = 2, alpha = 0.7) +
+    scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
+    scale_y_continuous("Sensitivity / Specificity", limits = f(c(0, 1)), breaks = f(yBreaks), labels = yBreaks) +
+    labs(color = "Analysis ID") +
+    facet_grid(group ~ method) +
+    theme(axis.text.y = theme,
+          axis.text.x = theme,
+          axis.title.x = theme,
+          axis.title.y = element_blank(),
+          strip.text.x = theme,
+          strip.text.y = theme,
+          strip.background = element_blank(),
+          legend.text = themeLA,
+          legend.title = themeLA,
+          legend.position = "right")
+  # plot
+  return(plot)
+}
+
+# estimates <- addTrueEffectSize(estimates, negativeControlOutcome, positiveControlOutcome)
+plotSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
+  if (!"effectSize" %in% colnames(estimates))
+    stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
+  
+  if (trueRr != "Overall") {
+    estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
+  }
+  computeSensSpec <- function(subset) {
+    if (subset$effectSize[1] == 1) {
+      subset %>%
+        group_by(.data$periodId) %>%
+        summarize(value = 1 - mean(!is.na(.data$p) & .data$p < 0.05)) %>%
+        mutate(group = "Specificity",
+               method = subset$method[1],
+               analysisId = subset$analysisId[1]) %>%
+        return()
+    } else {
+      subset %>%
+        group_by(.data$periodId) %>%
+        summarize(value = mean(!is.na(.data$p) & .data$p < 0.05)) %>%
+        mutate(group = sprintf("Sensitivity when\ntrue effect = %s", subset$effectSize[1]),
+               method = subset$method[1],
+               analysisId = subset$analysisId[1]) %>%
+        return()
+    }
+  }
+  
+  effectSizes <- unique(estimates$effectSize)
+  effectSizes <- effectSizes[order(effectSizes)]
+  data <- tibble()
+  for (effectSize in effectSizes) {
+    subset <- estimates %>%
+      filter(.data$effectSize == !!effectSize)
+    data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
+      bind_rows() %>%
+      bind_rows(data)
+  }
+
+  theme <- element_text(colour = "#000000", size = 14)
+  themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
+  themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
+  yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
+  f <- function(x) {
+    -log(1.1 - x)
+  }
+  pcEffectSizes <- effectSizes[effectSizes > 1]
+  cutoff <- expand.grid(group = sprintf("Sensitivity when\ntrue effect = %s", pcEffectSizes), method = unique(data$method)) %>%
+    mutate(value = 0.8,
+           analysisId = 1)
+  
+  
+  data$analysisId <- as.factor(data$analysisId)
+  data$group <- factor(data$group, levels = rev(c("Specificity", sprintf("Sensitivity when\ntrue effect = %s", pcEffectSizes))))
+  plot <- ggplot(data, aes(x = .data$periodId, y = f(.data$value), group = .data$analysisId, color = .data$analysisId)) +
+    geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
+    geom_line(size = 1, alpha = 0.5) +
+    geom_point(size = 2, alpha = 0.7) +
+    scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
+    scale_y_continuous("Sensitivity / Specificity", limits = f(c(0, 1)), breaks = f(yBreaks), labels = yBreaks) +
+    labs(color = "Analysis ID") +
+    facet_grid(group ~ method) +
+    theme(axis.text.y = theme,
+          axis.text.x = theme,
+          axis.title.x = theme,
+          axis.title.y = element_blank(),
+          strip.text.x = theme,
+          strip.text.y = theme,
+          strip.background = element_blank(),
+          legend.text = themeLA,
+          legend.title = themeLA,
+          legend.position = "right")
+  plot
+  return(plot)
 }
 
 computeTrueRr <- function(estimates, negativeControlOutcome, positiveControlOutcome) {

@@ -31,7 +31,7 @@ vaccinations <- getVaccinations(connectionPool, schema)
 
 # subset <- getEstimates(connection = connectionPool,
 #                        schema = schema,
-#                        databaseId = "IBM_MDCD",
+#                        databaseId = "IBM_MDCR",
 #                        exposureId = 21184,
 #                        timeAtRisk = "1-28")
 

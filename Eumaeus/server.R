@@ -238,10 +238,6 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(data.frame())
     }
-    # combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
-    #                  computeEffectEstimateMetrics, 
-    #                  trueRr = input$trueRr)
-    # combis <- bind_rows(combis)
     combis <- subset %>%
       distinct(.data$method, .data$analysisId) %>%
       arrange(.data$method, .data$analysisId)
@@ -266,18 +262,6 @@ shinyServer(function(input, output, session) {
       return(data)
     }
     table <- DT::datatable(data, selection = selection, options = options, rownames = FALSE, escape = FALSE) 
-    
-    # colors <- c("#b7d3e6", "#b7d3e6", "#b7d3e6", "#f2b4a9", "#f2b4a9", "#f2b4a9", "#f2b4a9")
-    # mins <- c(0, 0, 0, 0, 0, 0, 0)
-    # maxs <- c(1, 1, max(data[, 5]), max(data[, 6]), 1, 1, 1)
-    # for (i in 1:length(colors)) {
-    #   table <- DT::formatStyle(table = table, 
-    #                            columns = i + 2,
-    #                            background = styleColorBar(c(mins[i], maxs[i]), colors[i]),
-    #                            backgroundSize = '98% 88%',
-    #                            backgroundRepeat = 'no-repeat',
-    #                            backgroundPosition = 'center')
-    # }
     return(table)
   })
   
@@ -334,6 +318,34 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # Across periods and methods
+  
+  output$sensSpecAcrossMethods <- renderPlot({
+    subset <- filterEstimatesAcrossPeriods()
+    if (nrow(subset) == 0) {
+      return(data.frame())
+    }
+    # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
+    subset <- subset %>%
+      filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    # x <<- subset
+    plot <- plotSensSpecAcrossMethods(subset, input$trueRr)
+    return(plot)
+  })
+  
+  output$analysesDescriptions <- renderDataTable({
+    options = list(pageLength = 100, 
+                   searching = FALSE, 
+                   lengthChange = FALSE)
+    data <- analysis %>% 
+      filter(.data$method %in% input$method & .data$timeAtRisk == input$timeAtRisk) %>%
+      select(.data$method, .data$analysisId, .data$description) %>%
+      arrange(.data$method, .data$analysisId)
+    
+    table <- DT::datatable(data, options = options, colnames = c("Method", "AnalysisId", "Description"), rownames = FALSE, escape = FALSE) 
+    return(table)
+  })
+  
   # MaxSPRT-based metrics --------------------------------------------------------------------------
   exposureId2 <- reactive(
     exposure %>%
@@ -358,6 +370,8 @@ shinyServer(function(input, output, session) {
     subset <- addTrueEffectSize(subset, negativeControlOutcome, positiveControlOutcome)
     return(subset)
   })
+  
+  # Per method
   
   selectedEstimates2 <- reactive({
     if (is.null(input$performanceMetrics2_rows_selected)) {
@@ -531,6 +545,34 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # Across methods
+  
+  output$sensSpecAcrossMethods2 <- renderPlot({
+    subset <- filterEstimates2()
+    if (nrow(subset) == 0) {
+      return(data.frame())
+    }
+    # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
+    subset <- subset %>%
+      filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    
+    plot <- plotMaxSprtSensSpecAcrossMethods(subset, input$trueRr2)
+    return(plot)
+  })
+  
+  output$analysesDescriptions2 <- renderDataTable({
+    options = list(pageLength = 100, 
+                   searching = FALSE, 
+                   lengthChange = FALSE)
+    data <- analysis %>% 
+      filter(.data$method %in% input$method2 & .data$timeAtRisk == input$timeAtRisk2) %>%
+      select(.data$method, .data$analysisId, .data$description) %>%
+      arrange(.data$method, .data$analysisId)
+    
+    table <- DT::datatable(data, options = options, colnames = c("Method", "AnalysisId", "Description"), rownames = FALSE, escape = FALSE) 
+    return(table)
+  })
+  
   # Database information -------------------------------------------------------
   output$databaseInfoPlot <- renderPlot({
     return(plotDbCharacteristics(databaseCharacterization))
@@ -598,8 +640,8 @@ shinyServer(function(input, output, session) {
       HTML(periodInfoHtml)
     ))
   })
-
-
+  
+  
   observeEvent(input$databaseInfo, {
     showModal(modalDialog(
       title = "Databases",
@@ -629,7 +671,7 @@ shinyServer(function(input, output, session) {
       HTML(methodsInfoHtml)
     ))
   })
-
+  
   # MaxSPRT-based metrics tab
   observeEvent(input$vaccineInfo2, {
     showModal(modalDialog(

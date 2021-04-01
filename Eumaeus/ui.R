@@ -24,40 +24,46 @@ shinyUI(
                          ),
                          column(10,
                                 tabsetPanel(type = "pills",
-                                  tabPanel("Per period",
-                                           selectInput("period", label = div("Time period", actionLink("periodInfo", "", icon = icon("info-circle"))), choices = timePeriod$label[timePeriod$exposureId == exposure$exposureId[1]]),
-                                           dataTableOutput("performanceMetrics"),
-                                           uiOutput("tableCaption"),
-                                           conditionalPanel(condition = "output.details",
-                                                            div(style = "display:inline-block", h4(textOutput("details"))), 
-                                                            tabsetPanel(
-                                                              tabPanel("Estimates", 
-                                                                       uiOutput("hoverInfoEstimates"),
-                                                                       plotOutput("estimates", 
-                                                                                  height = "270px",
-                                                                                  hover = hoverOpts("plotHoverInfoEstimates", 
-                                                                                                    delay = 100, 
-                                                                                                    delayType = "debounce")),
-                                                                       div(strong("Figure 1.1."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth. Hover mouse over point for more information.")),
-                                                              tabPanel("ROC curves", 
-                                                                       plotOutput("rocCurves", 
-                                                                                  height = "420px"),
-                                                                       div(strong("Figure 1.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))
-                                                            )
-                                           )),
-                                  tabPanel("Across periods",
-                                           dataTableOutput("performanceMetricsAcrossPeriods"),
-                                           uiOutput("tableAcrossPeriodsCaption"),
-                                           conditionalPanel(condition = "output.detailsAcrossPeriods",
-                                                            div(style = "display:inline-block", h4(textOutput("detailsAcrossPeriods"))), 
-                                                            tabsetPanel(
-                                                              tabPanel("Estimates", 
-                                                                       plotOutput("estimatesAcrossPeriods"),
-                                                                       div(strong("Figure 1.3."),"Effect-size estimates for the negative and positive controls across time, stratified by true effect size. Closed dots indicate statistical signficance (two-sides) at alpha = 0.05. The red dashed line indicates the true effect size.")
-                                                              )
-                                                            )
-                                           )
-                                  ))
+                                            tabPanel("Per period",
+                                                     selectInput("period", label = div("Time period", actionLink("periodInfo", "", icon = icon("info-circle"))), choices = timePeriod$label[timePeriod$exposureId == exposure$exposureId[1]]),
+                                                     dataTableOutput("performanceMetrics"),
+                                                     uiOutput("tableCaption"),
+                                                     conditionalPanel(condition = "output.details",
+                                                                      div(style = "display:inline-block", h4(textOutput("details"))), 
+                                                                      tabsetPanel(
+                                                                        tabPanel("Estimates", 
+                                                                                 uiOutput("hoverInfoEstimates"),
+                                                                                 plotOutput("estimates", 
+                                                                                            height = "270px",
+                                                                                            hover = hoverOpts("plotHoverInfoEstimates", 
+                                                                                                              delay = 100, 
+                                                                                                              delayType = "debounce")),
+                                                                                 div(strong("Figure 1.1."),"Estimates with standard errors for the negative and positive controls, stratified by true effect size. Estimates that fall above the red dashed lines have a confidence interval that includes the truth. Hover mouse over point for more information.")),
+                                                                        tabPanel("ROC curves", 
+                                                                                 plotOutput("rocCurves", 
+                                                                                            height = "420px"),
+                                                                                 div(strong("Figure 1.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls."))
+                                                                      )
+                                                     )),
+                                            tabPanel("Across periods",
+                                                     dataTableOutput("performanceMetricsAcrossPeriods"),
+                                                     uiOutput("tableAcrossPeriodsCaption"),
+                                                     conditionalPanel(condition = "output.detailsAcrossPeriods",
+                                                                      div(style = "display:inline-block", h4(textOutput("detailsAcrossPeriods"))), 
+                                                                      tabsetPanel(
+                                                                        tabPanel("Estimates", 
+                                                                                 plotOutput("estimatesAcrossPeriods"),
+                                                                                 div(strong("Figure 1.3."),"Effect-size estimates for the negative and positive controls across time, stratified by true effect size. Closed dots indicate statistical signficance (two-sides) at alpha = 0.05. The red dashed line indicates the true effect size.")
+                                                                        )
+                                                                      )
+                                                     )
+                                            ),
+                                            tabPanel("Across periods & methods",
+                                                     plotOutput("sensSpecAcrossMethods",
+                                                                height = "800px"),
+                                                     dataTableOutput("analysesDescriptions")
+                                            )
+                                )
                          )
                        )
               ),
@@ -72,24 +78,33 @@ shinyUI(
                                 checkboxGroupInput("method2", label =  div("Methods:", actionLink("methodsInfo2", "", icon = icon("info-circle"))), choices = unique(analysis$method), selected = unique(analysis$method))
                          ),
                          column(10,
-                                dataTableOutput("performanceMetrics2"),
-                                uiOutput("table2Caption"),
-                                conditionalPanel(condition = "output.details2",
-                                                 div(style = "display:inline-block", h4(textOutput("details2"))),
-                                                 tabsetPanel(
-                                                   tabPanel("Log Likelihood Ratios",
-                                                            uiOutput("hoverInfoLlrs"),
-                                                            plotOutput("llrs",
-                                                                       height = "650px",
-                                                                       hover = hoverOpts("plotHoverInfoLlrs",
-                                                                                         delay = 100,
-                                                                                         delayType = "debounce")),
-                                                            div(strong("Figure 2.1."),"Log likelihood ratios (LLR) (left axis) for the negative and positive controls at various points in time, stratified by true effect size. Closed dots indicate the LLR in that period exceeded the critical value. The critical value depends on sample size within and across periods, and is therefore different for each control. The yellow area indicates the cumulative number of vaccinations (right axis). Hover mouse over point for more information.")),
-                                                   tabPanel("Sensitivity / Specificity",
-                                                            plotOutput("sensSpec",
-                                                                       height = "650px"),
-                                                            div(strong("Figure 2.2."),"Sensitivity and specificity per period based on whether the log likehood ratio for a negative or positive control exceeded the critical value in that period or any before."))
-                                                 )
+                                tabsetPanel(type = "pills",
+                                            tabPanel("Per method",
+                                                     dataTableOutput("performanceMetrics2"),
+                                                     uiOutput("table2Caption"),
+                                                     conditionalPanel(condition = "output.details2",
+                                                                      div(style = "display:inline-block", h4(textOutput("details2"))),
+                                                                      tabsetPanel(
+                                                                        tabPanel("Log Likelihood Ratios",
+                                                                                 uiOutput("hoverInfoLlrs"),
+                                                                                 plotOutput("llrs",
+                                                                                            height = "650px",
+                                                                                            hover = hoverOpts("plotHoverInfoLlrs",
+                                                                                                              delay = 100,
+                                                                                                              delayType = "debounce")),
+                                                                                 div(strong("Figure 2.1."),"Log likelihood ratios (LLR) (left axis) for the negative and positive controls at various points in time, stratified by true effect size. Closed dots indicate the LLR in that period exceeded the critical value. The critical value depends on sample size within and across periods, and is therefore different for each control. The yellow area indicates the cumulative number of vaccinations (right axis). Hover mouse over point for more information.")),
+                                                                        tabPanel("Sensitivity / Specificity",
+                                                                                 plotOutput("sensSpec",
+                                                                                            height = "650px"),
+                                                                                 div(strong("Figure 2.2."),"Sensitivity and specificity per period based on whether the log likehood ratio for a negative or positive control exceeded the critical value in that period or any before."))
+                                                                      )
+                                                     )
+                                            ),
+                                            tabPanel("Across methods",
+                                                     plotOutput("sensSpecAcrossMethods2",
+                                                                height = "800px"),
+                                                     dataTableOutput("analysesDescriptions2")
+                                            )
                                 )
                          )
                        )
