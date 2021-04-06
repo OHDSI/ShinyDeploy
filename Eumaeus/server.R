@@ -14,9 +14,15 @@ shinyServer(function(input, output, session) {
       pull(.data$exposureId)
   )
   
+  baseExposureId <- reactive(
+    exposure %>%
+      filter(.data$exposureName == input$exposure) %>%
+      pull(.data$baseExposureId)
+  )
+  
   observe({
     timePeriodSubset <- timePeriod %>%
-      filter(.data$exposureId == exposureId()) %>%
+      filter(.data$exposureId == baseExposureId()) %>%
       pull(.data$label)
     if (length(timePeriodSubset) == 0) {
       updateSelectInput(session, "period", choices = "No data for these inputs", selected = "No data for these inputs")
@@ -27,7 +33,7 @@ shinyServer(function(input, output, session) {
   
   periodId <- reactive({
     periodId <- timePeriod %>%
-      filter(.data$label == input$period & .data$exposureId == exposureId()) %>%
+      filter(.data$label == input$period & .data$exposureId == baseExposureId()) %>%
       pull(.data$periodId)
     if (length(periodId) == 0) {
       return(-1)
@@ -230,7 +236,7 @@ shinyServer(function(input, output, session) {
   
   monthlyRatesDateRanges <- reactive({
     endDate <- timePeriod %>%
-      filter(.data$exposureId == exposureId() & .data$label== input$period) %>%
+      filter(.data$exposureId == baseExposureId() & .data$label== input$period) %>%
       pull(.data$endDate)
     
     dateRanges <- exposure %>%
@@ -255,6 +261,13 @@ shinyServer(function(input, output, session) {
     monthlyRates <- monthlyRates()
     dateRanges <- monthlyRatesDateRanges()
     threshold <- input$minRateChange / 100
+    
+    monthlyRates <- monthlyRates %>%
+      filter(.data$outcomeId %in% c(negativeControlOutcome$outcomeId, 
+                                    positiveControlOutcome %>% 
+                                      filter(.data$exposureId == baseExposureId()) %>%
+                                      pull(.data$outcomeId)))
+    
     historicIr <- monthlyRates %>%
       filter(.data$endDate > dateRanges$historyStartDate & .data$startDate < dateRanges$historyEndDate) %>%
       group_by(.data$outcomeId) %>%
@@ -280,8 +293,8 @@ shinyServer(function(input, output, session) {
                      historyEndDate = dateRanges$historyEndDate,
                      startDate = dateRanges$startDate,
                      endDate = dateRanges$endDate,
-                     negativeControlOutcome,
-                     positiveControlOutcome)
+                     negativeControlOutcome = negativeControlOutcome,
+                     positiveControlOutcome = positiveControlOutcome)
   })
   
   # Across periods

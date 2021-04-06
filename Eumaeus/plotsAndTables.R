@@ -786,7 +786,8 @@ plotMonthlyRates <- function(monthlyRates,
     inner_join(bind_rows(select(negativeControlOutcome, .data$outcomeId, .data$outcomeName),
                          select(positiveControlOutcome, .data$outcomeId, .data$outcomeName)),
                by = "outcomeId")
-  monthlyRates$outcomeId <- as.factor(monthlyRates$outcomeId)
+
+  # monthlyRates$outcomeId <- as.factor(monthlyRates$outcomeId)
   f <- function(x) {
     log(x)
   }
@@ -805,5 +806,6 @@ plotMonthlyRates <- function(monthlyRates,
     scale_y_continuous("Incidence rate (per 1,000 patient years)", breaks = f(breaks), labels = breaks) +
     theme(legend.position = "top",
           legend.title = element_blank())
+  plot
   return(plot)
 }
