@@ -56,3 +56,20 @@ getEstimates <- function(connection, schema, databaseId, exposureId, timeAtRisk)
   
   return(subset)
 }
+
+getMontlyRates <- function(connection, schema, databaseId, startDate, endDate) {
+  sql <- sprintf("SELECT * 
+    FROM %s.monthly_rate
+    WHERE database_id = '%s'
+      AND start_date >= '%s'
+      AND end_date <= '%s';",
+                 schema,
+                 databaseId,
+                 format(startDate, "%Y-%m-%d"),
+                 format(endDate, "%Y-%m-%d"))
+  rates <- DatabaseConnector::dbGetQuery(connection, sql)
+  colnames(rates) <- SqlRender::snakeCaseToCamelCase(colnames(rates))
+  rates <- rates %>%
+    mutate(ir = abs(1000 * .data$outcomes / (.data$days / 365.25)))
+  return(rates)
+}

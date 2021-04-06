@@ -216,6 +216,74 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  observe({
+    subset <- selectedEstimates()
+    if (is.null(subset)) {
+      return(NULL)
+    } 
+    if (subset$method[1] == "HistoricalComparator") {
+      showTab(inputId = "perPeriodTabSetPanel", target = "Diagnostics")
+    } else {
+      hideTab(inputId = "perPeriodTabSetPanel", target = "Diagnostics")
+    }
+  })
+  
+  monthlyRatesDateRanges <- reactive({
+    endDate <- timePeriod %>%
+      filter(.data$exposureId == exposureId() & .data$label== input$period) %>%
+      pull(.data$endDate)
+    
+    dateRanges <- exposure %>%
+      filter(.data$exposureId == exposureId()) %>%
+      select(.data$historyStartDate, .data$historyEndDate, .data$startDate) %>%
+      mutate(endDate = !!endDate)
+    return(dateRanges)
+  })
+  
+  monthlyRates <- reactive({
+    dateRanges <- monthlyRatesDateRanges()
+    
+    monthlyRates <- getMontlyRates(connection = connectionPool, 
+                                   schema = schema, 
+                                   databaseId = input$database, 
+                                   startDate = dateRanges$historyStartDate - 366, 
+                                   endDate = dateRanges$endDate)
+    return(monthlyRates)
+  })
+  
+  filteredMonthlyRates <- reactive({
+    monthlyRates <- monthlyRates()
+    dateRanges <- monthlyRatesDateRanges()
+    threshold <- input$minRateChange / 100
+    historicIr <- monthlyRates %>%
+      filter(.data$endDate > dateRanges$historyStartDate & .data$startDate < dateRanges$historyEndDate) %>%
+      group_by(.data$outcomeId) %>%
+      summarise(historicIr = sum(.data$outcomes) / sum(.data$days))
+    currentIr <- monthlyRates %>%
+      filter(.data$endDate > dateRanges$startDate & .data$startDate < dateRanges$endDate) %>%
+      group_by(.data$outcomeId) %>%
+      summarise(currentIr = sum(.data$outcomes) / sum(.data$days))
+    outcomeIds <- inner_join(historicIr, currentIr, by = "outcomeId") %>%
+      mutate(delta = abs((.data$currentIr - .data$historicIr) / .data$historicIr)) %>%
+      filter(.data$delta > threshold) %>%
+      pull(.data$outcomeId)
+    ratesSubset <- monthlyRates %>%
+      filter(.data$outcomeId %in% outcomeIds) 
+    return(ratesSubset)
+  })
+  
+  output$monthlyRates <- renderPlot({
+    rates <- filteredMonthlyRates()
+    dateRanges <- monthlyRatesDateRanges()
+    plotMonthlyRates(monthlyRates = rates, 
+                     historyStartDate = dateRanges$historyStartDate,
+                     historyEndDate = dateRanges$historyEndDate,
+                     startDate = dateRanges$startDate,
+                     endDate = dateRanges$endDate,
+                     negativeControlOutcome,
+                     positiveControlOutcome)
+  })
+  
   # Across periods
   
   filterEstimatesAcrossPeriods <- reactive({

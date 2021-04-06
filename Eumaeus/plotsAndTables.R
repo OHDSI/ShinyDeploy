@@ -421,7 +421,7 @@ plotSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
       bind_rows() %>%
       bind_rows(data)
   }
-
+  
   theme <- element_text(colour = "#000000", size = 14)
   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
   themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
@@ -489,7 +489,7 @@ plotLlrs <- function(d, vaccinationsSubset, trueRr = "Overall") {
   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
   themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
   yBreaks <- c(0, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100)
-
+  
   f <- function(y) {
     log10(y + 1) 
   }
@@ -645,7 +645,7 @@ plotDbCharacteristics <- function(databaseCharacterization) {
     substr(x, 1, 1) <- toupper(substr(x, 1, 1))
     return(paste0(" ", x))
   }
-
+  
   plot2 <- ggplot2::ggplot(observationDuration, ggplot2::aes(x = stratum, y = subjectCount)) +
     ggplot2::geom_bar(stat = "identity", color = rgb(0,0,0, alpha = 0), fill = "#547BD3", alpha = 0.8, width = 1) +
     ggplot2::geom_hline(yintercept = 0) +
@@ -768,5 +768,42 @@ plotEstimatesAcrossPeriods <- function(d, trueRr = "Overall") {
                    legend.text = themeLA,
                    legend.title = themeLA,
                    legend.position = "top")
+  return(plot)
+}
+
+plotMonthlyRates <- function(monthlyRates, 
+                             historyStartDate,
+                             historyEndDate,
+                             startDate,
+                             endDate,
+                             negativeControlOutcome,
+                             positiveControlOutcome) {
+  
+  minY <- min(monthlyRates$ir)
+  maxY <- max(monthlyRates$ir)
+  minX <- min(monthlyRates$endDate)
+  monthlyRates <- monthlyRates %>%
+    inner_join(bind_rows(select(negativeControlOutcome, .data$outcomeId, .data$outcomeName),
+                         select(positiveControlOutcome, .data$outcomeId, .data$outcomeName)),
+               by = "outcomeId")
+  monthlyRates$outcomeId <- as.factor(monthlyRates$outcomeId)
+  f <- function(x) {
+    log(x)
+  }
+  if (maxY < 1) {
+    breaks <- seq(0, maxY, by = 0.1) 
+  } else {
+    breaks <- seq(0, maxY, by = 1) 
+  }
+  plot <- ggplot(monthlyRates) +
+    geom_line(aes(x = endDate, y = f(ir), group = outcomeName, color = outcomeName), size = 1, alpha = 0.8) +
+    geom_point(x = as.Date("2009-01-01"), y = 0.1) +
+    geom_rect(xmin = minX, xmax = historyStartDate, ymin = f(minY), ymax = f(maxY), fill = rgb(1, 1, 1, alpha = 0.05)) +
+    geom_rect(xmin = historyEndDate, xmax = startDate, ymin = f(minY), ymax = f(maxY), fill = rgb(1, 1, 1, alpha = 0.05)) +
+    geom_vline(xintercept = c(historyStartDate, historyEndDate, startDate)) +
+    geom_text(x = historyStartDate + 7, y = f(maxY - 0.05), label = "Historic period", hjust = 0) +
+    scale_y_continuous("Incidence rate (per 1,000 patient years)", breaks = f(breaks), labels = breaks) +
+    theme(legend.position = "top",
+          legend.title = element_blank())
   return(plot)
 }
