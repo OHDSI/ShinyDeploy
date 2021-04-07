@@ -313,114 +313,159 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
   return(result)
 }
 
-plotMaxSprtSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
+# plotMaxSprtSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
+#   if (!"effectSize" %in% colnames(estimates))
+#     stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
+#   
+#   if (trueRr != "Overall") {
+#     estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
+#   }
+#   computeSensSpec <- function(subset) {
+#     result <- computeMaxSprtMetricsPerPeriod(subset) %>%
+#       mutate(method = subset$method[1],
+#              analysisId = subset$analysisId[1])
+#     return(result)
+#   }
+#   
+#   effectSizes <- unique(estimates$effectSize)
+#   effectSizes <- effectSizes[effectSizes > 1]
+#   effectSizes <- effectSizes[order(effectSizes)]
+#   data <- tibble()
+#   for (effectSize in effectSizes) {
+#     subset <- estimates[estimates$effectSize == 1 | estimates$effectSize == effectSize, ]
+#     data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
+#       bind_rows() %>%
+#       mutate(group = sprintf("Sensitivity when\ntrue effect = %s", effectSize)) %>%
+#       bind_rows(data)
+#   }
+#   data <- data %>%
+#     filter(.data$group == data$group[1]) %>%
+#     mutate(value = .data$specificity,
+#            group = "Specificity") %>%
+#     select(-.data$sensitivity, -.data$specificity) %>%
+#     bind_rows(data %>%
+#                 mutate(value = .data$sensitivity) %>%
+#                 select(-.data$sensitivity, -.data$specificity))  
+#   
+#   theme <- element_text(colour = "#000000", size = 14)
+#   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
+#   themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
+#   yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
+#   f <- function(x) {
+#     -log(1.1 - x)
+#   }
+#   cutoff <- expand.grid(group = sprintf("Sensitivity when\ntrue effect = %s", effectSizes), method = unique(data$method)) %>%
+#     mutate(value = 0.8,
+#            analysisId = 1)
+#   
+#   
+#   data$analysisId <- as.factor(data$analysisId)
+#   data$group <- factor(data$group, levels = rev(c("Specificity", sprintf("Sensitivity when\ntrue effect = %s", effectSizes))))
+#   plot <- ggplot(data, aes(x = .data$periodId, y = f(.data$value), group = .data$analysisId, color = .data$analysisId)) +
+#     geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
+#     geom_line(size = 1, alpha = 0.5) +
+#     geom_point(size = 2, alpha = 0.7) +
+#     scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
+#     scale_y_continuous("Sensitivity / Specificity", limits = f(c(0, 1)), breaks = f(yBreaks), labels = yBreaks) +
+#     labs(color = "Analysis ID") +
+#     facet_grid(group ~ method) +
+#     theme(axis.text.y = theme,
+#           axis.text.x = theme,
+#           axis.title.x = theme,
+#           axis.title.y = element_blank(),
+#           strip.text.x = theme,
+#           strip.text.y = theme,
+#           strip.background = element_blank(),
+#           legend.text = themeLA,
+#           legend.title = themeLA,
+#           legend.position = "right")
+#   # plot
+#   return(plot)
+# }
+
+# estimates <- addTrueEffectSize(estimates, negativeControlOutcome, positiveControlOutcome)
+plotSensSpecAcrossMethods <- function(estimates, inputColumn = "p", trueRr = "Overall") {
   if (!"effectSize" %in% colnames(estimates))
     stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
   
   if (trueRr != "Overall") {
     estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
-  }
-  computeSensSpec <- function(subset) {
-    result <- computeMaxSprtMetricsPerPeriod(subset) %>%
-      mutate(method = subset$method[1],
-             analysisId = subset$analysisId[1])
-    return(result)
   }
   
   effectSizes <- unique(estimates$effectSize)
-  effectSizes <- effectSizes[effectSizes > 1]
   effectSizes <- effectSizes[order(effectSizes)]
-  data <- tibble()
-  for (effectSize in effectSizes) {
-    subset <- estimates[estimates$effectSize == 1 | estimates$effectSize == effectSize, ]
-    data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
-      bind_rows() %>%
-      mutate(group = sprintf("Sensitivity when\ntrue effect = %s", effectSize)) %>%
-      bind_rows(data)
-  }
-  data <- data %>%
-    filter(.data$group == data$group[1]) %>%
-    mutate(value = .data$specificity,
-           group = "Specificity") %>%
-    select(-.data$sensitivity, -.data$specificity) %>%
-    bind_rows(data %>%
-                mutate(value = .data$sensitivity) %>%
-                select(-.data$sensitivity, -.data$specificity))  
   
-  theme <- element_text(colour = "#000000", size = 14)
-  themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
-  themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
-  yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
-  f <- function(x) {
-    -log(1.1 - x)
-  }
-  cutoff <- expand.grid(group = sprintf("Sensitivity when\ntrue effect = %s", effectSizes), method = unique(data$method)) %>%
-    mutate(value = 0.8,
-           analysisId = 1)
-  
-  
-  data$analysisId <- as.factor(data$analysisId)
-  data$group <- factor(data$group, levels = rev(c("Specificity", sprintf("Sensitivity when\ntrue effect = %s", effectSizes))))
-  plot <- ggplot(data, aes(x = .data$periodId, y = f(.data$value), group = .data$analysisId, color = .data$analysisId)) +
-    geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
-    geom_line(size = 1, alpha = 0.5) +
-    geom_point(size = 2, alpha = 0.7) +
-    scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
-    scale_y_continuous("Sensitivity / Specificity", limits = f(c(0, 1)), breaks = f(yBreaks), labels = yBreaks) +
-    labs(color = "Analysis ID") +
-    facet_grid(group ~ method) +
-    theme(axis.text.y = theme,
-          axis.text.x = theme,
-          axis.title.x = theme,
-          axis.title.y = element_blank(),
-          strip.text.x = theme,
-          strip.text.y = theme,
-          strip.background = element_blank(),
-          legend.text = themeLA,
-          legend.title = themeLA,
-          legend.position = "right")
-  # plot
-  return(plot)
-}
-
-# estimates <- addTrueEffectSize(estimates, negativeControlOutcome, positiveControlOutcome)
-plotSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
-  if (!"effectSize" %in% colnames(estimates))
-    stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
-  
-  if (trueRr != "Overall") {
-    estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
-  }
-  computeSensSpec <- function(subset) {
-    if (subset$effectSize[1] == 1) {
-      subset %>%
-        group_by(.data$periodId) %>%
-        summarize(value = 1 - mean(!is.na(.data$p) & .data$p < 0.05)) %>%
-        mutate(group = "Specificity",
-               method = subset$method[1],
-               analysisId = subset$analysisId[1]) %>%
-        return()
-    } else {
-      subset %>%
-        group_by(.data$periodId) %>%
-        summarize(value = mean(!is.na(.data$p) & .data$p < 0.05)) %>%
-        mutate(group = sprintf("Sensitivity when\ntrue effect = %s", subset$effectSize[1]),
-               method = subset$method[1],
-               analysisId = subset$analysisId[1]) %>%
-        return()
+  if (inputColumn == "llr") {
+    computeSensSpecLlr <- function(subset) {
+      result <- computeMaxSprtMetricsPerPeriod(subset) %>%
+        mutate(method = subset$method[1],
+               analysisId = subset$analysisId[1])
+      return(result)
+    }
+    data <- tibble()
+    for (effectSize in effectSizes[effectSizes > 1]) {
+      subset <- estimates %>%
+        filter(.data$effectSize == 1 | .data$effectSize == !!effectSize)
+      
+      data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpecLlr) %>%
+        bind_rows() %>%
+        mutate(group = sprintf("Sensitivity when\ntrue effect = %s", effectSize)) %>%
+        bind_rows(data)
+      
+    }
+    
+    data <- data %>%
+      filter(.data$group == data$group[1]) %>%
+      mutate(value = .data$specificity,
+             group = "Specificity") %>%
+      select(-.data$sensitivity, -.data$specificity) %>%
+      bind_rows(data %>%
+                  mutate(value = .data$sensitivity) %>%
+                  select(-.data$sensitivity, -.data$specificity))
+  } else {
+    computeSensSpec <- function(subset) {
+      if (inputColumn == "p") {
+        subset <- subset %>%
+          mutate(signal = !is.na(.data$p) & .data$p < 0.05)
+      } else if (inputColumn == "rr") {
+        subset <- subset %>%
+          mutate(signal = !is.na(.data$rr) & .data$rr > 1)
+      } else if (inputColumn == "ci95Lb") {
+        subset <- subset %>%
+          mutate(signal = !is.na(.data$ci95Lb) & .data$ci95Lb > 1)
+      } else {
+        stop("Unknown column ", inputColumn)
+      }
+      if (subset$effectSize[1] == 1) {
+        subset %>%
+          group_by(.data$periodId) %>%
+          summarize(value = 1 - mean(.data$signal)) %>%
+          mutate(group = "Specificity",
+                 method = subset$method[1],
+                 analysisId = subset$analysisId[1]) %>%
+          return()
+      } else {
+        subset %>%
+          group_by(.data$periodId) %>%
+          summarize(value = mean(.data$signal)) %>%
+          mutate(group = sprintf("Sensitivity when\ntrue effect = %s", subset$effectSize[1]),
+                 method = subset$method[1],
+                 analysisId = subset$analysisId[1]) %>%
+          return()
+      }
+    }
+    
+    data <- tibble()
+    for (effectSize in effectSizes) {
+      subset <- estimates %>%
+        filter(.data$effectSize == !!effectSize)
+      
+      data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
+        bind_rows() %>%
+        bind_rows(data)
     }
   }
   
-  effectSizes <- unique(estimates$effectSize)
-  effectSizes <- effectSizes[order(effectSizes)]
-  data <- tibble()
-  for (effectSize in effectSizes) {
-    subset <- estimates %>%
-      filter(.data$effectSize == !!effectSize)
-    data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
-      bind_rows() %>%
-      bind_rows(data)
-  }
   
   theme <- element_text(colour = "#000000", size = 14)
   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
@@ -455,7 +500,73 @@ plotSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
           legend.text = themeLA,
           legend.title = themeLA,
           legend.position = "right")
-  plot
+  # plot
+  return(plot)
+}
+
+plotAucAcrossMethods <- function(estimates, inputColumn = "p", trueRr = "Overall") {
+  if (!"effectSize" %in% colnames(estimates))
+    stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
+  
+  if (trueRr != "Overall") {
+    estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
+  }
+  computeAuc <- function(subset) {
+    # print(subset[1, ])
+    predictor <- subset[, inputColumn]
+    predictor[is.na(predictor)] <- 1
+    truth <- subset$effectSize != 1
+    if (all(truth) || all(!truth)) {
+      return(NULL)
+    } else {
+      roc <- pROC::roc(truth, predictor, algorithm = 3, quiet = TRUE)
+      auc <- pROC::auc(roc)
+    }
+    return(tibble(method = subset$method[1],
+                  analysisId = subset$analysisId[1],
+                  periodId = subset$periodId[1],
+                  group = sprintf("AUC when\ntrue effect = %s", max(subset$effectSize)),
+                  auc = as.numeric(auc)))
+  }
+  
+  effectSizes <- unique(estimates$effectSize)
+  effectSizes <- effectSizes[!effectSizes == 1]
+  effectSizes <- effectSizes[order(effectSizes)]
+  data <- tibble()
+  for (effectSize in effectSizes) {
+    subset <- estimates %>%
+      filter(.data$effectSize == 1 | .data$effectSize == !!effectSize)
+    data <- lapply(split(subset, paste(subset$method, subset$analysisId, subset$periodId)), computeAuc) %>%
+      bind_rows() %>%
+      bind_rows(data)
+  }
+  
+  theme <- element_text(colour = "#000000", size = 14)
+  themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
+  themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
+  yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
+  
+  data$analysisId <- as.factor(data$analysisId)
+  data$group <- factor(data$group, levels = rev(sprintf("AUC when\ntrue effect = %s", effectSizes)))
+  plot <- ggplot(data, aes(x = .data$periodId, y = .data$auc, group = .data$analysisId, color = .data$analysisId)) +
+    # geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
+    geom_line(size = 1, alpha = 0.5) +
+    geom_point(size = 2, alpha = 0.7) +
+    scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
+    scale_y_continuous("AUC", limits = c(0, 1), breaks = yBreaks, labels = yBreaks) +
+    labs(color = "Analysis ID") +
+    facet_grid(group ~ method) +
+    theme(axis.text.y = theme,
+          axis.text.x = theme,
+          axis.title.x = theme,
+          axis.title.y = element_blank(),
+          strip.text.x = theme,
+          strip.text.y = theme,
+          strip.background = element_blank(),
+          legend.text = themeLA,
+          legend.title = themeLA,
+          legend.position = "right")
+  # plot
   return(plot)
 }
 
@@ -786,7 +897,7 @@ plotMonthlyRates <- function(monthlyRates,
     inner_join(bind_rows(select(negativeControlOutcome, .data$outcomeId, .data$outcomeName),
                          select(positiveControlOutcome, .data$outcomeId, .data$outcomeName)),
                by = "outcomeId")
-
+  
   # monthlyRates$outcomeId <- as.factor(monthlyRates$outcomeId)
   f <- function(x) {
     log(x)

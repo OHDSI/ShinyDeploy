@@ -65,6 +65,10 @@ shinyUI(
                                                      )
                                             ),
                                             tabPanel("Across periods & methods",
+                                                     fluidRow(
+                                                       column(5, radioButtons("metricAcrossMethods", label = "Performance metrics", choices = c("Sensitivity & specificity", "AUC"))),
+                                                       column(5, radioButtons("inputAcrossMethods", label = "Decision input (rule)", choices = c("P-value (< 0.05)", "Point estimate (> 1)", "Lower bound of 95% CI (> 1)")))
+                                                     ),
                                                      plotOutput("sensSpecAcrossMethods",
                                                                 height = "800px"),
                                                      dataTableOutput("analysesDescriptions")
@@ -101,12 +105,15 @@ shinyUI(
                                                                                  div(strong("Figure 2.1."),"Log likelihood ratios (LLR) (left axis) for the negative and positive controls at various points in time, stratified by true effect size. Closed dots indicate the LLR in that period exceeded the critical value. The critical value depends on sample size within and across periods, and is therefore different for each control. The yellow area indicates the cumulative number of vaccinations (right axis). Hover mouse over point for more information.")),
                                                                         tabPanel("Sensitivity / Specificity",
                                                                                  plotOutput("sensSpec",
-                                                                                            height = "650px"),
+                                                                                            height = "800px"),
                                                                                  div(strong("Figure 2.2."),"Sensitivity and specificity per period based on whether the log likehood ratio for a negative or positive control exceeded the critical value in that period or any before."))
                                                                       )
                                                      )
                                             ),
                                             tabPanel("Across methods",
+                                                     fluidRow(
+                                                      column(5, radioButtons("metricAcrossMethods2", label = "Performance metrics", choices = c("Sensitivity & specificity", "AUC")))
+                                                     ), 
                                                      plotOutput("sensSpecAcrossMethods2",
                                                                 height = "800px"),
                                                      dataTableOutput("analysesDescriptions2")

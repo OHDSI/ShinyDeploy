@@ -409,8 +409,19 @@ shinyServer(function(input, output, session) {
     # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
     subset <- subset %>%
       filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    if (input$inputAcrossMethods == "P-value (< 0.05)") {
+      inputColumn <- "p"
+    } else if (input$inputAcrossMethods == "Point estimate (> 1)") {
+      inputColumn <- "rr"
+    } else {
+      inputColumn <- "ci95Lb"
+    }
     # x <<- subset
-    plot <- plotSensSpecAcrossMethods(subset, input$trueRr)
+    if (input$metricAcrossMethods == "Sensitivity & specificity") {
+      plot <- plotSensSpecAcrossMethods(estimates = subset, inputColumn = inputColumn, trueRr = input$trueRr)
+    } else {
+      plot <- plotAucAcrossMethods(estimates = subset, inputColumn = inputColumn, trueRr = input$trueRr)
+    }
     return(plot)
   })
   
@@ -637,7 +648,12 @@ shinyServer(function(input, output, session) {
     subset <- subset %>%
       filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
     
-    plot <- plotMaxSprtSensSpecAcrossMethods(subset, input$trueRr2)
+    if (input$metricAcrossMethods2 == "Sensitivity & specificity") {
+      plot <- plotSensSpecAcrossMethods(estimates = subset, inputColumn = "llr", trueRr = input$trueRr2)
+    } else {
+      # x <<- subset
+      plot <- plotAucAcrossMethods(estimates = subset, inputColumn = "llr", trueRr = input$trueRr2)
+    }
     return(plot)
   })
   
