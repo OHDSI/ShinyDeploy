@@ -271,11 +271,11 @@ shinyServer(function(input, output, session) {
     historicIr <- monthlyRates %>%
       filter(.data$endDate > dateRanges$historyStartDate & .data$startDate < dateRanges$historyEndDate) %>%
       group_by(.data$outcomeId) %>%
-      summarise(historicIr = sum(.data$outcomes) / sum(.data$days))
+      summarise(historicIr = sum(abs(.data$outcomes)) / sum(.data$days))
     currentIr <- monthlyRates %>%
       filter(.data$endDate > dateRanges$startDate & .data$startDate < dateRanges$endDate) %>%
       group_by(.data$outcomeId) %>%
-      summarise(currentIr = sum(.data$outcomes) / sum(.data$days))
+      summarise(currentIr = sum(abs(.data$outcomes)) / sum(.data$days))
     outcomeIds <- inner_join(historicIr, currentIr, by = "outcomeId") %>%
       mutate(delta = abs((.data$currentIr - .data$historicIr) / .data$historicIr)) %>%
       filter(.data$delta > threshold) %>%

@@ -205,8 +205,10 @@ computeEffectEstimateMetrics <- function(estimates, trueRr = "Overall") {
   coverage <- round(mean(forEval$ci95Lb < forEval$effectSize & forEval$ci95Ub > forEval$effectSize), 2)
   meanP <- round(-1 + exp(mean(log(1 + (1/(forEval$seLogRr^2))))), 2)
   if (trueRr == "Overall") {
-    roc <- pROC::roc(forEval$effectSize > 1, forEval$logRr, algorithm = 3, quiet = TRUE)
-    auc <- round(pROC::auc(roc), 2)
+    auc <- tryCatch({
+      round(pROC::auc(pROC::roc(forEval$effectSize > 1, forEval$logRr, algorithm = 3, quiet = TRUE)), 2)
+    }, error = function(cond) return(NA) 
+    )
     type1 <- round(mean(forEval$p[forEval$effectSize == 1] < 0.05), 2)
     type2 <- round(mean(forEval$p[forEval$effectSize > 1] >= 0.05), 2)
   } else if (trueRr == "1") {
