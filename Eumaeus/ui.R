@@ -47,7 +47,7 @@ shinyUI(
                                                                                            sliderInput("minRateChange", "Minimum relative rate change (%)", min = 0, max = 100, value = 50),
                                                                                            plotOutput("monthlyRates", 
                                                                                                       height = "420px"),
-                                                                                           div(strong("Figure 1.3."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls.")  
+                                                                                           div(strong("Figure 1.3."),"Monthly incidence rates across the historic and current time windows. Only those outcomes having a relative change greater than the selected threshold are shown.")  
                                                                                   )
                                                                       )
                                                      )),
@@ -123,7 +123,7 @@ shinyUI(
                        )
               ),
               tabPanel("Database information",
-                       plotOutput("databaseInfoPlot"),
+                       plotOutput("databaseInfoPlot", height = "500px"),
                        div(strong("Figure 3.1."),"Overall distributions of key characteristics in each database."),
                        dataTableOutput("databaseInfoTable"),
                        div(strong("Table 3.2."),"Information about each database.")
