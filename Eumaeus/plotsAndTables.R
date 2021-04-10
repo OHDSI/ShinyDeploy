@@ -790,7 +790,7 @@ plotDbCharacteristics <- function(databaseCharacterization) {
   plot4 <- ggplot2::ggplot(visitType, ggplot2::aes(x = "", y = fraction, color = visitType, fill = visitType)) +
     ggplot2::geom_bar(stat = "identity", color = rgb(0,0,0, alpha = 0), alpha = 0.7) +
     ggplot2::coord_polar("y", start = 0) +
-    ggplot2::scale_fill_manual(values = c("#547BD3", "#DF4327", "#D3AE4E")) +
+    ggplot2::scale_fill_manual(values = c( "#781C86", "#83BA70", "#D3AE4E", "#547BD3", "#DF4327")) +
     ggplot2::facet_grid(databaseId~.) +
     ggplot2::ylab("Visit type") +
     pieChartTheme

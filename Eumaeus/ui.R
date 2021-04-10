@@ -123,7 +123,7 @@ shinyUI(
                        )
               ),
               tabPanel("Database information",
-                       plotOutput("databaseInfoPlot", height = "500px"),
+                       plotOutput("databaseInfoPlot", height = "650px"),
                        div(strong("Figure 3.1."),"Overall distributions of key characteristics in each database."),
                        dataTableOutput("databaseInfoTable"),
                        div(strong("Table 3.2."),"Information about each database.")
