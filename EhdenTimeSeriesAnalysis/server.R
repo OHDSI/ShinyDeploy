@@ -212,7 +212,12 @@ shinyServer(function(input, output, session) {
   
   output$tsPlot <- renderPlot({
     resultModel <- readRDS("data/linear_t1000_e2000_w1_cdm_optum_ehr_covid_v1547.rds")
-    plotCpdSegmented(Samples = dexTrend$event_count, 
+    dexTrend <- trendsByMonthYear[trendsByMonthYear$cohortDefinitionId == 1000 & 
+                                    trendsByMonthYear$eventCohortDefinitionId == 2000 &
+                                    trendsByMonthYear$windowId == 1 & 
+                                    trendsByMonthYear$databaseId == 'cdm_optum_ehr_covid_v1547',]
+    dexTrend <- dexTrend[order(dexTrend$year, dexTrend$month), ]
+    plotCpdSegmented(Samples = dexTrend$eventCount, 
                      Time = paste(dexTrend$year, dexTrend$month, sep="-"),  
                      model_cpt = resultModel[[1]]$models,
                      family = "linear")
