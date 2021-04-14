@@ -112,6 +112,48 @@ renderBorderTag <-  function() {
   ))
 }
 
+plotCpdSegmented <- function(Time, Samples, model_cpt, family) {
+  # get n estimated cpts
+  ncpts_est <- nrow(model_cpt$psi)  # one estimated cpt in one row
+  
+  # plot(model_cpt, conf.level=0.95, shade=TRUE,type = 'l', xlab = 'Month', ylab = 'N Drugs', main =
+  # paste('Segmented Poisson Regression , ncpt =', ncpts = n, sep =' '), xaxt ='n')# plots regression
+  # lines of the two segments using the coeffs returned in model_cpt
+  plot(1:length(Time),
+       Samples,
+       xlab = "Month",
+       ylab = "N Drugs",
+       main = paste("Segmented", family, "Regression", sep = " "),
+       xaxt = "n",
+       cex = 1.5,
+       pch = 16)  # add the actual time series, ,type = 'l'
+  plot(model_cpt,
+       add = TRUE,
+       link = FALSE,
+       lwd = 2,
+       col = 3:5,
+       lty = c(1, 1))  # added fitted line using diff cols for diff segments
+  points(model_cpt, link = TRUE, col = 2)  # circle the brkpt
+  lines(model_cpt, col = 2, pch = 19, bottom = FALSE, lwd = 2)  # add CI for the breakpoint
+  
+  # change xtick
+  
+  # mth_lab <- unlist(lapply(Time, month_name)) axis(1, at = Time, labels = mth_lab)
+  axis(1, at = 1:length(Time), labels = Time)
+  
+  # get cpts
+  cpts_initial <- model_cpt$psi[1:ncpts_est, 1]  # first column is the initial cpts, one cpt per row
+  cpts_segmented <- model_cpt$psi[1:ncpts_est, 2]  # secnd column is the final   cpts, one cpt per row
+  
+  
+  # plot cpts
+  abline(v = cpts_initial, col = "grey", lwd = 3, lty = 2)  # plot the initial cpt in grey
+  
+  for (cp in 1:length(cpts_segmented)) {
+    abline(v = cpts_segmented[cp], col = "red", lwd = 3, lty = 2)
+  }  # add estimated cpts in red
+}
+
 shinyServer(function(input, output, session) {
   output$cohortCountsTable <- renderDataTable({
     databaseIds <- unique(cohortCount$databaseIds)
@@ -170,10 +212,10 @@ shinyServer(function(input, output, session) {
   
   output$tsPlot <- renderPlot({
     resultModel <- readRDS("data/linear_t1000_e2000_w1_cdm_optum_ehr_covid_v1547.rds")
-    TimeSeriesAnalysis::plotCpdSegmented(Samples = dexTrend$event_count, 
-                                         Time = paste(dexTrend$year, dexTrend$month, sep="-"),  
-                                         model_cpt = resultModel[[1]]$models,
-                                         family = "linear")
+    plotCpdSegmented(Samples = dexTrend$event_count, 
+                     Time = paste(dexTrend$year, dexTrend$month, sep="-"),  
+                     model_cpt = resultModel[[1]]$models,
+                     family = "linear")
   })
   
   # csDMARD Trends ---------------
