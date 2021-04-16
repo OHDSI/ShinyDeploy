@@ -6,6 +6,31 @@ output:
     theme: null
 ---
 
+## 2021-Feb-21
+
+### Updates
+
+The following data sets were updated in this release:
+
+- CUIMC
+- IQVIA Hospital CDM
+
+## 2021-Feb-7
+
+This release contains new data sets and updates to existing ones:
+
+### Additions
+
+#### Oregon Health and Science University (OHSU)
+
+Oregon Health & Science University’s Research Data Warehouse that contains over 3 million patients over more than 10 years; the Oregon Clinical & Translational Research Institute derives the warehouse from Electronic Health Record data.
+
+### Updates
+
+The following data sets were updated in this release:
+
+- HM Hospitals
+
 ## 2021-Jan-17
 
 This release contains new data sets and updates to existing ones:

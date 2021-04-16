@@ -9,7 +9,7 @@ loadConceptFromDB <- function(connPool, sourceDomain, sourceString) {
   sourceDomain <-  gsub("[^a-zA-Z0-9 ]", " ", sourceDomain)
   
   sql <- SqlRender::render(getInputConceptsSql, 
-                           target_database_schema = "results", 
+                           target_database_schema = "concept_prevalence", 
                            vocabulary_database_schema = "vocabulary",
                            source_domain = sourceDomain,
                            source_string = sourceString)
@@ -26,7 +26,7 @@ loadRecommenderStandardFromDB <- function(connPool, conceptList) {
   conceptList <-  gsub("[^a-zA-Z0-9 ,]", " ", conceptList)
   
   sql <- SqlRender::render(getRecommenderStandardSql, 
-                           target_database_schema = "results", 
+                           target_database_schema = "concept_prevalence", 
                            vocabulary_database_schema = "vocabulary",
                            source_list = conceptList)
   data <- DatabaseConnector::dbGetQuery(connPool, sql)
@@ -42,7 +42,7 @@ loadRecommenderSourceFromDB <- function(connPool, conceptList) {
   conceptList <-  gsub("[^a-zA-Z0-9 ,]", " ", conceptList)
   
   sql <- SqlRender::render(getRecommenderSourcecSql, 
-                           target_database_schema = "results", 
+                           target_database_schema = "concept_prevalence", 
                            vocabulary_database_schema = "vocabulary",
                            source_list = conceptList)
   data <- DatabaseConnector::dbGetQuery(connPool, sql)

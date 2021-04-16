@@ -21,6 +21,8 @@ library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
 
+source('helpers.R')
+
 addInfo <- function(item, infoId) {
   infoTag <- tags$small(class = "badge pull-right action-button",
                         style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
@@ -46,6 +48,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     shinydashboard::dashboardSidebar(
                                       shinydashboard::sidebarMenu(id ='menu',
                                                                   addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                  addInfo(shinydashboard::menuItem("Table1", tabName = "Table1", icon = shiny::icon("table")), "TableInfo"),
+                                                                  
                                                                   addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
                                                                   addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
                                                                   addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
@@ -60,20 +64,10 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                        shiny::sliderInput("slider1", 
                                                                           shiny::span("Threshold: ", shiny::textOutput('threshold'), style="color:white;font-family: Arial;font-size:14px;"), 
                                                                           min = 1, max = 100, value = 50, ticks = F
-                                                       ),
+                                                       )
                                                        
-                                                       shiny::splitLayout(
-                                                         cellWidths = c('10%', '80%', '10%'),
-                                                         shiny::span(shiny::h5(strong('0')), style="color:white"),
-                                                         shiny::h5(' '),
-                                                         shiny::span(shiny::h5(strong('1')), style="color:white")
-                                                       ),
-                                                       shiny::tags$script(shiny::HTML("
-                                                                                      $(document).ready(function() {setTimeout(function() {
-                                                                                      supElement = document.getElementById('slider1').parentElement;
-                                                                                      $(supElement).find('span.irs-max, span.irs-min, span.irs-single, span.irs-from, span.irs-to').remove();
-                                                                                      }, 50);})
-                                                                                      "))
+                                                       
+                                                       
                                       ),
                                       
                                       conditionalPanel(condition = "input.menu=='Performance' || input.menu=='Model' || input.menu=='Settings' || input.menu=='Log'",
@@ -94,6 +88,14 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                        #  choices = myResultList
                                                        #)            
                                                        
+                                      ),
+                                      conditionalPanel(condition = "input.menu=='Table1'",
+                                                       
+                                                       
+                                                       shiny::selectInput('selectCohort', 
+                                                                          'Cohort:', 
+                                                                          myCohortList)    
+                                                       
                                       )
                                       
                                       
@@ -101,6 +103,11 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                     
                                     shinydashboard::dashboardBody(
                                       shinydashboard::tabItems(
+                                        
+                                        # table 1
+                                        shinydashboard::tabItem(tabName = "Table1", 
+                                                                DT::dataTableOutput('table1Table')
+                                        ),
                                         
                                         # help tab
                                         shinydashboard::tabItem(tabName = "Help",

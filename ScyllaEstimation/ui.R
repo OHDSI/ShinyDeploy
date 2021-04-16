@@ -25,7 +25,7 @@ shinyUI(
             tabsetPanel(
               tabPanel("About",
                        br(),
-                       p("For review purposes only. Do not use.")
+                       p("For review purposes only. Do not use...")
                        
               ),
               tabPanel("Study diagnostics",

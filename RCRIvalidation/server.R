@@ -27,6 +27,22 @@ server <- shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(shiny::stopApp)
   filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
+  
+  #==== table 1
+  output$table1Table <- DT::renderDataTable(DT::datatable(getTable1(input$selectCohort),
+                                                          rownames= FALSE, 
+                                                          selection = 'single',
+                                                          extensions = 'Buttons', options = list(
+                                                            dom = 'Blfrtip' , 
+                                                            buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ),
+                                                            scrollX = TRUE
+                                                            #pageLength = 100, lengthMenu=c(10, 50, 100,200)
+                                                          )
+                                                          
+  ))
+  
+  #====
+  
   #print(summaryTable)
   
   # need to remove over columns:
@@ -160,6 +176,19 @@ server <- shiny::shinyServer(function(input, output, session) {
          PPV = TP/(TP+FP),
          NPV = TN/(TN+FN) )
   })
+  
+  # update threshold slider based on results size
+  shiny::observe({ 
+    if(!is.null(plpResult()$performanceEvaluation)){
+      n <- nrow(plpResult()$performanceEvaluation$thresholdSummary[plpResult()$performanceEvaluation$thresholdSummary$Eval%in%c('test','validation'),])
+    }else{
+      n <- 100
+    }
+    
+    shiny::updateSliderInput(session, inputId = "slider1", 
+                             min = 1, max = n, value = round(n/2))
+  })
+  
   
   
   # preference plot

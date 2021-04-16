@@ -34,7 +34,7 @@ connectionPool <- pool::dbPool(
 
 onStop(function() {
   if (DBI::dbIsValid(connectionPool)) {
-    writeLines("Closing database pool")
+    writeLines("Closing the database pool")
     pool::poolClose(connectionPool)
   }
 })

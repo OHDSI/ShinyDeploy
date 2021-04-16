@@ -1,0 +1,22 @@
+---
+title: "Change Log"
+output: 
+  html_document: 
+    highlight: null
+    theme: null
+---
+
+## 2021-Mar-11: Initial Release
+
+Initial results provided from 8 databases.
+
+
+## 2021-Mar-18: Adding results
+
+Now showing results from 10 databases for task #3.
+
+## 2021-Apr-06: Adding and correcting results
+Now showing task #3 results from 8 databases with correct time-to-event data.
+
+------
+

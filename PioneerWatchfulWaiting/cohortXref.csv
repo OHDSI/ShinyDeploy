@@ -1,0 +1,1387 @@
+cohortId,targetId,targetName,strataId,strataName,cohortType
+101,101,[T1] Newly diagnosed Pca ,0,All,Target
+102,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),0,All,Target
+103,103,[T2] PCa treated right away,0,All,Target
+104,104,[T2a] PCa treated right away (biopsy or PSA GT 50),0,All,Target
+105,105,[T3] PCa under conservative management,0,All,Target
+106,106,[T3.1] PCa high/intermediate risk conservative management,0,All,Target
+107,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),0,All,Target
+108,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,0,All,Target
+109,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),0,All,Target
+110,110,[T3.3] PCa low risk grade conservative management and intense monitoring,0,All,Target
+111,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),0,All,Target
+112,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),0,All,Target
+113,113,[T4] PCa treated after conservative management ,0,All,Target
+114,114,[T4.1] Delayed Curative Management,0,All,Target
+115,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),0,All,Target
+116,116,[T4.2] Delayed Palliative Management,0,All,Target
+117,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),0,All,Target
+118,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),0,All,Target
+101003012,101,[T1] Newly diagnosed Pca ,301,without High-Risk,TwoS
+102003012,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),301,without High-Risk,TwoS
+103003012,103,[T2] PCa treated right away,301,without High-Risk,TwoS
+104003012,104,[T2a] PCa treated right away (biopsy or PSA GT 50),301,without High-Risk,TwoS
+105003012,105,[T3] PCa under conservative management,301,without High-Risk,TwoS
+106003012,106,[T3.1] PCa high/intermediate risk conservative management,301,without High-Risk,TwoS
+107003012,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),301,without High-Risk,TwoS
+108003012,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,301,without High-Risk,TwoS
+109003012,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),301,without High-Risk,TwoS
+110003012,110,[T3.3] PCa low risk grade conservative management and intense monitoring,301,without High-Risk,TwoS
+111003012,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),301,without High-Risk,TwoS
+112003012,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),301,without High-Risk,TwoS
+113003012,113,[T4] PCa treated after conservative management ,301,without High-Risk,TwoS
+114003012,114,[T4.1] Delayed Curative Management,301,without High-Risk,TwoS
+115003012,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),301,without High-Risk,TwoS
+116003012,116,[T4.2] Delayed Palliative Management,301,without High-Risk,TwoS
+117003012,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),301,without High-Risk,TwoS
+118003012,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),301,without High-Risk,TwoS
+101003022,101,[T1] Newly diagnosed Pca ,302,without Low-Risk,TwoS
+102003022,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+103003022,103,[T2] PCa treated right away,302,without Low-Risk,TwoS
+104003022,104,[T2a] PCa treated right away (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+105003022,105,[T3] PCa under conservative management,302,without Low-Risk,TwoS
+106003022,106,[T3.1] PCa high/intermediate risk conservative management,302,without Low-Risk,TwoS
+107003022,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+108003022,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,302,without Low-Risk,TwoS
+109003022,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+110003022,110,[T3.3] PCa low risk grade conservative management and intense monitoring,302,without Low-Risk,TwoS
+111003022,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+112003022,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+113003022,113,[T4] PCa treated after conservative management ,302,without Low-Risk,TwoS
+114003022,114,[T4.1] Delayed Curative Management,302,without Low-Risk,TwoS
+115003022,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+116003022,116,[T4.2] Delayed Palliative Management,302,without Low-Risk,TwoS
+117003022,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+118003022,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),302,without Low-Risk,TwoS
+101003032,101,[T1] Newly diagnosed Pca ,303,without Intermediate-Risk,TwoS
+102003032,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+103003032,103,[T2] PCa treated right away,303,without Intermediate-Risk,TwoS
+104003032,104,[T2a] PCa treated right away (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+105003032,105,[T3] PCa under conservative management,303,without Intermediate-Risk,TwoS
+106003032,106,[T3.1] PCa high/intermediate risk conservative management,303,without Intermediate-Risk,TwoS
+107003032,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+108003032,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,303,without Intermediate-Risk,TwoS
+109003032,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+110003032,110,[T3.3] PCa low risk grade conservative management and intense monitoring,303,without Intermediate-Risk,TwoS
+111003032,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+112003032,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+113003032,113,[T4] PCa treated after conservative management ,303,without Intermediate-Risk,TwoS
+114003032,114,[T4.1] Delayed Curative Management,303,without Intermediate-Risk,TwoS
+115003032,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+116003032,116,[T4.2] Delayed Palliative Management,303,without Intermediate-Risk,TwoS
+117003032,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+118003032,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),303,without Intermediate-Risk,TwoS
+101003042,101,[T1] Newly diagnosed Pca ,304,without Metastatic Dx Extent,TwoS
+102003042,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+103003042,103,[T2] PCa treated right away,304,without Metastatic Dx Extent,TwoS
+104003042,104,[T2a] PCa treated right away (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+105003042,105,[T3] PCa under conservative management,304,without Metastatic Dx Extent,TwoS
+106003042,106,[T3.1] PCa high/intermediate risk conservative management,304,without Metastatic Dx Extent,TwoS
+107003042,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+108003042,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,304,without Metastatic Dx Extent,TwoS
+109003042,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+110003042,110,[T3.3] PCa low risk grade conservative management and intense monitoring,304,without Metastatic Dx Extent,TwoS
+111003042,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+112003042,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+113003042,113,[T4] PCa treated after conservative management ,304,without Metastatic Dx Extent,TwoS
+114003042,114,[T4.1] Delayed Curative Management,304,without Metastatic Dx Extent,TwoS
+115003042,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+116003042,116,[T4.2] Delayed Palliative Management,304,without Metastatic Dx Extent,TwoS
+117003042,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+118003042,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),304,without Metastatic Dx Extent,TwoS
+101003052,101,[T1] Newly diagnosed Pca ,305,without Locally advanced Dx Extent,TwoS
+102003052,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+103003052,103,[T2] PCa treated right away,305,without Locally advanced Dx Extent,TwoS
+104003052,104,[T2a] PCa treated right away (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+105003052,105,[T3] PCa under conservative management,305,without Locally advanced Dx Extent,TwoS
+106003052,106,[T3.1] PCa high/intermediate risk conservative management,305,without Locally advanced Dx Extent,TwoS
+107003052,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+108003052,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,305,without Locally advanced Dx Extent,TwoS
+109003052,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+110003052,110,[T3.3] PCa low risk grade conservative management and intense monitoring,305,without Locally advanced Dx Extent,TwoS
+111003052,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+112003052,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+113003052,113,[T4] PCa treated after conservative management ,305,without Locally advanced Dx Extent,TwoS
+114003052,114,[T4.1] Delayed Curative Management,305,without Locally advanced Dx Extent,TwoS
+115003052,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+116003052,116,[T4.2] Delayed Palliative Management,305,without Locally advanced Dx Extent,TwoS
+117003052,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+118003052,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),305,without Locally advanced Dx Extent,TwoS
+101003062,101,[T1] Newly diagnosed Pca ,306,without Localized Dx Extent,TwoS
+102003062,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+103003062,103,[T2] PCa treated right away,306,without Localized Dx Extent,TwoS
+104003062,104,[T2a] PCa treated right away (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+105003062,105,[T3] PCa under conservative management,306,without Localized Dx Extent,TwoS
+106003062,106,[T3.1] PCa high/intermediate risk conservative management,306,without Localized Dx Extent,TwoS
+107003062,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+108003062,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,306,without Localized Dx Extent,TwoS
+109003062,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+110003062,110,[T3.3] PCa low risk grade conservative management and intense monitoring,306,without Localized Dx Extent,TwoS
+111003062,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+112003062,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+113003062,113,[T4] PCa treated after conservative management ,306,without Localized Dx Extent,TwoS
+114003062,114,[T4.1] Delayed Curative Management,306,without Localized Dx Extent,TwoS
+115003062,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+116003062,116,[T4.2] Delayed Palliative Management,306,without Localized Dx Extent,TwoS
+117003062,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+118003062,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),306,without Localized Dx Extent,TwoS
+101003072,101,[T1] Newly diagnosed Pca ,307,without PSA greater than 20,TwoS
+102003072,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+103003072,103,[T2] PCa treated right away,307,without PSA greater than 20,TwoS
+104003072,104,[T2a] PCa treated right away (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+105003072,105,[T3] PCa under conservative management,307,without PSA greater than 20,TwoS
+106003072,106,[T3.1] PCa high/intermediate risk conservative management,307,without PSA greater than 20,TwoS
+107003072,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+108003072,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,307,without PSA greater than 20,TwoS
+109003072,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+110003072,110,[T3.3] PCa low risk grade conservative management and intense monitoring,307,without PSA greater than 20,TwoS
+111003072,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+112003072,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+113003072,113,[T4] PCa treated after conservative management ,307,without PSA greater than 20,TwoS
+114003072,114,[T4.1] Delayed Curative Management,307,without PSA greater than 20,TwoS
+115003072,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+116003072,116,[T4.2] Delayed Palliative Management,307,without PSA greater than 20,TwoS
+117003072,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+118003072,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),307,without PSA greater than 20,TwoS
+101003082,101,[T1] Newly diagnosed Pca ,308,without PSA less than 10,TwoS
+102003082,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+103003082,103,[T2] PCa treated right away,308,without PSA less than 10,TwoS
+104003082,104,[T2a] PCa treated right away (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+105003082,105,[T3] PCa under conservative management,308,without PSA less than 10,TwoS
+106003082,106,[T3.1] PCa high/intermediate risk conservative management,308,without PSA less than 10,TwoS
+107003082,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+108003082,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,308,without PSA less than 10,TwoS
+109003082,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+110003082,110,[T3.3] PCa low risk grade conservative management and intense monitoring,308,without PSA less than 10,TwoS
+111003082,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+112003082,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+113003082,113,[T4] PCa treated after conservative management ,308,without PSA less than 10,TwoS
+114003082,114,[T4.1] Delayed Curative Management,308,without PSA less than 10,TwoS
+115003082,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+116003082,116,[T4.2] Delayed Palliative Management,308,without PSA less than 10,TwoS
+117003082,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+118003082,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),308,without PSA less than 10,TwoS
+101003092,101,[T1] Newly diagnosed Pca ,309,without PSA 10-20,TwoS
+102003092,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+103003092,103,[T2] PCa treated right away,309,without PSA 10-20,TwoS
+104003092,104,[T2a] PCa treated right away (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+105003092,105,[T3] PCa under conservative management,309,without PSA 10-20,TwoS
+106003092,106,[T3.1] PCa high/intermediate risk conservative management,309,without PSA 10-20,TwoS
+107003092,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+108003092,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,309,without PSA 10-20,TwoS
+109003092,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+110003092,110,[T3.3] PCa low risk grade conservative management and intense monitoring,309,without PSA 10-20,TwoS
+111003092,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+112003092,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+113003092,113,[T4] PCa treated after conservative management ,309,without PSA 10-20,TwoS
+114003092,114,[T4.1] Delayed Curative Management,309,without PSA 10-20,TwoS
+115003092,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+116003092,116,[T4.2] Delayed Palliative Management,309,without PSA 10-20,TwoS
+117003092,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+118003092,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),309,without PSA 10-20,TwoS
+101003102,101,[T1] Newly diagnosed Pca ,310,without Stage T1,TwoS
+102003102,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),310,without Stage T1,TwoS
+103003102,103,[T2] PCa treated right away,310,without Stage T1,TwoS
+104003102,104,[T2a] PCa treated right away (biopsy or PSA GT 50),310,without Stage T1,TwoS
+105003102,105,[T3] PCa under conservative management,310,without Stage T1,TwoS
+106003102,106,[T3.1] PCa high/intermediate risk conservative management,310,without Stage T1,TwoS
+107003102,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),310,without Stage T1,TwoS
+108003102,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,310,without Stage T1,TwoS
+109003102,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),310,without Stage T1,TwoS
+110003102,110,[T3.3] PCa low risk grade conservative management and intense monitoring,310,without Stage T1,TwoS
+111003102,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),310,without Stage T1,TwoS
+112003102,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),310,without Stage T1,TwoS
+113003102,113,[T4] PCa treated after conservative management ,310,without Stage T1,TwoS
+114003102,114,[T4.1] Delayed Curative Management,310,without Stage T1,TwoS
+115003102,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),310,without Stage T1,TwoS
+116003102,116,[T4.2] Delayed Palliative Management,310,without Stage T1,TwoS
+117003102,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),310,without Stage T1,TwoS
+118003102,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),310,without Stage T1,TwoS
+101003112,101,[T1] Newly diagnosed Pca ,311,without Stage T2,TwoS
+102003112,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),311,without Stage T2,TwoS
+103003112,103,[T2] PCa treated right away,311,without Stage T2,TwoS
+104003112,104,[T2a] PCa treated right away (biopsy or PSA GT 50),311,without Stage T2,TwoS
+105003112,105,[T3] PCa under conservative management,311,without Stage T2,TwoS
+106003112,106,[T3.1] PCa high/intermediate risk conservative management,311,without Stage T2,TwoS
+107003112,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),311,without Stage T2,TwoS
+108003112,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,311,without Stage T2,TwoS
+109003112,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),311,without Stage T2,TwoS
+110003112,110,[T3.3] PCa low risk grade conservative management and intense monitoring,311,without Stage T2,TwoS
+111003112,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),311,without Stage T2,TwoS
+112003112,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),311,without Stage T2,TwoS
+113003112,113,[T4] PCa treated after conservative management ,311,without Stage T2,TwoS
+114003112,114,[T4.1] Delayed Curative Management,311,without Stage T2,TwoS
+115003112,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),311,without Stage T2,TwoS
+116003112,116,[T4.2] Delayed Palliative Management,311,without Stage T2,TwoS
+117003112,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),311,without Stage T2,TwoS
+118003112,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),311,without Stage T2,TwoS
+101003122,101,[T1] Newly diagnosed Pca ,312,without Stage T3 or T4,TwoS
+102003122,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+103003122,103,[T2] PCa treated right away,312,without Stage T3 or T4,TwoS
+104003122,104,[T2a] PCa treated right away (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+105003122,105,[T3] PCa under conservative management,312,without Stage T3 or T4,TwoS
+106003122,106,[T3.1] PCa high/intermediate risk conservative management,312,without Stage T3 or T4,TwoS
+107003122,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+108003122,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,312,without Stage T3 or T4,TwoS
+109003122,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+110003122,110,[T3.3] PCa low risk grade conservative management and intense monitoring,312,without Stage T3 or T4,TwoS
+111003122,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+112003122,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+113003122,113,[T4] PCa treated after conservative management ,312,without Stage T3 or T4,TwoS
+114003122,114,[T4.1] Delayed Curative Management,312,without Stage T3 or T4,TwoS
+115003122,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+116003122,116,[T4.2] Delayed Palliative Management,312,without Stage T3 or T4,TwoS
+117003122,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+118003122,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),312,without Stage T3 or T4,TwoS
+101003132,101,[T1] Newly diagnosed Pca ,313,without Physical Therapy,TwoS
+102003132,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+103003132,103,[T2] PCa treated right away,313,without Physical Therapy,TwoS
+104003132,104,[T2a] PCa treated right away (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+105003132,105,[T3] PCa under conservative management,313,without Physical Therapy,TwoS
+106003132,106,[T3.1] PCa high/intermediate risk conservative management,313,without Physical Therapy,TwoS
+107003132,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+108003132,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,313,without Physical Therapy,TwoS
+109003132,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+110003132,110,[T3.3] PCa low risk grade conservative management and intense monitoring,313,without Physical Therapy,TwoS
+111003132,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+112003132,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+113003132,113,[T4] PCa treated after conservative management ,313,without Physical Therapy,TwoS
+114003132,114,[T4.1] Delayed Curative Management,313,without Physical Therapy,TwoS
+115003132,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+116003132,116,[T4.2] Delayed Palliative Management,313,without Physical Therapy,TwoS
+117003132,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+118003132,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),313,without Physical Therapy,TwoS
+101003142,101,[T1] Newly diagnosed Pca ,314,without Grade 1 (GS 2-6),TwoS
+102003142,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+103003142,103,[T2] PCa treated right away,314,without Grade 1 (GS 2-6),TwoS
+104003142,104,[T2a] PCa treated right away (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+105003142,105,[T3] PCa under conservative management,314,without Grade 1 (GS 2-6),TwoS
+106003142,106,[T3.1] PCa high/intermediate risk conservative management,314,without Grade 1 (GS 2-6),TwoS
+107003142,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+108003142,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,314,without Grade 1 (GS 2-6),TwoS
+109003142,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+110003142,110,[T3.3] PCa low risk grade conservative management and intense monitoring,314,without Grade 1 (GS 2-6),TwoS
+111003142,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+112003142,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+113003142,113,[T4] PCa treated after conservative management ,314,without Grade 1 (GS 2-6),TwoS
+114003142,114,[T4.1] Delayed Curative Management,314,without Grade 1 (GS 2-6),TwoS
+115003142,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+116003142,116,[T4.2] Delayed Palliative Management,314,without Grade 1 (GS 2-6),TwoS
+117003142,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+118003142,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),314,without Grade 1 (GS 2-6),TwoS
+101003152,101,[T1] Newly diagnosed Pca ,315,without Grade 2 (GS 7 (3+4)),TwoS
+102003152,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+103003152,103,[T2] PCa treated right away,315,without Grade 2 (GS 7 (3+4)),TwoS
+104003152,104,[T2a] PCa treated right away (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+105003152,105,[T3] PCa under conservative management,315,without Grade 2 (GS 7 (3+4)),TwoS
+106003152,106,[T3.1] PCa high/intermediate risk conservative management,315,without Grade 2 (GS 7 (3+4)),TwoS
+107003152,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+108003152,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,315,without Grade 2 (GS 7 (3+4)),TwoS
+109003152,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+110003152,110,[T3.3] PCa low risk grade conservative management and intense monitoring,315,without Grade 2 (GS 7 (3+4)),TwoS
+111003152,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+112003152,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+113003152,113,[T4] PCa treated after conservative management ,315,without Grade 2 (GS 7 (3+4)),TwoS
+114003152,114,[T4.1] Delayed Curative Management,315,without Grade 2 (GS 7 (3+4)),TwoS
+115003152,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+116003152,116,[T4.2] Delayed Palliative Management,315,without Grade 2 (GS 7 (3+4)),TwoS
+117003152,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+118003152,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),315,without Grade 2 (GS 7 (3+4)),TwoS
+101003162,101,[T1] Newly diagnosed Pca ,316,without Grade 3 (GS 7 (4+3)),TwoS
+102003162,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+103003162,103,[T2] PCa treated right away,316,without Grade 3 (GS 7 (4+3)),TwoS
+104003162,104,[T2a] PCa treated right away (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+105003162,105,[T3] PCa under conservative management,316,without Grade 3 (GS 7 (4+3)),TwoS
+106003162,106,[T3.1] PCa high/intermediate risk conservative management,316,without Grade 3 (GS 7 (4+3)),TwoS
+107003162,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+108003162,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,316,without Grade 3 (GS 7 (4+3)),TwoS
+109003162,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+110003162,110,[T3.3] PCa low risk grade conservative management and intense monitoring,316,without Grade 3 (GS 7 (4+3)),TwoS
+111003162,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+112003162,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+113003162,113,[T4] PCa treated after conservative management ,316,without Grade 3 (GS 7 (4+3)),TwoS
+114003162,114,[T4.1] Delayed Curative Management,316,without Grade 3 (GS 7 (4+3)),TwoS
+115003162,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+116003162,116,[T4.2] Delayed Palliative Management,316,without Grade 3 (GS 7 (4+3)),TwoS
+117003162,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+118003162,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),316,without Grade 3 (GS 7 (4+3)),TwoS
+101003172,101,[T1] Newly diagnosed Pca ,317,without Grade 4 (GS 8),TwoS
+102003172,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+103003172,103,[T2] PCa treated right away,317,without Grade 4 (GS 8),TwoS
+104003172,104,[T2a] PCa treated right away (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+105003172,105,[T3] PCa under conservative management,317,without Grade 4 (GS 8),TwoS
+106003172,106,[T3.1] PCa high/intermediate risk conservative management,317,without Grade 4 (GS 8),TwoS
+107003172,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+108003172,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,317,without Grade 4 (GS 8),TwoS
+109003172,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+110003172,110,[T3.3] PCa low risk grade conservative management and intense monitoring,317,without Grade 4 (GS 8),TwoS
+111003172,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+112003172,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+113003172,113,[T4] PCa treated after conservative management ,317,without Grade 4 (GS 8),TwoS
+114003172,114,[T4.1] Delayed Curative Management,317,without Grade 4 (GS 8),TwoS
+115003172,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+116003172,116,[T4.2] Delayed Palliative Management,317,without Grade 4 (GS 8),TwoS
+117003172,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+118003172,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),317,without Grade 4 (GS 8),TwoS
+101003182,101,[T1] Newly diagnosed Pca ,318,without Grade 5 (GS 9-10),TwoS
+102003182,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+103003182,103,[T2] PCa treated right away,318,without Grade 5 (GS 9-10),TwoS
+104003182,104,[T2a] PCa treated right away (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+105003182,105,[T3] PCa under conservative management,318,without Grade 5 (GS 9-10),TwoS
+106003182,106,[T3.1] PCa high/intermediate risk conservative management,318,without Grade 5 (GS 9-10),TwoS
+107003182,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+108003182,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,318,without Grade 5 (GS 9-10),TwoS
+109003182,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+110003182,110,[T3.3] PCa low risk grade conservative management and intense monitoring,318,without Grade 5 (GS 9-10),TwoS
+111003182,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+112003182,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+113003182,113,[T4] PCa treated after conservative management ,318,without Grade 5 (GS 9-10),TwoS
+114003182,114,[T4.1] Delayed Curative Management,318,without Grade 5 (GS 9-10),TwoS
+115003182,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+116003182,116,[T4.2] Delayed Palliative Management,318,without Grade 5 (GS 9-10),TwoS
+117003182,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+118003182,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),318,without Grade 5 (GS 9-10),TwoS
+101003192,101,[T1] Newly diagnosed Pca ,319,without Family History of PCa,TwoS
+102003192,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+103003192,103,[T2] PCa treated right away,319,without Family History of PCa,TwoS
+104003192,104,[T2a] PCa treated right away (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+105003192,105,[T3] PCa under conservative management,319,without Family History of PCa,TwoS
+106003192,106,[T3.1] PCa high/intermediate risk conservative management,319,without Family History of PCa,TwoS
+107003192,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+108003192,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,319,without Family History of PCa,TwoS
+109003192,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+110003192,110,[T3.3] PCa low risk grade conservative management and intense monitoring,319,without Family History of PCa,TwoS
+111003192,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+112003192,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+113003192,113,[T4] PCa treated after conservative management ,319,without Family History of PCa,TwoS
+114003192,114,[T4.1] Delayed Curative Management,319,without Family History of PCa,TwoS
+115003192,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+116003192,116,[T4.2] Delayed Palliative Management,319,without Family History of PCa,TwoS
+117003192,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+118003192,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),319,without Family History of PCa,TwoS
+101003202,101,[T1] Newly diagnosed Pca ,320,without Mutations,TwoS
+102003202,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),320,without Mutations,TwoS
+103003202,103,[T2] PCa treated right away,320,without Mutations,TwoS
+104003202,104,[T2a] PCa treated right away (biopsy or PSA GT 50),320,without Mutations,TwoS
+105003202,105,[T3] PCa under conservative management,320,without Mutations,TwoS
+106003202,106,[T3.1] PCa high/intermediate risk conservative management,320,without Mutations,TwoS
+107003202,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),320,without Mutations,TwoS
+108003202,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,320,without Mutations,TwoS
+109003202,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),320,without Mutations,TwoS
+110003202,110,[T3.3] PCa low risk grade conservative management and intense monitoring,320,without Mutations,TwoS
+111003202,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),320,without Mutations,TwoS
+112003202,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),320,without Mutations,TwoS
+113003202,113,[T4] PCa treated after conservative management ,320,without Mutations,TwoS
+114003202,114,[T4.1] Delayed Curative Management,320,without Mutations,TwoS
+115003202,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),320,without Mutations,TwoS
+116003202,116,[T4.2] Delayed Palliative Management,320,without Mutations,TwoS
+117003202,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),320,without Mutations,TwoS
+118003202,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),320,without Mutations,TwoS
+101003212,101,[T1] Newly diagnosed Pca ,321,without Age below 55,TwoS
+102003212,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),321,without Age below 55,TwoS
+103003212,103,[T2] PCa treated right away,321,without Age below 55,TwoS
+104003212,104,[T2a] PCa treated right away (biopsy or PSA GT 50),321,without Age below 55,TwoS
+105003212,105,[T3] PCa under conservative management,321,without Age below 55,TwoS
+106003212,106,[T3.1] PCa high/intermediate risk conservative management,321,without Age below 55,TwoS
+107003212,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),321,without Age below 55,TwoS
+108003212,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,321,without Age below 55,TwoS
+109003212,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),321,without Age below 55,TwoS
+110003212,110,[T3.3] PCa low risk grade conservative management and intense monitoring,321,without Age below 55,TwoS
+111003212,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),321,without Age below 55,TwoS
+112003212,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),321,without Age below 55,TwoS
+113003212,113,[T4] PCa treated after conservative management ,321,without Age below 55,TwoS
+114003212,114,[T4.1] Delayed Curative Management,321,without Age below 55,TwoS
+115003212,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),321,without Age below 55,TwoS
+116003212,116,[T4.2] Delayed Palliative Management,321,without Age below 55,TwoS
+117003212,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),321,without Age below 55,TwoS
+118003212,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),321,without Age below 55,TwoS
+101003222,101,[T1] Newly diagnosed Pca ,322,without Age 55-80,TwoS
+102003222,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+103003222,103,[T2] PCa treated right away,322,without Age 55-80,TwoS
+104003222,104,[T2a] PCa treated right away (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+105003222,105,[T3] PCa under conservative management,322,without Age 55-80,TwoS
+106003222,106,[T3.1] PCa high/intermediate risk conservative management,322,without Age 55-80,TwoS
+107003222,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+108003222,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,322,without Age 55-80,TwoS
+109003222,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+110003222,110,[T3.3] PCa low risk grade conservative management and intense monitoring,322,without Age 55-80,TwoS
+111003222,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+112003222,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+113003222,113,[T4] PCa treated after conservative management ,322,without Age 55-80,TwoS
+114003222,114,[T4.1] Delayed Curative Management,322,without Age 55-80,TwoS
+115003222,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+116003222,116,[T4.2] Delayed Palliative Management,322,without Age 55-80,TwoS
+117003222,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+118003222,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),322,without Age 55-80,TwoS
+101003232,101,[T1] Newly diagnosed Pca ,323,without Age above 80,TwoS
+102003232,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),323,without Age above 80,TwoS
+103003232,103,[T2] PCa treated right away,323,without Age above 80,TwoS
+104003232,104,[T2a] PCa treated right away (biopsy or PSA GT 50),323,without Age above 80,TwoS
+105003232,105,[T3] PCa under conservative management,323,without Age above 80,TwoS
+106003232,106,[T3.1] PCa high/intermediate risk conservative management,323,without Age above 80,TwoS
+107003232,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),323,without Age above 80,TwoS
+108003232,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,323,without Age above 80,TwoS
+109003232,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),323,without Age above 80,TwoS
+110003232,110,[T3.3] PCa low risk grade conservative management and intense monitoring,323,without Age above 80,TwoS
+111003232,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),323,without Age above 80,TwoS
+112003232,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),323,without Age above 80,TwoS
+113003232,113,[T4] PCa treated after conservative management ,323,without Age above 80,TwoS
+114003232,114,[T4.1] Delayed Curative Management,323,without Age above 80,TwoS
+115003232,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),323,without Age above 80,TwoS
+116003232,116,[T4.2] Delayed Palliative Management,323,without Age above 80,TwoS
+117003232,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),323,without Age above 80,TwoS
+118003232,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),323,without Age above 80,TwoS
+101003242,101,[T1] Newly diagnosed Pca ,324,without Charlson Comorbidity Index (cut off 0),TwoS
+102003242,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+103003242,103,[T2] PCa treated right away,324,without Charlson Comorbidity Index (cut off 0),TwoS
+104003242,104,[T2a] PCa treated right away (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+105003242,105,[T3] PCa under conservative management,324,without Charlson Comorbidity Index (cut off 0),TwoS
+106003242,106,[T3.1] PCa high/intermediate risk conservative management,324,without Charlson Comorbidity Index (cut off 0),TwoS
+107003242,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+108003242,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,324,without Charlson Comorbidity Index (cut off 0),TwoS
+109003242,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+110003242,110,[T3.3] PCa low risk grade conservative management and intense monitoring,324,without Charlson Comorbidity Index (cut off 0),TwoS
+111003242,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+112003242,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+113003242,113,[T4] PCa treated after conservative management ,324,without Charlson Comorbidity Index (cut off 0),TwoS
+114003242,114,[T4.1] Delayed Curative Management,324,without Charlson Comorbidity Index (cut off 0),TwoS
+115003242,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+116003242,116,[T4.2] Delayed Palliative Management,324,without Charlson Comorbidity Index (cut off 0),TwoS
+117003242,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+118003242,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),324,without Charlson Comorbidity Index (cut off 0),TwoS
+101003252,101,[T1] Newly diagnosed Pca ,325,without Charlson Comorbidity Index (cut off 1),TwoS
+102003252,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+103003252,103,[T2] PCa treated right away,325,without Charlson Comorbidity Index (cut off 1),TwoS
+104003252,104,[T2a] PCa treated right away (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+105003252,105,[T3] PCa under conservative management,325,without Charlson Comorbidity Index (cut off 1),TwoS
+106003252,106,[T3.1] PCa high/intermediate risk conservative management,325,without Charlson Comorbidity Index (cut off 1),TwoS
+107003252,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+108003252,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,325,without Charlson Comorbidity Index (cut off 1),TwoS
+109003252,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+110003252,110,[T3.3] PCa low risk grade conservative management and intense monitoring,325,without Charlson Comorbidity Index (cut off 1),TwoS
+111003252,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+112003252,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+113003252,113,[T4] PCa treated after conservative management ,325,without Charlson Comorbidity Index (cut off 1),TwoS
+114003252,114,[T4.1] Delayed Curative Management,325,without Charlson Comorbidity Index (cut off 1),TwoS
+115003252,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+116003252,116,[T4.2] Delayed Palliative Management,325,without Charlson Comorbidity Index (cut off 1),TwoS
+117003252,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+118003252,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),325,without Charlson Comorbidity Index (cut off 1),TwoS
+101003262,101,[T1] Newly diagnosed Pca ,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+102003262,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+103003262,103,[T2] PCa treated right away,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+104003262,104,[T2a] PCa treated right away (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+105003262,105,[T3] PCa under conservative management,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+106003262,106,[T3.1] PCa high/intermediate risk conservative management,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+107003262,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+108003262,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+109003262,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+110003262,110,[T3.3] PCa low risk grade conservative management and intense monitoring,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+111003262,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+112003262,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+113003262,113,[T4] PCa treated after conservative management ,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+114003262,114,[T4.1] Delayed Curative Management,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+115003262,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+116003262,116,[T4.2] Delayed Palliative Management,326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+117003262,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+118003262,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),326,without Charlson Comorbidity Index (cut off  greater or equals 2 ),TwoS
+101003272,101,[T1] Newly diagnosed Pca ,327,without Other malignancies,TwoS
+102003272,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+103003272,103,[T2] PCa treated right away,327,without Other malignancies,TwoS
+104003272,104,[T2a] PCa treated right away (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+105003272,105,[T3] PCa under conservative management,327,without Other malignancies,TwoS
+106003272,106,[T3.1] PCa high/intermediate risk conservative management,327,without Other malignancies,TwoS
+107003272,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+108003272,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,327,without Other malignancies,TwoS
+109003272,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+110003272,110,[T3.3] PCa low risk grade conservative management and intense monitoring,327,without Other malignancies,TwoS
+111003272,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+112003272,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+113003272,113,[T4] PCa treated after conservative management ,327,without Other malignancies,TwoS
+114003272,114,[T4.1] Delayed Curative Management,327,without Other malignancies,TwoS
+115003272,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+116003272,116,[T4.2] Delayed Palliative Management,327,without Other malignancies,TwoS
+117003272,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+118003272,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),327,without Other malignancies,TwoS
+101003282,101,[T1] Newly diagnosed Pca ,328,without Total Cardiovascular Disease Event,TwoS
+102003282,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+103003282,103,[T2] PCa treated right away,328,without Total Cardiovascular Disease Event,TwoS
+104003282,104,[T2a] PCa treated right away (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+105003282,105,[T3] PCa under conservative management,328,without Total Cardiovascular Disease Event,TwoS
+106003282,106,[T3.1] PCa high/intermediate risk conservative management,328,without Total Cardiovascular Disease Event,TwoS
+107003282,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+108003282,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,328,without Total Cardiovascular Disease Event,TwoS
+109003282,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+110003282,110,[T3.3] PCa low risk grade conservative management and intense monitoring,328,without Total Cardiovascular Disease Event,TwoS
+111003282,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+112003282,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+113003282,113,[T4] PCa treated after conservative management ,328,without Total Cardiovascular Disease Event,TwoS
+114003282,114,[T4.1] Delayed Curative Management,328,without Total Cardiovascular Disease Event,TwoS
+115003282,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+116003282,116,[T4.2] Delayed Palliative Management,328,without Total Cardiovascular Disease Event,TwoS
+117003282,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+118003282,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),328,without Total Cardiovascular Disease Event,TwoS
+101003292,101,[T1] Newly diagnosed Pca ,329,without Stroke,TwoS
+102003292,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),329,without Stroke,TwoS
+103003292,103,[T2] PCa treated right away,329,without Stroke,TwoS
+104003292,104,[T2a] PCa treated right away (biopsy or PSA GT 50),329,without Stroke,TwoS
+105003292,105,[T3] PCa under conservative management,329,without Stroke,TwoS
+106003292,106,[T3.1] PCa high/intermediate risk conservative management,329,without Stroke,TwoS
+107003292,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),329,without Stroke,TwoS
+108003292,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,329,without Stroke,TwoS
+109003292,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),329,without Stroke,TwoS
+110003292,110,[T3.3] PCa low risk grade conservative management and intense monitoring,329,without Stroke,TwoS
+111003292,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),329,without Stroke,TwoS
+112003292,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),329,without Stroke,TwoS
+113003292,113,[T4] PCa treated after conservative management ,329,without Stroke,TwoS
+114003292,114,[T4.1] Delayed Curative Management,329,without Stroke,TwoS
+115003292,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),329,without Stroke,TwoS
+116003292,116,[T4.2] Delayed Palliative Management,329,without Stroke,TwoS
+117003292,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),329,without Stroke,TwoS
+118003292,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),329,without Stroke,TwoS
+101003302,101,[T1] Newly diagnosed Pca ,330,without Type 2 Diabetes,TwoS
+102003302,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+103003302,103,[T2] PCa treated right away,330,without Type 2 Diabetes,TwoS
+104003302,104,[T2a] PCa treated right away (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+105003302,105,[T3] PCa under conservative management,330,without Type 2 Diabetes,TwoS
+106003302,106,[T3.1] PCa high/intermediate risk conservative management,330,without Type 2 Diabetes,TwoS
+107003302,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+108003302,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,330,without Type 2 Diabetes,TwoS
+109003302,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+110003302,110,[T3.3] PCa low risk grade conservative management and intense monitoring,330,without Type 2 Diabetes,TwoS
+111003302,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+112003302,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+113003302,113,[T4] PCa treated after conservative management ,330,without Type 2 Diabetes,TwoS
+114003302,114,[T4.1] Delayed Curative Management,330,without Type 2 Diabetes,TwoS
+115003302,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+116003302,116,[T4.2] Delayed Palliative Management,330,without Type 2 Diabetes,TwoS
+117003302,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+118003302,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),330,without Type 2 Diabetes,TwoS
+101003312,101,[T1] Newly diagnosed Pca ,331,without Hypertension,TwoS
+102003312,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),331,without Hypertension,TwoS
+103003312,103,[T2] PCa treated right away,331,without Hypertension,TwoS
+104003312,104,[T2a] PCa treated right away (biopsy or PSA GT 50),331,without Hypertension,TwoS
+105003312,105,[T3] PCa under conservative management,331,without Hypertension,TwoS
+106003312,106,[T3.1] PCa high/intermediate risk conservative management,331,without Hypertension,TwoS
+107003312,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),331,without Hypertension,TwoS
+108003312,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,331,without Hypertension,TwoS
+109003312,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),331,without Hypertension,TwoS
+110003312,110,[T3.3] PCa low risk grade conservative management and intense monitoring,331,without Hypertension,TwoS
+111003312,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),331,without Hypertension,TwoS
+112003312,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),331,without Hypertension,TwoS
+113003312,113,[T4] PCa treated after conservative management ,331,without Hypertension,TwoS
+114003312,114,[T4.1] Delayed Curative Management,331,without Hypertension,TwoS
+115003312,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),331,without Hypertension,TwoS
+116003312,116,[T4.2] Delayed Palliative Management,331,without Hypertension,TwoS
+117003312,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),331,without Hypertension,TwoS
+118003312,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),331,without Hypertension,TwoS
+101003322,101,[T1] Newly diagnosed Pca ,332,without Obesity,TwoS
+102003322,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),332,without Obesity,TwoS
+103003322,103,[T2] PCa treated right away,332,without Obesity,TwoS
+104003322,104,[T2a] PCa treated right away (biopsy or PSA GT 50),332,without Obesity,TwoS
+105003322,105,[T3] PCa under conservative management,332,without Obesity,TwoS
+106003322,106,[T3.1] PCa high/intermediate risk conservative management,332,without Obesity,TwoS
+107003322,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),332,without Obesity,TwoS
+108003322,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,332,without Obesity,TwoS
+109003322,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),332,without Obesity,TwoS
+110003322,110,[T3.3] PCa low risk grade conservative management and intense monitoring,332,without Obesity,TwoS
+111003322,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),332,without Obesity,TwoS
+112003322,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),332,without Obesity,TwoS
+113003322,113,[T4] PCa treated after conservative management ,332,without Obesity,TwoS
+114003322,114,[T4.1] Delayed Curative Management,332,without Obesity,TwoS
+115003322,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),332,without Obesity,TwoS
+116003322,116,[T4.2] Delayed Palliative Management,332,without Obesity,TwoS
+117003322,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),332,without Obesity,TwoS
+118003322,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),332,without Obesity,TwoS
+101003332,101,[T1] Newly diagnosed Pca ,333,without VTE,TwoS
+102003332,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),333,without VTE,TwoS
+103003332,103,[T2] PCa treated right away,333,without VTE,TwoS
+104003332,104,[T2a] PCa treated right away (biopsy or PSA GT 50),333,without VTE,TwoS
+105003332,105,[T3] PCa under conservative management,333,without VTE,TwoS
+106003332,106,[T3.1] PCa high/intermediate risk conservative management,333,without VTE,TwoS
+107003332,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),333,without VTE,TwoS
+108003332,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,333,without VTE,TwoS
+109003332,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),333,without VTE,TwoS
+110003332,110,[T3.3] PCa low risk grade conservative management and intense monitoring,333,without VTE,TwoS
+111003332,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),333,without VTE,TwoS
+112003332,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),333,without VTE,TwoS
+113003332,113,[T4] PCa treated after conservative management ,333,without VTE,TwoS
+114003332,114,[T4.1] Delayed Curative Management,333,without VTE,TwoS
+115003332,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),333,without VTE,TwoS
+116003332,116,[T4.2] Delayed Palliative Management,333,without VTE,TwoS
+117003332,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),333,without VTE,TwoS
+118003332,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),333,without VTE,TwoS
+101000011,101,[T1] Newly diagnosed Pca ,1,with Full 30-day follow up,TwS
+102000011,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+103000011,103,[T2] PCa treated right away,1,with Full 30-day follow up,TwS
+104000011,104,[T2a] PCa treated right away (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+105000011,105,[T3] PCa under conservative management,1,with Full 30-day follow up,TwS
+106000011,106,[T3.1] PCa high/intermediate risk conservative management,1,with Full 30-day follow up,TwS
+107000011,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+108000011,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,1,with Full 30-day follow up,TwS
+109000011,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+110000011,110,[T3.3] PCa low risk grade conservative management and intense monitoring,1,with Full 30-day follow up,TwS
+111000011,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+112000011,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+113000011,113,[T4] PCa treated after conservative management ,1,with Full 30-day follow up,TwS
+114000011,114,[T4.1] Delayed Curative Management,1,with Full 30-day follow up,TwS
+115000011,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+116000011,116,[T4.2] Delayed Palliative Management,1,with Full 30-day follow up,TwS
+117000011,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+118000011,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),1,with Full 30-day follow up,TwS
+101000021,101,[T1] Newly diagnosed Pca ,2,with < 30-day follow up,TwS
+102000021,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+103000021,103,[T2] PCa treated right away,2,with < 30-day follow up,TwS
+104000021,104,[T2a] PCa treated right away (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+105000021,105,[T3] PCa under conservative management,2,with < 30-day follow up,TwS
+106000021,106,[T3.1] PCa high/intermediate risk conservative management,2,with < 30-day follow up,TwS
+107000021,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+108000021,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,2,with < 30-day follow up,TwS
+109000021,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+110000021,110,[T3.3] PCa low risk grade conservative management and intense monitoring,2,with < 30-day follow up,TwS
+111000021,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+112000021,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+113000021,113,[T4] PCa treated after conservative management ,2,with < 30-day follow up,TwS
+114000021,114,[T4.1] Delayed Curative Management,2,with < 30-day follow up,TwS
+115000021,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+116000021,116,[T4.2] Delayed Palliative Management,2,with < 30-day follow up,TwS
+117000021,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+118000021,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),2,with < 30-day follow up,TwS
+101000031,101,[T1] Newly diagnosed Pca ,3,with Sex = Female,TwS
+102000031,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),3,with Sex = Female,TwS
+103000031,103,[T2] PCa treated right away,3,with Sex = Female,TwS
+104000031,104,[T2a] PCa treated right away (biopsy or PSA GT 50),3,with Sex = Female,TwS
+105000031,105,[T3] PCa under conservative management,3,with Sex = Female,TwS
+106000031,106,[T3.1] PCa high/intermediate risk conservative management,3,with Sex = Female,TwS
+107000031,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),3,with Sex = Female,TwS
+108000031,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,3,with Sex = Female,TwS
+109000031,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),3,with Sex = Female,TwS
+110000031,110,[T3.3] PCa low risk grade conservative management and intense monitoring,3,with Sex = Female,TwS
+111000031,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),3,with Sex = Female,TwS
+112000031,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),3,with Sex = Female,TwS
+113000031,113,[T4] PCa treated after conservative management ,3,with Sex = Female,TwS
+114000031,114,[T4.1] Delayed Curative Management,3,with Sex = Female,TwS
+115000031,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),3,with Sex = Female,TwS
+116000031,116,[T4.2] Delayed Palliative Management,3,with Sex = Female,TwS
+117000031,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),3,with Sex = Female,TwS
+118000031,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),3,with Sex = Female,TwS
+101000041,101,[T1] Newly diagnosed Pca ,4,with Sex = Male,TwS
+102000041,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),4,with Sex = Male,TwS
+103000041,103,[T2] PCa treated right away,4,with Sex = Male,TwS
+104000041,104,[T2a] PCa treated right away (biopsy or PSA GT 50),4,with Sex = Male,TwS
+105000041,105,[T3] PCa under conservative management,4,with Sex = Male,TwS
+106000041,106,[T3.1] PCa high/intermediate risk conservative management,4,with Sex = Male,TwS
+107000041,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),4,with Sex = Male,TwS
+108000041,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,4,with Sex = Male,TwS
+109000041,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),4,with Sex = Male,TwS
+110000041,110,[T3.3] PCa low risk grade conservative management and intense monitoring,4,with Sex = Male,TwS
+111000041,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),4,with Sex = Male,TwS
+112000041,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),4,with Sex = Male,TwS
+113000041,113,[T4] PCa treated after conservative management ,4,with Sex = Male,TwS
+114000041,114,[T4.1] Delayed Curative Management,4,with Sex = Male,TwS
+115000041,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),4,with Sex = Male,TwS
+116000041,116,[T4.2] Delayed Palliative Management,4,with Sex = Male,TwS
+117000041,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),4,with Sex = Male,TwS
+118000041,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),4,with Sex = Male,TwS
+101000051,101,[T1] Newly diagnosed Pca ,5,with Age >= 18,TwS
+102000051,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),5,with Age >= 18,TwS
+103000051,103,[T2] PCa treated right away,5,with Age >= 18,TwS
+104000051,104,[T2a] PCa treated right away (biopsy or PSA GT 50),5,with Age >= 18,TwS
+105000051,105,[T3] PCa under conservative management,5,with Age >= 18,TwS
+106000051,106,[T3.1] PCa high/intermediate risk conservative management,5,with Age >= 18,TwS
+107000051,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),5,with Age >= 18,TwS
+108000051,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,5,with Age >= 18,TwS
+109000051,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),5,with Age >= 18,TwS
+110000051,110,[T3.3] PCa low risk grade conservative management and intense monitoring,5,with Age >= 18,TwS
+111000051,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),5,with Age >= 18,TwS
+112000051,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),5,with Age >= 18,TwS
+113000051,113,[T4] PCa treated after conservative management ,5,with Age >= 18,TwS
+114000051,114,[T4.1] Delayed Curative Management,5,with Age >= 18,TwS
+115000051,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),5,with Age >= 18,TwS
+116000051,116,[T4.2] Delayed Palliative Management,5,with Age >= 18,TwS
+117000051,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),5,with Age >= 18,TwS
+118000051,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),5,with Age >= 18,TwS
+101000061,101,[T1] Newly diagnosed Pca ,6,with Age < 18,TwS
+102000061,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),6,with Age < 18,TwS
+103000061,103,[T2] PCa treated right away,6,with Age < 18,TwS
+104000061,104,[T2a] PCa treated right away (biopsy or PSA GT 50),6,with Age < 18,TwS
+105000061,105,[T3] PCa under conservative management,6,with Age < 18,TwS
+106000061,106,[T3.1] PCa high/intermediate risk conservative management,6,with Age < 18,TwS
+107000061,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),6,with Age < 18,TwS
+108000061,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,6,with Age < 18,TwS
+109000061,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),6,with Age < 18,TwS
+110000061,110,[T3.3] PCa low risk grade conservative management and intense monitoring,6,with Age < 18,TwS
+111000061,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),6,with Age < 18,TwS
+112000061,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),6,with Age < 18,TwS
+113000061,113,[T4] PCa treated after conservative management ,6,with Age < 18,TwS
+114000061,114,[T4.1] Delayed Curative Management,6,with Age < 18,TwS
+115000061,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),6,with Age < 18,TwS
+116000061,116,[T4.2] Delayed Palliative Management,6,with Age < 18,TwS
+117000061,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),6,with Age < 18,TwS
+118000061,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),6,with Age < 18,TwS
+101000071,101,[T1] Newly diagnosed Pca ,7,with Age >= 65,TwS
+102000071,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),7,with Age >= 65,TwS
+103000071,103,[T2] PCa treated right away,7,with Age >= 65,TwS
+104000071,104,[T2a] PCa treated right away (biopsy or PSA GT 50),7,with Age >= 65,TwS
+105000071,105,[T3] PCa under conservative management,7,with Age >= 65,TwS
+106000071,106,[T3.1] PCa high/intermediate risk conservative management,7,with Age >= 65,TwS
+107000071,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),7,with Age >= 65,TwS
+108000071,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,7,with Age >= 65,TwS
+109000071,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),7,with Age >= 65,TwS
+110000071,110,[T3.3] PCa low risk grade conservative management and intense monitoring,7,with Age >= 65,TwS
+111000071,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),7,with Age >= 65,TwS
+112000071,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),7,with Age >= 65,TwS
+113000071,113,[T4] PCa treated after conservative management ,7,with Age >= 65,TwS
+114000071,114,[T4.1] Delayed Curative Management,7,with Age >= 65,TwS
+115000071,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),7,with Age >= 65,TwS
+116000071,116,[T4.2] Delayed Palliative Management,7,with Age >= 65,TwS
+117000071,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),7,with Age >= 65,TwS
+118000071,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),7,with Age >= 65,TwS
+101000081,101,[T1] Newly diagnosed Pca ,8,with Age < 65,TwS
+102000081,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),8,with Age < 65,TwS
+103000081,103,[T2] PCa treated right away,8,with Age < 65,TwS
+104000081,104,[T2a] PCa treated right away (biopsy or PSA GT 50),8,with Age < 65,TwS
+105000081,105,[T3] PCa under conservative management,8,with Age < 65,TwS
+106000081,106,[T3.1] PCa high/intermediate risk conservative management,8,with Age < 65,TwS
+107000081,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),8,with Age < 65,TwS
+108000081,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,8,with Age < 65,TwS
+109000081,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),8,with Age < 65,TwS
+110000081,110,[T3.3] PCa low risk grade conservative management and intense monitoring,8,with Age < 65,TwS
+111000081,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),8,with Age < 65,TwS
+112000081,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),8,with Age < 65,TwS
+113000081,113,[T4] PCa treated after conservative management ,8,with Age < 65,TwS
+114000081,114,[T4.1] Delayed Curative Management,8,with Age < 65,TwS
+115000081,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),8,with Age < 65,TwS
+116000081,116,[T4.2] Delayed Palliative Management,8,with Age < 65,TwS
+117000081,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),8,with Age < 65,TwS
+118000081,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),8,with Age < 65,TwS
+101000091,101,[T1] Newly diagnosed Pca ,9,with Black or African American,TwS
+102000091,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),9,with Black or African American,TwS
+103000091,103,[T2] PCa treated right away,9,with Black or African American,TwS
+104000091,104,[T2a] PCa treated right away (biopsy or PSA GT 50),9,with Black or African American,TwS
+105000091,105,[T3] PCa under conservative management,9,with Black or African American,TwS
+106000091,106,[T3.1] PCa high/intermediate risk conservative management,9,with Black or African American,TwS
+107000091,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),9,with Black or African American,TwS
+108000091,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,9,with Black or African American,TwS
+109000091,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),9,with Black or African American,TwS
+110000091,110,[T3.3] PCa low risk grade conservative management and intense monitoring,9,with Black or African American,TwS
+111000091,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),9,with Black or African American,TwS
+112000091,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),9,with Black or African American,TwS
+113000091,113,[T4] PCa treated after conservative management ,9,with Black or African American,TwS
+114000091,114,[T4.1] Delayed Curative Management,9,with Black or African American,TwS
+115000091,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),9,with Black or African American,TwS
+116000091,116,[T4.2] Delayed Palliative Management,9,with Black or African American,TwS
+117000091,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),9,with Black or African American,TwS
+118000091,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),9,with Black or African American,TwS
+101000101,101,[T1] Newly diagnosed Pca ,10,with White,TwS
+102000101,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),10,with White,TwS
+103000101,103,[T2] PCa treated right away,10,with White,TwS
+104000101,104,[T2a] PCa treated right away (biopsy or PSA GT 50),10,with White,TwS
+105000101,105,[T3] PCa under conservative management,10,with White,TwS
+106000101,106,[T3.1] PCa high/intermediate risk conservative management,10,with White,TwS
+107000101,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),10,with White,TwS
+108000101,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,10,with White,TwS
+109000101,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),10,with White,TwS
+110000101,110,[T3.3] PCa low risk grade conservative management and intense monitoring,10,with White,TwS
+111000101,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),10,with White,TwS
+112000101,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),10,with White,TwS
+113000101,113,[T4] PCa treated after conservative management ,10,with White,TwS
+114000101,114,[T4.1] Delayed Curative Management,10,with White,TwS
+115000101,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),10,with White,TwS
+116000101,116,[T4.2] Delayed Palliative Management,10,with White,TwS
+117000101,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),10,with White,TwS
+118000101,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),10,with White,TwS
+101003011,101,[T1] Newly diagnosed Pca ,301,with High-Risk,TwS
+102003011,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),301,with High-Risk,TwS
+103003011,103,[T2] PCa treated right away,301,with High-Risk,TwS
+104003011,104,[T2a] PCa treated right away (biopsy or PSA GT 50),301,with High-Risk,TwS
+105003011,105,[T3] PCa under conservative management,301,with High-Risk,TwS
+106003011,106,[T3.1] PCa high/intermediate risk conservative management,301,with High-Risk,TwS
+107003011,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),301,with High-Risk,TwS
+108003011,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,301,with High-Risk,TwS
+109003011,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),301,with High-Risk,TwS
+110003011,110,[T3.3] PCa low risk grade conservative management and intense monitoring,301,with High-Risk,TwS
+111003011,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),301,with High-Risk,TwS
+112003011,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),301,with High-Risk,TwS
+113003011,113,[T4] PCa treated after conservative management ,301,with High-Risk,TwS
+114003011,114,[T4.1] Delayed Curative Management,301,with High-Risk,TwS
+115003011,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),301,with High-Risk,TwS
+116003011,116,[T4.2] Delayed Palliative Management,301,with High-Risk,TwS
+117003011,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),301,with High-Risk,TwS
+118003011,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),301,with High-Risk,TwS
+101003021,101,[T1] Newly diagnosed Pca ,302,with Low-Risk,TwS
+102003021,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),302,with Low-Risk,TwS
+103003021,103,[T2] PCa treated right away,302,with Low-Risk,TwS
+104003021,104,[T2a] PCa treated right away (biopsy or PSA GT 50),302,with Low-Risk,TwS
+105003021,105,[T3] PCa under conservative management,302,with Low-Risk,TwS
+106003021,106,[T3.1] PCa high/intermediate risk conservative management,302,with Low-Risk,TwS
+107003021,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),302,with Low-Risk,TwS
+108003021,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,302,with Low-Risk,TwS
+109003021,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),302,with Low-Risk,TwS
+110003021,110,[T3.3] PCa low risk grade conservative management and intense monitoring,302,with Low-Risk,TwS
+111003021,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),302,with Low-Risk,TwS
+112003021,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),302,with Low-Risk,TwS
+113003021,113,[T4] PCa treated after conservative management ,302,with Low-Risk,TwS
+114003021,114,[T4.1] Delayed Curative Management,302,with Low-Risk,TwS
+115003021,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),302,with Low-Risk,TwS
+116003021,116,[T4.2] Delayed Palliative Management,302,with Low-Risk,TwS
+117003021,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),302,with Low-Risk,TwS
+118003021,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),302,with Low-Risk,TwS
+101003031,101,[T1] Newly diagnosed Pca ,303,with Intermediate-Risk,TwS
+102003031,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+103003031,103,[T2] PCa treated right away,303,with Intermediate-Risk,TwS
+104003031,104,[T2a] PCa treated right away (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+105003031,105,[T3] PCa under conservative management,303,with Intermediate-Risk,TwS
+106003031,106,[T3.1] PCa high/intermediate risk conservative management,303,with Intermediate-Risk,TwS
+107003031,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+108003031,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,303,with Intermediate-Risk,TwS
+109003031,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+110003031,110,[T3.3] PCa low risk grade conservative management and intense monitoring,303,with Intermediate-Risk,TwS
+111003031,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+112003031,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+113003031,113,[T4] PCa treated after conservative management ,303,with Intermediate-Risk,TwS
+114003031,114,[T4.1] Delayed Curative Management,303,with Intermediate-Risk,TwS
+115003031,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+116003031,116,[T4.2] Delayed Palliative Management,303,with Intermediate-Risk,TwS
+117003031,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+118003031,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),303,with Intermediate-Risk,TwS
+101003041,101,[T1] Newly diagnosed Pca ,304,with Metastatic Dx Extent,TwS
+102003041,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+103003041,103,[T2] PCa treated right away,304,with Metastatic Dx Extent,TwS
+104003041,104,[T2a] PCa treated right away (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+105003041,105,[T3] PCa under conservative management,304,with Metastatic Dx Extent,TwS
+106003041,106,[T3.1] PCa high/intermediate risk conservative management,304,with Metastatic Dx Extent,TwS
+107003041,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+108003041,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,304,with Metastatic Dx Extent,TwS
+109003041,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+110003041,110,[T3.3] PCa low risk grade conservative management and intense monitoring,304,with Metastatic Dx Extent,TwS
+111003041,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+112003041,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+113003041,113,[T4] PCa treated after conservative management ,304,with Metastatic Dx Extent,TwS
+114003041,114,[T4.1] Delayed Curative Management,304,with Metastatic Dx Extent,TwS
+115003041,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+116003041,116,[T4.2] Delayed Palliative Management,304,with Metastatic Dx Extent,TwS
+117003041,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+118003041,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),304,with Metastatic Dx Extent,TwS
+101003051,101,[T1] Newly diagnosed Pca ,305,with Locally advanced Dx Extent,TwS
+102003051,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+103003051,103,[T2] PCa treated right away,305,with Locally advanced Dx Extent,TwS
+104003051,104,[T2a] PCa treated right away (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+105003051,105,[T3] PCa under conservative management,305,with Locally advanced Dx Extent,TwS
+106003051,106,[T3.1] PCa high/intermediate risk conservative management,305,with Locally advanced Dx Extent,TwS
+107003051,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+108003051,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,305,with Locally advanced Dx Extent,TwS
+109003051,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+110003051,110,[T3.3] PCa low risk grade conservative management and intense monitoring,305,with Locally advanced Dx Extent,TwS
+111003051,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+112003051,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+113003051,113,[T4] PCa treated after conservative management ,305,with Locally advanced Dx Extent,TwS
+114003051,114,[T4.1] Delayed Curative Management,305,with Locally advanced Dx Extent,TwS
+115003051,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+116003051,116,[T4.2] Delayed Palliative Management,305,with Locally advanced Dx Extent,TwS
+117003051,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+118003051,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),305,with Locally advanced Dx Extent,TwS
+101003061,101,[T1] Newly diagnosed Pca ,306,with Localized Dx Extent,TwS
+102003061,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+103003061,103,[T2] PCa treated right away,306,with Localized Dx Extent,TwS
+104003061,104,[T2a] PCa treated right away (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+105003061,105,[T3] PCa under conservative management,306,with Localized Dx Extent,TwS
+106003061,106,[T3.1] PCa high/intermediate risk conservative management,306,with Localized Dx Extent,TwS
+107003061,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+108003061,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,306,with Localized Dx Extent,TwS
+109003061,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+110003061,110,[T3.3] PCa low risk grade conservative management and intense monitoring,306,with Localized Dx Extent,TwS
+111003061,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+112003061,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+113003061,113,[T4] PCa treated after conservative management ,306,with Localized Dx Extent,TwS
+114003061,114,[T4.1] Delayed Curative Management,306,with Localized Dx Extent,TwS
+115003061,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+116003061,116,[T4.2] Delayed Palliative Management,306,with Localized Dx Extent,TwS
+117003061,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+118003061,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),306,with Localized Dx Extent,TwS
+101003071,101,[T1] Newly diagnosed Pca ,307,with PSA greater than 20,TwS
+102003071,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+103003071,103,[T2] PCa treated right away,307,with PSA greater than 20,TwS
+104003071,104,[T2a] PCa treated right away (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+105003071,105,[T3] PCa under conservative management,307,with PSA greater than 20,TwS
+106003071,106,[T3.1] PCa high/intermediate risk conservative management,307,with PSA greater than 20,TwS
+107003071,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+108003071,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,307,with PSA greater than 20,TwS
+109003071,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+110003071,110,[T3.3] PCa low risk grade conservative management and intense monitoring,307,with PSA greater than 20,TwS
+111003071,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+112003071,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+113003071,113,[T4] PCa treated after conservative management ,307,with PSA greater than 20,TwS
+114003071,114,[T4.1] Delayed Curative Management,307,with PSA greater than 20,TwS
+115003071,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+116003071,116,[T4.2] Delayed Palliative Management,307,with PSA greater than 20,TwS
+117003071,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+118003071,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),307,with PSA greater than 20,TwS
+101003081,101,[T1] Newly diagnosed Pca ,308,with PSA less than 10,TwS
+102003081,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+103003081,103,[T2] PCa treated right away,308,with PSA less than 10,TwS
+104003081,104,[T2a] PCa treated right away (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+105003081,105,[T3] PCa under conservative management,308,with PSA less than 10,TwS
+106003081,106,[T3.1] PCa high/intermediate risk conservative management,308,with PSA less than 10,TwS
+107003081,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+108003081,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,308,with PSA less than 10,TwS
+109003081,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+110003081,110,[T3.3] PCa low risk grade conservative management and intense monitoring,308,with PSA less than 10,TwS
+111003081,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+112003081,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+113003081,113,[T4] PCa treated after conservative management ,308,with PSA less than 10,TwS
+114003081,114,[T4.1] Delayed Curative Management,308,with PSA less than 10,TwS
+115003081,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+116003081,116,[T4.2] Delayed Palliative Management,308,with PSA less than 10,TwS
+117003081,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+118003081,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),308,with PSA less than 10,TwS
+101003091,101,[T1] Newly diagnosed Pca ,309,with PSA 10-20,TwS
+102003091,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+103003091,103,[T2] PCa treated right away,309,with PSA 10-20,TwS
+104003091,104,[T2a] PCa treated right away (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+105003091,105,[T3] PCa under conservative management,309,with PSA 10-20,TwS
+106003091,106,[T3.1] PCa high/intermediate risk conservative management,309,with PSA 10-20,TwS
+107003091,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+108003091,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,309,with PSA 10-20,TwS
+109003091,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+110003091,110,[T3.3] PCa low risk grade conservative management and intense monitoring,309,with PSA 10-20,TwS
+111003091,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+112003091,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+113003091,113,[T4] PCa treated after conservative management ,309,with PSA 10-20,TwS
+114003091,114,[T4.1] Delayed Curative Management,309,with PSA 10-20,TwS
+115003091,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+116003091,116,[T4.2] Delayed Palliative Management,309,with PSA 10-20,TwS
+117003091,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+118003091,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),309,with PSA 10-20,TwS
+101003101,101,[T1] Newly diagnosed Pca ,310,with Stage T1,TwS
+102003101,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),310,with Stage T1,TwS
+103003101,103,[T2] PCa treated right away,310,with Stage T1,TwS
+104003101,104,[T2a] PCa treated right away (biopsy or PSA GT 50),310,with Stage T1,TwS
+105003101,105,[T3] PCa under conservative management,310,with Stage T1,TwS
+106003101,106,[T3.1] PCa high/intermediate risk conservative management,310,with Stage T1,TwS
+107003101,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),310,with Stage T1,TwS
+108003101,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,310,with Stage T1,TwS
+109003101,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),310,with Stage T1,TwS
+110003101,110,[T3.3] PCa low risk grade conservative management and intense monitoring,310,with Stage T1,TwS
+111003101,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),310,with Stage T1,TwS
+112003101,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),310,with Stage T1,TwS
+113003101,113,[T4] PCa treated after conservative management ,310,with Stage T1,TwS
+114003101,114,[T4.1] Delayed Curative Management,310,with Stage T1,TwS
+115003101,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),310,with Stage T1,TwS
+116003101,116,[T4.2] Delayed Palliative Management,310,with Stage T1,TwS
+117003101,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),310,with Stage T1,TwS
+118003101,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),310,with Stage T1,TwS
+101003111,101,[T1] Newly diagnosed Pca ,311,with Stage T2,TwS
+102003111,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),311,with Stage T2,TwS
+103003111,103,[T2] PCa treated right away,311,with Stage T2,TwS
+104003111,104,[T2a] PCa treated right away (biopsy or PSA GT 50),311,with Stage T2,TwS
+105003111,105,[T3] PCa under conservative management,311,with Stage T2,TwS
+106003111,106,[T3.1] PCa high/intermediate risk conservative management,311,with Stage T2,TwS
+107003111,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),311,with Stage T2,TwS
+108003111,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,311,with Stage T2,TwS
+109003111,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),311,with Stage T2,TwS
+110003111,110,[T3.3] PCa low risk grade conservative management and intense monitoring,311,with Stage T2,TwS
+111003111,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),311,with Stage T2,TwS
+112003111,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),311,with Stage T2,TwS
+113003111,113,[T4] PCa treated after conservative management ,311,with Stage T2,TwS
+114003111,114,[T4.1] Delayed Curative Management,311,with Stage T2,TwS
+115003111,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),311,with Stage T2,TwS
+116003111,116,[T4.2] Delayed Palliative Management,311,with Stage T2,TwS
+117003111,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),311,with Stage T2,TwS
+118003111,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),311,with Stage T2,TwS
+101003121,101,[T1] Newly diagnosed Pca ,312,with Stage T3 or T4,TwS
+102003121,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+103003121,103,[T2] PCa treated right away,312,with Stage T3 or T4,TwS
+104003121,104,[T2a] PCa treated right away (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+105003121,105,[T3] PCa under conservative management,312,with Stage T3 or T4,TwS
+106003121,106,[T3.1] PCa high/intermediate risk conservative management,312,with Stage T3 or T4,TwS
+107003121,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+108003121,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,312,with Stage T3 or T4,TwS
+109003121,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+110003121,110,[T3.3] PCa low risk grade conservative management and intense monitoring,312,with Stage T3 or T4,TwS
+111003121,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+112003121,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+113003121,113,[T4] PCa treated after conservative management ,312,with Stage T3 or T4,TwS
+114003121,114,[T4.1] Delayed Curative Management,312,with Stage T3 or T4,TwS
+115003121,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+116003121,116,[T4.2] Delayed Palliative Management,312,with Stage T3 or T4,TwS
+117003121,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+118003121,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),312,with Stage T3 or T4,TwS
+101003131,101,[T1] Newly diagnosed Pca ,313,with Physical Therapy,TwS
+102003131,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+103003131,103,[T2] PCa treated right away,313,with Physical Therapy,TwS
+104003131,104,[T2a] PCa treated right away (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+105003131,105,[T3] PCa under conservative management,313,with Physical Therapy,TwS
+106003131,106,[T3.1] PCa high/intermediate risk conservative management,313,with Physical Therapy,TwS
+107003131,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+108003131,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,313,with Physical Therapy,TwS
+109003131,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+110003131,110,[T3.3] PCa low risk grade conservative management and intense monitoring,313,with Physical Therapy,TwS
+111003131,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+112003131,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+113003131,113,[T4] PCa treated after conservative management ,313,with Physical Therapy,TwS
+114003131,114,[T4.1] Delayed Curative Management,313,with Physical Therapy,TwS
+115003131,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+116003131,116,[T4.2] Delayed Palliative Management,313,with Physical Therapy,TwS
+117003131,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+118003131,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),313,with Physical Therapy,TwS
+101003141,101,[T1] Newly diagnosed Pca ,314,with Grade 1 (GS 2-6),TwS
+102003141,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+103003141,103,[T2] PCa treated right away,314,with Grade 1 (GS 2-6),TwS
+104003141,104,[T2a] PCa treated right away (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+105003141,105,[T3] PCa under conservative management,314,with Grade 1 (GS 2-6),TwS
+106003141,106,[T3.1] PCa high/intermediate risk conservative management,314,with Grade 1 (GS 2-6),TwS
+107003141,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+108003141,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,314,with Grade 1 (GS 2-6),TwS
+109003141,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+110003141,110,[T3.3] PCa low risk grade conservative management and intense monitoring,314,with Grade 1 (GS 2-6),TwS
+111003141,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+112003141,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+113003141,113,[T4] PCa treated after conservative management ,314,with Grade 1 (GS 2-6),TwS
+114003141,114,[T4.1] Delayed Curative Management,314,with Grade 1 (GS 2-6),TwS
+115003141,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+116003141,116,[T4.2] Delayed Palliative Management,314,with Grade 1 (GS 2-6),TwS
+117003141,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+118003141,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),314,with Grade 1 (GS 2-6),TwS
+101003151,101,[T1] Newly diagnosed Pca ,315,with Grade 2 (GS 7 (3+4)),TwS
+102003151,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+103003151,103,[T2] PCa treated right away,315,with Grade 2 (GS 7 (3+4)),TwS
+104003151,104,[T2a] PCa treated right away (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+105003151,105,[T3] PCa under conservative management,315,with Grade 2 (GS 7 (3+4)),TwS
+106003151,106,[T3.1] PCa high/intermediate risk conservative management,315,with Grade 2 (GS 7 (3+4)),TwS
+107003151,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+108003151,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,315,with Grade 2 (GS 7 (3+4)),TwS
+109003151,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+110003151,110,[T3.3] PCa low risk grade conservative management and intense monitoring,315,with Grade 2 (GS 7 (3+4)),TwS
+111003151,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+112003151,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+113003151,113,[T4] PCa treated after conservative management ,315,with Grade 2 (GS 7 (3+4)),TwS
+114003151,114,[T4.1] Delayed Curative Management,315,with Grade 2 (GS 7 (3+4)),TwS
+115003151,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+116003151,116,[T4.2] Delayed Palliative Management,315,with Grade 2 (GS 7 (3+4)),TwS
+117003151,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+118003151,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),315,with Grade 2 (GS 7 (3+4)),TwS
+101003161,101,[T1] Newly diagnosed Pca ,316,with Grade 3 (GS 7 (4+3)),TwS
+102003161,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+103003161,103,[T2] PCa treated right away,316,with Grade 3 (GS 7 (4+3)),TwS
+104003161,104,[T2a] PCa treated right away (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+105003161,105,[T3] PCa under conservative management,316,with Grade 3 (GS 7 (4+3)),TwS
+106003161,106,[T3.1] PCa high/intermediate risk conservative management,316,with Grade 3 (GS 7 (4+3)),TwS
+107003161,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+108003161,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,316,with Grade 3 (GS 7 (4+3)),TwS
+109003161,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+110003161,110,[T3.3] PCa low risk grade conservative management and intense monitoring,316,with Grade 3 (GS 7 (4+3)),TwS
+111003161,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+112003161,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+113003161,113,[T4] PCa treated after conservative management ,316,with Grade 3 (GS 7 (4+3)),TwS
+114003161,114,[T4.1] Delayed Curative Management,316,with Grade 3 (GS 7 (4+3)),TwS
+115003161,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+116003161,116,[T4.2] Delayed Palliative Management,316,with Grade 3 (GS 7 (4+3)),TwS
+117003161,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+118003161,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),316,with Grade 3 (GS 7 (4+3)),TwS
+101003171,101,[T1] Newly diagnosed Pca ,317,with Grade 4 (GS 8),TwS
+102003171,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+103003171,103,[T2] PCa treated right away,317,with Grade 4 (GS 8),TwS
+104003171,104,[T2a] PCa treated right away (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+105003171,105,[T3] PCa under conservative management,317,with Grade 4 (GS 8),TwS
+106003171,106,[T3.1] PCa high/intermediate risk conservative management,317,with Grade 4 (GS 8),TwS
+107003171,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+108003171,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,317,with Grade 4 (GS 8),TwS
+109003171,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+110003171,110,[T3.3] PCa low risk grade conservative management and intense monitoring,317,with Grade 4 (GS 8),TwS
+111003171,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+112003171,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+113003171,113,[T4] PCa treated after conservative management ,317,with Grade 4 (GS 8),TwS
+114003171,114,[T4.1] Delayed Curative Management,317,with Grade 4 (GS 8),TwS
+115003171,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+116003171,116,[T4.2] Delayed Palliative Management,317,with Grade 4 (GS 8),TwS
+117003171,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+118003171,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),317,with Grade 4 (GS 8),TwS
+101003181,101,[T1] Newly diagnosed Pca ,318,with Grade 5 (GS 9-10),TwS
+102003181,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+103003181,103,[T2] PCa treated right away,318,with Grade 5 (GS 9-10),TwS
+104003181,104,[T2a] PCa treated right away (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+105003181,105,[T3] PCa under conservative management,318,with Grade 5 (GS 9-10),TwS
+106003181,106,[T3.1] PCa high/intermediate risk conservative management,318,with Grade 5 (GS 9-10),TwS
+107003181,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+108003181,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,318,with Grade 5 (GS 9-10),TwS
+109003181,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+110003181,110,[T3.3] PCa low risk grade conservative management and intense monitoring,318,with Grade 5 (GS 9-10),TwS
+111003181,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+112003181,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+113003181,113,[T4] PCa treated after conservative management ,318,with Grade 5 (GS 9-10),TwS
+114003181,114,[T4.1] Delayed Curative Management,318,with Grade 5 (GS 9-10),TwS
+115003181,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+116003181,116,[T4.2] Delayed Palliative Management,318,with Grade 5 (GS 9-10),TwS
+117003181,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+118003181,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),318,with Grade 5 (GS 9-10),TwS
+101003191,101,[T1] Newly diagnosed Pca ,319,with Family History of PCa,TwS
+102003191,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+103003191,103,[T2] PCa treated right away,319,with Family History of PCa,TwS
+104003191,104,[T2a] PCa treated right away (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+105003191,105,[T3] PCa under conservative management,319,with Family History of PCa,TwS
+106003191,106,[T3.1] PCa high/intermediate risk conservative management,319,with Family History of PCa,TwS
+107003191,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+108003191,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,319,with Family History of PCa,TwS
+109003191,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+110003191,110,[T3.3] PCa low risk grade conservative management and intense monitoring,319,with Family History of PCa,TwS
+111003191,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+112003191,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+113003191,113,[T4] PCa treated after conservative management ,319,with Family History of PCa,TwS
+114003191,114,[T4.1] Delayed Curative Management,319,with Family History of PCa,TwS
+115003191,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+116003191,116,[T4.2] Delayed Palliative Management,319,with Family History of PCa,TwS
+117003191,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+118003191,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),319,with Family History of PCa,TwS
+101003201,101,[T1] Newly diagnosed Pca ,320,with Mutations,TwS
+102003201,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),320,with Mutations,TwS
+103003201,103,[T2] PCa treated right away,320,with Mutations,TwS
+104003201,104,[T2a] PCa treated right away (biopsy or PSA GT 50),320,with Mutations,TwS
+105003201,105,[T3] PCa under conservative management,320,with Mutations,TwS
+106003201,106,[T3.1] PCa high/intermediate risk conservative management,320,with Mutations,TwS
+107003201,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),320,with Mutations,TwS
+108003201,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,320,with Mutations,TwS
+109003201,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),320,with Mutations,TwS
+110003201,110,[T3.3] PCa low risk grade conservative management and intense monitoring,320,with Mutations,TwS
+111003201,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),320,with Mutations,TwS
+112003201,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),320,with Mutations,TwS
+113003201,113,[T4] PCa treated after conservative management ,320,with Mutations,TwS
+114003201,114,[T4.1] Delayed Curative Management,320,with Mutations,TwS
+115003201,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),320,with Mutations,TwS
+116003201,116,[T4.2] Delayed Palliative Management,320,with Mutations,TwS
+117003201,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),320,with Mutations,TwS
+118003201,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),320,with Mutations,TwS
+101003211,101,[T1] Newly diagnosed Pca ,321,with Age below 55,TwS
+102003211,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),321,with Age below 55,TwS
+103003211,103,[T2] PCa treated right away,321,with Age below 55,TwS
+104003211,104,[T2a] PCa treated right away (biopsy or PSA GT 50),321,with Age below 55,TwS
+105003211,105,[T3] PCa under conservative management,321,with Age below 55,TwS
+106003211,106,[T3.1] PCa high/intermediate risk conservative management,321,with Age below 55,TwS
+107003211,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),321,with Age below 55,TwS
+108003211,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,321,with Age below 55,TwS
+109003211,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),321,with Age below 55,TwS
+110003211,110,[T3.3] PCa low risk grade conservative management and intense monitoring,321,with Age below 55,TwS
+111003211,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),321,with Age below 55,TwS
+112003211,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),321,with Age below 55,TwS
+113003211,113,[T4] PCa treated after conservative management ,321,with Age below 55,TwS
+114003211,114,[T4.1] Delayed Curative Management,321,with Age below 55,TwS
+115003211,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),321,with Age below 55,TwS
+116003211,116,[T4.2] Delayed Palliative Management,321,with Age below 55,TwS
+117003211,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),321,with Age below 55,TwS
+118003211,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),321,with Age below 55,TwS
+101003221,101,[T1] Newly diagnosed Pca ,322,with Age 55-80,TwS
+102003221,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),322,with Age 55-80,TwS
+103003221,103,[T2] PCa treated right away,322,with Age 55-80,TwS
+104003221,104,[T2a] PCa treated right away (biopsy or PSA GT 50),322,with Age 55-80,TwS
+105003221,105,[T3] PCa under conservative management,322,with Age 55-80,TwS
+106003221,106,[T3.1] PCa high/intermediate risk conservative management,322,with Age 55-80,TwS
+107003221,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),322,with Age 55-80,TwS
+108003221,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,322,with Age 55-80,TwS
+109003221,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),322,with Age 55-80,TwS
+110003221,110,[T3.3] PCa low risk grade conservative management and intense monitoring,322,with Age 55-80,TwS
+111003221,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),322,with Age 55-80,TwS
+112003221,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),322,with Age 55-80,TwS
+113003221,113,[T4] PCa treated after conservative management ,322,with Age 55-80,TwS
+114003221,114,[T4.1] Delayed Curative Management,322,with Age 55-80,TwS
+115003221,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),322,with Age 55-80,TwS
+116003221,116,[T4.2] Delayed Palliative Management,322,with Age 55-80,TwS
+117003221,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),322,with Age 55-80,TwS
+118003221,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),322,with Age 55-80,TwS
+101003231,101,[T1] Newly diagnosed Pca ,323,with Age above 80,TwS
+102003231,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),323,with Age above 80,TwS
+103003231,103,[T2] PCa treated right away,323,with Age above 80,TwS
+104003231,104,[T2a] PCa treated right away (biopsy or PSA GT 50),323,with Age above 80,TwS
+105003231,105,[T3] PCa under conservative management,323,with Age above 80,TwS
+106003231,106,[T3.1] PCa high/intermediate risk conservative management,323,with Age above 80,TwS
+107003231,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),323,with Age above 80,TwS
+108003231,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,323,with Age above 80,TwS
+109003231,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),323,with Age above 80,TwS
+110003231,110,[T3.3] PCa low risk grade conservative management and intense monitoring,323,with Age above 80,TwS
+111003231,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),323,with Age above 80,TwS
+112003231,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),323,with Age above 80,TwS
+113003231,113,[T4] PCa treated after conservative management ,323,with Age above 80,TwS
+114003231,114,[T4.1] Delayed Curative Management,323,with Age above 80,TwS
+115003231,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),323,with Age above 80,TwS
+116003231,116,[T4.2] Delayed Palliative Management,323,with Age above 80,TwS
+117003231,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),323,with Age above 80,TwS
+118003231,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),323,with Age above 80,TwS
+101003241,101,[T1] Newly diagnosed Pca ,324,with Charlson Comorbidity Index (cut off 0),TwS
+102003241,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+103003241,103,[T2] PCa treated right away,324,with Charlson Comorbidity Index (cut off 0),TwS
+104003241,104,[T2a] PCa treated right away (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+105003241,105,[T3] PCa under conservative management,324,with Charlson Comorbidity Index (cut off 0),TwS
+106003241,106,[T3.1] PCa high/intermediate risk conservative management,324,with Charlson Comorbidity Index (cut off 0),TwS
+107003241,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+108003241,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,324,with Charlson Comorbidity Index (cut off 0),TwS
+109003241,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+110003241,110,[T3.3] PCa low risk grade conservative management and intense monitoring,324,with Charlson Comorbidity Index (cut off 0),TwS
+111003241,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+112003241,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+113003241,113,[T4] PCa treated after conservative management ,324,with Charlson Comorbidity Index (cut off 0),TwS
+114003241,114,[T4.1] Delayed Curative Management,324,with Charlson Comorbidity Index (cut off 0),TwS
+115003241,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+116003241,116,[T4.2] Delayed Palliative Management,324,with Charlson Comorbidity Index (cut off 0),TwS
+117003241,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+118003241,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),324,with Charlson Comorbidity Index (cut off 0),TwS
+101003251,101,[T1] Newly diagnosed Pca ,325,with Charlson Comorbidity Index (cut off 1),TwS
+102003251,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+103003251,103,[T2] PCa treated right away,325,with Charlson Comorbidity Index (cut off 1),TwS
+104003251,104,[T2a] PCa treated right away (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+105003251,105,[T3] PCa under conservative management,325,with Charlson Comorbidity Index (cut off 1),TwS
+106003251,106,[T3.1] PCa high/intermediate risk conservative management,325,with Charlson Comorbidity Index (cut off 1),TwS
+107003251,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+108003251,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,325,with Charlson Comorbidity Index (cut off 1),TwS
+109003251,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+110003251,110,[T3.3] PCa low risk grade conservative management and intense monitoring,325,with Charlson Comorbidity Index (cut off 1),TwS
+111003251,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+112003251,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+113003251,113,[T4] PCa treated after conservative management ,325,with Charlson Comorbidity Index (cut off 1),TwS
+114003251,114,[T4.1] Delayed Curative Management,325,with Charlson Comorbidity Index (cut off 1),TwS
+115003251,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+116003251,116,[T4.2] Delayed Palliative Management,325,with Charlson Comorbidity Index (cut off 1),TwS
+117003251,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+118003251,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),325,with Charlson Comorbidity Index (cut off 1),TwS
+101003261,101,[T1] Newly diagnosed Pca ,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+102003261,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+103003261,103,[T2] PCa treated right away,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+104003261,104,[T2a] PCa treated right away (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+105003261,105,[T3] PCa under conservative management,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+106003261,106,[T3.1] PCa high/intermediate risk conservative management,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+107003261,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+108003261,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+109003261,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+110003261,110,[T3.3] PCa low risk grade conservative management and intense monitoring,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+111003261,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+112003261,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+113003261,113,[T4] PCa treated after conservative management ,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+114003261,114,[T4.1] Delayed Curative Management,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+115003261,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+116003261,116,[T4.2] Delayed Palliative Management,326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+117003261,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+118003261,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),326,with Charlson Comorbidity Index (cut off  greater or equals 2 ),TwS
+101003271,101,[T1] Newly diagnosed Pca ,327,with Other malignancies,TwS
+102003271,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),327,with Other malignancies,TwS
+103003271,103,[T2] PCa treated right away,327,with Other malignancies,TwS
+104003271,104,[T2a] PCa treated right away (biopsy or PSA GT 50),327,with Other malignancies,TwS
+105003271,105,[T3] PCa under conservative management,327,with Other malignancies,TwS
+106003271,106,[T3.1] PCa high/intermediate risk conservative management,327,with Other malignancies,TwS
+107003271,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),327,with Other malignancies,TwS
+108003271,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,327,with Other malignancies,TwS
+109003271,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),327,with Other malignancies,TwS
+110003271,110,[T3.3] PCa low risk grade conservative management and intense monitoring,327,with Other malignancies,TwS
+111003271,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),327,with Other malignancies,TwS
+112003271,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),327,with Other malignancies,TwS
+113003271,113,[T4] PCa treated after conservative management ,327,with Other malignancies,TwS
+114003271,114,[T4.1] Delayed Curative Management,327,with Other malignancies,TwS
+115003271,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),327,with Other malignancies,TwS
+116003271,116,[T4.2] Delayed Palliative Management,327,with Other malignancies,TwS
+117003271,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),327,with Other malignancies,TwS
+118003271,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),327,with Other malignancies,TwS
+101003281,101,[T1] Newly diagnosed Pca ,328,with Total Cardiovascular Disease Event,TwS
+102003281,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+103003281,103,[T2] PCa treated right away,328,with Total Cardiovascular Disease Event,TwS
+104003281,104,[T2a] PCa treated right away (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+105003281,105,[T3] PCa under conservative management,328,with Total Cardiovascular Disease Event,TwS
+106003281,106,[T3.1] PCa high/intermediate risk conservative management,328,with Total Cardiovascular Disease Event,TwS
+107003281,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+108003281,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,328,with Total Cardiovascular Disease Event,TwS
+109003281,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+110003281,110,[T3.3] PCa low risk grade conservative management and intense monitoring,328,with Total Cardiovascular Disease Event,TwS
+111003281,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+112003281,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+113003281,113,[T4] PCa treated after conservative management ,328,with Total Cardiovascular Disease Event,TwS
+114003281,114,[T4.1] Delayed Curative Management,328,with Total Cardiovascular Disease Event,TwS
+115003281,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+116003281,116,[T4.2] Delayed Palliative Management,328,with Total Cardiovascular Disease Event,TwS
+117003281,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+118003281,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),328,with Total Cardiovascular Disease Event,TwS
+101003291,101,[T1] Newly diagnosed Pca ,329,with Stroke,TwS
+102003291,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),329,with Stroke,TwS
+103003291,103,[T2] PCa treated right away,329,with Stroke,TwS
+104003291,104,[T2a] PCa treated right away (biopsy or PSA GT 50),329,with Stroke,TwS
+105003291,105,[T3] PCa under conservative management,329,with Stroke,TwS
+106003291,106,[T3.1] PCa high/intermediate risk conservative management,329,with Stroke,TwS
+107003291,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),329,with Stroke,TwS
+108003291,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,329,with Stroke,TwS
+109003291,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),329,with Stroke,TwS
+110003291,110,[T3.3] PCa low risk grade conservative management and intense monitoring,329,with Stroke,TwS
+111003291,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),329,with Stroke,TwS
+112003291,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),329,with Stroke,TwS
+113003291,113,[T4] PCa treated after conservative management ,329,with Stroke,TwS
+114003291,114,[T4.1] Delayed Curative Management,329,with Stroke,TwS
+115003291,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),329,with Stroke,TwS
+116003291,116,[T4.2] Delayed Palliative Management,329,with Stroke,TwS
+117003291,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),329,with Stroke,TwS
+118003291,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),329,with Stroke,TwS
+101003301,101,[T1] Newly diagnosed Pca ,330,with Type 2 Diabetes,TwS
+102003301,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+103003301,103,[T2] PCa treated right away,330,with Type 2 Diabetes,TwS
+104003301,104,[T2a] PCa treated right away (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+105003301,105,[T3] PCa under conservative management,330,with Type 2 Diabetes,TwS
+106003301,106,[T3.1] PCa high/intermediate risk conservative management,330,with Type 2 Diabetes,TwS
+107003301,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+108003301,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,330,with Type 2 Diabetes,TwS
+109003301,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+110003301,110,[T3.3] PCa low risk grade conservative management and intense monitoring,330,with Type 2 Diabetes,TwS
+111003301,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+112003301,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+113003301,113,[T4] PCa treated after conservative management ,330,with Type 2 Diabetes,TwS
+114003301,114,[T4.1] Delayed Curative Management,330,with Type 2 Diabetes,TwS
+115003301,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+116003301,116,[T4.2] Delayed Palliative Management,330,with Type 2 Diabetes,TwS
+117003301,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+118003301,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),330,with Type 2 Diabetes,TwS
+101003311,101,[T1] Newly diagnosed Pca ,331,with Hypertension,TwS
+102003311,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),331,with Hypertension,TwS
+103003311,103,[T2] PCa treated right away,331,with Hypertension,TwS
+104003311,104,[T2a] PCa treated right away (biopsy or PSA GT 50),331,with Hypertension,TwS
+105003311,105,[T3] PCa under conservative management,331,with Hypertension,TwS
+106003311,106,[T3.1] PCa high/intermediate risk conservative management,331,with Hypertension,TwS
+107003311,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),331,with Hypertension,TwS
+108003311,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,331,with Hypertension,TwS
+109003311,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),331,with Hypertension,TwS
+110003311,110,[T3.3] PCa low risk grade conservative management and intense monitoring,331,with Hypertension,TwS
+111003311,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),331,with Hypertension,TwS
+112003311,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),331,with Hypertension,TwS
+113003311,113,[T4] PCa treated after conservative management ,331,with Hypertension,TwS
+114003311,114,[T4.1] Delayed Curative Management,331,with Hypertension,TwS
+115003311,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),331,with Hypertension,TwS
+116003311,116,[T4.2] Delayed Palliative Management,331,with Hypertension,TwS
+117003311,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),331,with Hypertension,TwS
+118003311,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),331,with Hypertension,TwS
+101003321,101,[T1] Newly diagnosed Pca ,332,with Obesity,TwS
+102003321,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),332,with Obesity,TwS
+103003321,103,[T2] PCa treated right away,332,with Obesity,TwS
+104003321,104,[T2a] PCa treated right away (biopsy or PSA GT 50),332,with Obesity,TwS
+105003321,105,[T3] PCa under conservative management,332,with Obesity,TwS
+106003321,106,[T3.1] PCa high/intermediate risk conservative management,332,with Obesity,TwS
+107003321,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),332,with Obesity,TwS
+108003321,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,332,with Obesity,TwS
+109003321,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),332,with Obesity,TwS
+110003321,110,[T3.3] PCa low risk grade conservative management and intense monitoring,332,with Obesity,TwS
+111003321,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),332,with Obesity,TwS
+112003321,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),332,with Obesity,TwS
+113003321,113,[T4] PCa treated after conservative management ,332,with Obesity,TwS
+114003321,114,[T4.1] Delayed Curative Management,332,with Obesity,TwS
+115003321,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),332,with Obesity,TwS
+116003321,116,[T4.2] Delayed Palliative Management,332,with Obesity,TwS
+117003321,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),332,with Obesity,TwS
+118003321,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),332,with Obesity,TwS
+101003331,101,[T1] Newly diagnosed Pca ,333,with VTE,TwS
+102003331,102,[T1a] Newly diagnosed Pca (biopsy or PSA GT 50),333,with VTE,TwS
+103003331,103,[T2] PCa treated right away,333,with VTE,TwS
+104003331,104,[T2a] PCa treated right away (biopsy or PSA GT 50),333,with VTE,TwS
+105003331,105,[T3] PCa under conservative management,333,with VTE,TwS
+106003331,106,[T3.1] PCa high/intermediate risk conservative management,333,with VTE,TwS
+107003331,107,[T3.1a] PCa high/intermediate risk conservative managemetn (biopsy or PSA GT 50),333,with VTE,TwS
+108003331,108,[T3.2] PCa low risk grade conservative management and no intense monitoring,333,with VTE,TwS
+109003331,109,[T3.2a] PCa low risk grade conservative management and no intense monitoring (biopsy or PSA GT 50),333,with VTE,TwS
+110003331,110,[T3.3] PCa low risk grade conservative management and intense monitoring,333,with VTE,TwS
+111003331,111,[T3.3a] PCa low risk grade conservative management and intense monitoring  (biopsy or PSA GT 50),333,with VTE,TwS
+112003331,112,[T3a] PCa under conservative management (biopsy or PSA GT 50),333,with VTE,TwS
+113003331,113,[T4] PCa treated after conservative management ,333,with VTE,TwS
+114003331,114,[T4.1] Delayed Curative Management,333,with VTE,TwS
+115003331,115,[T4.1a] Delayed Curative Management (biopsy or PSA GT 50),333,with VTE,TwS
+116003331,116,[T4.2] Delayed Palliative Management,333,with VTE,TwS
+117003331,117,[T4.2a] Delayed Palliative Management (biopsy or PSA GT 50),333,with VTE,TwS
+118003331,118,[T4a] PCa treated after conservative management (biopsy or PSA GT 50),333,with VTE,TwS

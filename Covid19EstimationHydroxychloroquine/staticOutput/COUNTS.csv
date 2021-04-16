@@ -1,0 +1,55 @@
+"exposureName","databaseId","subjects","exposureSubjects","exposurePercent","databaseSubjects","databasePercent"
+"Hydroxychloroquine with prior RA","AmbEMR",57662,956374,6.03,98301,58.66
+"Hydroxychloroquine with prior RA","CCAE",66756,956374,6.98,154447,43.22
+"Hydroxychloroquine with prior RA","Clinformatics",51352,956374,5.37,116955,43.91
+"Hydroxychloroquine with prior RA","CPRD",9129,956374,0.95,26175,34.88
+"Hydroxychloroquine with prior RA","DAGermany",3887,956374,0.41,9225,42.14
+"Hydroxychloroquine with prior RA","IMRD",8855,956374,0.93,22534,39.3
+"Hydroxychloroquine with prior RA","IPCI",1479,956374,0.15,2611,56.64
+"Hydroxychloroquine with prior RA","JMDC",241,956374,0.03,2340,10.3
+"Hydroxychloroquine with prior RA","MDCD",8095,956374,0.85,17924,45.16
+"Hydroxychloroquine with prior RA","MDCR",15853,956374,1.66,38487,41.19
+"Hydroxychloroquine with prior RA","OpenClaims",621124,956374,64.95,1253992,49.53
+"Hydroxychloroquine with prior RA","OptumEHR",78647,956374,8.22,135663,57.97
+"Hydroxychloroquine with prior RA","SIDIAP",1247,956374,0.13,2444,51.02
+"Hydroxychloroquine with prior RA","VA",32047,956374,3.35,60652,52.84
+"Sulfasalazine with prior RA","AmbEMR",15358,310350,4.95,98301,15.62
+"Sulfasalazine with prior RA","CCAE",22407,310350,7.22,154447,14.51
+"Sulfasalazine with prior RA","Clinformatics",17411,310350,5.61,116955,14.89
+"Sulfasalazine with prior RA","CPRD",11401,310350,3.67,26175,43.56
+"Sulfasalazine with prior RA","DAGermany",5047,310350,1.63,9225,54.71
+"Sulfasalazine with prior RA","IMRD",8463,310350,2.73,22534,37.56
+"Sulfasalazine with prior RA","IPCI",528,310350,0.17,2611,20.22
+"Sulfasalazine with prior RA","JMDC",2099,310350,0.68,2340,89.7
+"Sulfasalazine with prior RA","MDCD",2200,310350,0.71,17924,12.27
+"Sulfasalazine with prior RA","MDCR",5193,310350,1.67,38487,13.49
+"Sulfasalazine with prior RA","OpenClaims",183566,310350,59.15,1253992,14.64
+"Sulfasalazine with prior RA","OptumEHR",21944,310350,7.07,135663,16.18
+"Sulfasalazine with prior RA","SIDIAP",381,310350,0.12,2444,15.59
+"Sulfasalazine with prior RA","VA",14352,310350,4.62,60652,23.66
+"Hydroxychloroquine + Azithromycin with prior RA","AmbEMR",13197,323100,4.08,98301,13.43
+"Hydroxychloroquine + Azithromycin with prior RA","CCAE",32693,323100,10.12,154447,21.17
+"Hydroxychloroquine + Azithromycin with prior RA","Clinformatics",23645,323100,7.32,116955,20.22
+"Hydroxychloroquine + Azithromycin with prior RA","CPRD",115,323100,0.04,26175,0.44
+"Hydroxychloroquine + Azithromycin with prior RA","DAGermany",89,323100,0.03,9225,0.96
+"Hydroxychloroquine + Azithromycin with prior RA","IMRD",112,323100,0.03,22534,0.5
+"Hydroxychloroquine + Azithromycin with prior RA","IPCI",121,323100,0.04,2611,4.63
+"Hydroxychloroquine + Azithromycin with prior RA","MDCD",3811,323100,1.18,17924,21.26
+"Hydroxychloroquine + Azithromycin with prior RA","MDCR",8156,323100,2.52,38487,21.19
+"Hydroxychloroquine + Azithromycin with prior RA","OpenClaims",216195,323100,66.91,1253992,17.24
+"Hydroxychloroquine + Azithromycin with prior RA","OptumEHR",18592,323100,5.75,135663,13.7
+"Hydroxychloroquine + Azithromycin with prior RA","SIDIAP",130,323100,0.04,2444,5.32
+"Hydroxychloroquine + Azithromycin with prior RA","VA",6244,323100,1.93,60652,10.29
+"Hydroxychloroquine + Amoxicillin with prior RA","AmbEMR",12084,351926,3.43,98301,12.29
+"Hydroxychloroquine + Amoxicillin with prior RA","CCAE",32591,351926,9.26,154447,21.1
+"Hydroxychloroquine + Amoxicillin with prior RA","Clinformatics",24547,351926,6.98,116955,20.99
+"Hydroxychloroquine + Amoxicillin with prior RA","CPRD",5530,351926,1.57,26175,21.13
+"Hydroxychloroquine + Amoxicillin with prior RA","DAGermany",202,351926,0.06,9225,2.19
+"Hydroxychloroquine + Amoxicillin with prior RA","IMRD",5104,351926,1.45,22534,22.65
+"Hydroxychloroquine + Amoxicillin with prior RA","IPCI",483,351926,0.14,2611,18.5
+"Hydroxychloroquine + Amoxicillin with prior RA","MDCD",3818,351926,1.08,17924,21.3
+"Hydroxychloroquine + Amoxicillin with prior RA","MDCR",9285,351926,2.64,38487,24.13
+"Hydroxychloroquine + Amoxicillin with prior RA","OpenClaims",233107,351926,66.24,1253992,18.59
+"Hydroxychloroquine + Amoxicillin with prior RA","OptumEHR",16480,351926,4.68,135663,12.15
+"Hydroxychloroquine + Amoxicillin with prior RA","SIDIAP",686,351926,0.19,2444,28.07
+"Hydroxychloroquine + Amoxicillin with prior RA","VA",8009,351926,2.28,60652,13.2

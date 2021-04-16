@@ -36,7 +36,10 @@ shinyUI(
               </a>Lancet, 2019")),
                                    tags$li(HTML("Hripcsak G, Suchard MA, Shea S, Chen RJ, You SC, Pratt N, Madigan D, Krumholz H, Ryan PB, Schuemie MJ, <a href = \"https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/2760777\">
                   Comparison of Cardiovascular and Safety Outcomes of Chlorthalidone vs Hydrochlorothiazide to Treat Hypertension.
-              </a>JAMA Internal Medicine, 2019"))
+              </a>JAMA Internal Medicine, 2019")),
+                                   tags$li(HTML("You, SC, Krumholz HM, Suchard MA, Schuemie MJ, Hripcsak G, Chen RJ, Shea S, Duke J, Pratt N, Reich CG, Madigan D, Ryan PB, Park RW, Park SH, <a href = \"https://www.ahajournals.org/doi/10.1161/HYPERTENSIONAHA.120.16402\">
+                  Comprehensive Comparative Effectiveness and Safety of First-Line β-Blocker Monotherapy in Hypertensive Patients: A Large-Scale Multicenter Observational Study.
+              </a>Hypertension, 2021"))
                                  ),
                                  h3("External links"),
                                  HTML("<ul>
