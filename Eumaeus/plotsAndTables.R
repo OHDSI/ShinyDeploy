@@ -179,7 +179,37 @@ addTrueEffectSize <- function(estimates, negativeControlOutcome, positiveControl
   return(estimates)
 }
 
-# estimates <- subset[subset$method == "SCCS" & subset$analysisId == 2 & subset$periodId == 9, ]
+# Set NA estimates to default values before computing metrics
+prepareForMetrics <- function(estimates) {
+  idx <- is.na(estimates$logRr) | is.infinite(estimates$logRr)
+  estimates$rr[idx] <- rep(0, sum(idx))
+  estimates$logRr[idx] <- rep(0, sum(idx))
+  idx <- idx |  (is.na(estimates$seLogRr) | is.infinite(estimates$seLogRr))
+  estimates$seLogRr[idx] <- rep(999, sum(idx))
+  estimates$ci95Lb[idx] <- rep(0, sum(idx))
+  estimates$ci95Ub[idx] <- rep(999, sum(idx))
+  estimates$p[idx] <- rep(1, sum(idx))
+  idx <- estimates$seLogRr == 0
+  estimates$seLogRr[idx] <- rep(0.001, sum(idx))
+  
+  idx <- is.na(estimates$llr)
+  estimates$llr[idx] <- rep(0, sum(idx))
+  idx <- is.na(estimates$criticalValue)
+  estimates$criticalValue[idx] <- rep(999, sum(idx))
+  
+  if ("calibratedRr" %in% colnames(estimates)) {
+    idx <- is.na(estimates$calibratedLogRr) | is.infinite(estimates$calibratedLogRr)
+    estimates$calibratedRr[idx] <- rep(0, sum(idx))
+    estimates$calibratedLogRr[idx] <- rep(0, sum(idx))
+    idx <- idx |  (is.na(estimates$calibratedSeLogRr) | is.infinite(estimates$calibratedSeLogRr))
+    estimates$calibratedSeLogRr[idx] <- rep(999, sum(idx))
+    estimates$calibratedCi95Lb[idx] <- rep(0, sum(idx))
+    estimates$calibratedCi95Ub[idx] <- rep(999, sum(idx))
+    estimates$calibratedP[idx] <- rep(1, sum(idx))
+  }
+  return(estimates)
+}
+
 computeEffectEstimateMetrics <- function(estimates, trueRr = "Overall") {
   if (!"effectSize" %in% colnames(estimates))
     stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
@@ -189,17 +219,8 @@ computeEffectEstimateMetrics <- function(estimates, trueRr = "Overall") {
   } else {
     forEval <- estimates[estimates$effectSize == as.numeric(trueRr), ]
   }
-  idx <- is.na(forEval$logRr) | is.infinite(forEval$logRr)
-  forEval$logRr[idx] <- rep(0, sum(idx))
-  idx <- idx |  (is.na(forEval$seLogRr) | is.infinite(forEval$seLogRr))
-  forEval$seLogRr[idx] <- rep(999, sum(idx))
-  forEval$ci95Lb[idx] <- rep(0, sum(idx))
-  forEval$ci95Ub[idx] <- rep(999, sum(idx))
-  forEval$p[idx] <- rep(1, sum(idx))
-  
-  idx <- forEval$seLogRr == 0
-  forEval$seLogRr[idx] <- rep(0.001, sum(idx))
-  
+  forEval <- prepareForMetrics(forEval)
+
   nonEstimable <- round(mean(forEval$seLogRr >= 99), 2)
   mse <- round(mean((forEval$logRr - log(forEval$effectSize))^2), 2)
   coverage <- round(mean(forEval$ci95Lb < forEval$effectSize & forEval$ci95Ub > forEval$effectSize), 2)
@@ -237,6 +258,14 @@ computeEffectEstimateMetrics <- function(estimates, trueRr = "Overall") {
                 type1 = type1, 
                 type2 = type2, 
                 nonEstimable = nonEstimable))
+}
+
+removeNegativeControlsNotPoweredForPositiveControls <- function(estimates, positiveControlOutcome) {
+ poweredPcs <- positiveControlOutcome %>%
+    filter(.data$outcomeId %in% unique(estimates$outcomeId))
+  estimates <- estimates  %>%
+    filter(.data$outcomeId %in% c(poweredPcs$outcomeId, poweredPcs$negativeControlId))
+  return(estimates)
 }
 
 computeMaxSprtMetricsPerPeriod <- function(estimates) {
@@ -314,76 +343,6 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
   }
   return(result)
 }
-
-# plotMaxSprtSensSpecAcrossMethods <- function(estimates, trueRr = "Overall") {
-#   if (!"effectSize" %in% colnames(estimates))
-#     stop("Must add column 'effectSize' to estimates (e.g. using addTrueEffectSize())")
-#   
-#   if (trueRr != "Overall") {
-#     estimates <- estimates[estimates$effectSize == 1 | estimates$effectSize == as.numeric(trueRr), ]
-#   }
-#   computeSensSpec <- function(subset) {
-#     result <- computeMaxSprtMetricsPerPeriod(subset) %>%
-#       mutate(method = subset$method[1],
-#              analysisId = subset$analysisId[1])
-#     return(result)
-#   }
-#   
-#   effectSizes <- unique(estimates$effectSize)
-#   effectSizes <- effectSizes[effectSizes > 1]
-#   effectSizes <- effectSizes[order(effectSizes)]
-#   data <- tibble()
-#   for (effectSize in effectSizes) {
-#     subset <- estimates[estimates$effectSize == 1 | estimates$effectSize == effectSize, ]
-#     data <- lapply(split(subset, paste(subset$method, subset$analysisId)), computeSensSpec) %>%
-#       bind_rows() %>%
-#       mutate(group = sprintf("Sensitivity when\ntrue effect = %s", effectSize)) %>%
-#       bind_rows(data)
-#   }
-#   data <- data %>%
-#     filter(.data$group == data$group[1]) %>%
-#     mutate(value = .data$specificity,
-#            group = "Specificity") %>%
-#     select(-.data$sensitivity, -.data$specificity) %>%
-#     bind_rows(data %>%
-#                 mutate(value = .data$sensitivity) %>%
-#                 select(-.data$sensitivity, -.data$specificity))  
-#   
-#   theme <- element_text(colour = "#000000", size = 14)
-#   themeRA <- element_text(colour = "#000000", size = 14, hjust = 1)
-#   themeLA <- element_text(colour = "#000000", size = 14, hjust = 0)
-#   yBreaks <- c(0, 0.2, 0.4, 0.6, 0.8, 0.9, 1)
-#   f <- function(x) {
-#     -log(1.1 - x)
-#   }
-#   cutoff <- expand.grid(group = sprintf("Sensitivity when\ntrue effect = %s", effectSizes), method = unique(data$method)) %>%
-#     mutate(value = 0.8,
-#            analysisId = 1)
-#   
-#   
-#   data$analysisId <- as.factor(data$analysisId)
-#   data$group <- factor(data$group, levels = rev(c("Specificity", sprintf("Sensitivity when\ntrue effect = %s", effectSizes))))
-#   plot <- ggplot(data, aes(x = .data$periodId, y = f(.data$value), group = .data$analysisId, color = .data$analysisId)) +
-#     geom_hline(aes(yintercept = f(.data$value)), size = 1, color = rgb(0, 0, 0), linetype = "dashed", data = cutoff) + 
-#     geom_line(size = 1, alpha = 0.5) +
-#     geom_point(size = 2, alpha = 0.7) +
-#     scale_x_continuous("Time (Months)", breaks = 1:max(data$periodId), limits = c(1, max(data$periodId))) +
-#     scale_y_continuous("Sensitivity / Specificity", limits = f(c(0, 1)), breaks = f(yBreaks), labels = yBreaks) +
-#     labs(color = "Analysis ID") +
-#     facet_grid(group ~ method) +
-#     theme(axis.text.y = theme,
-#           axis.text.x = theme,
-#           axis.title.x = theme,
-#           axis.title.y = element_blank(),
-#           strip.text.x = theme,
-#           strip.text.y = theme,
-#           strip.background = element_blank(),
-#           legend.text = themeLA,
-#           legend.title = themeLA,
-#           legend.position = "right")
-#   # plot
-#   return(plot)
-# }
 
 # estimates <- addTrueEffectSize(estimates, negativeControlOutcome, positiveControlOutcome)
 plotSensSpecAcrossMethods <- function(estimates, inputColumn = "p", trueRr = "Overall") {

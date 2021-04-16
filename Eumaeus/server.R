@@ -59,6 +59,7 @@ shinyServer(function(input, output, session) {
     subset <- subset %>%
       filter(.data$method %in% input$method & .data$periodId == periodId())
     if (input$calibrated == "Calibrated") {
+      subset$rr <- subset$calibratedRr
       subset$logRr <- subset$calibratedLogRr
       subset$seLogRr <- subset$calibratedSeLogRr
       subset$ci95Lb <- subset$calibratedCi95Lb
@@ -93,7 +94,7 @@ shinyServer(function(input, output, session) {
     subset <- unique(subset[, c("exposureId", "outcomeId", "effectSize")])
     ncCount <- sum(subset$effectSize == 1)
     pcCount <- sum(subset$effectSize != 1)
-    return(HTML(sprintf("<strong>Table 1</strong> Metrics based on the effect-size estimate (e.g hazard ratio or odds ratio), using %s negative and %s positive controls.", 
+    return(HTML(sprintf("<strong>Table 1</strong> Metrics based on the effect-size estimate (e.g hazard ratio or odds ratio), using %s negative and %s positive controls. This includes all negative controls, including those that were not powered to be used for positive control synthesis.", 
                         ncCount, 
                         pcCount)))
   })
@@ -179,10 +180,9 @@ shinyServer(function(input, output, session) {
     if (is.null(subset)) {
       return(NULL)
     } else {
-      subset$trueLogRr <- log(subset$effectSize)
-      return(plotRocsInjectedSignals(logRr = subset$logRr, trueLogRr = subset$trueLogRr, showAucs = TRUE))
+      subset <- removeNegativeControlsNotPoweredForPositiveControls(subset, positiveControlOutcome)
+      return(plotRocsInjectedSignals(logRr = subset$logRr, trueLogRr = log(subset$effectSize), showAucs = TRUE))
     }
-    
   })
   
   output$hoverInfoEstimates <- renderUI({
@@ -406,9 +406,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(data.frame())
     }
-    # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
-    subset <- subset %>%
-      filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    subset <- removeNegativeControlsNotPoweredForPositiveControls(subset, positiveControlOutcome)
     if (input$inputAcrossMethods == "P-value (< 0.05)") {
       inputColumn <- "p"
     } else if (input$inputAcrossMethods == "Point estimate (> 1)") {
@@ -490,7 +488,7 @@ shinyServer(function(input, output, session) {
     subset <- unique(subset[, c("exposureId", "outcomeId", "effectSize")])
     ncCount <- sum(subset$effectSize == 1)
     pcCount <- sum(subset$effectSize != 1)
-    return(HTML(sprintf("<strong>Table 2</strong> Metrics based on the MaxSPRT statistics, using %s negative and %s positive controls.", 
+    return(HTML(sprintf("<strong>Table 2</strong> Metrics based on the MaxSPRT statistics, using %s negative and %s positive controls. Negative controls not powered for positive control synthesis have been removed.", 
                         ncCount, 
                         pcCount)))
   })
@@ -500,9 +498,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(data.frame())
     }
-    # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
-    subset <- subset %>%
-      filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    subset <- removeNegativeControlsNotPoweredForPositiveControls(subset, positiveControlOutcome)
     combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
                      computeMaxSprtMetrics, 
                      trueRr = input$trueRr2)
@@ -630,9 +626,7 @@ shinyServer(function(input, output, session) {
     if (is.null(subset)) {
       return(NULL)
     }  else {
-      # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
-      subset <- subset %>%
-        filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+      subset <- removeNegativeControlsNotPoweredForPositiveControls(subset, positiveControlOutcome)
       return(plotSensSpec(subset))
     }
   })
@@ -644,9 +638,7 @@ shinyServer(function(input, output, session) {
     if (nrow(subset) == 0) {
       return(data.frame())
     }
-    # Drop negative controls that weren't powered to be used for positive control synthesis so all on equal power:
-    subset <- subset %>%
-      filter(.data$outcomeId %in% c(positiveControlOutcome$outcomeId, positiveControlOutcome$negativeControlId))
+    subset <- removeNegativeControlsNotPoweredForPositiveControls(subset, positiveControlOutcome)
     
     if (input$metricAcrossMethods2 == "Sensitivity & specificity") {
       plot <- plotSensSpecAcrossMethods(estimates = subset, inputColumn = "llr", trueRr = input$trueRr2)

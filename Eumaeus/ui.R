@@ -42,7 +42,7 @@ shinyUI(
                                                                                   tabPanel("ROC curves", 
                                                                                            plotOutput("rocCurves", 
                                                                                                       height = "420px"),
-                                                                                           div(strong("Figure 1.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls.")),
+                                                                                           div(strong("Figure 1.2."),"Receiver Operator Characteristics curves for distinguising positive controls from negative controls. Negative controls not powered for positive control synthesis have been removed.")),
                                                                                   tabPanel("Diagnostics",
                                                                                            sliderInput("minRateChange", "Minimum relative rate change (%)", min = 0, max = 100, value = 50),
                                                                                            plotOutput("monthlyRates", 
@@ -106,7 +106,7 @@ shinyUI(
                                                                         tabPanel("Sensitivity / Specificity",
                                                                                  plotOutput("sensSpec",
                                                                                             height = "800px"),
-                                                                                 div(strong("Figure 2.2."),"Sensitivity and specificity per period based on whether the log likehood ratio for a negative or positive control exceeded the critical value in that period or any before."))
+                                                                                 div(strong("Figure 2.2."),"Sensitivity and specificity per period based on whether the log likehood ratio for a negative or positive control exceeded the critical value in that period or any before. Negative controls not powered for positive control synthesis have been removed."))
                                                                       )
                                                      )
                                             ),
