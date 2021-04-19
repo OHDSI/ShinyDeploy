@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
                            schema = schema,
                            databaseId = input$database,
                            exposureId = exposureId(),
-                           timeAtRisk = input$timeAtRisk)
+                           timeAtRisk = input$timeAtRisk) 
     return(subset)
   })
   
@@ -66,7 +66,7 @@ shinyServer(function(input, output, session) {
       subset$ci95Ub <- subset$calibratedCi95Ub
       subset$p <- subset$calibratedP
     }
-    subset <- addTrueEffectSize(subset, negativeControlOutcome, positiveControlOutcome)
+    subset <- addTrueEffectSize(subset, negativeControlOutcome, positiveControlOutcome) 
     return(subset)
   })
   
@@ -107,7 +107,8 @@ shinyServer(function(input, output, session) {
     combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
                      computeEffectEstimateMetrics, 
                      trueRr = input$trueRr)
-    combis <- bind_rows(combis)
+    combis <- bind_rows(combis) %>%
+      arrange(.data$method, .data$analysisId)
     colnames(combis) <- c("Method", 
                           "<span title=\"Analysis variant ID\">ID</span>", 
                           "<span title=\"Area under the receiver operator curve\">AUC</span>", 
@@ -502,7 +503,8 @@ shinyServer(function(input, output, session) {
     combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
                      computeMaxSprtMetrics, 
                      trueRr = input$trueRr2)
-    combis <- bind_rows(combis)
+    combis <- bind_rows(combis) %>%
+      arrange(.data$method, .data$analysisId)
     colnames(combis) <- c("Method", 
                           "<span title=\"Analysis variant ID\">ID</span>", 
                           "<span title=\"The first period when 80% sensitivity is achieved\">Period 80% Sens</span>", 
