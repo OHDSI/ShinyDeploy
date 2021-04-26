@@ -20,10 +20,11 @@ connectionDetails <- createConnectionDetails(dbms = "postgresql",
                                                             sep = "/"),
                                              port = Sys.getenv("shinydbPort"),
                                              user = Sys.getenv("shinydbUser"),
-                                             password = Sys.getenv("shinydbPw"),
-                                             schema = Sys.getenv("shinydbSchema"))
+                                             password = Sys.getenv("shinydbPw"))
 
 connection <- connect(connectionDetails)
+
+renderTranslateExecuteSql(connection, "USE @schema;", schema = Sys.getenv("shinydbSchema"))
 
 indications <- getIndications(connection)
 exposures <- getExposures(connection)
