@@ -14,7 +14,8 @@ dashboardPage(
     tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
                 menuItem("Results", tabName = "results"),
-                menuItem("About", tabName = "about")
+                menuItem("About", tabName = "about"),
+                menuItem("Data Source", tabName = "dataSource")
     )
   ),
   dashboardBody(
@@ -23,8 +24,15 @@ dashboardPage(
               includeMarkdown("md/about.md")
       ),
      tabItem(tabName = "results",
-             column(4,
-             shinyWidgets::pickerInput(inputId = "sexFilter",label = "Filter by Sex",choices = c(),selected = c(),multiple = TRUE)
+             column(
+               4,
+               shinyWidgets::pickerInput(
+                 inputId = "sexFilter",
+                 label = "Filter by Sex",
+                 choices = c(),
+                 selected = c(),
+                 multiple = TRUE
+               )
              ),
              column(4,
              shinyWidgets::pickerInput(inputId = "ageFilter",label = "Filter by Age Group",choices = c(),selected = c(),multiple = TRUE)
@@ -37,7 +45,9 @@ dashboardPage(
                          tabPanel("Table", DT::DTOutput("resultTable"))
              )
             
-      )
+      ),
+     tabItem(tabName = "dataSource",
+             shinydashboard::box(DT::DTOutput("dataSourceTable"),width = NULL))
     )
   )
 )

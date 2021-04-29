@@ -83,3 +83,11 @@ plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_
       )
     )
 }
+
+
+camelCaseToTitleCase <- function(string) {
+  string <- gsub("([A-Z])", " \\1", string)
+  string <- gsub("([a-z])([0-9])", "\\1 \\2", string)
+  substr(string, 1, 1) <- toupper(substr(string, 1, 1))
+  return(string)
+}

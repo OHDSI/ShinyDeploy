@@ -2,7 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(magrittr)
 library(readr)
-library(tidyverse)
+library(dplyr)
 library(ggplot2)
 library(ggrepel)
 library(reshape2)
@@ -264,7 +264,11 @@ db_names <- as.character(database_ref$db_name)
 
 
 ageGroups <- ir_for_plot$age_group %>% 
-  unique()
+  unique() %>% 
+  sort()
+
+ageGroups <- ageGroups[order(ageGroups)]
 sexGroups <- ir_for_plot$sex_group %>% 
   unique()
 
+dataSource <- readr::read_csv(file = "datasource.csv", col_types = readr::cols())
