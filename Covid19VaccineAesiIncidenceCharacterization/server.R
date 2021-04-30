@@ -120,14 +120,15 @@ shiny::shinyServer(function(input, output, session) {
         .data$IR_P_100000py
       ) %>% 
       dplyr::rename("Outcome" = "outcomeName",
-                    "Database" = "databaseName",
+                    "Data Source" = "databaseName",
                     "Age" = "age_group",
                     "Sex" = "sex_group",
                     "Incidence Rate/100,000 py" = "IR_P_100000py",
                     "Person Years" = "personYears",
                     "Case Count" = "numOutcomes") %>% 
       dplyr::mutate_if(is.numeric, ~round(., 2))
-    return(data)
+    table <- standardDataTable(data)
+    return(table)
   })
   observe({
                  shinyWidgets::updatePickerInput(

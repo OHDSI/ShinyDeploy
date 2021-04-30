@@ -13,7 +13,8 @@ library(gridExtra)
 library(grid)
 library(extrafont)
 library(cowplot)
-source('Result/HelperFunction.R')
+source('script/HelperFunction.R')
+source('script/StandardDataTable.R')
 
 
 options(scipen = 999)
