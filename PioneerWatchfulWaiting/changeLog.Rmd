@@ -18,5 +18,8 @@ Now showing results from 10 databases for task #3.
 ## 2021-Apr-06: Adding and correcting results
 Now showing task #3 results from 8 databases with correct time-to-event data.
 
+## 2021-Apr-30: Adding pre-task#4 results
+Now showing results for pre-task#4 for 7 databases.
+
 ------
 
