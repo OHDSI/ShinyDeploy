@@ -272,3 +272,5 @@ sexGroups <- ir_for_plot$sex_group %>%
   unique()
 
 dataSource <- readr::read_csv(file = "datasource.csv", col_types = readr::cols())
+
+cohort <- readr::read_csv(file = "cohort/cohorts.csv", col_types = readr::cols())

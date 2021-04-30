@@ -115,17 +115,17 @@ shiny::shinyServer(function(input, output, session) {
         .data$databaseName,
         .data$age_group,
         .data$sex_group,
-        .data$incidenceRateP100py,
+        .data$numOutcomes,
         .data$personYears,
-        .data$numPersonsWOutcome
+        .data$IR_P_100000py
       ) %>% 
       dplyr::rename("Outcome" = "outcomeName",
                     "Database" = "databaseName",
                     "Age" = "age_group",
                     "Sex" = "sex_group",
-                    "Incidence Rate/100py" = "incidenceRateP100py",
+                    "Incidence Rate/100,000 py" = "IR_P_100000py",
                     "Person Years" = "personYears",
-                    "Case Count" = "numPersonsWOutcome") %>% 
+                    "Case Count" = "numOutcomes") %>% 
       dplyr::mutate_if(is.numeric, ~round(., 2))
     return(data)
   })
@@ -154,5 +154,11 @@ shiny::shinyServer(function(input, output, session) {
     data <- dataSource
     colnames(data) <- camelCaseToTitleCase(colnames(data))
     return(data)
+  })
+  
+  output$cohortTable <- DT::renderDT({
+    data <- cohort
+    colnames(cohort) <- camelCaseToTitleCase(colnames(cohort))
+    return(cohort)
   })
 })

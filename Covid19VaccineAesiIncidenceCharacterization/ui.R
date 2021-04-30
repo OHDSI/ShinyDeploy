@@ -13,9 +13,10 @@ dashboardPage(
   dashboardSidebar(
     tags$head(tags$style(HTML(paste0('.main-header { background-color: ', ohdsiBlueHex, '; }')))),
     sidebarMenu(id = "tabs",
-                menuItem("Results", tabName = "results"),
                 menuItem("About", tabName = "about"),
-                menuItem("Data Source", tabName = "dataSource")
+                menuItem("Data Sources", tabName = "dataSource"),
+                menuItem("Cohort definitions", tabName = "cohortDefinitions"),
+                menuItem("Cohort Results", tabName = "results")
     )
   ),
   dashboardBody(
@@ -23,6 +24,8 @@ dashboardPage(
       tabItem(tabName = "about",
               includeMarkdown("md/about.md")
       ),
+      tabItem(tabName = "cohortDefinitions",
+              shinydashboard::box(DT::DTOutput("cohortTable"),width = NULL)),
      tabItem(tabName = "results",
              column(
                4,

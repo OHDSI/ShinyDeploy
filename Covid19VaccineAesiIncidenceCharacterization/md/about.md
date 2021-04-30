@@ -2,12 +2,12 @@ Characterizing the incidence of adverse events of special interest for COVID-19 
 =============
 <hr class="w-100" style="border-top: black 1px solid;">
 
-**Objectives:**<br>
+**Abstract:**<br>
 
 
 **Resources:**<br>
-- CHANGE The study protocol is available on <a href="http://www.encepp.eu/encepp/viewResource.htm?id=33254" target="_blank">ENCePP</a>
 - Analytic code is available at <a href="https://github.com/ohdsi-studies/Covid19VaccineAesiIncidenceCharacterization" target="_blank">GitHub</a>
+- Link to publication
 
 **Note:**<br>
 - These results are under embargo and are only to be used for peer review
