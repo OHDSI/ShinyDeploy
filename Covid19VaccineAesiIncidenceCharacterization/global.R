@@ -15,6 +15,7 @@ library(extrafont)
 library(cowplot)
 source('script/HelperFunction.R')
 source('script/StandardDataTable.R')
+source('DisplayFunctions.R')
 
 
 options(scipen = 999)
@@ -275,3 +276,14 @@ sexGroups <- ir_for_plot$sex_group %>%
 dataSource <- readr::read_csv(file = "datasource.csv", col_types = readr::cols())
 
 cohort <- readr::read_csv(file = "cohort/cohorts.csv", col_types = readr::cols())
+
+jsonFiles <- list.files(path = "cohort/cohortJson", pattern = "*.json", full.names=TRUE)
+
+# this creates a vector where each element contains one file
+jsonContents <- sapply(jsonFiles, FUN = function(x)readChar(x, file.info(x)$size))
+
+# create a dataframe
+jsonDf <- data.frame(json = jsonContents, stringsAsFactors=FALSE)
+
+cohort$json <- jsonDf$json
+

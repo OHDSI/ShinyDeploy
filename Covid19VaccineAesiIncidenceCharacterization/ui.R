@@ -25,7 +25,72 @@ dashboardPage(
               includeMarkdown("md/about.md")
       ),
       tabItem(tabName = "cohortDefinitions",
-              shinydashboard::box(DT::DTOutput("cohortTable"),width = NULL)),
+              shinydashboard::box(DT::DTOutput("cohortTable"),width = NULL),
+              column(
+                12,
+                conditionalPanel(
+                  "output.cohortDefinitionRowIsSelected == true",
+                  shiny::tabsetPanel(
+                    type = "tab",
+                    shiny::tabPanel(title = "Details",
+                                    shiny::htmlOutput("cohortDetailsText")),
+                    shiny::tabPanel(title = "Cohort definition",
+                                    copyToClipboardButton(toCopyId = "cohortDefinitionText",
+                                                          style = "margin-top: 5px; margin-bottom: 5px;"),
+                                    shiny::htmlOutput("cohortDefinitionText")),
+                    shiny::tabPanel(
+                      title = "Concept Sets",
+                      shiny::downloadButton(
+                        "saveConceptSetButton",
+                        label = "Save to CSV file",
+                        icon = shiny::icon("download"),
+                        style = "margin-top: 5px; margin-bottom: 5px;"
+                      ),
+                      DT::dataTableOutput(outputId = "conceptsetExpressionTable"),
+                      shiny::conditionalPanel(condition = "output.conceptSetExpressionRowSelected == true",
+                                              tags$table(tags$tr(
+                                                tags$td(
+                                                  shiny::radioButtons(
+                                                    inputId = "conceptSetsType",
+                                                    label = "",
+                                                    choices = c("Concept Set Expression",
+                                                                "Json"),
+                                                    selected = "Concept Set Expression",
+                                                    inline = TRUE
+                                                  )
+                                                ),
+                                              ))),
+                      shiny::conditionalPanel(
+                        condition = "output.conceptSetExpressionRowSelected == true &
+                input.conceptSetsType != 'Json'",
+                        DT::dataTableOutput(outputId = "cohortDefinitionConceptSetsTable")
+                      ),
+                      shiny::conditionalPanel(
+                        condition = "input.conceptSetsType == 'Json'",
+                        copyToClipboardButton(toCopyId = "cohortConceptsetExpressionJson",
+                                              style = "margin-top: 5px; margin-bottom: 5px;"),
+                        shiny::verbatimTextOutput(outputId = "cohortConceptsetExpressionJson"),
+                        tags$head(
+                          tags$style("#cohortConceptsetExpressionJson { max-height:400px};")
+                        )
+                      )
+                    ),
+                    shiny::tabPanel(
+                      title = "JSON",
+                      copyToClipboardButton("cohortDefinitionJson", style = "margin-top: 5px; margin-bottom: 5px;"),
+                      shiny::verbatimTextOutput("cohortDefinitionJson"),
+                      tags$head(tags$style(
+                        "#cohortDefinitionJson,#cohortDefinitionSql { max-height:400px;overflow:auto;};"
+                      ))
+                    ),
+                    shiny::tabPanel(
+                      title = "SQL",
+                      copyToClipboardButton("cohortDefinitionSql", style = "margin-top: 5px; margin-bottom: 5px;"),
+                      shiny::verbatimTextOutput("cohortDefinitionSql")
+                    )
+                  )
+                )
+              )),
      tabItem(tabName = "results",
              column(
                4,

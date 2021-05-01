@@ -158,8 +158,331 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   output$cohortTable <- DT::renderDT({
-    data <- cohort
-    colnames(cohort) <- camelCaseToTitleCase(colnames(cohort))
-    return(cohort)
+    data <- cohort %>% 
+      dplyr::select(.data$phenotype,.data$cohortId,.data$cohortName,.data$link)
+    colnames(data) <- camelCaseToTitleCase(colnames(data))
+    table <- standardDataTable(data)
+    return(table)
+  }, selection = "single")
+  
+  selectedCohortDefinitionRow <- reactive({
+    idx <- input$cohortTable_rows_selected
+    if (is.null(idx)) {
+      return(NULL)
+    } else {
+      subset <- cohort
+      if (nrow(subset) == 0) {
+        return(NULL)
+      }
+      row <- subset[idx[1],]
+      return(row)
+    }
   })
+  
+  output$cohortDefinitionRowIsSelected <- reactive({
+    return(!is.null(selectedCohortDefinitionRow()))
+  })
+  
+  outputOptions(output,
+                "cohortDefinitionRowIsSelected",
+                suspendWhenHidden = FALSE)
+  
+  output$cohortDetailsText <- shiny::renderUI({
+    row <- selectedCohortDefinitionRow()
+    if (!'logicDescription' %in% colnames(row)) {
+      row$logicDescription <- row$cohortName
+    }
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      tags$table(
+        style = "margin-top: 5px;",
+        tags$tr(
+          tags$td(tags$strong("Cohort ID: ")),
+          tags$td(HTML("&nbsp;&nbsp;")),
+          tags$td(row$cohortId)
+        ),
+        tags$tr(
+          tags$td(tags$strong("Cohort Name: ")),
+          tags$td(HTML("&nbsp;&nbsp;")),
+          tags$td(row$cohortName)
+        ),
+        tags$tr(
+          tags$td(tags$strong("Logic: ")),
+          tags$td(HTML("&nbsp;&nbsp;")),
+          tags$td(row$logicDescription)
+        )
+      )
+    }
+  })
+  
+  cohortDefinitionCirceRDetails <- shiny::reactive(x = {
+    progress <- shiny::Progress$new()
+    on.exit(progress$close())
+    progress$set(message = "Rendering human readable cohort description using CirceR (may take time)", value = 0)
+    data <- selectedCohortDefinitionRow()
+    if (nrow(selectedCohortDefinitionRow()) > 0) {
+      details <- list()
+      circeExpression <-
+        CirceR::cohortExpressionFromJson(expressionJson = data$json)
+      circeExpressionMarkdown <-
+        CirceR::cohortPrintFriendly(circeExpression)
+      circeConceptSetListmarkdown <-
+        CirceR::conceptSetListPrintFriendly(circeExpression$conceptSets)
+      details <- data
+      details$circeConceptSetListmarkdown <-
+        circeConceptSetListmarkdown
+      details$htmlExpressionCohort <-
+        convertMdToHtml(circeExpressionMarkdown)
+      details$htmlExpressionConceptSetExpression <-
+        convertMdToHtml(circeConceptSetListmarkdown)
+      
+      details <- dplyr::bind_rows(details)
+    } else {
+      return(NULL)
+    }
+    return(details)
+  })
+  
+  output$cohortDefinitionText <- shiny::renderUI(expr = {
+    cohortDefinitionCirceRDetails()$htmlExpressionCohort %>%
+      shiny::HTML()
+  })
+  
+  getConceptSetDataFrameFromConceptSetExpression <-
+    function(conceptSetExpression) {
+      if ("items" %in% names(conceptSetExpression)) {
+        items <- conceptSetExpression$items
+      } else {
+        items <- conceptSetExpression
+      }
+      conceptSetExpressionDetails <- items %>%
+        purrr::map_df(.f = purrr::flatten)
+      if ('CONCEPT_ID' %in% colnames(conceptSetExpressionDetails)) {
+        if ('isExcluded' %in% colnames(conceptSetExpressionDetails)) {
+          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
+            dplyr::rename(IS_EXCLUDED = .data$isExcluded)
+        }
+        if ('includeDescendants' %in% colnames(conceptSetExpressionDetails)) {
+          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
+            dplyr::rename(INCLUDE_DESCENDANTS = .data$includeDescendants)
+        }
+        if ('includeMapped' %in% colnames(conceptSetExpressionDetails)) {
+          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
+            dplyr::rename(INCLUDE_MAPPED = .data$includeMapped)
+        }
+        colnames(conceptSetExpressionDetails) <-
+          snakeCaseToCamelCase(colnames(conceptSetExpressionDetails))
+      }
+      return(conceptSetExpressionDetails)
+    }
+  
+  getConceptSetDetailsFromCohortDefinition <-
+    function(cohortDefinitionExpression) {
+      if ("expression" %in% names(cohortDefinitionExpression)) {
+        expression <- cohortDefinitionExpression$expression
+      }
+      else {
+        expression <- cohortDefinitionExpression
+      }
+      
+      if (is.null(expression$ConceptSets)) {
+        return(dplyr::tibble())
+      }
+      
+      conceptSetExpression <- expression$ConceptSets %>%
+        dplyr::bind_rows() %>%
+        dplyr::mutate(json = RJSONIO::toJSON(x = .data$expression,
+                                             pretty = TRUE))
+      
+      conceptSetExpressionDetails <- list()
+      i <- 0
+      for (id in conceptSetExpression$id) {
+        i <- i + 1
+        conceptSetExpressionDetails[[i]] <-
+          getConceptSetDataFrameFromConceptSetExpression(conceptSetExpression =
+                                                           conceptSetExpression[i, ]$expression$items) %>%
+          dplyr::mutate(id = conceptSetExpression[i,]$id) %>%
+          dplyr::relocate(.data$id) %>%
+          dplyr::arrange(.data$id)
+      }
+      conceptSetExpressionDetails <-
+        dplyr::bind_rows(conceptSetExpressionDetails)
+      output <- list(conceptSetExpression = conceptSetExpression,
+                     conceptSetExpressionDetails = conceptSetExpressionDetails)
+      return(output)
+    }
+  
+  cohortDefinistionConceptSetExpression <- shiny::reactive({
+    row <- selectedCohortDefinitionRow()
+    if (is.null(row)) {
+      return(NULL)
+    }
+    
+    expression <- RJSONIO::fromJSON(row$json, digits = 23)
+    if (is.null(expression)) {
+      return(NULL)
+    }
+    
+    expression <-
+      getConceptSetDetailsFromCohortDefinition(cohortDefinitionExpression = expression)
+    
+    return(expression)
+  })
+  
+  output$conceptsetExpressionTable <- DT::renderDataTable(expr = {
+    data <- cohortDefinistionConceptSetExpression()
+    if (is.null(data)) {
+      return(NULL)
+    }
+    
+    if (!is.null(data$conceptSetExpression) &&
+        nrow(data$conceptSetExpression) > 0) {
+      data <- data$conceptSetExpression %>%
+        dplyr::select(.data$id, .data$name)
+      
+    } else {
+      return(NULL)
+    }
+    
+    options = list(
+      pageLength = 100,
+      lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
+      searching = TRUE,
+      lengthChange = TRUE,
+      ordering = TRUE,
+      paging = TRUE,
+      info = TRUE,
+      searchHighlight = TRUE,
+      scrollX = TRUE
+    )
+    
+    dataTable <- DT::datatable(
+      data,
+      options = options,
+      colnames = colnames(data) %>% camelCaseToTitleCase(),
+      rownames = FALSE,
+      selection = 'single',
+      escape = FALSE,
+      filter = "top",
+      class = "stripe nowrap compact"
+    )
+    return(dataTable)
+  }, server = TRUE)
+  
+  cohortDefinitionConceptSetExpressionRow <- shiny::reactive(x = {
+    idx <- input$conceptsetExpressionTable_rows_selected
+    if (length(idx) == 0 || is.null(idx)) {
+      return(NULL)
+    }
+    if (!is.null(cohortDefinistionConceptSetExpression()$conceptSetExpression) &&
+        nrow(cohortDefinistionConceptSetExpression()$conceptSetExpression) > 0) {
+      data <-
+        cohortDefinistionConceptSetExpression()$conceptSetExpression[idx, ]
+      if (!is.null(data)) {
+        return(data)
+      } else {
+        return(NULL)
+      }
+    }
+  })
+  
+  output$conceptSetExpressionRowSelected <- shiny::reactive(x = {
+    return(!is.null(cohortDefinitionConceptSetExpressionRow()))
+  })
+  shiny::outputOptions(x = output,
+                       name = "conceptSetExpressionRowSelected",
+                       suspendWhenHidden = FALSE)
+  
+  cohortDefinitionConceptSets <- shiny::reactive(x = {
+    if (is.null(cohortDefinitionConceptSetExpressionRow())) {
+      return(NULL)
+    }
+    
+    data <-
+      cohortDefinistionConceptSetExpression()$conceptSetExpressionDetails
+    data <- data %>%
+      dplyr::filter(.data$id == cohortDefinitionConceptSetExpressionRow()$id)
+    data <- data %>%
+      dplyr::select(
+        .data$conceptId,
+        .data$conceptName,
+        .data$standardConcept,
+        .data$invalidReason,
+        .data$conceptCode,
+        .data$domainId,
+        .data$vocabularyId,
+        .data$conceptClassId
+      )
+    return(data)
+  })
+  
+  output$cohortDefinitionConceptSetsTable <-
+    DT::renderDataTable(expr = {
+      data <- cohortDefinitionConceptSets()
+      if (is.null(cohortDefinitionConceptSets())) {
+        return(NULL)
+      }
+      
+      options = list(
+        pageLength = 100,
+        lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
+        searching = TRUE,
+        lengthChange = TRUE,
+        ordering = TRUE,
+        paging = TRUE,
+        info = TRUE,
+        searchHighlight = TRUE,
+        scrollX = TRUE,
+        columnDefs = list(
+          truncateStringDef(1, 80)
+        )
+      )
+      
+      dataTable <- DT::datatable(
+        data,
+        options = options,
+        colnames = colnames(data) %>% camelCaseToTitleCase(),
+        rownames = FALSE,
+        escape = FALSE,
+        selection = 'single',
+        filter = "top",
+        class = "stripe nowrap compact"
+      )
+      return(dataTable)
+    }, server = TRUE)
+  
+  output$cohortConceptsetExpressionJson <- shiny::renderText({
+    if (is.null(cohortDefinitionConceptSetExpressionRow())) {
+      return(NULL)
+    }
+    cohortDefinitionConceptSetExpressionRow()$json
+  })
+  
+
+  
+  output$cohortDefinitionJson <- shiny::renderText({
+    row <- selectedCohortDefinitionRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      row$json
+    }
+  })
+  
+  output$cohortDefinitionSql <- shiny::renderText({
+    row <- selectedCohortDefinitionRow()
+    if (is.null(row)) {
+      return(NULL)
+    } else {
+      circeExpression <-
+        CirceR::cohortExpressionFromJson(expressionJson = row$json)
+      circeoptions <-
+        CirceR::createGenerateOptions(cohortId = row$cohortId)
+      sql <-
+        CirceR::buildCohortQuery(expression = circeExpression, options = circeoptions)
+      return(sql)
+    }
+  })
+  
 })

@@ -43,7 +43,7 @@ standardDataTable <- function(data,
       # processing = TRUE,
       autoWidth = TRUE
     )
-  listOfVariablesThatAreAlwaysFactors <- c('Outcome', 'Data Source', 'Age', 'Sex')
+  listOfVariablesThatAreAlwaysFactors <- c('Outcome', 'Data Source', 'Age', 'Sex', 'phenotype', 'cohortId', 'cohortName')
   
   convertVariableToFactor <- function(data, variables) {
     for (i in (1:length(variables))) {
