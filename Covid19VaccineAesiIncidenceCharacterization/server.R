@@ -162,7 +162,12 @@ shiny::shinyServer(function(input, output, session) {
                })
   
   output$dataSourceTable <- DT::renderDT({
-    data <- dataSource
+    data <- dataSource 
+    # %>% 
+    #   dplyr::rename('Data Source' = "dataSource",
+    #                 'Database Id' = 'shortName',
+    #                 'Description' = 'description')
+    # colnames(data) <- camelCaseToTitleCase(colnames(data))
     dataTable <- standardDataTable(data)
     return(dataTable)
   })
