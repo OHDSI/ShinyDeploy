@@ -16,7 +16,7 @@ defaultDatabase <- Sys.getenv("shinydbDatabase")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("shinyDbUser")
 defaultPassword <- Sys.getenv("shinyDbPassword")
-defaultResultsSchema <- 'covid'
+defaultResultsSchema <- 'thrombosisthrombocytopenia'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
 
@@ -32,7 +32,7 @@ if (defaultDatabaseMode) {
 appInformationText <- paste0(appInformationText, 
                              " mode. Application was last initated on ", 
                              lubridate::now(tzone = "EST"),
-                             " EST. Cohort Diagnostics website is at https://ohdsi.github.io/CohortDiagnostics/")
+                             " EST. Cohort Diagnostics website is at https://ohdsi.github.io/CohortDiagnostics/. Email: rao@ohdsi.org")
 
 if (!exists("shinySettings")) {
   writeLines("Using default settings")

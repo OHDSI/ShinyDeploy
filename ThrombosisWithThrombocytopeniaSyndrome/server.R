@@ -1562,13 +1562,17 @@ shiny::shinyServer(function(input, output, session) {
         cohortIds = cohortId(),
         databaseIds = databaseIds()
       )
-      if (!'domainTable' %in% colnames(data)) {
-        data$domainTable <- "Not in data"
+      if (!is.null(data)) {
+        if (!'domainTable' %in% colnames(data)) {
+          data$domainTable <- "Not in data"
+        }
+        if (!'domainField' %in% colnames(data)) {
+          data$domainField <- "Not in data"
+        }
+        return(data)
+      } else {
+        return(NULL)
       }
-      if (!'domainField' %in% colnames(data)) {
-        data$domainField <- "Not in data"
-      }
-      return(data)
     } else {
       return(NULL)
     }
@@ -1921,6 +1925,86 @@ shiny::shinyServer(function(input, output, session) {
       backgroundSize = "98% 88%",
       backgroundRepeat = "no-repeat",
       backgroundPosition = "center"
+    )
+    
+  }, server = TRUE)
+  
+  
+  # Cohorts as features ---------------------------------------------------------------------------------------------
+  output$cohortAsFeaturesTable <- DT::renderDataTable(expr = {
+    validate(need(length(databaseIds()) > 0, "No data sources chosen"))
+    validate(need(length(cohortId()) > 0, "No cohorts chosen"))
+    data <- getCohortAsFeatures(
+      dataSource = dataSource,
+      cohortIds = cohortId(),
+      databaseIds = databaseIds()
+    )
+    
+    if (nrow(data) == 0) {
+      return(dplyr::tibble(
+        Note = paste0("No data available for selected databases and cohort")
+      ))
+    }
+    
+    data <- data  %>% 
+      dplyr::rename(xfeatureCohortId = featureCohortId) %>% 
+      tidyr::pivot_longer(cols = c(dplyr::starts_with("fs"), 
+                                   dplyr::starts_with("fe"),
+                                   dplyr::starts_with("fo")), 
+                          names_to = "calculation",
+                          values_to = "value"
+                          ) %>% 
+      dplyr::rename(featureCohortId = xfeatureCohortId)
+    
+    data$distribution <- patternReplacement(x = data$calculation, 
+                                       patterns = c('Max', 'Min', 'Avg', 'Stdev', 'Count', 'Sum', 'Subjects', 'Records'),
+                                       replacement = c('max', 'min', 'avg', 'stdev', 'count', 'sum', 'subjects', 'records'),
+                                       fill = 'Other')
+    
+    data$type <- patternReplacement(x = data$calculation, 
+                                       patterns = c('Same', 'Before', 'During', 'After'),
+                                       fill = 'Other')
+    
+    data$relationship <- patternReplacement(x = data$calculation, 
+                                            patterns = c('fs', 'fe', 'fo'),
+                                            replacements = c('feature cohort start prior to target cohort start',
+                                                             'feature cohort end prior to target cohort start',
+                                                             'feature cohort entirely within target cohort'),
+                                            fill = 'Other')
+    data <- data %>% 
+      dplyr::select(.data$cohortId,
+                    .data$featureCohortId,
+                    .data$databaseId,
+                    .data$type,
+                    .data$relationship,
+                    .data$value,
+                    .data$distribution) %>% 
+      tidyr::pivot_wider(id_cols = c("cohortId", "featureCohortId", "databaseId", "type", "relationship"), 
+                         values_from = "value", 
+                         names_from = "distribution") %>% 
+      dplyr::filter(type != 'Same')
+    
+    databaseIds <- sort(unique(data$databaseId))
+    
+    options = list(
+      pageLength = 100,
+      lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
+      searching = TRUE,
+      searchHighlight = TRUE,
+      scrollX = TRUE,
+      lengthChange = TRUE,
+      ordering = TRUE,
+      paging = TRUE
+    )
+    
+    table <- DT::datatable(
+      data = data,
+      options = options,
+      colnames = colnames(data) %>%
+        camelCaseToTitleCase(),
+      rownames = FALSE,
+      escape = TRUE,
+      filter = "top"
     )
     
   }, server = TRUE)
@@ -2927,10 +3011,10 @@ shiny::shinyServer(function(input, output, session) {
       return(dplyr::tibble("No information on the data source."))
     }
     data <- database 
-    if (!'vocabularyVersionCdm' %in% database) {
+    if (!'vocabularyVersionCdm' %in% colnames(database)) {
       data$vocabularyVersionCdm <- "Not in data"
     }
-    if (!'vocabularyVersion' %in% database) {
+    if (!'vocabularyVersion' %in% colnames(database)) {
       data$vocabularyVersion <- "Not in data"
     }
     data <- data %>%
@@ -3061,6 +3145,10 @@ shiny::shinyServer(function(input, output, session) {
   shiny::observeEvent(input$compareCohortCharacterizationInfo, {
     showInfoBox("Compare Cohort Characteristics",
                 "html/compareCohortCharacterization.html")
+  })
+  
+  shiny::observeEvent(input$cohortAsFeaturesInfo, {
+    showInfoBox("Cohort as Features", "html/cohortAsFeatures.html")
   })
   
   # Cohort labels --------------------------------------------------------------------------------------------
