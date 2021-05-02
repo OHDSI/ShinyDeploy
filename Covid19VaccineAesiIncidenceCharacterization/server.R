@@ -35,6 +35,10 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   IRFilteredPlotdata <- shiny::reactive({
+    validate(need(length(filteredSexGroups()) > 0, "No gender selected"))
+    validate(need(length(filteredAgeGroups()) > 0, "No age groups selected"))
+    validate(need(length(filteredDatabaseIds()) > 0, "No databases selected"))
+    
     data <- ir_for_plot
     if(!is.null(filteredSexGroups())) {
       data <- data %>% 
@@ -55,10 +59,16 @@ shiny::shinyServer(function(input, output, session) {
     shiny::withProgress(message = "Building Plot. . .", {
       validate(need((nrow(IRFilteredPlotdata()) > 0), paste0("Data is not loaded.")))
       
-     p0 <- plotIRv3(outcomeCohortDefinitionId, "Common",data = IRFilteredPlotdata())
+      if ('Meta-Analysis' %in% filteredDatabaseIds()) {
+        presentMetaAnalysisInPlot <- TRUE
+      } else {
+        presentMetaAnalysisInPlot <- FALSE
+      }
+      
+     p0 <- plotIRv3(outcomeCohortDefinitionId, "Common",data = IRFilteredPlotdata(), metaAnalysis = presentMetaAnalysisInPlot)
       
      p1 <-
-        plotIRv3(outcomeCohortDefinitionId, "Common",data = IRFilteredPlotdata()) + theme_my(base_size = 9) +
+        plotIRv3(outcomeCohortDefinitionId, "Common",data = IRFilteredPlotdata(), metaAnalysis = presentMetaAnalysisInPlot) + theme_my(base_size = 9) +
         scale_y_continuous(
           trans = 'log10',
           limits = c(0.1, 10000),
@@ -66,7 +76,7 @@ shiny::shinyServer(function(input, output, session) {
         ) +
         theme(legend.position = "none")
       p2 <-
-        plotIRv3(outcomeCohortDefinitionId,  "Rare",data = IRFilteredPlotdata()) + theme_my(base_size = 10) +
+        plotIRv3(outcomeCohortDefinitionId,  "Rare",data = IRFilteredPlotdata(), metaAnalysis = presentMetaAnalysisInPlot) + theme_my(base_size = 10) +
         scale_y_continuous(
           trans = 'log10',
           limits = c(.1, 1000),
@@ -74,7 +84,7 @@ shiny::shinyServer(function(input, output, session) {
         ) +
         theme(legend.position = "none")
       p3 <-
-        plotIRv3(outcomeCohortDefinitionId,  "Very rare",data = IRFilteredPlotdata()) + theme_my(base_size =
+        plotIRv3(outcomeCohortDefinitionId,  "Very rare",data = IRFilteredPlotdata(), metaAnalysis = presentMetaAnalysisInPlot) + theme_my(base_size =
                                                                        10) +
         scale_y_continuous(
           trans = 'log10',
@@ -153,13 +163,15 @@ shiny::shinyServer(function(input, output, session) {
   
   output$dataSourceTable <- DT::renderDT({
     data <- dataSource
-    colnames(data) <- camelCaseToTitleCase(colnames(data))
-    return(data)
+    dataTable <- standardDataTable(data)
+    return(dataTable)
   })
   
   output$cohortTable <- DT::renderDT({
     data <- cohort %>% 
-      dplyr::select(.data$phenotype,.data$cohortId,.data$cohortName,.data$link)
+      dplyr::select(.data$phenotype,.data$cohortId,.data$cohortName,.data$link) %>% 
+      dplyr::mutate(cohortName = paste0("<a href='",.data$link,"'>",.data$cohortName,"</a>")) %>% 
+      dplyr::select(-.data$link)
     colnames(data) <- camelCaseToTitleCase(colnames(data))
     table <- standardDataTable(data)
     return(table)
@@ -249,69 +261,7 @@ shiny::shinyServer(function(input, output, session) {
       shiny::HTML()
   })
   
-  getConceptSetDataFrameFromConceptSetExpression <-
-    function(conceptSetExpression) {
-      if ("items" %in% names(conceptSetExpression)) {
-        items <- conceptSetExpression$items
-      } else {
-        items <- conceptSetExpression
-      }
-      conceptSetExpressionDetails <- items %>%
-        purrr::map_df(.f = purrr::flatten)
-      if ('CONCEPT_ID' %in% colnames(conceptSetExpressionDetails)) {
-        if ('isExcluded' %in% colnames(conceptSetExpressionDetails)) {
-          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
-            dplyr::rename(IS_EXCLUDED = .data$isExcluded)
-        }
-        if ('includeDescendants' %in% colnames(conceptSetExpressionDetails)) {
-          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
-            dplyr::rename(INCLUDE_DESCENDANTS = .data$includeDescendants)
-        }
-        if ('includeMapped' %in% colnames(conceptSetExpressionDetails)) {
-          conceptSetExpressionDetails <- conceptSetExpressionDetails %>%
-            dplyr::rename(INCLUDE_MAPPED = .data$includeMapped)
-        }
-        colnames(conceptSetExpressionDetails) <-
-          snakeCaseToCamelCase(colnames(conceptSetExpressionDetails))
-      }
-      return(conceptSetExpressionDetails)
-    }
   
-  getConceptSetDetailsFromCohortDefinition <-
-    function(cohortDefinitionExpression) {
-      if ("expression" %in% names(cohortDefinitionExpression)) {
-        expression <- cohortDefinitionExpression$expression
-      }
-      else {
-        expression <- cohortDefinitionExpression
-      }
-      
-      if (is.null(expression$ConceptSets)) {
-        return(dplyr::tibble())
-      }
-      
-      conceptSetExpression <- expression$ConceptSets %>%
-        dplyr::bind_rows() %>%
-        dplyr::mutate(json = RJSONIO::toJSON(x = .data$expression,
-                                             pretty = TRUE))
-      
-      conceptSetExpressionDetails <- list()
-      i <- 0
-      for (id in conceptSetExpression$id) {
-        i <- i + 1
-        conceptSetExpressionDetails[[i]] <-
-          getConceptSetDataFrameFromConceptSetExpression(conceptSetExpression =
-                                                           conceptSetExpression[i, ]$expression$items) %>%
-          dplyr::mutate(id = conceptSetExpression[i,]$id) %>%
-          dplyr::relocate(.data$id) %>%
-          dplyr::arrange(.data$id)
-      }
-      conceptSetExpressionDetails <-
-        dplyr::bind_rows(conceptSetExpressionDetails)
-      output <- list(conceptSetExpression = conceptSetExpression,
-                     conceptSetExpressionDetails = conceptSetExpressionDetails)
-      return(output)
-    }
   
   cohortDefinistionConceptSetExpression <- shiny::reactive({
     row <- selectedCohortDefinitionRow()
@@ -344,29 +294,7 @@ shiny::shinyServer(function(input, output, session) {
     } else {
       return(NULL)
     }
-    
-    options = list(
-      pageLength = 100,
-      lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
-      searching = TRUE,
-      lengthChange = TRUE,
-      ordering = TRUE,
-      paging = TRUE,
-      info = TRUE,
-      searchHighlight = TRUE,
-      scrollX = TRUE
-    )
-    
-    dataTable <- DT::datatable(
-      data,
-      options = options,
-      colnames = colnames(data) %>% camelCaseToTitleCase(),
-      rownames = FALSE,
-      selection = 'single',
-      escape = FALSE,
-      filter = "top",
-      class = "stripe nowrap compact"
-    )
+    dataTable <- standardDataTable(data = data)
     return(dataTable)
   }, server = TRUE)
   
@@ -423,32 +351,7 @@ shiny::shinyServer(function(input, output, session) {
       if (is.null(cohortDefinitionConceptSets())) {
         return(NULL)
       }
-      
-      options = list(
-        pageLength = 100,
-        lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
-        searching = TRUE,
-        lengthChange = TRUE,
-        ordering = TRUE,
-        paging = TRUE,
-        info = TRUE,
-        searchHighlight = TRUE,
-        scrollX = TRUE,
-        columnDefs = list(
-          truncateStringDef(1, 80)
-        )
-      )
-      
-      dataTable <- DT::datatable(
-        data,
-        options = options,
-        colnames = colnames(data) %>% camelCaseToTitleCase(),
-        rownames = FALSE,
-        escape = FALSE,
-        selection = 'single',
-        filter = "top",
-        class = "stripe nowrap compact"
-      )
+      dataTable <- standardDataTable(data = data)
       return(dataTable)
     }, server = TRUE)
   

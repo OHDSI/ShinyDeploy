@@ -15,14 +15,14 @@ library(extrafont)
 library(cowplot)
 source('script/HelperFunction.R')
 source('script/StandardDataTable.R')
-source('DisplayFunctions.R')
+source('script/DisplayFunctions.R')
+source('script/ConceptSetDiagnostics.R')
 
 
 options(scipen = 999)
 
-IR_all_orig <-  readr::read_csv('csv/aesi_ir_raw_27april.csv', col_types = readr::cols())
-
-meta_result0 <- readr::read_csv('csv/meta_result0_27April.csv', col_types = readr::cols())
+IR_all_orig <-  readr::read_csv('data/aesi_ir_raw_27april.csv', col_types = readr::cols())
+meta_result0 <- readr::read_csv('data/meta_result0_27April.csv', col_types = readr::cols())
 
 ## subgroup ref 
 subgroup_ref <- IR_all_orig %>% dplyr::select(subgroupCohortDefinitionId, subgroupName) %>% 
@@ -96,7 +96,7 @@ method_ref <- IR_all_orig %>%
 database_ref <-  IR_all_orig %>%  dplyr::select(databaseName) %>% distinct() %>%
   mutate(databaseNameU = toupper(databaseName),
          db_name = (
-           case_when (
+           case_when(
              grepl('AUSTRALIA', databaseNameU) ~ 'IQVIA_AUSTRALIA',
              grepl('FRANCE', databaseNameU) ~ 'IQVIA_FRANCE',
              grepl('GERMANY', databaseNameU) ~ 'IQVIA_GERMANY',
@@ -251,7 +251,7 @@ db_shape_sex <-
   )
 
 database_ref$db_name
-db_names <- as.character(database_ref$db_name)
+db_names <- as.character(c(database_ref$db_name, 'Meta-Analysis'))
 
 
 

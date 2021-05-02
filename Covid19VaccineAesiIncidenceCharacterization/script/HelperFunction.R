@@ -1,4 +1,4 @@
-plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_size=12) {
+plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_size=12, metaAnalysis = TRUE) {
   outcomeIds <- outcome_ref %>%
     filter(
       outcome_group == event_type & outcome_include == 1 &
@@ -12,7 +12,8 @@ plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_
     ggplot(aes(x = as.numeric(
       interaction(age_group, sex_group, lex.order = T)
     ), y = IR_P_100000py))
-  p1 + theme_minimal() +
+  
+  p1 <- p1 + theme_minimal() +
     #  theme(legend.position = "bottom")  +
     geom_point(
       aes(
@@ -24,18 +25,24 @@ plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_
       size = 2.5 ,
       stroke = 1.3,
       show.legend = F
-    ) +
-    geom_segment(
-      aes(
-        y = ir.predict.lower,
-        yend = ir.predict.upper,
-        x = as.numeric(interaction(age_group, sex_group, lex.order = T)) + 0.5,
-        xend = as.numeric(interaction(age_group, sex_group, lex.order = T)) + 0.5,
-        color = sex_group
-      ),
-      size = 1,
-      alpha = 0.8
-    ) + #plot confint
+    )
+  
+  if (metaAnalysis) {
+    p1 <- p1 +
+      geom_segment(
+        aes(
+          y = ir.predict.lower,
+          yend = ir.predict.upper,
+          x = as.numeric(interaction(age_group, sex_group, lex.order = T)) + 0.5,
+          xend = as.numeric(interaction(age_group, sex_group, lex.order = T)) + 0.5,
+          color = sex_group
+        ),
+        size = 1,
+        alpha = 0.8
+      )
+  }
+  
+  p1 <- p1 + #plot confint
     geom_point(
       aes(
         color = db_name,
@@ -82,6 +89,7 @@ plotIRv3 <- function(outcomeIds=outcomeCohortDefinitionId, event_type,data,base_
         "M"
       )
     )
+  return(p1)
 }
 
 

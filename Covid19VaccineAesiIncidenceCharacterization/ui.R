@@ -102,14 +102,49 @@ dashboardPage(
                  label = "Filter by Sex",
                  choices = c(),
                  selected = c(),
-                 multiple = TRUE
+                 multiple = TRUE,
+                 choicesOpt = list(style = rep_len("color: black;", 999)),
+                 options = shinyWidgets::pickerOptions(
+                   actionsBox = TRUE,
+                   liveSearch = TRUE,
+                   size = 10,
+                   liveSearchStyle = "contains",
+                   liveSearchPlaceholder = "Type here to search",
+                   virtualScroll = 50
+                 )
                )
              ),
              column(4,
-             shinyWidgets::pickerInput(inputId = "ageFilter",label = "Filter by Age Group",choices = c(),selected = c(),multiple = TRUE)
+             shinyWidgets::pickerInput(inputId = "ageFilter",
+                                       label = "Filter by Age Group",
+                                       choices = c(),
+                                       selected = c(),
+                                       multiple = TRUE,
+                                       choicesOpt = list(style = rep_len("color: black;", 999)),
+                                       options = shinyWidgets::pickerOptions(
+                                         actionsBox = TRUE,
+                                         liveSearch = TRUE,
+                                         size = 10,
+                                         liveSearchStyle = "contains",
+                                         liveSearchPlaceholder = "Type here to search",
+                                         virtualScroll = 50
+                                       ))
              ),
              column(4,
-             shinyWidgets::pickerInput(inputId = "databaseFilter",label = "Filter by Database",choices = c(),selected = c(),multiple = TRUE)
+             shinyWidgets::pickerInput(inputId = "databaseFilter",
+                                       label = "Filter by Database",
+                                       choices = c(),
+                                       selected = c(),
+                                       multiple = TRUE,
+                                       choicesOpt = list(style = rep_len("color: black;", 999)),
+                                       options = shinyWidgets::pickerOptions(
+                                         actionsBox = TRUE,
+                                         liveSearch = TRUE,
+                                         size = 10,
+                                         liveSearchStyle = "contains",
+                                         liveSearchPlaceholder = "Type here to search",
+                                         virtualScroll = 50
+                                       ))
              ),
              tabsetPanel(type = "tabs",
                          tabPanel("Plot", plotOutput(outputId = "outputPlot",height = "1000px")),
