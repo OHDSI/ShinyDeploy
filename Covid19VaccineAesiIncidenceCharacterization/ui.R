@@ -20,6 +20,9 @@ dashboardPage(
     )
   ),
   dashboardBody(
+    tags$head(tags$style(
+      HTML('.content-wrapper {height: auto !important; position:relative; overflow:auto}')
+    )),
     tabItems(
       tabItem(tabName = "about",
               includeMarkdown("md/about.md")
