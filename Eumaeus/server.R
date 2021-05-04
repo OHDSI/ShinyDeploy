@@ -6,6 +6,8 @@ source("plotsAndTables.R")
 
 shinyServer(function(input, output, session) {
   
+  cache <- new.env()
+  
   # Effect-size-estimate-based metrics --------------------------------------------------------------------------
   
   exposureId <- reactive(
@@ -48,7 +50,7 @@ shinyServer(function(input, output, session) {
                            schema = schema,
                            databaseId = input$database,
                            exposureId = exposureId(),
-                           timeAtRisk = input$timeAtRisk)
+                           timeAtRisk = input$timeAtRisk) 
     return(subset)
   })
   
@@ -66,23 +68,29 @@ shinyServer(function(input, output, session) {
       subset$ci95Ub <- subset$calibratedCi95Ub
       subset$p <- subset$calibratedP
     }
-    subset <- addTrueEffectSize(subset, negativeControlOutcome, positiveControlOutcome)
+    subset <- addTrueEffectSize(subset, negativeControlOutcome, positiveControlOutcome) 
     return(subset)
   })
   
   selectedEstimates <- reactive({
-    if (is.null(input$performanceMetrics_rows_selected)) {
+    idx <- input$performanceMetrics_rows_selected
+    if (is.null(idx)) {
       return(NULL)
     } 
     subset <- filterEstimates()
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    subset <- subset[subset$method == performanceMetrics()$Method[input$performanceMetrics_rows_selected] & 
-                       subset$analysisId == performanceMetrics()$'<span title=\"Analysis variant ID\">ID</span>'[input$performanceMetrics_rows_selected], ]
+    performanceMetrics <- performanceMetrics()
+    method <- performanceMetrics$Method[idx]
+    analysisId <- performanceMetrics$'<span title=\"Analysis variant ID\">ID</span>'[idx]
+    subset <- subset %>%
+      filter(.data$method == !!method & .data$analysisId == !!analysisId)
     if (nrow(subset) == 0) {
       return(NULL)
     } 
+    cache$method <- method
+    cache$analysisId <- analysisId
     return(subset)
   })
   
@@ -107,7 +115,8 @@ shinyServer(function(input, output, session) {
     combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
                      computeEffectEstimateMetrics, 
                      trueRr = input$trueRr)
-    combis <- bind_rows(combis)
+    combis <- bind_rows(combis) %>%
+      arrange(.data$method, .data$analysisId)
     colnames(combis) <- c("Method", 
                           "<span title=\"Analysis variant ID\">ID</span>", 
                           "<span title=\"Area under the receiver operator curve\">AUC</span>", 
@@ -121,20 +130,24 @@ shinyServer(function(input, output, session) {
   })
   
   output$performanceMetrics <- renderDataTable({
+    data <- performanceMetrics()
+    if (nrow(data) == 0) {
+      return(data)
+    }
     selection = list(mode = "single", target = "row")
     options = list(pageLength = 10, 
                    searching = FALSE, 
                    lengthChange = TRUE)
     isolate(
       if (!is.null(input$performanceMetrics_rows_selected)) {
-        selection$selected = input$performanceMetrics_rows_selected
-        options$displayStart = floor(input$performanceMetrics_rows_selected[1] / 10) * 10 
+        idx <- which(data$Method == cache$method & 
+                       data$'<span title=\"Analysis variant ID\">ID</span>' == cache$analysisId)
+        if (length(idx) == 1) {
+          selection$selected = idx
+          options$displayStart = floor(idx / 10) * 10
+        }
       }
     )
-    data <- performanceMetrics()
-    if (nrow(data) == 0) {
-      return(data)
-    }
     table <- DT::datatable(data, selection = selection, options = options, rownames = FALSE, escape = FALSE) 
     
     colors <- c("#b7d3e6", "#b7d3e6", "#b7d3e6", "#f2b4a9", "#f2b4a9", "#f2b4a9", "#f2b4a9")
@@ -328,20 +341,14 @@ shinyServer(function(input, output, session) {
   })
   
   output$performanceMetricsAcrossPeriods <- renderDataTable({
-    selection = list(mode = "single", target = "row")
-    options = list(pageLength = 10, 
-                   searching = FALSE, 
-                   lengthChange = TRUE)
-    isolate(
-      if (!is.null(input$performanceMetricsAcrossPeriods_rows_selected)) {
-        selection$selected = input$performanceMetricsAcrossPeriods_rows_selected
-        options$displayStart = floor(input$performanceMetricsAcrossPeriods_rows_selected[1] / 10) * 10 
-      }
-    )
     data <- performanceMetricsAcrossPeriods()
     if (nrow(data) == 0) {
       return(data)
     }
+    selection = list(mode = "single", target = "row")
+    options = list(pageLength = 10, 
+                   searching = FALSE, 
+                   lengthChange = TRUE)
     table <- DT::datatable(data, selection = selection, options = options, rownames = FALSE, escape = FALSE) 
     return(table)
   })
@@ -464,19 +471,26 @@ shinyServer(function(input, output, session) {
   # Per method
   
   selectedEstimates2 <- reactive({
-    if (is.null(input$performanceMetrics2_rows_selected)) {
+    idx <- input$performanceMetrics2_rows_selected
+    if (is.null(idx)) {
       return(NULL)
     } 
     subset <- filterEstimates2()
     if (nrow(subset) == 0) {
       return(NULL)
     }
-    subset <- subset[subset$method == performanceMetrics2()$Method[input$performanceMetrics2_rows_selected] & 
-                       subset$analysisId == performanceMetrics2()$'<span title=\"Analysis variant ID\">ID</span>'[input$performanceMetrics2_rows_selected], ]
+    performanceMetrics <- performanceMetrics2()
+    method <- performanceMetrics$Method[idx]
+    analysisId <- performanceMetrics$'<span title=\"Analysis variant ID\">ID</span>'[idx]
+    subset <- subset %>%
+      filter(.data$method == !!method & .data$analysisId == !!analysisId)
     if (nrow(subset) == 0) {
       return(NULL)
     } 
+    cache$method2 <- method
+    cache$analysisId2 <- analysisId
     return(subset)
+    
   })
   
   output$table2Caption <- renderUI({
@@ -502,7 +516,8 @@ shinyServer(function(input, output, session) {
     combis <- lapply(split(subset, paste(subset$method, subset$analysisId)), 
                      computeMaxSprtMetrics, 
                      trueRr = input$trueRr2)
-    combis <- bind_rows(combis)
+    combis <- bind_rows(combis) %>%
+      arrange(.data$method, .data$analysisId)
     colnames(combis) <- c("Method", 
                           "<span title=\"Analysis variant ID\">ID</span>", 
                           "<span title=\"The first period when 80% sensitivity is achieved\">Period 80% Sens</span>", 
@@ -512,20 +527,24 @@ shinyServer(function(input, output, session) {
   })
   
   output$performanceMetrics2 <- renderDataTable({
+    data <- performanceMetrics2()
+    if (nrow(data) == 0) {
+      return(data)
+    }
     selection = list(mode = "single", target = "row")
     options = list(pageLength = 10, 
                    searching = FALSE, 
                    lengthChange = TRUE)
     isolate(
       if (!is.null(input$performanceMetrics2_rows_selected)) {
-        selection$selected = input$performanceMetrics2_rows_selected
-        options$displayStart = floor(input$performanceMetrics2_rows_selected[1] / 10) * 10 
+        idx <- which(data$Method == cache$method2 & 
+                       data$'<span title=\"Analysis variant ID\">ID</span>' == cache$analysisId2)
+        if (length(idx) == 1) {
+          selection$selected = idx
+          options$displayStart = floor(idx / 10) * 10
+        }
       }
     )
-    data <- performanceMetrics2()
-    if (nrow(data) == 0) {
-      return(data)
-    }
     table <- DT::datatable(data, selection = selection, options = options, rownames = FALSE, escape = FALSE) 
     
     colors <- c("#f2b4a9", "#b7d3e6", "#b7d3e6")

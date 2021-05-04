@@ -327,7 +327,7 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
     summarize(periodId = min(.data$periodId)) %>%
     pull()
   if (is.infinite(firstPeriod80Sens)) {
-    result <- tibble(mehod = estimates$method[1],
+    result <- tibble(method = estimates$method[1],
                      analysisId = estimates$analysisId[1],
                      firstPeriod80Sens = NA,
                      sensitivity = NA,
@@ -335,7 +335,7 @@ computeMaxSprtMetrics <- function(estimates, trueRr = "Overall") {
   } else {
     result <- metricsPerPeriod %>%
       filter(.data$periodId == firstPeriod80Sens) %>%
-      transmute(mehod = estimates$method[1],
+      transmute(method = estimates$method[1],
                 analysisId = estimates$analysisId[1],
                 firstPeriod80Sens = !!firstPeriod80Sens,
                 sensitivity = round(.data$sensitivity, 2),
