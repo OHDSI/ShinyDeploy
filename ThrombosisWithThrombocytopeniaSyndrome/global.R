@@ -14,8 +14,8 @@ connectionPool <- NULL
 defaultServer <- Sys.getenv("shinydbServer")
 defaultDatabase <- Sys.getenv("shinydbDatabase")
 defaultPort <- 5432
-defaultUser <- Sys.getenv("charybdisdbUser")
-defaultPassword <- Sys.getenv("charybdisdbPw")
+defaultUser <- Sys.getenv("shinyDbUser")
+defaultPassword <- Sys.getenv("shinyDbPassword")
 defaultResultsSchema <- 'thrombosisthrombocytopenia'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')

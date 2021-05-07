@@ -19,6 +19,10 @@ shiny::shinyServer(function(input, output, session) {
     return(cohort$cohortId[cohort$compoundName == input$comparatorCohort])
   })
   
+  conceptSetIds <- shiny::reactive(x = {
+    return(conceptSets$conceptSetId[conceptSets$conceptSetName %in% input$conceptSetsToFilterCharacterization])
+  })
+  
   timeIds <- reactiveVal(NULL)
   shiny::observeEvent(eventExpr = {
     list(input$timeIdChoices_open,
@@ -1314,7 +1318,6 @@ shiny::shinyServer(function(input, output, session) {
   output$orphanConceptsTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     validate(need(length(cohortId()) > 0, "No cohorts chosen"))
-    validate(need(length(input$conceptSet) > 0, "No concept set chosen"))
     
     if (is.null(cohortId()) || length(cohortId()) == 0) {
       return(dplyr::tibble(Note = paste0(
@@ -1336,9 +1339,9 @@ shiny::shinyServer(function(input, output, session) {
     if (!is.null(input$conceptSetsToFilterCharacterization) && length(input$conceptSetsToFilterCharacterization) > 0) {
       
       if (!is.null(input$conceptSetsToFilterCharacterization)) {
-        if (length(getResoledAndMappedConceptIdsForFilters()) > 0) {
+        if (length(conceptSetIds()) > 0) {
           data <- data %>% 
-            dplyr::filter(.data$conceptId %in% getResoledAndMappedConceptIdsForFilters())
+            dplyr::filter(.data$conceptSetId %in% conceptSetIds())
         } else {
           data <- data[0,]
         }
