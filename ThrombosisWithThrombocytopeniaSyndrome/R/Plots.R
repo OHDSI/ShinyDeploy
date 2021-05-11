@@ -67,6 +67,19 @@ plotTimeDistribution <- function(data, shortNameRef = NULL) {
     )
   )
   
+  sortShortName <- plotData %>%
+    dplyr::select(.data$shortName) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(-as.integer(sub(
+      pattern = '^C', '', x = .data$shortName
+    )))
+  
+  plotData <- plotData %>%
+    dplyr::arrange(shortName = factor(.data$shortName, levels = sortShortName$shortName),.data$shortName)
+  
+  plotData$shortName <- factor(plotData$shortName,
+                               levels = sortShortName$shortName)
+  
   plot <- ggplot2::ggplot(data = plotData) +
     ggplot2::aes(
       x = .data$shortName,
@@ -75,7 +88,6 @@ plotTimeDistribution <- function(data, shortNameRef = NULL) {
       middle = .data$medianValue,
       upper = .data$p75Value,
       ymax = .data$maxValue,
-      group = .data$shortName,
       average = .data$averageValue
     ) +
     ggplot2::geom_errorbar(size = 0.5) +
@@ -215,19 +227,29 @@ plotIncidenceRate <- function(data,
     plotType <- "bar"
   }
   
-  newSort <- plotData %>%
+  sortAgeGroup <- plotData %>%
     dplyr::select(.data$ageGroup) %>%
     dplyr::distinct() %>%
     dplyr::arrange(as.integer(sub(
       pattern = '-.+$', '', x = .data$ageGroup
     )))
   
+  sortShortName <- plotData %>%
+    dplyr::select(.data$shortName) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(as.integer(sub(
+      pattern = '^C', '', x = .data$shortName
+    )))
+  
   plotData <- plotData %>%
-    dplyr::arrange(ageGroup = factor(.data$ageGroup, levels = newSort$ageGroup),
-                   .data$ageGroup)
+    dplyr::arrange(ageGroup = factor(.data$ageGroup, levels = sortAgeGroup$ageGroup),.data$ageGroup) %>% 
+    dplyr::arrange(shortName = factor(.data$shortName, levels = sortShortName$shortName),.data$shortName)
   
   plotData$ageGroup <- factor(plotData$ageGroup,
-                              levels = newSort$ageGroup)
+                              levels = sortAgeGroup$ageGroup)
+  
+  plotData$shortName <- factor(plotData$shortName,
+                              levels = sortShortName$shortName)
   plotData$tooltip <- c(
     paste0(
       plotData$shortName,
@@ -268,7 +290,8 @@ plotIncidenceRate <- function(data,
     plotData$gender <- factor(plotData$gender, levels = genders)
   }
   distinctCalenderYear <- plotData$calendarYear %>%
-    unique()
+    unique() %>% 
+    sort()
   
   plot <-
     ggplot2::ggplot(data = plotData, do.call(ggplot2::aes_string, aesthetics)) +
@@ -276,7 +299,7 @@ plotIncidenceRate <- function(data,
     ggplot2::ylab("Incidence Rate (/1,000 person years)") +
     ggplot2::scale_y_continuous(expand = c(0, 0))
   
-  if (!is.na(distinctCalenderYear)) {
+  if (all(!is.na(distinctCalenderYear))) {
     if (length(distinctCalenderYear) >= 8) {
       plot <-
         plot + ggplot2::scale_x_continuous(n.breaks = 8, labels = round)
@@ -475,9 +498,7 @@ plotCohortComparisonStandardizedDifference <- function(balance,
     facet_nested(databaseId + targetCohort ~ comparatorCohort) +
     ggplot2::theme(strip.background = ggplot2::element_blank()) +
     ggplot2::xlim(xLimitMin, xLimitMax) +
-    ggplot2::ylim(yLimitMin, yLimitMax) +
-    ggplot2::xlab(balance$cohortId2 %>% unique()) +
-    ggplot2::ylab(balance$cohortId1 %>% unique())
+    ggplot2::ylim(yLimitMin, yLimitMax)
   
   plot <- ggiraph::girafe(
     ggobj = plot,
@@ -600,9 +621,7 @@ plotTemporalCompareStandardizedDifference <- function(balance,
     facet_nested(databaseId + choices1 ~ choices2) +
     ggplot2::theme(strip.background = ggplot2::element_blank()) +
     ggplot2::xlim(xLimitMin, xLimitMax) +
-    ggplot2::ylim(yLimitMin, yLimitMax) +
-    ggplot2::xlab(balance$comparatorCohort %>% unique()) +
-    ggplot2::ylab(balance$targetCohort %>% unique())
+    ggplot2::ylim(yLimitMin, yLimitMax) 
   
   plot <- ggiraph::girafe(
     ggobj = plot,
@@ -672,7 +691,7 @@ plotCohortOverlap <- function(data,
     dplyr::mutate(
       tOnlyString = paste0(
         .data$signTOnlySubjects,
-        scales::comma(.data$absTOnlySubjects),
+        scales::comma(.data$absTOnlySubjects,accuracy = 1),
         " (",
         .data$signTOnlySubjects,
         scales::percent(.data$absTOnlySubjects /
@@ -682,7 +701,7 @@ plotCohortOverlap <- function(data,
       ),
       cOnlyString = paste0(
         .data$signCOnlySubjects,
-        scales::comma(.data$absCOnlySubjects),
+        scales::comma(.data$absCOnlySubjects,accuracy = 1),
         " (",
         .data$signCOnlySubjects,
         scales::percent(.data$absCOnlySubjects /
@@ -692,7 +711,7 @@ plotCohortOverlap <- function(data,
       ),
       bothString = paste0(
         .data$signBothSubjects,
-        scales::comma(.data$absBothSubjects),
+        scales::comma(.data$absBothSubjects,accuracy = 1),
         " (",
         .data$signBothSubjects,
         scales::percent(.data$absBothSubjects /
@@ -743,6 +762,8 @@ plotCohortOverlap <- function(data,
       )
     )
   
+  
+  
   plotData$subjectsIn <-
     factor(plotData$subjectsIn,
            levels = c("Top cohort only", "Both cohorts", "Left cohort only"))
@@ -753,10 +774,35 @@ plotCohortOverlap <- function(data,
     position = "stack"
   }
   
+  sortTargetShortName <- plotData %>%
+    dplyr::select(.data$targetShortName) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(-as.integer(sub(
+      pattern = '^C', '', x = .data$targetShortName
+    )))
+  
+  sortComparatorShortName <- plotData %>%
+    dplyr::select(.data$comparatorShortName) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(as.integer(sub(
+      pattern = '^C', '', x = .data$comparatorShortName
+    )))
+  
+  plotData <- plotData %>%
+    dplyr::arrange(targetShortName = factor(.data$targetShortName, levels = sortTargetShortName$targetShortName),.data$targetShortName) %>% 
+    dplyr::arrange(comparatorShortName = factor(.data$comparatorShortName, levels = sortComparatorShortName$comparatorShortName),.data$comparatorShortName)
+  
+  plotData$targetShortName <- factor(plotData$targetShortName,
+                               levels = sortTargetShortName$targetShortName)
+  
+  plotData$comparatorShortName <- factor(plotData$comparatorShortName,
+                                     levels = sortComparatorShortName$comparatorShortName)
+  
+  
   plot <- ggplot2::ggplot(data = plotData) +
     ggplot2::aes(
       fill = .data$subjectsIn,
-      y = targetShortName,
+      y = .data$targetShortName,
       x = .data$value,
       tooltip = .data$tooltip,
       group = .data$subjectsIn
