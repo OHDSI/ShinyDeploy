@@ -1732,15 +1732,18 @@ shiny::shinyServer(function(input, output, session) {
         dplyr::filter(.data$conceptId > 0) %>%
         dplyr::distinct() %>% # distinct is needed here because many time condition_concept_id and condition_source_concept_id
         # may have the same value leading to duplication of row records
-        tidyr::pivot_wider(
-          id_cols = c("conceptId",
-                      "conceptName",
-                      "domainField",
-                      "vocabularyId"),
-          names_from = "databaseId",
-          values_from = c("conceptCount", "subjectCount"),
-          values_fill = 0
-        )
+        tidyr::pivot_longer(names_to = "type", 
+                            cols = c("conceptCount", "subjectCount"), 
+                            values_to = "count") %>% 
+        dplyr::mutate(names = paste0(.data$databaseId, " ", .data$type)) %>% 
+        dplyr::arrange(.data$databaseid, .data$type) %>% 
+        tidyr::pivot_wider(id_cols = c("conceptId",
+                                       "conceptName",
+                                       "domainField",
+                                       "vocabularyId"),
+                           names_from = "names",
+                           values_from = count,
+                           values_fill = 0)
       
       data <- data[order(-data[5]), ]
       
@@ -1768,7 +1771,7 @@ shiny::shinyServer(function(input, output, session) {
         lengthChange = TRUE,
         ordering = TRUE,
         paging = TRUE,
-        columnDefs = list(minCellCountDef(2 + 1:(
+        columnDefs = list(minCellCountDef(3 + 1:(
           length(databaseIds) * 2
         )), truncateStringDef(1, 80))
       )
@@ -3005,7 +3008,8 @@ shiny::shinyServer(function(input, output, session) {
             dplyr::arrange(desc(abs(.data$stdDiff)))
           
           if (length(temporalCovariateChoicesSelected) == 1) {
-            table <- table %>% 
+            table <- table %>%
+              dplyr::arrange(.data$choices) %>% 
               tidyr::pivot_wider(id_cols = c("covariateName"),
                                  names_from = "choices",
                                  values_from = c("meanTarget","sDTarget","meanComparator","sDComparator","stdDiff"),
@@ -3022,12 +3026,22 @@ shiny::shinyServer(function(input, output, session) {
             containerColumns <- c("Mean Target","SD Target","Mean Comparator","SD Comparator","Std. Diff")
           } else {
             table <- table %>% 
+              dplyr::arrange(.data$choices) %>% 
+              dplyr::rename(aMeanTarget = "meanTarget", 
+                            bSdTarget = "sDTarget",
+                            cMeanComparator = "meanComparator",
+                            dSdComparator = "sDComparator") %>% 
+              tidyr::pivot_longer(cols = c("aMeanTarget","bSdTarget","cMeanComparator","dSdComparator"),
+                                  names_to = "type", 
+                                  values_to = "values" 
+                                    ) %>% 
+              dplyr::mutate(names = paste0(.data$databaseId, " ", .data$choices, " ", .data$type)) %>% 
+              dplyr::arrange(.data$databaseId, .data$startDay1, .data$endDay1, .data$type) %>% 
               tidyr::pivot_wider(id_cols = c("covariateName"),
-                                 names_from = "choices",
-                                 values_from = c("meanTarget","sDTarget","meanComparator","sDComparator"),
+                                 names_from = "names",
+                                 values_from = c("values"),
                                  values_fill = 0
               )
-            
             
             columnDefs <- list(truncateStringDef(0, 80),
                                minCellRealDef(1:(length(temporalCovariateChoicesSelected) * 4), digits = 2))
@@ -3061,13 +3075,18 @@ shiny::shinyServer(function(input, output, session) {
             colspan <- 3
           } else {
             table <- table %>% 
+              tidyr::pivot_longer(cols = c("meanTarget", "meanComparator"), 
+                                  names_to = "type", 
+                                  values_to = "values") %>% 
+              dplyr::mutate(names = paste0(.data$databaseId, " ", .data$choices, " ", .data$type)) %>%
+              dplyr::arrange(.data$startDay1, .data$endDay1) %>% 
               tidyr::pivot_wider(id_cols = c("covariateName"),
-                                 names_from = "choices",
-                                 values_from = c("meanTarget", "meanComparator"),
+                                 names_from = "names",
+                                 values_from = "values",
                                  values_fill = 0
               )
             
-            containerColumns <- c("Mean Target", "Mean Comparator")
+            containerColumns <- c("Target", "Comparator")
             
             columnDefs <- list(truncateStringDef(0, 80),
                                minCellRealDef(1:(length(temporalCovariateChoicesSelected) * 2), digits = 2))
