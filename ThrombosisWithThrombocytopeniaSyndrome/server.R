@@ -528,7 +528,6 @@ shiny::shinyServer(function(input, output, session) {
       data$conceptName <- as.factor(data$conceptName)
       data$vocabularyId <- as.factor(data$vocabularyId)
       data$standardConcept <- as.factor(data$standardConcept)
-      colnames(data) <- camelCaseToTitleCase(colnames(data))
     } else {
       data <- dplyr::tibble("No data.")
     }
@@ -776,12 +775,12 @@ shiny::shinyServer(function(input, output, session) {
     sketch <- htmltools::withTags(table(class = "display",
                                         thead(tr(
                                           th(rowspan = 2, "Cohort"),
-                                          lapply(databaseIds, th, colspan = 2, class = "dt-center")
+                                          lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                         ),
                                         tr(
                                           lapply(rep(
                                             c("Entries", "Subjects"), length(databaseIds)
-                                          ), th)
+                                          ), th, style = "border-right:1px solid silver")
                                         ))))
     options = list(
       pageLength = 1000,
@@ -1186,11 +1185,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, 'Concept Name'),
                                               th(rowspan = 2, 'Vocabulary ID'),
                                               th(rowspan = 2, 'Concept Code'),
-                                              lapply(databaseIds, th, colspan = 2, class = "dt-center")
+                                              lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Subjects", "Records"), length(databaseIds)
-                                            ), th))
+                                            ), th, style = "border-right:1px solid silver"))
                                           )))
       options = list(
         pageLength = 1000,
@@ -1283,11 +1282,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, "Concept ID"),
                                               th(rowspan = 2, "Concept Name"),
                                               th(rowspan = 2, "Vocabulary ID"),
-                                              lapply(databaseIds, th, colspan = 2, class = "dt-center")
+                                              lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Subjects", "Records"), length(databaseIds)
-                                            ), th))
+                                            ), th, style = "border-right:1px solid silver"))
                                           )))
       
       options = list(
@@ -1442,11 +1441,11 @@ shiny::shinyServer(function(input, output, session) {
                                             th(rowspan = 2, "Concept Name"),
                                             th(rowspan = 2, "Vocabulary ID"),
                                             th(rowspan = 2, "Concept Code"),
-                                            lapply(databaseIds, th, colspan = 2, class = "dt-center")
+                                            lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                           ),
                                           tr(lapply(rep(
                                             c("Subjects", "Counts"), length(databaseIds)
-                                          ), th))
+                                          ), th, style = "border-right:1px solid silver"))
                                         )))
     
     options = list(
@@ -1534,12 +1533,12 @@ shiny::shinyServer(function(input, output, session) {
                                         thead(tr(
                                           th(rowspan = 2, "Rule Sequence ID"),
                                           th(rowspan = 2, "Rule Name"),
-                                          lapply(databaseIds, th, colspan = 4, class = "dt-center")
+                                          lapply(databaseIds, th, colspan = 4, class = "dt-center", style = "border-right:1px solid silver")
                                         ),
                                         tr(
                                           lapply(rep(
                                             c("Meet", "Gain", "Remain", "Total"), length(databaseIds)
-                                          ), th)
+                                          ), th, style = "border-right:1px solid silver")
                                         ))))
     
     options = list(
@@ -1754,11 +1753,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, "Concept Name"),
                                               th(rowspan = 2, "Domain field"),
                                               th(rowspan = 2, "Vocabulary Id"),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Records", "Persons"), length(databaseIds)
-                                            ), th))
+                                            ), th, style = "border-right:1px solid silver"))
                                           )))
       
       options = list(
@@ -2283,12 +2282,12 @@ shiny::shinyServer(function(input, output, session) {
         sketch <- htmltools::withTags(table(class = "display",
                                             thead(tr(
                                               th(rowspan = 2, "Covariate Name"),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
                                             ),
                                             tr(
                                               lapply(rep(
                                                 c("Mean", "SD"), length(databaseIds)
-                                              ), th)
+                                              ), th, style = "border-right:1px solid silver")
                                             ))))
         
         table <- DT::datatable(
@@ -3098,12 +3097,12 @@ shiny::shinyServer(function(input, output, session) {
         sketch <- htmltools::withTags(table(class = "display",
                                             thead(tr(
                                               th(rowspan = 2, "Covariate Name"),
-                                              lapply(temporalCovariateChoicesSelected, th, colspan = colspan, class = "dt-center", style = "border-right:1px solid black")
+                                              lapply(temporalCovariateChoicesSelected, th, colspan = colspan, class = "dt-center", style = "border-right:1px solid silver")
                                             ),
                                             tr(
                                               lapply(rep(
                                                 containerColumns, length(temporalCovariateChoicesSelected)
-                                              ), th, style = "border-right:1px solid black")
+                                              ), th, style = "border-right:1px solid grey")
                                             ))))
         
         options = list(
@@ -3235,13 +3234,14 @@ shiny::shinyServer(function(input, output, session) {
                                             th(
                                               "Vocabulary version",
                                               colspan = 2,
-                                              class = "dt-center"
+                                              class = "dt-center",
+                                              style = "border-right:1px solid silver"
                                             ),
                                             th(rowspan = 2, "Description"),
                                             th(rowspan = 2, "Match"),
                                           ),
                                           tr(lapply(
-                                            c("CDM source", "Vocabulary table"), th
+                                            c("CDM source", "Vocabulary table"), th, style = "border-right:1px solid silver"
                                           ))
                                         )))
     table <- DT::datatable(
