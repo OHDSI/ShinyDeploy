@@ -827,13 +827,33 @@ bodyTabItems <- shinydashboard::tabItems(
   shinydashboard::tabItem(
     tabName = "compareCohortCharacterization",
     cohortReferenceWithDatabaseId("cohortCharCompareSelectedCohort", "cohortCharCompareSelectedDatabase"),
-    shiny::radioButtons(
-      inputId = "charCompareType",
-      label = "",
-      choices = c("Pretty table", "Raw table", "Plot"),
-      selected = "Plot",
-      inline = TRUE
+    tags$table(
+      tags$tr(
+        tags$td(
+          shiny::radioButtons(
+            inputId = "charCompareType",
+            label = "",
+            choices = c("Pretty table", "Raw table", "Plot"),
+            selected = "Plot",
+            inline = TRUE
+          ),
+        ),
+        tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")),
+        tags$td(
+          shiny::conditionalPanel(
+            condition = "input.charCompareType == 'Raw table'",
+            shiny::radioButtons(
+              inputId = "compareCharacterizationColumnFilters",
+              label = "Display",
+              choices = c("Mean and Standard Deviation", "Mean only"),
+              selected = "Mean only",
+              inline = TRUE
+            )
+          )
+        )
+      )
     ),
+    
     shiny::conditionalPanel(condition = "input.charCompareType == 'Raw table' | input.charCompareType=='Plot'",
                             tags$table(tags$tr(
                               tags$td(

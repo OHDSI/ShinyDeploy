@@ -2810,25 +2810,45 @@ shiny::shinyServer(function(input, output, session) {
           dplyr::filter(.data$conceptId %in% getResoledAndMappedConceptIdsForFilters())
       }
       
-      table <- balance %>%
-        dplyr::select(
-          .data$covariateName,
-          .data$conceptId,
-          .data$mean1,
-          .data$sd1,
-          .data$mean2,
-          .data$sd2,
-          .data$absStdDiff
-        ) %>%
+      balance <- balance %>% 
         dplyr::mutate(covariateName =  paste(.data$covariateName, "(", .data$conceptId, ")")) %>% 
-        dplyr::arrange(desc(absStdDiff)) %>% 
-        dplyr::select(-.data$conceptId) %>% 
-        dplyr::relocate(.data$covariateName,
-                        .data$mean1,
-                        .data$sd1,
-                        .data$mean2,
-                        .data$sd2,
-                        .data$absStdDiff)
+        dplyr::rename("meanTarget" = mean1,
+                      "sdTarget" = sd1,
+                      "meanComparator" = mean2,
+                      "sdComparator" = sd2,
+                      "StdDiff" = absStdDiff)
+      
+      if (input$compareCharacterizationColumnFilters == "Mean and Standard Deviation") {
+        
+        table <- balance %>%
+          dplyr::select(
+            .data$covariateName,
+            .data$meanTarget,
+            .data$sdTarget,
+            .data$meanComparator,
+            .data$sdComparator,
+            .data$StdDiff
+          ) %>% 
+          dplyr::arrange(desc(StdDiff))
+        
+        columsDefs <- list(truncateStringDef(0, 80),
+                           minCellRealDef(1:5, digits = 2))
+        
+        colorBarColumns <- c(2,4)
+        
+      } else {
+        table <- balance %>%
+          dplyr::select(
+            .data$covariateName,
+            .data$meanTarget,
+            .data$meanComparator
+          )
+        
+        columsDefs <- list(truncateStringDef(0, 80),
+                           minCellRealDef(1:2, digits = 2))
+        
+        colorBarColumns <- c(2,3)
+      }
       
       options = list(
         pageLength = 100,
@@ -2840,29 +2860,22 @@ shiny::shinyServer(function(input, output, session) {
         lengthChange = TRUE,
         ordering = TRUE,
         paging = TRUE,
-        columnDefs = list(truncateStringDef(0, 80),
-                          minCellRealDef(1:5, digits = 2))
+        columnDefs = columsDefs
       )
       
       table <- DT::datatable(
         table,
         options = options,
         rownames = FALSE,
-        colnames = c(
-          "Covariate Name",
-          "Mean Target",
-          "SD Target",
-          "Mean Comparator",
-          "SD Comparator",
-          "StdDiff"
-        ),
+        colnames = colnames(table) %>%
+          camelCaseToTitleCase(),
         escape = FALSE,
         filter = "top",
         class = "stripe nowrap compact"
       )
       table <- DT::formatStyle(
         table = table,
-        columns = c(2, 4),
+        columns = colorBarColumns,
         background = DT::styleColorBar(c(0, 1), "lightblue"),
         backgroundSize = "98% 88%",
         backgroundRepeat = "no-repeat",
