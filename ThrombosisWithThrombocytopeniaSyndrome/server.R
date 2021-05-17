@@ -2836,18 +2836,24 @@ shiny::shinyServer(function(input, output, session) {
         
         colorBarColumns <- c(2,4)
         
+        standardDifferenceColumn <- 6
+        
       } else {
         table <- balance %>%
           dplyr::select(
             .data$covariateName,
             .data$meanTarget,
-            .data$meanComparator
-          )
+            .data$meanComparator,
+            .data$StdDiff
+          ) %>% 
+          dplyr::rename("target" = meanTarget,
+                        "comparator" = meanComparator)
         
         columsDefs <- list(truncateStringDef(0, 80),
-                           minCellRealDef(1:2, digits = 2))
+                           minCellRealDef(1:3, digits = 2))
         
         colorBarColumns <- c(2,3)
+        standardDifferenceColumn <- 4
       }
       
       options = list(
@@ -2883,7 +2889,7 @@ shiny::shinyServer(function(input, output, session) {
       )
       table <- DT::formatStyle(
         table = table,
-        columns = 6,
+        columns = standardDifferenceColumn,
         background = styleAbsColorBar(1, "lightblue", "pink"),
         backgroundSize = "98% 88%",
         backgroundRepeat = "no-repeat",
@@ -3300,13 +3306,8 @@ shiny::shinyServer(function(input, output, session) {
         .data$vocabularyVersionCdm,
         .data$vocabularyVersion,
         .data$description
-      ) %>%
-      dplyr::mutate(
-        match = dplyr::case_when(
-          .data$vocabularyVersionCdm == .data$vocabularyVersion ~ TRUE,
-          TRUE ~ FALSE
-        )
-      )
+      ) 
+    
     options = list(
       pageLength = 100,
       lengthMenu = list(c(10, 100, 1000, -1), c("10", "100", "1000", "All")),
@@ -3316,9 +3317,7 @@ shiny::shinyServer(function(input, output, session) {
       paging = TRUE,
       searchHighlight = TRUE,
       columnDefs = list(
-        list(width = "20%", targets = 0),
-        list(width = "20%", targets = 1),
-        list(width = "30%", targets = 4)
+        list(width = "50%", targets = 4)
       )
     )
     sketch <- htmltools::withTags(table(class = "display",
@@ -3332,8 +3331,7 @@ shiny::shinyServer(function(input, output, session) {
                                               class = "dt-center",
                                               style = "border-right:1px solid silver"
                                             ),
-                                            th(rowspan = 2, "Description"),
-                                            th(rowspan = 2, "Match"),
+                                            th(rowspan = 2, "Description")
                                           ),
                                           tr(lapply(
                                             c("CDM source", "Vocabulary table"), th, style = "border-right:1px solid silver"
@@ -3345,10 +3343,7 @@ shiny::shinyServer(function(input, output, session) {
       container = sketch,
       rownames = FALSE,
       class = "stripe compact"
-    ) %>%
-      DT::formatStyle('match',
-                      target = 'row',
-                      color = DT::styleEqual(FALSE, 'red'))
+    ) 
     return(table)
   }, server = TRUE)
   
