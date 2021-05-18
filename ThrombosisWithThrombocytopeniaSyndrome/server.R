@@ -86,10 +86,31 @@ shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  downloadTableData <- function(data, fileName) {
+    date <- stringr::str_replace_all(Sys.Date(),pattern = "-", replacement = "")
+    time <- stringr::str_split(string = Sys.time(), pattern = " ", n = 2)[[1]][2]
+    timeArray <- stringr::str_split(string = time, pattern = ":", n = 3)
+    downloadHandler(
+      filename = function() {
+        paste(fileName, "_",  date, "_", timeArray[[1]][1], timeArray[[1]][2], ".csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(data, file)
+      }
+    )
+  }
+  
+  cohortDefinitionTableData <- shiny::reactive(x = {
+    data <-  cohortSubset() %>%
+      dplyr::select(cohort = .data$shortName, .data$cohortId, .data$cohortName)
+    return(data)
+  })
+  
+  output$saveCohortDefinitionButton <- downloadTableData(data = cohortDefinitionTableData(), fileName = "CohortDefinition") 
+  
   # Cohort Definition ---------------------------------------------------------
   output$cohortDefinitionTable <- DT::renderDataTable(expr = {
-    data <- cohortSubset() %>%
-      dplyr::select(cohort = .data$shortName, .data$cohortId, .data$cohortName) %>%
+    data <- cohortDefinitionTableData() %>%
       dplyr::mutate(cohort = as.factor(.data$cohort),
                     cohortName = as.factor(.data$cohortName),
                     cohortId = as.factor(.data$cohortId))
@@ -454,11 +475,47 @@ shiny::shinyServer(function(input, output, session) {
       return(list(resolved = outputResolved, mapped = outputMapped))
     })
   
-  getIncludeOrSourceConcepts <- shiny::reactive({
+  getConceptCountForAllDatabase <- 
+    shiny::reactive(x = {
+      row <- selectedCohortDefinitionRow()
+      if (is.null(row) ||
+          is.null(cohortDefinitionConceptSetExpressionRow()$id)) {
+        return(NULL)
+      }
+      getIncludedConceptResult(
+        dataSource = dataSource,
+        databaseIds = database$databaseId,
+        cohortId = row$cohortId
+      )
+    })
+  
+  getResolvedOrMappedConcepts <- shiny::reactive({
     data <- NULL
     databaseIdToFilter <- database %>%
       dplyr::filter(.data$databaseIdWithVocabularyVersion == input$databaseOrVocabularySchema) %>%
       dplyr::pull(.data$databaseId)
+    
+    conceptCounts <- getConceptCountForAllDatabase()
+    if (all(!is.null(conceptCounts),
+            nrow(conceptCounts) > 0)) {
+      conceptCounts <- conceptCounts %>% 
+        dplyr::filter(.data$databaseId %in% !!databaseIdToFilter) %>% 
+        dplyr::select(.data$conceptId, .data$sourceConceptId, .data$conceptSubjects, .data$conceptCount) %>% 
+        dplyr::distinct()
+      conceptCounts <- dplyr::bind_rows(
+        conceptCounts %>% 
+          dplyr::select(.data$conceptId, .data$conceptSubjects, .data$conceptCount),
+        conceptCounts %>% 
+          dplyr::select(.data$sourceConceptId, .data$conceptSubjects, .data$conceptCount) %>% 
+          dplyr::rename("conceptId" = .data$sourceConceptId)
+      ) %>% 
+        dplyr::group_by(.data$conceptId) %>% 
+        dplyr::summarise(conceptSubjects = max(conceptSubjects),
+                         conceptCount = max(conceptCount)) %>% 
+        dplyr::distinct() %>% 
+        dplyr::ungroup() %>% 
+        dplyr::arrange(dplyr::desc(.data$conceptCount))
+    }
     
     if (length(databaseIdToFilter) > 0) {
       resolvedOrMappedConceptSetForAllDatabase <-
@@ -472,17 +529,28 @@ shiny::shinyServer(function(input, output, session) {
           if (!is.null(data) && nrow(data) > 0) {
             data <- data %>%
               dplyr::filter(.data$conceptSetId == cohortDefinitionConceptSetExpressionRow()$id) %>%
-              dplyr::filter(.data$databaseId == !!databaseIdToFilter) %>%
-              dplyr::select(-.data$databaseId, -.data$conceptSetId)
-            data$resolvedConceptId <-
-              as.factor(data$resolvedConceptId)
+              dplyr::filter(.data$databaseId %in% !!databaseIdToFilter) %>%
+              dplyr::select(-.data$databaseId, -.data$conceptSetId) %>% 
+              dplyr::filter(.data$conceptId != .data$resolvedConceptId) %>% 
+              dplyr::relocate(.data$resolvedConceptId) %>% 
+              dplyr::inner_join(resolvedOrMappedConceptSetForAllDatabase$resolved %>% 
+                                  dplyr::select(.data$conceptId, .data$conceptName) %>% 
+                                  dplyr::distinct() %>% 
+                                  dplyr::rename("resolvedConceptId" = .data$conceptId,
+                                                "resolvedConceptName" = .data$conceptName),
+                                by = "resolvedConceptId") %>% 
+              dplyr::mutate(resolvedConcept = paste0(.data$resolvedConceptId, " (", .data$resolvedConceptName, ")")) %>% 
+              dplyr::select(-.data$resolvedConceptId, -.data$resolvedConceptName) %>% 
+              dplyr::relocate(.data$resolvedConcept)
+            data$resolvedConcept <-
+              as.factor(data$resolvedConcept)
           } else {
             data <- NULL
           }
         } else {
           data <- resolvedOrMappedConceptSetForAllDatabase$resolved %>%
             dplyr::filter(.data$conceptSetId == cohortDefinitionConceptSetExpressionRow()$id) %>%
-            dplyr::filter(.data$databaseId == !!databaseIdToFilter) %>%
+            dplyr::filter(.data$databaseId %in% !!databaseIdToFilter) %>%
             dplyr::select(-.data$databaseId, -.data$conceptSetId, -.data$cohortId)
         }
       }
@@ -509,9 +577,20 @@ shiny::shinyServer(function(input, output, session) {
           data <- resolvedOrMappedConceptSetForAllVocabulary$mapped %>%
             dplyr::filter(.data$conceptSetId == cohortDefinitionConceptSetExpressionRow()$id) %>%
             dplyr::filter(.data$vocabularyDatabaseSchema == !!vocabularyDataSchemaToFilter) %>%
-            dplyr::select(-.data$vocabularyDatabaseSchema, -.data$conceptSetId)
-          data$resolvedConceptId <-
-            as.factor(data$resolvedConceptId)
+            dplyr::select(-.data$vocabularyDatabaseSchema, -.data$conceptSetId) %>% 
+            dplyr::filter(.data$conceptId != .data$resolvedConceptId) %>% 
+            dplyr::relocate(.data$resolvedConceptId) %>% 
+            dplyr::inner_join(resolvedOrMappedConceptSetForAllVocabulary$resolved %>% 
+                                dplyr::select(.data$conceptId, .data$conceptName) %>% 
+                                dplyr::distinct() %>% 
+                                dplyr::rename("resolvedConceptId" = .data$conceptId,
+                                              "resolvedConceptName" = .data$conceptName),
+                              by = "resolvedConceptId") %>% 
+            dplyr::mutate(resolvedConcept = paste0(.data$resolvedConceptId, " (", .data$resolvedConceptName, ")")) %>% 
+            dplyr::select(-.data$resolvedConceptId, -.data$resolvedConceptName) %>% 
+            dplyr::relocate(.data$resolvedConcept)
+          data$resolvedConcept <-
+            as.factor(data$resolvedConcept)
         } else {
           data <- resolvedOrMappedConceptSetForAllVocabulary$resolved %>%
             dplyr::filter(.data$conceptSetId == cohortDefinitionConceptSetExpressionRow()$id) %>%
@@ -521,6 +600,17 @@ shiny::shinyServer(function(input, output, session) {
       }
     }
     if (!is.null(data) && nrow(data) > 0) {
+      
+      if (all(nrow(conceptCounts) > 0,
+              'conceptId' %in% colnames(conceptCounts))) {
+        data <- data %>% 
+          dplyr::left_join(conceptCounts, by = "conceptId") %>% 
+          dplyr::arrange(dplyr::desc(.data$conceptSubjects)) %>% 
+          dplyr::relocate(.data$conceptSubjects, .data$conceptCount) %>% 
+          dplyr::rename("subjects" = .data$conceptSubjects,
+                        "count" = .data$conceptCount)
+      }
+      
       data$conceptClassId <- as.factor(data$conceptClassId)
       data$domainId <- as.factor(data$domainId)
       data$conceptCode <- as.factor(data$conceptCode)
@@ -528,13 +618,16 @@ shiny::shinyServer(function(input, output, session) {
       data$conceptName <- as.factor(data$conceptName)
       data$vocabularyId <- as.factor(data$vocabularyId)
       data$standardConcept <- as.factor(data$standardConcept)
+      
+      data <- data %>% 
+        dplyr::relocate(.data$conceptId, .data$conceptName)
     }
     return(data)
   })
   
-  output$cohortDefinitionIncludedStandardConceptsTable <-
+  output$cohortDefinitionIncludedResolvedConceptsTable <-
     DT::renderDataTable(expr = {
-      data <- getIncludeOrSourceConcepts()
+      data <- getResolvedOrMappedConcepts()
       if (is.null(data)) {
         return(dplyr::tibble("No included standard concepts."))
       }
@@ -568,9 +661,9 @@ shiny::shinyServer(function(input, output, session) {
       return(dataTable)
     }, server = TRUE)
   
-  output$cohortDefinitionIncludedSourceConceptsTable <-
+  output$cohortDefinitionMappedConceptsTable <-
     DT::renderDataTable(expr = {
-      data <- getIncludeOrSourceConcepts()
+      data <- getResolvedOrMappedConcepts()
       if (is.null(data)) {
         return("No included source concepts")
       }
@@ -606,6 +699,8 @@ shiny::shinyServer(function(input, output, session) {
       )
       return(dataTable)
     }, server = TRUE)
+  
+  output$saveCohortDefinitionConceptSetsTable <- downloadTableData(data = cohortDefinitionConceptSets(), fileName = "ConceptSetsExpression") 
   
   output$cohortDefinitionConceptSetsTable <-
     DT::renderDataTable(expr = {
@@ -697,6 +792,15 @@ shiny::shinyServer(function(input, output, session) {
   })
   
   # Cohort Counts ---------------------------------------------------------------------------
+  
+  output$saveCohortCountsTable <- downloadTableData(
+    data = getCohortCountResult(
+      dataSource = dataSource,
+      databaseIds = databaseIds(),
+      cohortIds = cohortIds()
+    ),
+    fileName = "cohortCount"
+  ) 
   output$cohortCountsTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     validate(need(length(cohortIds()) > 0, "No cohorts chosen"))
@@ -776,12 +880,12 @@ shiny::shinyServer(function(input, output, session) {
       sketch <- htmltools::withTags(table(class = "display",
                                           thead(tr(
                                             th(rowspan = 2, "Cohort"),
-                                            lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                            lapply(databaseIds, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                           ),
                                           tr(
                                             lapply(rep(
                                               c("Records", "Subjects"), length(databaseIds)
-                                            ), th, style = "border-right:1px solid silver")
+                                            ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                           ))))
       options = list(
         pageLength = 1000,
@@ -1061,7 +1165,7 @@ shiny::shinyServer(function(input, output, session) {
       dplyr::arrange(.data$incidenceRate)
     incidenceRateFilter <-
       incidenceRateFilter[incidenceRateFilter$incidenceRate >= input$YscaleMinAndMax[1] &
-                       incidenceRateFilter$incidenceRate <= input$YscaleMinAndMax[2], , drop = FALSE] %>%
+                            incidenceRateFilter$incidenceRate <= input$YscaleMinAndMax[2], , drop = FALSE] %>%
       dplyr::pull(.data$incidenceRate)
     return(incidenceRateFilter)
   })
@@ -1136,6 +1240,8 @@ shiny::shinyServer(function(input, output, session) {
     return(plot)
   })
   
+  output$saveTimeDistTable <- downloadTableData(data = timeDist(), fileName = "timeDistribution") 
+  
   output$timeDistTable <- DT::renderDataTable(expr = {
     data <- timeDist()  %>%
       addShortName(cohort) %>%
@@ -1193,7 +1299,15 @@ shiny::shinyServer(function(input, output, session) {
     return(table)
   }, server = TRUE)
   
-  # included concepts table --------------------------------------------------------------------------
+  # included concepts table /concepts in data source-----------------------------------------------------------
+  output$saveIncludedConceptsTable <- downloadTableData(
+    data = getIncludedConceptResult(
+      dataSource = dataSource,
+      cohortId = cohortId(),
+      databaseIds = databaseIds()
+    ),
+    fileName = "includedConcept"
+  ) 
   output$includedConceptsTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     if (is.null(cohortId()) || length(cohortId()) == 0) {
@@ -1306,11 +1420,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, 'Concept Name'),
                                               th(rowspan = 2, 'Vocabulary ID'),
                                               th(rowspan = 2, 'Concept Code'),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Subjects", "Records"), length(databaseIds)
-                                            ), th, style = "border-right:1px solid silver"))
+                                            ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver"))
                                           )))
       options = list(
         pageLength = 1000,
@@ -1404,11 +1518,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, "Concept ID"),
                                               th(rowspan = 2, "Concept Name"),
                                               th(rowspan = 2, "Vocabulary ID"),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Subjects", "Records"), length(databaseIds)
-                                            ), th, style = "border-right:1px solid silver"))
+                                            ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver"))
                                           )))
       
       options = list(
@@ -1451,6 +1565,14 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # orphan concepts table -------------------------------------------------------------------------
+  output$saveOrphanConceptsTable <- downloadTableData(
+    data = getOrphanConceptResult(
+      dataSource = dataSource,
+      cohortId = cohortId(),
+      databaseIds = databaseIds()
+    ),
+    fileName = "orphanConcept"
+  ) 
   output$orphanConceptsTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     validate(need(length(cohortId()) > 0, "No cohorts chosen"))
@@ -1572,11 +1694,11 @@ shiny::shinyServer(function(input, output, session) {
                                             th(rowspan = 2, "Concept Name"),
                                             th(rowspan = 2, "Vocabulary ID"),
                                             th(rowspan = 2, "Concept Code"),
-                                            lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                            lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-bottom:1px solid silver;border-bottom:1px solid silver")
                                           ),
                                           tr(lapply(rep(
-                                            c("Subjects", "Counts"), length(databaseIds)
-                                          ), th, style = "border-right:1px solid silver"))
+                                            c("Subjects", "Records"), length(databaseIds)
+                                          ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver"))
                                         )))
     
     options = list(
@@ -1617,6 +1739,12 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # Inclusion rules table -----------------------------------------------------------------------
+  output$saveInclusionRuleTable <- downloadTableData(data = getInclusionRuleStats(
+    dataSource = dataSource,
+    cohortIds = cohortId(),
+    databaseIds = databaseIds()
+  ), fileName = "inclusionRule") 
+  
   output$inclusionRuleTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     table <- getInclusionRuleStats(
@@ -1664,12 +1792,12 @@ shiny::shinyServer(function(input, output, session) {
                                         thead(tr(
                                           th(rowspan = 2, "Rule Sequence ID"),
                                           th(rowspan = 2, "Rule Name"),
-                                          lapply(databaseIds, th, colspan = 4, class = "dt-center", style = "border-right:1px solid silver")
+                                          lapply(databaseIds, th, colspan = 4, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                         ),
                                         tr(
                                           lapply(rep(
                                             c("Meet", "Gain", "Remain", "Total"), length(databaseIds)
-                                          ), th, style = "border-right:1px solid silver")
+                                          ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                         ))))
     
     options = list(
@@ -1707,6 +1835,7 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # Index event breakdown ----------------------------------------------------------------
+  
   indexEventBreakDownData <- shiny::reactive(x = {
     if (length(cohortId()) > 0 &&
         length(databaseIds()) > 0) {
@@ -1809,6 +1938,11 @@ shiny::shinyServer(function(input, output, session) {
     }
   })
   
+  output$saveBreakdownTable <- downloadTableData(
+    data = indexEventBreakDownDataFilteredByRadioButton(),
+    fileName = "indexEventBreakdown"
+  ) 
+  
   output$breakdownTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     validate(need(length(cohortId()) > 0, "No cohorts chosen chosen"))
@@ -1884,11 +2018,11 @@ shiny::shinyServer(function(input, output, session) {
                                               th(rowspan = 2, "Concept Name"),
                                               th(rowspan = 2, "Domain field"),
                                               th(rowspan = 2, "Vocabulary Id"),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ),
                                             tr(lapply(rep(
                                               c("Records", "Persons"), length(databaseIds)
-                                            ), th, style = "border-right:1px solid silver"))
+                                            ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver"))
                                           )))
       
       options = list(
@@ -1931,7 +2065,7 @@ shiny::shinyServer(function(input, output, session) {
         dplyr::arrange(.data$databaseId) %>%
         dplyr::filter(.data$conceptId > 0) %>%
         dplyr::distinct() # distinct is needed here because many time condition_concept_id and condition_source_concept_id
-        # may have the same value
+      # may have the same value
       
       if (input$indexEventBreakdownTableFilter == "Records") {
         data <- data %>% 
@@ -1997,6 +2131,14 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # Visit Context ---------------------------------------------------------------------------------------------
+  output$saveVisitContextTable <- downloadTableData(
+    data = getVisitContextResults(
+      dataSource = dataSource,
+      cohortIds = cohortId(),
+      databaseIds = databaseIds()
+    ),
+    fileName = "visitContext"
+  ) 
   output$visitContextTable <- DT::renderDataTable(expr = {
     validate(need(length(databaseIds()) > 0, "No data sources chosen"))
     validate(need(length(cohortId()) > 0, "No cohorts chosen"))
@@ -2064,7 +2206,7 @@ shiny::shinyServer(function(input, output, session) {
     sketch <- htmltools::withTags(table(class = "display",
                                         thead(tr(
                                           th(rowspan = 2, "Visit"),
-                                          lapply(databaseIdsWithCount, th, colspan = 4, class = "dt-center",style = "border-right:1px solid black")
+                                          lapply(databaseIdsWithCount, th, colspan = 4, class = "dt-center",style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                         ),
                                         tr(
                                           lapply(rep(
@@ -2075,7 +2217,7 @@ shiny::shinyServer(function(input, output, session) {
                                               "Visits After"
                                             ),
                                             length(databaseIds)
-                                          ), th,style = "border-right:1px solid black")
+                                          ), th,style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                         ))))
     
     options = list(
@@ -2214,6 +2356,11 @@ shiny::shinyServer(function(input, output, session) {
       choices = subset
     )
   })
+  
+  output$saveCohortCharacterizationTable <- downloadTableData(
+    data = characterizationTableData(),
+    fileName = "cohortCharacterization"
+  )
   
   
   output$characterizationTable <- DT::renderDataTable(expr = {
@@ -2372,7 +2519,7 @@ shiny::shinyServer(function(input, output, session) {
           tidyr::pivot_longer(cols = c(.data$mean))
       }
       
-       data <-  data %>% 
+      data <-  data %>% 
         dplyr::mutate(name = paste0(databaseId, "_", .data$name)) %>%
         tidyr::pivot_wider(
           id_cols = c(.data$cohortId, .data$covariateId),
@@ -2413,12 +2560,12 @@ shiny::shinyServer(function(input, output, session) {
         sketch <- htmltools::withTags(table(class = "display",
                                             thead(tr(
                                               th(rowspan = 2, "Covariate Name"),
-                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver")
+                                              lapply(databaseIdsWithCount, th, colspan = 2, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ),
                                             tr(
                                               lapply(rep(
                                                 c("Mean", "SD"), length(databaseIds)
-                                              ), th, style = "border-right:1px solid silver")
+                                              ), th, style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ))))
         
         table <- DT::datatable(
@@ -2479,6 +2626,18 @@ shiny::shinyServer(function(input, output, session) {
   }, server = TRUE)
   
   # Temporal characterization -----------------------------------------------------------------
+  
+  output$saveTemporalCharacterizationTable <- downloadTableData(
+    data = getCovariateValueResult(
+      dataSource = dataSource,
+      cohortIds = cohortId(),
+      databaseIds = input$database,
+      timeIds = timeIds(),
+      isTemporal = TRUE
+    ),
+    fileName = "temporalCharacterization"
+  )
+  
   temporalAnalysisNameFilter <- shiny::reactive(x = {
     return(input$temporalAnalysisNameFilter)
   })
@@ -2745,6 +2904,11 @@ shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  output$saveCompareCohortCharacterizationTable <- downloadTableData(
+    data = computeBalance(),
+    fileName = "compareCohortCharacterization"
+  )
+  
   output$charCompareTable <- DT::renderDataTable(expr = {
     balance <- computeBalance()
     if (nrow(balance) == 0) {
@@ -3008,6 +3172,12 @@ shiny::shinyServer(function(input, output, session) {
       return(balance)
     })
   
+  output$saveCompareTemporalCharacterizationTable <- downloadTableData(
+    data = computeBalanceForCompareTemporalCharacterization(),
+    fileName = "compareTemporalCharacterization"
+  )
+  
+  
   shiny::observe({
     subset <-
       computeBalanceForCompareTemporalCharacterization()$analysisName %>% unique() %>% sort()
@@ -3146,7 +3316,7 @@ shiny::shinyServer(function(input, output, session) {
               tidyr::pivot_longer(cols = c("aMeanTarget","bSdTarget","cMeanComparator","dSdComparator"),
                                   names_to = "type", 
                                   values_to = "values" 
-                                    ) %>% 
+              ) %>% 
               dplyr::mutate(names = paste0(.data$databaseId, " ", .data$choices, " ", .data$type)) %>% 
               dplyr::arrange(.data$databaseId, .data$startDay, .data$endDay, .data$type) %>% 
               tidyr::pivot_wider(id_cols = c("covariateName"),
@@ -3210,7 +3380,7 @@ shiny::shinyServer(function(input, output, session) {
         sketch <- htmltools::withTags(table(class = "display",
                                             thead(tr(
                                               th(rowspan = 2, "Covariate Name"),
-                                              lapply(temporalCovariateChoicesSelected, th, colspan = colspan, class = "dt-center", style = "border-right:1px solid silver")
+                                              lapply(temporalCovariateChoicesSelected, th, colspan = colspan, class = "dt-center", style = "border-right:1px solid silver;border-bottom:1px solid silver")
                                             ),
                                             tr(
                                               lapply(rep(
@@ -3329,12 +3499,12 @@ shiny::shinyServer(function(input, output, session) {
                                               "Vocabulary version",
                                               colspan = 2,
                                               class = "dt-center",
-                                              style = "border-right:1px solid silver"
+                                              style = "border-right:1px solid silver;border-bottom:1px solid silver"
                                             ),
                                             th(rowspan = 2, "Description")
                                           ),
                                           tr(lapply(
-                                            c("CDM source", "Vocabulary table"), th, style = "border-right:1px solid silver"
+                                            c("CDM source", "Vocabulary table"), th, style = "border-right:1px solid silver;border-bottom:1px solid silver"
                                           ))
                                         )))
     table <- DT::datatable(
