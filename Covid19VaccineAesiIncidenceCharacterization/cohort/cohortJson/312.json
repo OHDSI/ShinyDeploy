@@ -40,15 +40,15 @@
     },
     {
       "id": 2,
-      "name": "Encephalomyelitis",
+      "name": "Myocardial Infarction and complication",
       "expression": {
         "items": [
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "192727001",
-              "CONCEPT_ID": 372615,
-              "CONCEPT_NAME": "Post-infectious encephalitis",
+              "CONCEPT_CODE": "22298006",
+              "CONCEPT_ID": 4329847,
+              "CONCEPT_NAME": "Myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -61,23 +61,25 @@
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "45170000",
-              "CONCEPT_ID": 378143,
-              "CONCEPT_NAME": "Encephalitis",
+              "CONCEPT_CODE": "1755008",
+              "CONCEPT_ID": 314666,
+              "CONCEPT_NAME": "Old myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
               "STANDARD_CONCEPT": "S",
               "STANDARD_CONCEPT_CAPTION": "Standard",
               "VOCABULARY_ID": "SNOMED"
-            }
+            },
+            "isExcluded": true,
+            "includeDescendants": true
           },
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "267576008",
-              "CONCEPT_ID": 4147498,
-              "CONCEPT_NAME": "Encephalitis, myelitis and encephalomyelitis",
+              "CONCEPT_CODE": "194868001",
+              "CONCEPT_ID": 4108680,
+              "CONCEPT_NAME": "Thrombosis of atrium, auricular appendage, and ventricle due to and following acute myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -90,9 +92,9 @@
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "62950007",
-              "CONCEPT_ID": 373189,
-              "CONCEPT_NAME": "Encephalomyelitis",
+              "CONCEPT_CODE": "194862000",
+              "CONCEPT_ID": 4108678,
+              "CONCEPT_NAME": "Hemopericardium due to and following acute myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -105,23 +107,9 @@
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "39367000",
-              "CONCEPT_ID": 4190307,
-              "CONCEPT_NAME": "Inflammatory disease of the central nervous system",
-              "DOMAIN_ID": "Condition",
-              "INVALID_REASON": "V",
-              "INVALID_REASON_CAPTION": "Valid",
-              "STANDARD_CONCEPT": "S",
-              "STANDARD_CONCEPT_CAPTION": "Standard",
-              "VOCABULARY_ID": "SNOMED"
-            }
-          },
-          {
-            "concept": {
-              "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "192704009",
-              "CONCEPT_ID": 379792,
-              "CONCEPT_NAME": "Post-immunization encephalitis",
+              "CONCEPT_CODE": "194863005",
+              "CONCEPT_ID": 438172,
+              "CONCEPT_NAME": "Atrial septal defect due to and following acute myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -134,9 +122,9 @@
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "431520004",
-              "CONCEPT_ID": 4330496,
-              "CONCEPT_NAME": "Inflammation of spinal cord due to toxin",
+              "CONCEPT_CODE": "233847009",
+              "CONCEPT_ID": 4124687,
+              "CONCEPT_NAME": "Cardiac rupture due to and following acute myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
@@ -149,16 +137,62 @@
           {
             "concept": {
               "CONCEPT_CLASS_ID": "Clinical Finding",
-              "CONCEPT_CODE": "41370002",
-              "CONCEPT_ID": 138965,
-              "CONCEPT_NAME": "Myelitis",
+              "CONCEPT_CODE": "703326006",
+              "CONCEPT_ID": 45766212,
+              "CONCEPT_NAME": "Mitral valve regurgitation due to and following acute myocardial infarction",
               "DOMAIN_ID": "Condition",
               "INVALID_REASON": "V",
               "INVALID_REASON_CAPTION": "Valid",
               "STANDARD_CONCEPT": "S",
               "STANDARD_CONCEPT_CAPTION": "Standard",
               "VOCABULARY_ID": "SNOMED"
-            }
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Clinical Finding",
+              "CONCEPT_CODE": "723858002",
+              "CONCEPT_ID": 37109910,
+              "CONCEPT_NAME": "Ventricular aneurysm due to and following acute myocardial infarction",
+              "DOMAIN_ID": "Condition",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Clinical Finding",
+              "CONCEPT_CODE": "723859005",
+              "CONCEPT_ID": 37109911,
+              "CONCEPT_NAME": "Pulmonary embolism due to and following acute myocardial infarction",
+              "DOMAIN_ID": "Condition",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
+          },
+          {
+            "concept": {
+              "CONCEPT_CLASS_ID": "Clinical Finding",
+              "CONCEPT_CODE": "723860000",
+              "CONCEPT_ID": 37109912,
+              "CONCEPT_NAME": "Arrhythmia due to and following acute myocardial infarction",
+              "DOMAIN_ID": "Condition",
+              "INVALID_REASON": "V",
+              "INVALID_REASON_CAPTION": "Valid",
+              "STANDARD_CONCEPT": "S",
+              "STANDARD_CONCEPT_CAPTION": "Standard",
+              "VOCABULARY_ID": "SNOMED"
+            },
+            "includeDescendants": true
           }
         ]
       }
@@ -226,7 +260,7 @@
   },
   "InclusionRules": [
     {
-      "name": "has no events in prior 'clean window' 183 days",
+      "name": "has no events in prior 'clean window' - 365 days",
       "expression": {
         "Type": "ALL",
         "CriteriaList": [
@@ -276,7 +310,7 @@
             },
             "StartWindow": {
               "Start": {
-                "Days": 183,
+                "Days": 365,
                 "Coeff": -1
               },
               "End": {

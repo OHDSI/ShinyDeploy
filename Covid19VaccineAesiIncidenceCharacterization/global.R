@@ -279,11 +279,16 @@ cohort <- readr::read_csv(file = "cohort/cohorts.csv", col_types = readr::cols()
 
 jsonFiles <- list.files(path = "cohort/cohortJson", pattern = "*.json", full.names=TRUE)
 
-# this creates a vector where each element contains one file
-jsonContents <- sapply(jsonFiles, FUN = function(x)readChar(x, file.info(x)$size))
+jsonDf <- list()
+for (i in (1:length(jsonFiles))) {
+  cohortId <- stringr::str_replace(string = basename(jsonFiles[[i]]), pattern = ".json", replacement = "") %>% as.integer()
+  json <- SqlRender::readSql(sourceFile = jsonFiles[[i]])
+  jsonDf[[i]] <- dplyr::tibble(cohortId = cohortId, json = json)
+}
+jsonDf <- dplyr::bind_rows(jsonDf)
 
-# create a dataframe
-jsonDf <- data.frame(json = jsonContents, stringsAsFactors=FALSE)
+cohort <- cohort %>% 
+  dplyr::inner_join(jsonDf %>% 
+                      dplyr::select(.data$cohortId, .data$json), by = "cohortId")
 
-cohort$json <- jsonDf$json
 
