@@ -1,0 +1,16 @@
+phenotype,cohortId,cohortName,link
+Acute myocardial infarction IP,312, Acute myocardial infarction IP (365d),https://atlas.ohdsi.org/#/cohortdefinition/340
+Anaphylaxis,303, Anaphylaxis (30d) ,https://atlas.ohdsi.org/#/cohortdefinition/349
+Appendicitis,323, Appendicitis (365d),https://atlas.ohdsi.org/#/cohortdefinition/386
+Bells palsy,307, Bells palsy (183d),https://atlas.ohdsi.org/#/cohortdefinition/347
+Deep vein thrombosis,332, Deep vein thrombosis coverICD (365d),https://atlas.ohdsi.org/#/cohortdefinition/402
+Disseminated intravascular coagulation,321, Disseminated intravascular coagulation (365d),https://atlas.ohdsi.org/#/cohortdefinition/385
+Encephalomyelitis IP,308, Encephalomyelitis IP (183d),https://atlas.ohdsi.org/#/cohortdefinition/346
+Guillian-Barre syndrome IP,305, Guillian-Barre syndrome IP (365d),https://atlas.ohdsi.org/#/cohortdefinition/343
+Hemorrhagic stroke IP,324, Hemorrhagic stroke IP (365d),https://atlas.ohdsi.org/#/cohortdefinition/405
+Immune thrombocytopenia,326, Immune thrombocytopenia (365d),https://atlas.ohdsi.org/#/cohortdefinition/335
+Myocarditis pericarditis,314, Myocarditis pericarditis (365d),https://atlas.ohdsi.org/#/cohortdefinition/339
+Narcolepsy,319, Narcolepsy (365d),https://atlas.ohdsi.org/#/cohortdefinition/345
+Non-hemorrhagic stroke IP,310, Non-hemorrhagic stroke IP (365d),https://atlas.ohdsi.org/#/cohortdefinition/406
+Pulmonary embolism,316, Pulmonary embolism (365d),https://atlas.ohdsi.org/#/cohortdefinition/411
+Transverse myelitis,318, Transverse myelitis (365d),https://atlas.ohdsi.org/#/cohortdefinition/381

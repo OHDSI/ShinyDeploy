@@ -15,7 +15,7 @@ source("R/Results.R")
 # Settings when running on server:
 
 defaultLocalDataFolder <- "data"
-defaultLocalDataFile <- "PreMerged.RData"
+defaultLocalDataFile <- "PreMerged2.RData"
 
 connectionPool <- NULL
 defaultServer <- Sys.getenv("phenotypeLibraryDbServer")
@@ -26,7 +26,7 @@ defaultPassword <- Sys.getenv("phenotypeLibraryDbPassword")
 defaultResultsSchema <- Sys.getenv("phenotypeLibraryDbResultsSchema")
 defaultVocabularySchema <- Sys.getenv("phenotypeLibraryDbVocabularySchema")
 
-defaultDatabaseMode <- TRUE # Use file system if FALSE
+defaultDatabaseMode <- FALSE # Use file system if FALSE
 
 defaultCohortBaseUrl <- "https://atlas.ohdsi.org/#/cohortdefinition/"
 defaultConceptBaseUrl <- "https://athena.ohdsi.org/search-terms/terms/"
