@@ -12,6 +12,7 @@ pathToMd <- ifelse(useDatabase==F, "./www/shinyDescription.md" ,"./www/libraryDe
 # set default
 ##Sys.getenv("shinydbDatabase")
 mySchema <- Sys.getenv("covid19vaccinationplpdbSchema")
+mySchema <- 'covid_vaccination_plp'
 
 if(useDatabase){
   source("repositoryExtras.R")
