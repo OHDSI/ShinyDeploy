@@ -73,9 +73,9 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 
                                                                                 
                                                                                 # do this inside tabs:
-                                                                      shiny::tabsetPanel(
-                                                                                
-                                                                              shiny::tabPanel("Results",  
+                                                                shiny::tabsetPanel(id = 'allView',
+                                                                      
+                                                                              shiny::tabPanel("All Models Summary",  
                                                                                               
                                                                                               shiny::fluidRow(
                                                                                                 shiny::column(2,
@@ -93,6 +93,8 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                                          style = "font-size:70%"))
                                                                                 )),
                                                                               
+                                                                              shiny::tabPanel("Explore Selected Model",
+                                                                              shiny::tabsetPanel(id = 'singleView',
                                                                               shiny::tabPanel("Development Settings",
                                                                                               shiny::h3('Model Settings: ',
                                                                                                         shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank")
@@ -117,7 +119,7 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                               shiny::h3("Attrition"),
                                                                                               DT::dataTableOutput('attritionTable')),
                                                                               
-                                                                              shiny::tabPanel("Model", 
+                                                                              shiny::tabPanel("Model",
                                                                                                       shiny::fluidRow(
                                                                                                         shinydashboard::box( status = 'info',
                                                                                                                              title = "Binary", solidHeader = TRUE,
@@ -293,7 +295,22 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                                                           side = "right",
                                                                                                           shiny::tableOutput('researcherInfo')
                                                                                                           )))
+                                        ),
+                                        
+                                        shiny::tabPanel("Download Selected Model",
+                                                        
+                                                        shinydashboard::box(title = "Development R Package", status = 'info', solidHeader = T,
+                                                                            shiny::p("Click here to download an R package that contains all the settings requires to replicate the model development using any OMOP CDM database."),
+                                                          shiny::actionButton(inputId = 'downloadPackageDev', label = "Download Development")
+                                                        ),
+                                                        shinydashboard::box(title = "Validation R Package", status = 'info', solidHeader = T,
+                                                                            shiny::p("Click here to download an R package that contains all the settings requires to validate the existing model using any OMOP CDM database."),
+                                                          shiny::actionButton(inputId = 'downloadPackageVal', label = "Download Validation")
+                                                        )
                                         )
+                                        
+                                        
+                                        ))
 
                                         
                                     

@@ -83,11 +83,12 @@ server <- shiny::shinyServer(function(input, output, session) {
   # this loads all the results
   plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType, val = F, trueRow(),mySchema = mySchema, connectionDetails = connectionDetails)})
 
-  covariateSummary <- shiny::reactive(
-     if(input$menu == "Model"){
+  covariateSummary <- shiny::reactive({
+     if(input$singleView == "Model"){
       covariateSummary <- loadCovSumFromDb(summaryTable[trueRow(),], mySchema, con)
       return(covariateSummary)
      }
+  }
   )
   # covariate table
   output$modelView <- DT::renderDataTable(editCovariates(covariateSummary())$table,
