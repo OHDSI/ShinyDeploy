@@ -39,7 +39,6 @@ shinyServer(function(input, output, session) {
   
   output$mainTable <- renderDataTable({
     result <- getCoverageAllPackages()
-    result$coverage <- result$coverage + 1:3
     linkTemplate <- "<a href = https://codecov.io/github/OHDSI/%s?branch=%s>Details</a>"
     result <- baseline %>%
       select(.data$name, startCoverage = .data$coverage) %>%
