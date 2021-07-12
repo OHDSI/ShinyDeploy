@@ -1,668 +1,668 @@
-DATABASE,YEAR,group,TOTALCOHORTCOUNT,n,percentage,DB_KEY
-THIN,2008,methotrexate,1361,203,1,THIN
-THIN,2008,sulfasalazine,1361,121,1,THIN
-THIN,2008,leflunomide,1361,8,1,THIN
-THIN,2008,hydroxychloroquine,1361,59,1,THIN
-THIN,2008,Other DMARDs & Minocycline,1361,8,4,THIN
-THIN,2009,methotrexate,1458,218,1,THIN
-THIN,2009,sulfasalazine,1458,146,1,THIN
-THIN,2009,leflunomide,1458,5,1,THIN
-THIN,2009,hydroxychloroquine,1458,99,1,THIN
-THIN,2009,Other DMARDs & Minocycline,1458,6,3,THIN
-THIN,2009,methotrexate +  hydroxychloroquine,1458,6,1,THIN
-THIN,2010,methotrexate,1392,214,1,THIN
-THIN,2010,sulfasalazine,1392,112,1,THIN
-THIN,2010,leflunomide,1392,8,1,THIN
-THIN,2010,hydroxychloroquine,1392,109,1,THIN
-THIN,2010,Other DMARDs & Minocycline,1392,13,5,THIN
-THIN,2010,methotrexate +  hydroxychloroquine,1392,11,1,THIN
-THIN,2011,methotrexate,1321,224,1,THIN
-THIN,2011,sulfasalazine,1321,114,1,THIN
-THIN,2011,leflunomide,1321,14,1,THIN
-THIN,2011,hydroxychloroquine,1321,115,1,THIN
-THIN,2011,Other DMARDs & Minocycline,1321,8,4,THIN
-THIN,2011,methotrexate +  hydroxychloroquine,1321,11,1,THIN
-THIN,2012,methotrexate,1420,233,1,THIN
-THIN,2012,sulfasalazine,1420,100,1,THIN
-THIN,2012,leflunomide,1420,14,1,THIN
-THIN,2012,hydroxychloroquine,1420,156,1,THIN
-THIN,2012,Other DMARDs & Minocycline,1420,9,4,THIN
-THIN,2012,methotrexate +  hydroxychloroquine,1420,14,1,THIN
-THIN,2013,methotrexate,1463,251,1,THIN
-THIN,2013,sulfasalazine,1463,99,1,THIN
-THIN,2013,leflunomide,1463,12,1,THIN
-THIN,2013,hydroxychloroquine,1463,142,1,THIN
-THIN,2013,Other DMARDs & Minocycline,1463,14,5,THIN
-THIN,2013,methotrexate +  hydroxychloroquine,1463,14,1,THIN
-THIN,2014,methotrexate,1256,203,1,THIN
-THIN,2014,sulfasalazine,1256,89,1,THIN
-THIN,2014,hydroxychloroquine,1256,107,1,THIN
-THIN,2014,Other DMARDs & Minocycline,1256,21,7,THIN
-THIN,2014,methotrexate +  hydroxychloroquine,1256,24,1,THIN
-THIN,2015,methotrexate,1050,165,1,THIN
-THIN,2015,sulfasalazine,1050,74,1,THIN
-THIN,2015,leflunomide,1050,8,1,THIN
-THIN,2015,hydroxychloroquine,1050,118,1,THIN
-THIN,2015,Other DMARDs & Minocycline,1050,13,3,THIN
-THIN,2015,methotrexate +  hydroxychloroquine,1050,15,1,THIN
-THIN,2016,methotrexate,857,118,1,THIN
-THIN,2016,sulfasalazine,857,57,1,THIN
-THIN,2016,leflunomide,857,5,1,THIN
-THIN,2016,hydroxychloroquine,857,102,1,THIN
-THIN,2016,Other DMARDs & Minocycline,857,9,5,THIN
-THIN,2016,methotrexate +  hydroxychloroquine,857,13,1,THIN
-THIN,2017,methotrexate,609,78,1,THIN
-THIN,2017,sulfasalazine,609,49,1,THIN
-THIN,2017,leflunomide,609,8,1,THIN
-THIN,2017,hydroxychloroquine,609,65,1,THIN
-THIN,2017,Other DMARDs & Minocycline,609,4,4,THIN
-THIN,2017,methotrexate +  hydroxychloroquine,609,8,1,THIN
-SIDIAP,2008,methotrexate,1677,86,1,SIDIAP
-SIDIAP,2008,leflunomide,1677,32,1,SIDIAP
-SIDIAP,2009,methotrexate,1857,125,1,SIDIAP
-SIDIAP,2009,leflunomide,1857,45,1,SIDIAP
-SIDIAP,2010,methotrexate,1590,130,1,SIDIAP
-SIDIAP,2010,leflunomide,1590,22,1,SIDIAP
-SIDIAP,2011,methotrexate,1303,102,1,SIDIAP
-SIDIAP,2011,leflunomide,1303,16,1,SIDIAP
-SIDIAP,2012,methotrexate,1268,121,1,SIDIAP
-SIDIAP,2012,leflunomide,1268,19,1,SIDIAP
-SIDIAP,2012,hydroxychloroquine,1268,31,1,SIDIAP
-SIDIAP,2013,methotrexate,1200,100,1,SIDIAP
-SIDIAP,2013,leflunomide,1200,14,1,SIDIAP
-SIDIAP,2013,hydroxychloroquine,1200,26,1,SIDIAP
-SIDIAP,2014,methotrexate,1133,98,1,SIDIAP
-SIDIAP,2014,sulfasalazine,1133,7,1,SIDIAP
-SIDIAP,2014,leflunomide,1133,18,1,SIDIAP
-SIDIAP,2014,hydroxychloroquine,1133,39,1,SIDIAP
-SIDIAP,2015,methotrexate,1066,131,1,SIDIAP
-SIDIAP,2015,sulfasalazine,1066,7,1,SIDIAP
-SIDIAP,2015,leflunomide,1066,11,1,SIDIAP
-SIDIAP,2015,hydroxychloroquine,1066,37,1,SIDIAP
-SIDIAP,2016,methotrexate,1016,65,1,SIDIAP
-SIDIAP,2016,leflunomide,1016,22,1,SIDIAP
-SIDIAP,2016,hydroxychloroquine,1016,41,1,SIDIAP
-Optum_Panther,2008,methotrexate,11534,1803,1,Optum_Panther
-Optum_Panther,2008,sulfasalazine,11534,137,1,Optum_Panther
-Optum_Panther,2008,leflunomide,11534,220,1,Optum_Panther
-Optum_Panther,2008,hydroxychloroquine,11534,722,1,Optum_Panther
-Optum_Panther,2008,Other DMARDs & Minocycline,11534,1345,75,Optum_Panther
-Optum_Panther,2008,methotrexate +  hydroxychloroquine,11534,226,1,Optum_Panther
-Optum_Panther,2009,methotrexate,17374,2712,1,Optum_Panther
-Optum_Panther,2009,sulfasalazine,17374,298,1,Optum_Panther
-Optum_Panther,2009,leflunomide,17374,370,1,Optum_Panther
-Optum_Panther,2009,hydroxychloroquine,17374,1308,1,Optum_Panther
-Optum_Panther,2009,Other DMARDs & Minocycline,17374,2418,112,Optum_Panther
-Optum_Panther,2009,methotrexate +  hydroxychloroquine,17374,435,1,Optum_Panther
-Optum_Panther,2010,methotrexate,20143,2753,1,Optum_Panther
-Optum_Panther,2010,sulfasalazine,20143,223,1,Optum_Panther
-Optum_Panther,2010,leflunomide,20143,370,1,Optum_Panther
-Optum_Panther,2010,hydroxychloroquine,20143,1339,1,Optum_Panther
-Optum_Panther,2010,Other DMARDs & Minocycline,20143,2284,130,Optum_Panther
-Optum_Panther,2010,methotrexate +  hydroxychloroquine,20143,404,1,Optum_Panther
-Optum_Panther,2011,methotrexate,28236,3333,1,Optum_Panther
-Optum_Panther,2011,sulfasalazine,28236,296,1,Optum_Panther
-Optum_Panther,2011,leflunomide,28236,412,1,Optum_Panther
-Optum_Panther,2011,hydroxychloroquine,28236,1824,1,Optum_Panther
-Optum_Panther,2011,Other DMARDs & Minocycline,28236,2988,131,Optum_Panther
-Optum_Panther,2011,methotrexate +  hydroxychloroquine,28236,480,1,Optum_Panther
-Optum_Panther,2012,methotrexate,37012,4340,1,Optum_Panther
-Optum_Panther,2012,sulfasalazine,37012,318,1,Optum_Panther
-Optum_Panther,2012,leflunomide,37012,589,1,Optum_Panther
-Optum_Panther,2012,hydroxychloroquine,37012,2429,1,Optum_Panther
-Optum_Panther,2012,Other DMARDs & Minocycline,37012,3959,150,Optum_Panther
-Optum_Panther,2012,methotrexate +  hydroxychloroquine,37012,756,1,Optum_Panther
-Optum_Panther,2013,methotrexate,38784,4929,1,Optum_Panther
-Optum_Panther,2013,sulfasalazine,38784,417,1,Optum_Panther
-Optum_Panther,2013,leflunomide,38784,636,1,Optum_Panther
-Optum_Panther,2013,hydroxychloroquine,38784,2838,1,Optum_Panther
-Optum_Panther,2013,Other DMARDs & Minocycline,38784,4463,173,Optum_Panther
-Optum_Panther,2013,methotrexate +  hydroxychloroquine,38784,791,1,Optum_Panther
-Optum_Panther,2014,methotrexate,41849,5072,1,Optum_Panther
-Optum_Panther,2014,sulfasalazine,41849,457,1,Optum_Panther
-Optum_Panther,2014,leflunomide,41849,662,1,Optum_Panther
-Optum_Panther,2014,hydroxychloroquine,41849,3085,1,Optum_Panther
-Optum_Panther,2014,Other DMARDs & Minocycline,41849,4382,187,Optum_Panther
-Optum_Panther,2014,methotrexate +  hydroxychloroquine,41849,778,1,Optum_Panther
-Optum_Panther,2015,methotrexate,36593,4599,1,Optum_Panther
-Optum_Panther,2015,sulfasalazine,36593,461,1,Optum_Panther
-Optum_Panther,2015,leflunomide,36593,626,1,Optum_Panther
-Optum_Panther,2015,hydroxychloroquine,36593,2909,1,Optum_Panther
-Optum_Panther,2015,Other DMARDs & Minocycline,36593,3905,179,Optum_Panther
-Optum_Panther,2015,methotrexate +  hydroxychloroquine,36593,695,1,Optum_Panther
-Optum_Panther,2016,methotrexate,33232,4314,1,Optum_Panther
-Optum_Panther,2016,sulfasalazine,33232,475,1,Optum_Panther
-Optum_Panther,2016,leflunomide,33232,553,1,Optum_Panther
-Optum_Panther,2016,hydroxychloroquine,33232,2885,1,Optum_Panther
-Optum_Panther,2016,Other DMARDs & Minocycline,33232,3620,178,Optum_Panther
-Optum_Panther,2016,methotrexate +  hydroxychloroquine,33232,638,1,Optum_Panther
-Optum_Panther,2017,methotrexate,28743,3630,1,Optum_Panther
-Optum_Panther,2017,sulfasalazine,28743,472,1,Optum_Panther
-Optum_Panther,2017,leflunomide,28743,486,1,Optum_Panther
-Optum_Panther,2017,hydroxychloroquine,28743,2444,1,Optum_Panther
-Optum_Panther,2017,Other DMARDs & Minocycline,28743,3034,178,Optum_Panther
-Optum_Panther,2017,methotrexate +  hydroxychloroquine,28743,520,1,Optum_Panther
-Optum_Panther,2018,methotrexate,5217,732,1,Optum_Panther
-Optum_Panther,2018,sulfasalazine,5217,97,1,Optum_Panther
-Optum_Panther,2018,leflunomide,5217,105,1,Optum_Panther
-Optum_Panther,2018,hydroxychloroquine,5217,514,1,Optum_Panther
-Optum_Panther,2018,Other DMARDs & Minocycline,5217,636,86,Optum_Panther
-Optum_Panther,2018,methotrexate +  hydroxychloroquine,5217,123,1,Optum_Panther
-Optum_DOD,2008,methotrexate,16767,1247,1,Optum_DOD
-Optum_DOD,2008,sulfasalazine,16767,191,1,Optum_DOD
-Optum_DOD,2008,leflunomide,16767,142,1,Optum_DOD
-Optum_DOD,2008,hydroxychloroquine,16767,706,1,Optum_DOD
-Optum_DOD,2008,Other DMARDs & Minocycline,16767,641,38,Optum_DOD
-Optum_DOD,2008,methotrexate +  hydroxychloroquine,16767,95,1,Optum_DOD
-Optum_DOD,2009,methotrexate,14984,1069,1,Optum_DOD
-Optum_DOD,2009,sulfasalazine,14984,118,1,Optum_DOD
-Optum_DOD,2009,leflunomide,14984,88,1,Optum_DOD
-Optum_DOD,2009,hydroxychloroquine,14984,635,1,Optum_DOD
-Optum_DOD,2009,Other DMARDs & Minocycline,14984,357,36,Optum_DOD
-Optum_DOD,2009,methotrexate +  hydroxychloroquine,14984,84,1,Optum_DOD
-Optum_DOD,2010,methotrexate,14864,1053,1,Optum_DOD
-Optum_DOD,2010,sulfasalazine,14864,118,1,Optum_DOD
-Optum_DOD,2010,leflunomide,14864,67,1,Optum_DOD
-Optum_DOD,2010,hydroxychloroquine,14864,657,1,Optum_DOD
-Optum_DOD,2010,Other DMARDs & Minocycline,14864,307,30,Optum_DOD
-Optum_DOD,2010,methotrexate +  hydroxychloroquine,14864,78,1,Optum_DOD
-Optum_DOD,2011,methotrexate,14953,1152,1,Optum_DOD
-Optum_DOD,2011,sulfasalazine,14953,110,1,Optum_DOD
-Optum_DOD,2011,leflunomide,14953,59,1,Optum_DOD
-Optum_DOD,2011,hydroxychloroquine,14953,689,1,Optum_DOD
-Optum_DOD,2011,Other DMARDs & Minocycline,14953,305,33,Optum_DOD
-Optum_DOD,2011,methotrexate +  hydroxychloroquine,14953,78,1,Optum_DOD
-Optum_DOD,2012,methotrexate,14905,1143,1,Optum_DOD
-Optum_DOD,2012,sulfasalazine,14905,97,1,Optum_DOD
-Optum_DOD,2012,leflunomide,14905,82,1,Optum_DOD
-Optum_DOD,2012,hydroxychloroquine,14905,723,1,Optum_DOD
-Optum_DOD,2012,Other DMARDs & Minocycline,14905,320,31,Optum_DOD
-Optum_DOD,2012,methotrexate +  hydroxychloroquine,14905,82,1,Optum_DOD
-Optum_DOD,2013,methotrexate,14380,982,1,Optum_DOD
-Optum_DOD,2013,sulfasalazine,14380,111,1,Optum_DOD
-Optum_DOD,2013,leflunomide,14380,87,1,Optum_DOD
-Optum_DOD,2013,hydroxychloroquine,14380,640,1,Optum_DOD
-Optum_DOD,2013,Other DMARDs & Minocycline,14380,279,29,Optum_DOD
-Optum_DOD,2013,methotrexate +  hydroxychloroquine,14380,81,1,Optum_DOD
-Optum_DOD,2014,methotrexate,13990,1010,1,Optum_DOD
-Optum_DOD,2014,sulfasalazine,13990,128,1,Optum_DOD
-Optum_DOD,2014,leflunomide,13990,93,1,Optum_DOD
-Optum_DOD,2014,hydroxychloroquine,13990,656,1,Optum_DOD
-Optum_DOD,2014,Other DMARDs & Minocycline,13990,269,36,Optum_DOD
-Optum_DOD,2014,methotrexate +  hydroxychloroquine,13990,81,1,Optum_DOD
-Optum_DOD,2015,methotrexate,15571,1018,1,Optum_DOD
-Optum_DOD,2015,sulfasalazine,15571,154,1,Optum_DOD
-Optum_DOD,2015,leflunomide,15571,65,1,Optum_DOD
-Optum_DOD,2015,hydroxychloroquine,15571,741,1,Optum_DOD
-Optum_DOD,2015,Other DMARDs & Minocycline,15571,311,27,Optum_DOD
-Optum_DOD,2015,methotrexate +  hydroxychloroquine,15571,58,1,Optum_DOD
-Optum_DOD,2016,methotrexate,15738,1151,1,Optum_DOD
-Optum_DOD,2016,sulfasalazine,15738,135,1,Optum_DOD
-Optum_DOD,2016,leflunomide,15738,106,1,Optum_DOD
-Optum_DOD,2016,hydroxychloroquine,15738,766,1,Optum_DOD
-Optum_DOD,2016,Other DMARDs & Minocycline,15738,348,36,Optum_DOD
-Optum_DOD,2016,methotrexate +  hydroxychloroquine,15738,71,1,Optum_DOD
-Optum_DOD,2017,methotrexate,18545,1411,1,Optum_DOD
-Optum_DOD,2017,sulfasalazine,18545,138,1,Optum_DOD
-Optum_DOD,2017,leflunomide,18545,181,1,Optum_DOD
-Optum_DOD,2017,hydroxychloroquine,18545,884,1,Optum_DOD
-Optum_DOD,2017,Other DMARDs & Minocycline,18545,433,37,Optum_DOD
-Optum_DOD,2017,methotrexate +  hydroxychloroquine,18545,69,1,Optum_DOD
-Optum_DOD,2018,methotrexate,10341,797,1,Optum_DOD
-Optum_DOD,2018,sulfasalazine,10341,111,1,Optum_DOD
-Optum_DOD,2018,leflunomide,10341,93,1,Optum_DOD
-Optum_DOD,2018,hydroxychloroquine,10341,537,1,Optum_DOD
-Optum_DOD,2018,Other DMARDs & Minocycline,10341,193,22,Optum_DOD
-Optum_DOD,2018,methotrexate +  hydroxychloroquine,10341,42,1,Optum_DOD
-MDCR,2008,methotrexate,4384,435,1,MDCR
-MDCR,2008,sulfasalazine,4384,47,1,MDCR
-MDCR,2008,leflunomide,4384,36,1,MDCR
-MDCR,2008,hydroxychloroquine,4384,242,1,MDCR
-MDCR,2008,Other DMARDs & Minocycline,4384,104,17,MDCR
-MDCR,2008,methotrexate +  hydroxychloroquine,4384,24,1,MDCR
-MDCR,2009,methotrexate,4041,403,1,MDCR
-MDCR,2009,sulfasalazine,4041,38,1,MDCR
-MDCR,2009,leflunomide,4041,47,1,MDCR
-MDCR,2009,hydroxychloroquine,4041,256,1,MDCR
-MDCR,2009,Other DMARDs & Minocycline,4041,114,21,MDCR
-MDCR,2009,methotrexate +  hydroxychloroquine,4041,28,1,MDCR
-MDCR,2010,methotrexate,4814,526,1,MDCR
-MDCR,2010,sulfasalazine,4814,52,1,MDCR
-MDCR,2010,leflunomide,4814,39,1,MDCR
-MDCR,2010,hydroxychloroquine,4814,296,1,MDCR
-MDCR,2010,Other DMARDs & Minocycline,4814,103,23,MDCR
-MDCR,2010,methotrexate +  hydroxychloroquine,4814,28,1,MDCR
-MDCR,2011,methotrexate,5864,538,1,MDCR
-MDCR,2011,sulfasalazine,5864,45,1,MDCR
-MDCR,2011,leflunomide,5864,54,1,MDCR
-MDCR,2011,hydroxychloroquine,5864,331,1,MDCR
-MDCR,2011,Other DMARDs & Minocycline,5864,127,22,MDCR
-MDCR,2011,methotrexate +  hydroxychloroquine,5864,39,1,MDCR
-MDCR,2012,methotrexate,6647,519,1,MDCR
-MDCR,2012,sulfasalazine,6647,58,1,MDCR
-MDCR,2012,leflunomide,6647,52,1,MDCR
-MDCR,2012,hydroxychloroquine,6647,338,1,MDCR
-MDCR,2012,Other DMARDs & Minocycline,6647,127,22,MDCR
-MDCR,2012,methotrexate +  hydroxychloroquine,6647,36,1,MDCR
-MDCR,2013,methotrexate,5550,416,1,MDCR
-MDCR,2013,sulfasalazine,5550,37,1,MDCR
-MDCR,2013,leflunomide,5550,44,1,MDCR
-MDCR,2013,hydroxychloroquine,5550,248,1,MDCR
-MDCR,2013,Other DMARDs & Minocycline,5550,115,21,MDCR
-MDCR,2013,methotrexate +  hydroxychloroquine,5550,26,1,MDCR
-MDCR,2014,methotrexate,5702,414,1,MDCR
-MDCR,2014,sulfasalazine,5702,49,1,MDCR
-MDCR,2014,leflunomide,5702,39,1,MDCR
-MDCR,2014,hydroxychloroquine,5702,291,1,MDCR
-MDCR,2014,Other DMARDs & Minocycline,5702,132,20,MDCR
-MDCR,2014,methotrexate +  hydroxychloroquine,5702,18,1,MDCR
-MDCR,2015,methotrexate,5318,364,1,MDCR
-MDCR,2015,sulfasalazine,5318,45,1,MDCR
-MDCR,2015,leflunomide,5318,43,1,MDCR
-MDCR,2015,hydroxychloroquine,5318,250,1,MDCR
-MDCR,2015,Other DMARDs & Minocycline,5318,122,22,MDCR
-MDCR,2015,methotrexate +  hydroxychloroquine,5318,17,1,MDCR
-MDCR,2016,methotrexate,3556,247,1,MDCR
-MDCR,2016,sulfasalazine,3556,24,1,MDCR
-MDCR,2016,leflunomide,3556,24,1,MDCR
-MDCR,2016,hydroxychloroquine,3556,199,1,MDCR
-MDCR,2016,Other DMARDs & Minocycline,3556,64,18,MDCR
-MDCR,2016,methotrexate +  hydroxychloroquine,3556,11,1,MDCR
-MDCR,2017,methotrexate,1705,125,1,MDCR
-MDCR,2017,sulfasalazine,1705,22,1,MDCR
-MDCR,2017,leflunomide,1705,14,1,MDCR
-MDCR,2017,hydroxychloroquine,1705,106,1,MDCR
-MDCR,2017,Other DMARDs & Minocycline,1705,36,14,MDCR
-MDCR,2017,methotrexate +  hydroxychloroquine,1705,5,1,MDCR
-MDCR,2018,methotrexate,720,63,1,MDCR
-MDCR,2018,sulfasalazine,720,5,1,MDCR
-MDCR,2018,leflunomide,720,6,1,MDCR
-MDCR,2018,hydroxychloroquine,720,47,1,MDCR
-MDCR,2018,Other DMARDs & Minocycline,720,22,12,MDCR
-MDCD,2008,methotrexate,3696,142,1,MDCD
-MDCD,2008,sulfasalazine,3696,14,1,MDCD
-MDCD,2008,leflunomide,3696,9,1,MDCD
-MDCD,2008,hydroxychloroquine,3696,61,1,MDCD
-MDCD,2008,Other DMARDs & Minocycline,3696,77,13,MDCD
-MDCD,2008,methotrexate +  hydroxychloroquine,3696,11,1,MDCD
-MDCD,2009,methotrexate,4157,145,1,MDCD
-MDCD,2009,sulfasalazine,4157,13,1,MDCD
-MDCD,2009,leflunomide,4157,11,1,MDCD
-MDCD,2009,hydroxychloroquine,4157,76,1,MDCD
-MDCD,2009,Other DMARDs & Minocycline,4157,63,13,MDCD
-MDCD,2009,methotrexate +  hydroxychloroquine,4157,14,1,MDCD
-MDCD,2010,methotrexate,4339,148,1,MDCD
-MDCD,2010,sulfasalazine,4339,11,1,MDCD
-MDCD,2010,leflunomide,4339,9,1,MDCD
-MDCD,2010,hydroxychloroquine,4339,90,1,MDCD
-MDCD,2010,Other DMARDs & Minocycline,4339,60,14,MDCD
-MDCD,2010,methotrexate +  hydroxychloroquine,4339,12,1,MDCD
-MDCD,2011,methotrexate,4379,140,1,MDCD
-MDCD,2011,sulfasalazine,4379,19,1,MDCD
-MDCD,2011,leflunomide,4379,9,1,MDCD
-MDCD,2011,hydroxychloroquine,4379,102,1,MDCD
-MDCD,2011,Other DMARDs & Minocycline,4379,59,14,MDCD
-MDCD,2011,methotrexate +  hydroxychloroquine,4379,7,1,MDCD
-MDCD,2012,methotrexate,4125,138,1,MDCD
-MDCD,2012,sulfasalazine,4125,13,1,MDCD
-MDCD,2012,leflunomide,4125,13,1,MDCD
-MDCD,2012,hydroxychloroquine,4125,100,1,MDCD
-MDCD,2012,Other DMARDs & Minocycline,4125,61,16,MDCD
-MDCD,2012,methotrexate +  hydroxychloroquine,4125,11,1,MDCD
-MDCD,2013,methotrexate,7658,253,1,MDCD
-MDCD,2013,sulfasalazine,7658,24,1,MDCD
-MDCD,2013,leflunomide,7658,21,1,MDCD
-MDCD,2013,hydroxychloroquine,7658,162,1,MDCD
-MDCD,2013,Other DMARDs & Minocycline,7658,298,39,MDCD
-MDCD,2013,methotrexate +  hydroxychloroquine,7658,17,1,MDCD
-MDCD,2014,methotrexate,5337,181,1,MDCD
-MDCD,2014,sulfasalazine,5337,19,1,MDCD
-MDCD,2014,leflunomide,5337,12,1,MDCD
-MDCD,2014,hydroxychloroquine,5337,111,1,MDCD
-MDCD,2014,Other DMARDs & Minocycline,5337,86,17,MDCD
-MDCD,2014,methotrexate +  hydroxychloroquine,5337,14,1,MDCD
-MDCD,2015,methotrexate,8333,325,1,MDCD
-MDCD,2015,sulfasalazine,8333,36,1,MDCD
-MDCD,2015,leflunomide,8333,20,1,MDCD
-MDCD,2015,hydroxychloroquine,8333,243,1,MDCD
-MDCD,2015,Other DMARDs & Minocycline,8333,120,24,MDCD
-MDCD,2015,methotrexate +  hydroxychloroquine,8333,42,1,MDCD
-MDCD,2016,methotrexate,9340,376,1,MDCD
-MDCD,2016,sulfasalazine,9340,39,1,MDCD
-MDCD,2016,leflunomide,9340,29,1,MDCD
-MDCD,2016,hydroxychloroquine,9340,345,1,MDCD
-MDCD,2016,Other DMARDs & Minocycline,9340,205,28,MDCD
-MDCD,2016,methotrexate +  hydroxychloroquine,9340,41,1,MDCD
-MDCD,2017,methotrexate,4965,212,1,MDCD
-MDCD,2017,sulfasalazine,4965,11,1,MDCD
-MDCD,2017,leflunomide,4965,23,1,MDCD
-MDCD,2017,hydroxychloroquine,4965,138,1,MDCD
-MDCD,2017,Other DMARDs & Minocycline,4965,110,25,MDCD
-MDCD,2017,methotrexate +  hydroxychloroquine,4965,18,1,MDCD
-JMDC,2008,methotrexate,462,13,1,JMDC
-JMDC,2008,sulfasalazine,462,15,1,JMDC
-JMDC,2008,Other DMARDs & Minocycline,462,14,2,JMDC
-JMDC,2009,methotrexate,522,33,1,JMDC
-JMDC,2009,sulfasalazine,522,19,1,JMDC
-JMDC,2009,Other DMARDs & Minocycline,522,9,3,JMDC
-JMDC,2010,methotrexate,775,52,1,JMDC
-JMDC,2010,sulfasalazine,775,35,1,JMDC
-JMDC,2010,Other DMARDs & Minocycline,775,25,4,JMDC
-JMDC,2011,methotrexate,1235,79,1,JMDC
-JMDC,2011,sulfasalazine,1235,38,1,JMDC
-JMDC,2011,Other DMARDs & Minocycline,1235,34,6,JMDC
-JMDC,2012,methotrexate,1392,112,1,JMDC
-JMDC,2012,sulfasalazine,1392,62,1,JMDC
-JMDC,2012,Other DMARDs & Minocycline,1392,44,8,JMDC
-JMDC,2013,methotrexate,2095,168,1,JMDC
-JMDC,2013,sulfasalazine,2095,87,1,JMDC
-JMDC,2013,Other DMARDs & Minocycline,2095,67,10,JMDC
-JMDC,2014,methotrexate,2950,279,1,JMDC
-JMDC,2014,sulfasalazine,2950,122,1,JMDC
-JMDC,2014,Other DMARDs & Minocycline,2950,95,11,JMDC
-JMDC,2015,methotrexate,3332,316,1,JMDC
-JMDC,2015,sulfasalazine,3332,151,1,JMDC
-JMDC,2015,Other DMARDs & Minocycline,3332,105,17,JMDC
-JMDC,2016,methotrexate,4414,403,1,JMDC
-JMDC,2016,sulfasalazine,4414,200,1,JMDC
-JMDC,2016,Other DMARDs & Minocycline,4414,153,22,JMDC
-JMDC,2017,methotrexate,5082,547,1,JMDC
-JMDC,2017,sulfasalazine,5082,234,1,JMDC
-JMDC,2017,Other DMARDs & Minocycline,5082,150,21,JMDC
-JMDC,2018,methotrexate,1153,143,1,JMDC
-JMDC,2018,sulfasalazine,1153,54,1,JMDC
-JMDC,2018,Other DMARDs & Minocycline,1153,39,9,JMDC
-IPCI,2008,methotrexate,84,11,1,IPCI
-IPCI,2008,Other DMARDs & Minocycline,84,8,7,IPCI
-IPCI,2009,methotrexate,149,17,1,IPCI
-IPCI,2009,hydroxychloroquine,149,7,1,IPCI
-IPCI,2009,Other DMARDs & Minocycline,149,5,3,IPCI
-IPCI,2010,methotrexate,206,26,1,IPCI
-IPCI,2010,sulfasalazine,206,7,1,IPCI
-IPCI,2010,hydroxychloroquine,206,15,1,IPCI
-IPCI,2010,Other DMARDs & Minocycline,206,11,6,IPCI
-IPCI,2011,methotrexate,219,19,1,IPCI
-IPCI,2011,sulfasalazine,219,5,1,IPCI
-IPCI,2011,hydroxychloroquine,219,16,1,IPCI
-IPCI,2011,Other DMARDs & Minocycline,219,17,10,IPCI
-IPCI,2012,methotrexate,225,38,1,IPCI
-IPCI,2012,hydroxychloroquine,225,20,1,IPCI
-IPCI,2012,Other DMARDs & Minocycline,225,20,7,IPCI
-IPCI,2013,methotrexate,206,53,1,IPCI
-IPCI,2013,hydroxychloroquine,206,19,1,IPCI
-IPCI,2013,Other DMARDs & Minocycline,206,7,5,IPCI
-IPCI,2013,methotrexate +  hydroxychloroquine,206,5,1,IPCI
-IPCI,2014,methotrexate,183,49,1,IPCI
-IPCI,2014,sulfasalazine,183,5,1,IPCI
-IPCI,2014,hydroxychloroquine,183,12,1,IPCI
-IPCI,2014,Other DMARDs & Minocycline,183,6,5,IPCI
-IPCI,2014,methotrexate +  hydroxychloroquine,183,5,1,IPCI
-IPCI,2015,methotrexate,169,44,1,IPCI
-IPCI,2015,sulfasalazine,169,6,1,IPCI
-IPCI,2015,hydroxychloroquine,169,19,1,IPCI
-IPCI,2015,Other DMARDs & Minocycline,169,8,4,IPCI
-IPCI,2016,methotrexate,236,62,1,IPCI
-IPCI,2016,sulfasalazine,236,9,1,IPCI
-IPCI,2016,hydroxychloroquine,236,28,1,IPCI
-IPCI,2016,Other DMARDs & Minocycline,236,8,7,IPCI
-IPCI,2016,methotrexate +  hydroxychloroquine,236,12,1,IPCI
-IPCI,2017,methotrexate,233,65,1,IPCI
-IPCI,2017,sulfasalazine,233,6,1,IPCI
-IPCI,2017,hydroxychloroquine,233,27,1,IPCI
-IPCI,2017,Other DMARDs & Minocycline,233,10,6,IPCI
-IPCI,2017,methotrexate +  hydroxychloroquine,233,11,1,IPCI
-France,2010,methotrexate,60,9,1,France
-France,2010,Other DMARDs & Minocycline,60,3,3,France
-France,2011,methotrexate,351,32,1,France
-France,2011,hydroxychloroquine,351,8,1,France
-France,2011,Other DMARDs & Minocycline,351,7,4,France
-France,2012,methotrexate,264,36,1,France
-France,2012,hydroxychloroquine,264,7,1,France
-France,2012,Other DMARDs & Minocycline,264,7,3,France
-France,2013,methotrexate,234,26,1,France
-France,2013,Other DMARDs & Minocycline,234,10,4,France
-France,2014,methotrexate,211,16,1,France
-France,2014,Other DMARDs & Minocycline,211,8,4,France
-France,2015,methotrexate,300,40,1,France
-France,2015,hydroxychloroquine,300,8,1,France
-France,2015,Other DMARDs & Minocycline,300,5,5,France
-France,2016,methotrexate,301,37,1,France
-France,2016,Other DMARDs & Minocycline,301,9,4,France
-France,2017,methotrexate,245,38,1,France
-France,2017,sulfasalazine,245,5,1,France
-France,2017,Other DMARDs & Minocycline,245,6,3,France
-France,2018,methotrexate,121,17,1,France
-France,2018,Other DMARDs & Minocycline,121,3,2,France
-Estonia,2012,methotrexate,210,37,1,Estonia
-Estonia,2012,sulfasalazine,210,14,1,Estonia
-Estonia,2012,leflunomide,210,6,1,Estonia
-Estonia,2012,hydroxychloroquine,210,22,1,Estonia
-Estonia,2012,Other DMARDs & Minocycline,210,13,7,Estonia
-Estonia,2013,methotrexate,2554,478,1,Estonia
-Estonia,2013,sulfasalazine,2554,140,1,Estonia
-Estonia,2013,leflunomide,2554,71,1,Estonia
-Estonia,2013,hydroxychloroquine,2554,156,1,Estonia
-Estonia,2013,Other DMARDs & Minocycline,2554,113,6,Estonia
-Estonia,2013,methotrexate +  hydroxychloroquine,2554,56,1,Estonia
-Estonia,2014,methotrexate,1837,233,1,Estonia
-Estonia,2014,sulfasalazine,1837,50,1,Estonia
-Estonia,2014,leflunomide,1837,21,1,Estonia
-Estonia,2014,hydroxychloroquine,1837,102,1,Estonia
-Estonia,2014,Other DMARDs & Minocycline,1837,36,6,Estonia
-Estonia,2014,methotrexate +  hydroxychloroquine,1837,16,1,Estonia
-Estonia,2015,methotrexate,1511,136,1,Estonia
-Estonia,2015,sulfasalazine,1511,30,1,Estonia
-Estonia,2015,leflunomide,1511,8,1,Estonia
-Estonia,2015,hydroxychloroquine,1511,76,1,Estonia
-Estonia,2015,Other DMARDs & Minocycline,1511,11,5,Estonia
-Estonia,2015,methotrexate +  hydroxychloroquine,1511,6,1,Estonia
-CCAE,2008,methotrexate,12753,1452,1,CCAE
-CCAE,2008,sulfasalazine,12753,179,1,CCAE
-CCAE,2008,leflunomide,12753,71,1,CCAE
-CCAE,2008,hydroxychloroquine,12753,891,1,CCAE
-CCAE,2008,Other DMARDs & Minocycline,12753,445,31,CCAE
-CCAE,2008,methotrexate +  hydroxychloroquine,12753,115,1,CCAE
-CCAE,2009,methotrexate,14097,1598,1,CCAE
-CCAE,2009,sulfasalazine,14097,207,1,CCAE
-CCAE,2009,leflunomide,14097,103,1,CCAE
-CCAE,2009,hydroxychloroquine,14097,969,1,CCAE
-CCAE,2009,Other DMARDs & Minocycline,14097,439,35,CCAE
-CCAE,2009,methotrexate +  hydroxychloroquine,14097,132,1,CCAE
-CCAE,2010,methotrexate,15755,1740,1,CCAE
-CCAE,2010,sulfasalazine,15755,200,1,CCAE
-CCAE,2010,leflunomide,15755,88,1,CCAE
-CCAE,2010,hydroxychloroquine,15755,1131,1,CCAE
-CCAE,2010,Other DMARDs & Minocycline,15755,525,41,CCAE
-CCAE,2010,methotrexate +  hydroxychloroquine,15755,130,1,CCAE
-CCAE,2011,methotrexate,19015,2104,1,CCAE
-CCAE,2011,sulfasalazine,19015,273,1,CCAE
-CCAE,2011,leflunomide,19015,106,1,CCAE
-CCAE,2011,hydroxychloroquine,19015,1418,1,CCAE
-CCAE,2011,Other DMARDs & Minocycline,19015,655,43,CCAE
-CCAE,2011,methotrexate +  hydroxychloroquine,19015,167,1,CCAE
-CCAE,2012,methotrexate,15375,1752,1,CCAE
-CCAE,2012,sulfasalazine,15375,203,1,CCAE
-CCAE,2012,leflunomide,15375,102,1,CCAE
-CCAE,2012,hydroxychloroquine,15375,1179,1,CCAE
-CCAE,2012,Other DMARDs & Minocycline,15375,491,41,CCAE
-CCAE,2012,methotrexate +  hydroxychloroquine,15375,131,1,CCAE
-CCAE,2013,methotrexate,14344,1697,1,CCAE
-CCAE,2013,sulfasalazine,14344,207,1,CCAE
-CCAE,2013,leflunomide,14344,75,1,CCAE
-CCAE,2013,hydroxychloroquine,14344,1127,1,CCAE
-CCAE,2013,Other DMARDs & Minocycline,14344,494,45,CCAE
-CCAE,2013,methotrexate +  hydroxychloroquine,14344,135,1,CCAE
-CCAE,2014,methotrexate,14410,1562,1,CCAE
-CCAE,2014,sulfasalazine,14410,203,1,CCAE
-CCAE,2014,leflunomide,14410,103,1,CCAE
-CCAE,2014,hydroxychloroquine,14410,1127,1,CCAE
-CCAE,2014,Other DMARDs & Minocycline,14410,513,41,CCAE
-CCAE,2014,methotrexate +  hydroxychloroquine,14410,135,1,CCAE
-CCAE,2015,methotrexate,14740,1602,1,CCAE
-CCAE,2015,sulfasalazine,14740,202,1,CCAE
-CCAE,2015,leflunomide,14740,96,1,CCAE
-CCAE,2015,hydroxychloroquine,14740,1148,1,CCAE
-CCAE,2015,Other DMARDs & Minocycline,14740,490,37,CCAE
-CCAE,2015,methotrexate +  hydroxychloroquine,14740,129,1,CCAE
-CCAE,2016,methotrexate,12132,1343,1,CCAE
-CCAE,2016,sulfasalazine,12132,180,1,CCAE
-CCAE,2016,leflunomide,12132,84,1,CCAE
-CCAE,2016,hydroxychloroquine,12132,1019,1,CCAE
-CCAE,2016,Other DMARDs & Minocycline,12132,394,34,CCAE
-CCAE,2016,methotrexate +  hydroxychloroquine,12132,86,1,CCAE
-CCAE,2017,methotrexate,10478,1227,1,CCAE
-CCAE,2017,sulfasalazine,10478,162,1,CCAE
-CCAE,2017,leflunomide,10478,85,1,CCAE
-CCAE,2017,hydroxychloroquine,10478,890,1,CCAE
-CCAE,2017,Other DMARDs & Minocycline,10478,394,38,CCAE
-CCAE,2017,methotrexate +  hydroxychloroquine,10478,79,1,CCAE
-CCAE,2018,methotrexate,5761,722,1,CCAE
-CCAE,2018,sulfasalazine,5761,77,1,CCAE
-CCAE,2018,leflunomide,5761,69,1,CCAE
-CCAE,2018,hydroxychloroquine,5761,473,1,CCAE
-CCAE,2018,Other DMARDs & Minocycline,5761,226,30,CCAE
-CCAE,2018,methotrexate +  hydroxychloroquine,5761,39,1,CCAE
-Belgium,2009,methotrexate,352,111,1,Belgium
-Belgium,2009,sulfasalazine,352,14,1,Belgium
-Belgium,2009,leflunomide,352,15,1,Belgium
-Belgium,2009,hydroxychloroquine,352,18,1,Belgium
-Belgium,2009,Other DMARDs & Minocycline,352,14,7,Belgium
-Belgium,2010,methotrexate,269,60,1,Belgium
-Belgium,2010,sulfasalazine,269,14,1,Belgium
-Belgium,2010,leflunomide,269,10,1,Belgium
-Belgium,2010,hydroxychloroquine,269,12,1,Belgium
-Belgium,2010,Other DMARDs & Minocycline,269,8,4,Belgium
-Belgium,2011,methotrexate,261,62,1,Belgium
-Belgium,2011,leflunomide,261,7,1,Belgium
-Belgium,2011,hydroxychloroquine,261,8,1,Belgium
-Belgium,2011,Other DMARDs & Minocycline,261,8,6,Belgium
-Belgium,2012,methotrexate,267,60,1,Belgium
-Belgium,2012,sulfasalazine,267,7,1,Belgium
-Belgium,2012,leflunomide,267,5,1,Belgium
-Belgium,2012,hydroxychloroquine,267,13,1,Belgium
-Belgium,2012,Other DMARDs & Minocycline,267,2,2,Belgium
-Belgium,2013,methotrexate,215,43,1,Belgium
-Belgium,2013,leflunomide,215,6,1,Belgium
-Belgium,2013,Other DMARDs & Minocycline,215,11,5,Belgium
-Belgium,2014,methotrexate,247,62,1,Belgium
-Belgium,2014,sulfasalazine,247,7,1,Belgium
-Belgium,2014,leflunomide,247,13,1,Belgium
-Belgium,2014,hydroxychloroquine,247,6,1,Belgium
-Belgium,2014,Other DMARDs & Minocycline,247,3,3,Belgium
-Belgium,2015,methotrexate,206,52,1,Belgium
-Belgium,2015,hydroxychloroquine,206,6,1,Belgium
-Belgium,2015,Other DMARDs & Minocycline,206,8,4,Belgium
-Belgium,2016,methotrexate,179,31,1,Belgium
-Belgium,2016,sulfasalazine,179,5,1,Belgium
-Belgium,2016,leflunomide,179,5,1,Belgium
-Belgium,2016,hydroxychloroquine,179,7,1,Belgium
-Belgium,2016,Other DMARDs & Minocycline,179,7,5,Belgium
-Belgium,2017,methotrexate,158,39,1,Belgium
-Belgium,2017,leflunomide,158,5,1,Belgium
-Belgium,2017,Other DMARDs & Minocycline,158,8,4,Belgium
-Australia,2009,methotrexate,249,40,1,Australia
-Australia,2009,sulfasalazine,249,18,1,Australia
-Australia,2009,leflunomide,249,16,1,Australia
-Australia,2009,hydroxychloroquine,249,29,1,Australia
-Australia,2009,Other DMARDs & Minocycline,249,11,4,Australia
-Australia,2010,methotrexate,199,32,1,Australia
-Australia,2010,sulfasalazine,199,8,1,Australia
-Australia,2010,leflunomide,199,5,1,Australia
-Australia,2010,hydroxychloroquine,199,22,1,Australia
-Australia,2010,Other DMARDs & Minocycline,199,8,5,Australia
-Australia,2011,methotrexate,254,30,1,Australia
-Australia,2011,sulfasalazine,254,5,1,Australia
-Australia,2011,leflunomide,254,8,1,Australia
-Australia,2011,hydroxychloroquine,254,22,1,Australia
-Australia,2011,Other DMARDs & Minocycline,254,4,2,Australia
-Australia,2012,methotrexate,162,16,1,Australia
-Australia,2012,sulfasalazine,162,8,1,Australia
-Australia,2012,hydroxychloroquine,162,15,1,Australia
-Australia,2012,Other DMARDs & Minocycline,162,6,3,Australia
-Australia,2013,methotrexate,154,12,1,Australia
-Australia,2013,sulfasalazine,154,8,1,Australia
-Australia,2013,hydroxychloroquine,154,14,1,Australia
-Australia,2013,Other DMARDs & Minocycline,154,7,4,Australia
-Australia,2014,methotrexate,204,23,1,Australia
-Australia,2014,hydroxychloroquine,204,17,1,Australia
-Australia,2014,Other DMARDs & Minocycline,204,10,5,Australia
-Australia,2015,methotrexate,143,12,1,Australia
-Australia,2015,sulfasalazine,143,5,1,Australia
-Australia,2015,leflunomide,143,8,1,Australia
-Australia,2015,hydroxychloroquine,143,11,1,Australia
-Australia,2015,Other DMARDs & Minocycline,143,4,3,Australia
-Australia,2016,methotrexate,97,15,1,Australia
-Australia,2016,hydroxychloroquine,97,10,1,Australia
-Australia,2016,Other DMARDs & Minocycline,97,6,4,Australia
-Australia,2017,methotrexate,180,18,1,Australia
-Australia,2017,sulfasalazine,180,6,1,Australia
-Australia,2017,leflunomide,180,12,1,Australia
-Australia,2017,hydroxychloroquine,180,23,1,Australia
-Australia,2017,Other DMARDs & Minocycline,180,8,5,Australia
-Australia,2017,methotrexate +  hydroxychloroquine,180,6,1,Australia
-AmbEMR,2008,methotrexate,7752,1184,1,AmbEMR
-AmbEMR,2008,sulfasalazine,7752,113,1,AmbEMR
-AmbEMR,2008,leflunomide,7752,234,1,AmbEMR
-AmbEMR,2008,hydroxychloroquine,7752,692,1,AmbEMR
-AmbEMR,2008,Other DMARDs & Minocycline,7752,1067,70,AmbEMR
-AmbEMR,2008,methotrexate +  hydroxychloroquine,7752,134,1,AmbEMR
-AmbEMR,2009,methotrexate,9721,1599,1,AmbEMR
-AmbEMR,2009,sulfasalazine,9721,136,1,AmbEMR
-AmbEMR,2009,leflunomide,9721,281,1,AmbEMR
-AmbEMR,2009,hydroxychloroquine,9721,919,1,AmbEMR
-AmbEMR,2009,Other DMARDs & Minocycline,9721,1433,92,AmbEMR
-AmbEMR,2009,methotrexate +  hydroxychloroquine,9721,217,1,AmbEMR
-AmbEMR,2010,methotrexate,12384,1982,1,AmbEMR
-AmbEMR,2010,sulfasalazine,12384,178,1,AmbEMR
-AmbEMR,2010,leflunomide,12384,282,1,AmbEMR
-AmbEMR,2010,hydroxychloroquine,12384,1096,1,AmbEMR
-AmbEMR,2010,Other DMARDs & Minocycline,12384,1661,96,AmbEMR
-AmbEMR,2010,methotrexate +  hydroxychloroquine,12384,238,1,AmbEMR
-AmbEMR,2011,methotrexate,19700,3146,1,AmbEMR
-AmbEMR,2011,sulfasalazine,19700,338,1,AmbEMR
-AmbEMR,2011,leflunomide,19700,584,1,AmbEMR
-AmbEMR,2011,hydroxychloroquine,19700,2020,1,AmbEMR
-AmbEMR,2011,Other DMARDs & Minocycline,19700,3034,141,AmbEMR
-AmbEMR,2011,methotrexate +  hydroxychloroquine,19700,326,1,AmbEMR
-AmbEMR,2012,methotrexate,21055,3542,1,AmbEMR
-AmbEMR,2012,sulfasalazine,21055,305,1,AmbEMR
-AmbEMR,2012,leflunomide,21055,587,1,AmbEMR
-AmbEMR,2012,hydroxychloroquine,21055,2289,1,AmbEMR
-AmbEMR,2012,Other DMARDs & Minocycline,21055,3281,134,AmbEMR
-AmbEMR,2012,methotrexate +  hydroxychloroquine,21055,357,1,AmbEMR
-AmbEMR,2013,methotrexate,17907,2384,1,AmbEMR
-AmbEMR,2013,sulfasalazine,17907,231,1,AmbEMR
-AmbEMR,2013,leflunomide,17907,429,1,AmbEMR
-AmbEMR,2013,hydroxychloroquine,17907,1837,1,AmbEMR
-AmbEMR,2013,Other DMARDs & Minocycline,17907,2152,128,AmbEMR
-AmbEMR,2013,methotrexate +  hydroxychloroquine,17907,317,1,AmbEMR
-AmbEMR,2014,methotrexate,29015,3867,1,AmbEMR
-AmbEMR,2014,sulfasalazine,29015,422,1,AmbEMR
-AmbEMR,2014,leflunomide,29015,699,1,AmbEMR
-AmbEMR,2014,hydroxychloroquine,29015,2584,1,AmbEMR
-AmbEMR,2014,Other DMARDs & Minocycline,29015,4352,183,AmbEMR
-AmbEMR,2014,methotrexate +  hydroxychloroquine,29015,526,1,AmbEMR
-AmbEMR,2015,methotrexate,24087,3107,1,AmbEMR
-AmbEMR,2015,sulfasalazine,24087,322,1,AmbEMR
-AmbEMR,2015,leflunomide,24087,506,1,AmbEMR
-AmbEMR,2015,hydroxychloroquine,24087,2254,1,AmbEMR
-AmbEMR,2015,Other DMARDs & Minocycline,24087,3024,142,AmbEMR
-AmbEMR,2015,methotrexate +  hydroxychloroquine,24087,366,1,AmbEMR
-AmbEMR,2016,methotrexate,21678,2953,1,AmbEMR
-AmbEMR,2016,sulfasalazine,21678,331,1,AmbEMR
-AmbEMR,2016,leflunomide,21678,456,1,AmbEMR
-AmbEMR,2016,hydroxychloroquine,21678,2140,1,AmbEMR
-AmbEMR,2016,Other DMARDs & Minocycline,21678,2646,161,AmbEMR
-AmbEMR,2016,methotrexate +  hydroxychloroquine,21678,333,1,AmbEMR
-AmbEMR,2017,methotrexate,17680,2527,1,AmbEMR
-AmbEMR,2017,sulfasalazine,17680,289,1,AmbEMR
-AmbEMR,2017,leflunomide,17680,388,1,AmbEMR
-AmbEMR,2017,hydroxychloroquine,17680,1877,1,AmbEMR
-AmbEMR,2017,Other DMARDs & Minocycline,17680,2255,147,AmbEMR
-AmbEMR,2017,methotrexate +  hydroxychloroquine,17680,264,1,AmbEMR
-AmbEMR,2018,methotrexate,5009,645,1,AmbEMR
-AmbEMR,2018,sulfasalazine,5009,74,1,AmbEMR
-AmbEMR,2018,leflunomide,5009,106,1,AmbEMR
-AmbEMR,2018,hydroxychloroquine,5009,437,1,AmbEMR
-AmbEMR,2018,Other DMARDs & Minocycline,5009,522,78,AmbEMR
-AmbEMR,2018,methotrexate +  hydroxychloroquine,5009,53,1,AmbEMR
+DATABASE,YEAR,group,n,percentage,DB_KEY,TOTALCOHORTCOUNT
+AmbEMR,2008,methotrexate,1184,0.34579439252336447,AmbEMR,7752
+AmbEMR,2008,sulfasalazine,113,0.03300233644859813,AmbEMR,7752
+AmbEMR,2008,leflunomide,234,0.0683411214953271,AmbEMR,7752
+AmbEMR,2008,hydroxychloroquine,692,0.20210280373831777,AmbEMR,7752
+AmbEMR,2008,Other DMARDs & Minocycline,1067,0.3116238317757009,AmbEMR,7752
+AmbEMR,2008,methotrexate +  hydroxychloroquine,134,0.039135514018691586,AmbEMR,7752
+AmbEMR,2009,methotrexate,1599,0.34874591057797166,AmbEMR,9721
+AmbEMR,2009,sulfasalazine,136,0.02966194111232279,AmbEMR,9721
+AmbEMR,2009,leflunomide,281,0.06128680479825518,AmbEMR,9721
+AmbEMR,2009,hydroxychloroquine,919,0.2004362050163577,AmbEMR,9721
+AmbEMR,2009,Other DMARDs & Minocycline,1433,0.3125408942202835,AmbEMR,9721
+AmbEMR,2009,methotrexate +  hydroxychloroquine,217,0.04732824427480916,AmbEMR,9721
+AmbEMR,2010,methotrexate,1982,0.3645392679786647,AmbEMR,12384
+AmbEMR,2010,sulfasalazine,178,0.03273864263380541,AmbEMR,12384
+AmbEMR,2010,leflunomide,282,0.051866838329961376,AmbEMR,12384
+AmbEMR,2010,hydroxychloroquine,1096,0.20158175464410522,AmbEMR,12384
+AmbEMR,2010,Other DMARDs & Minocycline,1661,0.30549935626264485,AmbEMR,12384
+AmbEMR,2010,methotrexate +  hydroxychloroquine,238,0.043774140150818465,AmbEMR,12384
+AmbEMR,2011,methotrexate,3146,0.3329805249788315,AmbEMR,19700
+AmbEMR,2011,sulfasalazine,338,0.03577476714648603,AmbEMR,19700
+AmbEMR,2011,leflunomide,584,0.06181202370872142,AmbEMR,19700
+AmbEMR,2011,hydroxychloroquine,2020,0.21380186282811178,AmbEMR,19700
+AmbEMR,2011,Other DMARDs & Minocycline,3034,0.32112616426756985,AmbEMR,19700
+AmbEMR,2011,methotrexate +  hydroxychloroquine,326,0.03450465707027942,AmbEMR,19700
+AmbEMR,2012,methotrexate,3542,0.3418588939291574,AmbEMR,21055
+AmbEMR,2012,sulfasalazine,305,0.029437313000675612,AmbEMR,21055
+AmbEMR,2012,leflunomide,587,0.05665476305375929,AmbEMR,21055
+AmbEMR,2012,hydroxychloroquine,2289,0.2209246211755622,AmbEMR,21055
+AmbEMR,2012,Other DMARDs & Minocycline,3281,0.3166682752630055,AmbEMR,21055
+AmbEMR,2012,methotrexate +  hydroxychloroquine,357,0.03445613357783998,AmbEMR,21055
+AmbEMR,2013,methotrexate,2384,0.3243537414965986,AmbEMR,17907
+AmbEMR,2013,sulfasalazine,231,0.03142857142857143,AmbEMR,17907
+AmbEMR,2013,leflunomide,429,0.05836734693877551,AmbEMR,17907
+AmbEMR,2013,hydroxychloroquine,1837,0.24993197278911564,AmbEMR,17907
+AmbEMR,2013,Other DMARDs & Minocycline,2152,0.2927891156462585,AmbEMR,17907
+AmbEMR,2013,methotrexate +  hydroxychloroquine,317,0.04312925170068027,AmbEMR,17907
+AmbEMR,2014,methotrexate,3867,0.31060240963855423,AmbEMR,29015
+AmbEMR,2014,sulfasalazine,422,0.03389558232931727,AmbEMR,29015
+AmbEMR,2014,leflunomide,699,0.056144578313253014,AmbEMR,29015
+AmbEMR,2014,hydroxychloroquine,2584,0.20755020080321285,AmbEMR,29015
+AmbEMR,2014,Other DMARDs & Minocycline,4352,0.3495582329317269,AmbEMR,29015
+AmbEMR,2014,methotrexate +  hydroxychloroquine,526,0.04224899598393574,AmbEMR,29015
+AmbEMR,2015,methotrexate,3107,0.3243553606848314,AmbEMR,24087
+AmbEMR,2015,sulfasalazine,322,0.03361519991648398,AmbEMR,24087
+AmbEMR,2015,leflunomide,506,0.052823885583046244,AmbEMR,24087
+AmbEMR,2015,hydroxychloroquine,2254,0.23530639941538783,AmbEMR,24087
+AmbEMR,2015,Other DMARDs & Minocycline,3024,0.31569057312871907,AmbEMR,24087
+AmbEMR,2015,methotrexate +  hydroxychloroquine,366,0.038208581271531476,AmbEMR,24087
+AmbEMR,2016,methotrexate,2953,0.3333333333333333,AmbEMR,21678
+AmbEMR,2016,sulfasalazine,331,0.03736313353651654,AmbEMR,21678
+AmbEMR,2016,leflunomide,456,0.051473078225533354,AmbEMR,21678
+AmbEMR,2016,hydroxychloroquine,2140,0.24156225307596793,AmbEMR,21678
+AmbEMR,2016,Other DMARDs & Minocycline,2646,0.298679309177108,AmbEMR,21678
+AmbEMR,2016,methotrexate +  hydroxychloroquine,333,0.037588892651540806,AmbEMR,21678
+AmbEMR,2017,methotrexate,2527,0.3325,AmbEMR,17680
+AmbEMR,2017,sulfasalazine,289,0.038026315789473686,AmbEMR,17680
+AmbEMR,2017,leflunomide,388,0.05105263157894737,AmbEMR,17680
+AmbEMR,2017,hydroxychloroquine,1877,0.24697368421052632,AmbEMR,17680
+AmbEMR,2017,Other DMARDs & Minocycline,2255,0.2967105263157895,AmbEMR,17680
+AmbEMR,2017,methotrexate +  hydroxychloroquine,264,0.034736842105263156,AmbEMR,17680
+AmbEMR,2018,methotrexate,645,0.3511159499183451,AmbEMR,5009
+AmbEMR,2018,sulfasalazine,74,0.040283070223189985,AmbEMR,5009
+AmbEMR,2018,leflunomide,106,0.05770277626565052,AmbEMR,5009
+AmbEMR,2018,hydroxychloroquine,437,0.23788786064235165,AmbEMR,5009
+AmbEMR,2018,Other DMARDs & Minocycline,522,0.2841589548176375,AmbEMR,5009
+AmbEMR,2018,methotrexate +  hydroxychloroquine,53,0.02885138813282526,AmbEMR,5009
+Australia,2009,methotrexate,40,0.3508771929824561,Australia,249
+Australia,2009,sulfasalazine,18,0.15789473684210525,Australia,249
+Australia,2009,leflunomide,16,0.14035087719298245,Australia,249
+Australia,2009,hydroxychloroquine,29,0.2543859649122807,Australia,249
+Australia,2009,Other DMARDs & Minocycline,11,0.09649122807017543,Australia,249
+Australia,2010,methotrexate,32,0.4266666666666667,Australia,199
+Australia,2010,sulfasalazine,8,0.10666666666666667,Australia,199
+Australia,2010,leflunomide,5,0.06666666666666667,Australia,199
+Australia,2010,hydroxychloroquine,22,0.29333333333333333,Australia,199
+Australia,2010,Other DMARDs & Minocycline,8,0.10666666666666667,Australia,199
+Australia,2011,methotrexate,30,0.43478260869565216,Australia,254
+Australia,2011,sulfasalazine,5,0.07246376811594203,Australia,254
+Australia,2011,leflunomide,8,0.11594202898550725,Australia,254
+Australia,2011,hydroxychloroquine,22,0.3188405797101449,Australia,254
+Australia,2011,Other DMARDs & Minocycline,4,0.057971014492753624,Australia,254
+Australia,2012,methotrexate,16,0.35555555555555557,Australia,162
+Australia,2012,sulfasalazine,8,0.17777777777777778,Australia,162
+Australia,2012,hydroxychloroquine,15,0.3333333333333333,Australia,162
+Australia,2012,Other DMARDs & Minocycline,6,0.13333333333333333,Australia,162
+Australia,2013,methotrexate,12,0.2926829268292683,Australia,154
+Australia,2013,sulfasalazine,8,0.1951219512195122,Australia,154
+Australia,2013,hydroxychloroquine,14,0.34146341463414637,Australia,154
+Australia,2013,Other DMARDs & Minocycline,7,0.17073170731707316,Australia,154
+Australia,2014,methotrexate,23,0.46,Australia,204
+Australia,2014,hydroxychloroquine,17,0.34,Australia,204
+Australia,2014,Other DMARDs & Minocycline,10,0.2,Australia,204
+Australia,2015,methotrexate,12,0.3,Australia,143
+Australia,2015,sulfasalazine,5,0.125,Australia,143
+Australia,2015,leflunomide,8,0.2,Australia,143
+Australia,2015,hydroxychloroquine,11,0.275,Australia,143
+Australia,2015,Other DMARDs & Minocycline,4,0.1,Australia,143
+Australia,2016,methotrexate,15,0.4838709677419355,Australia,97
+Australia,2016,hydroxychloroquine,10,0.3225806451612903,Australia,97
+Australia,2016,Other DMARDs & Minocycline,6,0.1935483870967742,Australia,97
+Australia,2017,methotrexate,18,0.2465753424657534,Australia,180
+Australia,2017,sulfasalazine,6,0.0821917808219178,Australia,180
+Australia,2017,leflunomide,12,0.1643835616438356,Australia,180
+Australia,2017,hydroxychloroquine,23,0.3150684931506849,Australia,180
+Australia,2017,Other DMARDs & Minocycline,8,0.1095890410958904,Australia,180
+Australia,2017,methotrexate +  hydroxychloroquine,6,0.0821917808219178,Australia,180
+Belgium,2009,methotrexate,111,0.6453488372093024,Belgium,352
+Belgium,2009,sulfasalazine,14,0.08139534883720931,Belgium,352
+Belgium,2009,leflunomide,15,0.0872093023255814,Belgium,352
+Belgium,2009,hydroxychloroquine,18,0.10465116279069768,Belgium,352
+Belgium,2009,Other DMARDs & Minocycline,14,0.08139534883720931,Belgium,352
+Belgium,2010,methotrexate,60,0.5769230769230769,Belgium,269
+Belgium,2010,sulfasalazine,14,0.1346153846153846,Belgium,269
+Belgium,2010,leflunomide,10,0.09615384615384616,Belgium,269
+Belgium,2010,hydroxychloroquine,12,0.11538461538461539,Belgium,269
+Belgium,2010,Other DMARDs & Minocycline,8,0.07692307692307693,Belgium,269
+Belgium,2011,methotrexate,62,0.7294117647058823,Belgium,261
+Belgium,2011,leflunomide,7,0.08235294117647059,Belgium,261
+Belgium,2011,hydroxychloroquine,8,0.09411764705882353,Belgium,261
+Belgium,2011,Other DMARDs & Minocycline,8,0.09411764705882353,Belgium,261
+Belgium,2012,methotrexate,60,0.6896551724137931,Belgium,267
+Belgium,2012,sulfasalazine,7,0.08045977011494253,Belgium,267
+Belgium,2012,leflunomide,5,0.05747126436781609,Belgium,267
+Belgium,2012,hydroxychloroquine,13,0.14942528735632185,Belgium,267
+Belgium,2012,Other DMARDs & Minocycline,2,0.022988505747126436,Belgium,267
+Belgium,2013,methotrexate,43,0.7166666666666667,Belgium,215
+Belgium,2013,leflunomide,6,0.1,Belgium,215
+Belgium,2013,Other DMARDs & Minocycline,11,0.18333333333333332,Belgium,215
+Belgium,2014,methotrexate,62,0.6813186813186813,Belgium,247
+Belgium,2014,sulfasalazine,7,0.07692307692307693,Belgium,247
+Belgium,2014,leflunomide,13,0.14285714285714285,Belgium,247
+Belgium,2014,hydroxychloroquine,6,0.06593406593406594,Belgium,247
+Belgium,2014,Other DMARDs & Minocycline,3,0.03296703296703297,Belgium,247
+Belgium,2015,methotrexate,52,0.7878787878787878,Belgium,206
+Belgium,2015,hydroxychloroquine,6,0.09090909090909091,Belgium,206
+Belgium,2015,Other DMARDs & Minocycline,8,0.12121212121212122,Belgium,206
+Belgium,2016,methotrexate,31,0.5636363636363636,Belgium,179
+Belgium,2016,sulfasalazine,5,0.09090909090909091,Belgium,179
+Belgium,2016,leflunomide,5,0.09090909090909091,Belgium,179
+Belgium,2016,hydroxychloroquine,7,0.12727272727272726,Belgium,179
+Belgium,2016,Other DMARDs & Minocycline,7,0.12727272727272726,Belgium,179
+Belgium,2017,methotrexate,39,0.75,Belgium,158
+Belgium,2017,leflunomide,5,0.09615384615384616,Belgium,158
+Belgium,2017,Other DMARDs & Minocycline,8,0.15384615384615385,Belgium,158
+CCAE,2008,methotrexate,1452,0.4605137963843958,CCAE,12753
+CCAE,2008,sulfasalazine,179,0.056771328893117666,CCAE,12753
+CCAE,2008,leflunomide,71,0.02251823660006343,CCAE,12753
+CCAE,2008,hydroxychloroquine,891,0.2825880114176974,CCAE,12753
+CCAE,2008,Other DMARDs & Minocycline,445,0.14113542657786235,CCAE,12753
+CCAE,2008,methotrexate +  hydroxychloroquine,115,0.0364732001268633,CCAE,12753
+CCAE,2009,methotrexate,1598,0.4634570765661253,CCAE,14097
+CCAE,2009,sulfasalazine,207,0.06003480278422274,CCAE,14097
+CCAE,2009,leflunomide,103,0.029872389791183295,CCAE,14097
+CCAE,2009,hydroxychloroquine,969,0.2810324825986079,CCAE,14097
+CCAE,2009,Other DMARDs & Minocycline,439,0.12732018561484917,CCAE,14097
+CCAE,2009,methotrexate +  hydroxychloroquine,132,0.0382830626450116,CCAE,14097
+CCAE,2010,methotrexate,1740,0.4562139486103828,CCAE,15755
+CCAE,2010,sulfasalazine,200,0.05243838489774515,CCAE,15755
+CCAE,2010,leflunomide,88,0.023072889355007866,CCAE,15755
+CCAE,2010,hydroxychloroquine,1131,0.29653906659674883,CCAE,15755
+CCAE,2010,Other DMARDs & Minocycline,525,0.13765076035658103,CCAE,15755
+CCAE,2010,methotrexate +  hydroxychloroquine,130,0.03408495018353435,CCAE,15755
+CCAE,2011,methotrexate,2104,0.4454795680711412,CCAE,19015
+CCAE,2011,sulfasalazine,273,0.05780224433622697,CCAE,19015
+CCAE,2011,leflunomide,106,0.02244336226974381,CCAE,19015
+CCAE,2011,hydroxychloroquine,1418,0.3002329028160068,CCAE,19015
+CCAE,2011,Other DMARDs & Minocycline,655,0.13868304044039806,CCAE,19015
+CCAE,2011,methotrexate +  hydroxychloroquine,167,0.03535888206648317,CCAE,19015
+CCAE,2012,methotrexate,1752,0.45412130637636083,CCAE,15375
+CCAE,2012,sulfasalazine,203,0.05261793675479523,CCAE,15375
+CCAE,2012,leflunomide,102,0.026438569206842923,CCAE,15375
+CCAE,2012,hydroxychloroquine,1179,0.30559875583203733,CCAE,15375
+CCAE,2012,Other DMARDs & Minocycline,491,0.1272680145152929,CCAE,15375
+CCAE,2012,methotrexate +  hydroxychloroquine,131,0.03395541731467081,CCAE,15375
+CCAE,2013,methotrexate,1697,0.45435073627844713,CCAE,14344
+CCAE,2013,sulfasalazine,207,0.05542168674698795,CCAE,14344
+CCAE,2013,leflunomide,75,0.020080321285140562,CCAE,14344
+CCAE,2013,hydroxychloroquine,1127,0.30174029451137885,CCAE,14344
+CCAE,2013,Other DMARDs & Minocycline,494,0.1322623828647925,CCAE,14344
+CCAE,2013,methotrexate +  hydroxychloroquine,135,0.03614457831325301,CCAE,14344
+CCAE,2014,methotrexate,1562,0.4287674993137524,CCAE,14410
+CCAE,2014,sulfasalazine,203,0.05572330496843261,CCAE,14410
+CCAE,2014,leflunomide,103,0.02827340104309635,CCAE,14410
+CCAE,2014,hydroxychloroquine,1127,0.3093604172385397,CCAE,14410
+CCAE,2014,Other DMARDs & Minocycline,513,0.140818007136975,CCAE,14410
+CCAE,2014,methotrexate +  hydroxychloroquine,135,0.03705737029920395,CCAE,14410
+CCAE,2015,methotrexate,1602,0.43686937551131716,CCAE,14740
+CCAE,2015,sulfasalazine,202,0.05508590128170166,CCAE,14740
+CCAE,2015,leflunomide,96,0.02617943823288792,CCAE,14740
+CCAE,2015,hydroxychloroquine,1148,0.3130624488682847,CCAE,14740
+CCAE,2015,Other DMARDs & Minocycline,490,0.13362421598036542,CCAE,14740
+CCAE,2015,methotrexate +  hydroxychloroquine,129,0.03517862012544314,CCAE,14740
+CCAE,2016,methotrexate,1343,0.4323889246619446,CCAE,12132
+CCAE,2016,sulfasalazine,180,0.05795235028976175,CCAE,12132
+CCAE,2016,leflunomide,84,0.02704443013522215,CCAE,12132
+CCAE,2016,hydroxychloroquine,1019,0.3280746941403735,CCAE,12132
+CCAE,2016,Other DMARDs & Minocycline,394,0.12685125563425628,CCAE,12132
+CCAE,2016,methotrexate +  hydroxychloroquine,86,0.027688345138441726,CCAE,12132
+CCAE,2017,methotrexate,1227,0.4324991187874515,CCAE,10478
+CCAE,2017,sulfasalazine,162,0.05710257314064152,CCAE,10478
+CCAE,2017,leflunomide,85,0.029961226647867465,CCAE,10478
+CCAE,2017,hydroxychloroquine,890,0.3137116672541417,CCAE,10478
+CCAE,2017,Other DMARDs & Minocycline,394,0.13887909763835038,CCAE,10478
+CCAE,2017,methotrexate +  hydroxychloroquine,79,0.02784631653154741,CCAE,10478
+CCAE,2018,methotrexate,722,0.44956413449564137,CCAE,5761
+CCAE,2018,sulfasalazine,77,0.04794520547945205,CCAE,5761
+CCAE,2018,leflunomide,69,0.04296388542963885,CCAE,5761
+CCAE,2018,hydroxychloroquine,473,0.2945205479452055,CCAE,5761
+CCAE,2018,Other DMARDs & Minocycline,226,0.14072229140722292,CCAE,5761
+CCAE,2018,methotrexate +  hydroxychloroquine,39,0.024283935242839352,CCAE,5761
+Estonia,2012,methotrexate,37,0.40217391304347827,Estonia,210
+Estonia,2012,sulfasalazine,14,0.15217391304347827,Estonia,210
+Estonia,2012,leflunomide,6,0.06521739130434782,Estonia,210
+Estonia,2012,hydroxychloroquine,22,0.2391304347826087,Estonia,210
+Estonia,2012,Other DMARDs & Minocycline,13,0.14130434782608695,Estonia,210
+Estonia,2013,methotrexate,478,0.4714003944773176,Estonia,2554
+Estonia,2013,sulfasalazine,140,0.13806706114398423,Estonia,2554
+Estonia,2013,leflunomide,71,0.07001972386587771,Estonia,2554
+Estonia,2013,hydroxychloroquine,156,0.15384615384615385,Estonia,2554
+Estonia,2013,Other DMARDs & Minocycline,113,0.11143984220907298,Estonia,2554
+Estonia,2013,methotrexate +  hydroxychloroquine,56,0.055226824457593686,Estonia,2554
+Estonia,2014,methotrexate,233,0.5087336244541485,Estonia,1837
+Estonia,2014,sulfasalazine,50,0.1091703056768559,Estonia,1837
+Estonia,2014,leflunomide,21,0.04585152838427948,Estonia,1837
+Estonia,2014,hydroxychloroquine,102,0.22270742358078602,Estonia,1837
+Estonia,2014,Other DMARDs & Minocycline,36,0.07860262008733623,Estonia,1837
+Estonia,2014,methotrexate +  hydroxychloroquine,16,0.034934497816593885,Estonia,1837
+Estonia,2015,methotrexate,136,0.5093632958801498,Estonia,1511
+Estonia,2015,sulfasalazine,30,0.11235955056179775,Estonia,1511
+Estonia,2015,leflunomide,8,0.0299625468164794,Estonia,1511
+Estonia,2015,hydroxychloroquine,76,0.2846441947565543,Estonia,1511
+Estonia,2015,Other DMARDs & Minocycline,11,0.04119850187265918,Estonia,1511
+Estonia,2015,methotrexate +  hydroxychloroquine,6,0.02247191011235955,Estonia,1511
+France,2010,methotrexate,9,0.75,France,60
+France,2010,Other DMARDs & Minocycline,3,0.25,France,60
+France,2011,methotrexate,32,0.6808510638297872,France,351
+France,2011,hydroxychloroquine,8,0.1702127659574468,France,351
+France,2011,Other DMARDs & Minocycline,7,0.14893617021276595,France,351
+France,2012,methotrexate,36,0.72,France,264
+France,2012,hydroxychloroquine,7,0.14,France,264
+France,2012,Other DMARDs & Minocycline,7,0.14,France,264
+France,2013,methotrexate,26,0.7222222222222222,France,234
+France,2013,Other DMARDs & Minocycline,10,0.2777777777777778,France,234
+France,2014,methotrexate,16,0.6666666666666666,France,211
+France,2014,Other DMARDs & Minocycline,8,0.3333333333333333,France,211
+France,2015,methotrexate,40,0.7547169811320755,France,300
+France,2015,hydroxychloroquine,8,0.1509433962264151,France,300
+France,2015,Other DMARDs & Minocycline,5,0.09433962264150943,France,300
+France,2016,methotrexate,37,0.8043478260869565,France,301
+France,2016,Other DMARDs & Minocycline,9,0.19565217391304346,France,301
+France,2017,methotrexate,38,0.7755102040816326,France,245
+France,2017,sulfasalazine,5,0.10204081632653061,France,245
+France,2017,Other DMARDs & Minocycline,6,0.12244897959183673,France,245
+France,2018,methotrexate,17,0.85,France,121
+France,2018,Other DMARDs & Minocycline,3,0.15000000000000002,France,121
+IPCI,2008,methotrexate,11,0.5789473684210527,IPCI,84
+IPCI,2008,Other DMARDs & Minocycline,8,0.42105263157894735,IPCI,84
+IPCI,2009,methotrexate,17,0.5862068965517241,IPCI,149
+IPCI,2009,hydroxychloroquine,7,0.2413793103448276,IPCI,149
+IPCI,2009,Other DMARDs & Minocycline,5,0.1724137931034483,IPCI,149
+IPCI,2010,methotrexate,26,0.4406779661016949,IPCI,206
+IPCI,2010,sulfasalazine,7,0.11864406779661017,IPCI,206
+IPCI,2010,hydroxychloroquine,15,0.2542372881355932,IPCI,206
+IPCI,2010,Other DMARDs & Minocycline,11,0.1864406779661017,IPCI,206
+IPCI,2011,methotrexate,19,0.3333333333333333,IPCI,219
+IPCI,2011,sulfasalazine,5,0.08771929824561403,IPCI,219
+IPCI,2011,hydroxychloroquine,16,0.2807017543859649,IPCI,219
+IPCI,2011,Other DMARDs & Minocycline,17,0.2982456140350877,IPCI,219
+IPCI,2012,methotrexate,38,0.48717948717948717,IPCI,225
+IPCI,2012,hydroxychloroquine,20,0.2564102564102564,IPCI,225
+IPCI,2012,Other DMARDs & Minocycline,20,0.2564102564102564,IPCI,225
+IPCI,2013,methotrexate,53,0.6309523809523809,IPCI,206
+IPCI,2013,hydroxychloroquine,19,0.2261904761904762,IPCI,206
+IPCI,2013,Other DMARDs & Minocycline,7,0.08333333333333333,IPCI,206
+IPCI,2013,methotrexate +  hydroxychloroquine,5,0.05952380952380952,IPCI,206
+IPCI,2014,methotrexate,49,0.6363636363636364,IPCI,183
+IPCI,2014,sulfasalazine,5,0.06493506493506493,IPCI,183
+IPCI,2014,hydroxychloroquine,12,0.15584415584415584,IPCI,183
+IPCI,2014,Other DMARDs & Minocycline,6,0.07792207792207792,IPCI,183
+IPCI,2014,methotrexate +  hydroxychloroquine,5,0.06493506493506493,IPCI,183
+IPCI,2015,methotrexate,44,0.5714285714285714,IPCI,169
+IPCI,2015,sulfasalazine,6,0.07792207792207792,IPCI,169
+IPCI,2015,hydroxychloroquine,19,0.24675324675324675,IPCI,169
+IPCI,2015,Other DMARDs & Minocycline,8,0.1038961038961039,IPCI,169
+IPCI,2016,methotrexate,62,0.5210084033613446,IPCI,236
+IPCI,2016,sulfasalazine,9,0.07563025210084033,IPCI,236
+IPCI,2016,hydroxychloroquine,28,0.23529411764705882,IPCI,236
+IPCI,2016,Other DMARDs & Minocycline,8,0.06722689075630252,IPCI,236
+IPCI,2016,methotrexate +  hydroxychloroquine,12,0.10084033613445378,IPCI,236
+IPCI,2017,methotrexate,65,0.5462184873949579,IPCI,233
+IPCI,2017,sulfasalazine,6,0.05042016806722689,IPCI,233
+IPCI,2017,hydroxychloroquine,27,0.226890756302521,IPCI,233
+IPCI,2017,Other DMARDs & Minocycline,10,0.08403361344537816,IPCI,233
+IPCI,2017,methotrexate +  hydroxychloroquine,11,0.09243697478991597,IPCI,233
+JMDC,2008,methotrexate,13,0.30952380952380953,JMDC,462
+JMDC,2008,sulfasalazine,15,0.35714285714285715,JMDC,462
+JMDC,2008,Other DMARDs & Minocycline,14,0.33333333333333337,JMDC,462
+JMDC,2009,methotrexate,33,0.5409836065573771,JMDC,522
+JMDC,2009,sulfasalazine,19,0.3114754098360656,JMDC,522
+JMDC,2009,Other DMARDs & Minocycline,9,0.14754098360655737,JMDC,522
+JMDC,2010,methotrexate,52,0.4642857142857143,JMDC,775
+JMDC,2010,sulfasalazine,35,0.3125,JMDC,775
+JMDC,2010,Other DMARDs & Minocycline,25,0.2232142857142857,JMDC,775
+JMDC,2011,methotrexate,79,0.5231788079470199,JMDC,1235
+JMDC,2011,sulfasalazine,38,0.25165562913907286,JMDC,1235
+JMDC,2011,Other DMARDs & Minocycline,34,0.2251655629139073,JMDC,1235
+JMDC,2012,methotrexate,112,0.5137614678899083,JMDC,1392
+JMDC,2012,sulfasalazine,62,0.28440366972477066,JMDC,1392
+JMDC,2012,Other DMARDs & Minocycline,44,0.2018348623853211,JMDC,1392
+JMDC,2013,methotrexate,168,0.5217391304347826,JMDC,2095
+JMDC,2013,sulfasalazine,87,0.2701863354037267,JMDC,2095
+JMDC,2013,Other DMARDs & Minocycline,67,0.2080745341614907,JMDC,2095
+JMDC,2014,methotrexate,279,0.5625,JMDC,2950
+JMDC,2014,sulfasalazine,122,0.24596774193548387,JMDC,2950
+JMDC,2014,Other DMARDs & Minocycline,95,0.19153225806451613,JMDC,2950
+JMDC,2015,methotrexate,316,0.5524475524475524,JMDC,3332
+JMDC,2015,sulfasalazine,151,0.263986013986014,JMDC,3332
+JMDC,2015,Other DMARDs & Minocycline,105,0.18356643356643357,JMDC,3332
+JMDC,2016,methotrexate,403,0.533068783068783,JMDC,4414
+JMDC,2016,sulfasalazine,200,0.26455026455026454,JMDC,4414
+JMDC,2016,Other DMARDs & Minocycline,153,0.20238095238095238,JMDC,4414
+JMDC,2017,methotrexate,547,0.5875402792696026,JMDC,5082
+JMDC,2017,sulfasalazine,234,0.2513426423200859,JMDC,5082
+JMDC,2017,Other DMARDs & Minocycline,150,0.1611170784103115,JMDC,5082
+JMDC,2018,methotrexate,143,0.6059322033898306,JMDC,1153
+JMDC,2018,sulfasalazine,54,0.2288135593220339,JMDC,1153
+JMDC,2018,Other DMARDs & Minocycline,39,0.1652542372881356,JMDC,1153
+MDCD,2008,methotrexate,142,0.45222929936305734,MDCD,3696
+MDCD,2008,sulfasalazine,14,0.044585987261146494,MDCD,3696
+MDCD,2008,leflunomide,9,0.028662420382165606,MDCD,3696
+MDCD,2008,hydroxychloroquine,61,0.1942675159235669,MDCD,3696
+MDCD,2008,Other DMARDs & Minocycline,77,0.24522292993630573,MDCD,3696
+MDCD,2008,methotrexate +  hydroxychloroquine,11,0.03503184713375796,MDCD,3696
+MDCD,2009,methotrexate,145,0.4503105590062112,MDCD,4157
+MDCD,2009,sulfasalazine,13,0.040372670807453416,MDCD,4157
+MDCD,2009,leflunomide,11,0.034161490683229816,MDCD,4157
+MDCD,2009,hydroxychloroquine,76,0.2360248447204969,MDCD,4157
+MDCD,2009,Other DMARDs & Minocycline,63,0.1956521739130435,MDCD,4157
+MDCD,2009,methotrexate +  hydroxychloroquine,14,0.043478260869565216,MDCD,4157
+MDCD,2010,methotrexate,148,0.4484848484848485,MDCD,4339
+MDCD,2010,sulfasalazine,11,0.03333333333333333,MDCD,4339
+MDCD,2010,leflunomide,9,0.02727272727272727,MDCD,4339
+MDCD,2010,hydroxychloroquine,90,0.2727272727272727,MDCD,4339
+MDCD,2010,Other DMARDs & Minocycline,60,0.18181818181818182,MDCD,4339
+MDCD,2010,methotrexate +  hydroxychloroquine,12,0.03636363636363636,MDCD,4339
+MDCD,2011,methotrexate,140,0.4166666666666667,MDCD,4379
+MDCD,2011,sulfasalazine,19,0.05654761904761905,MDCD,4379
+MDCD,2011,leflunomide,9,0.026785714285714284,MDCD,4379
+MDCD,2011,hydroxychloroquine,102,0.30357142857142855,MDCD,4379
+MDCD,2011,Other DMARDs & Minocycline,59,0.17559523809523808,MDCD,4379
+MDCD,2011,methotrexate +  hydroxychloroquine,7,0.020833333333333332,MDCD,4379
+MDCD,2012,methotrexate,138,0.4107142857142857,MDCD,4125
+MDCD,2012,sulfasalazine,13,0.03869047619047619,MDCD,4125
+MDCD,2012,leflunomide,13,0.03869047619047619,MDCD,4125
+MDCD,2012,hydroxychloroquine,100,0.2976190476190476,MDCD,4125
+MDCD,2012,Other DMARDs & Minocycline,61,0.18154761904761904,MDCD,4125
+MDCD,2012,methotrexate +  hydroxychloroquine,11,0.03273809523809524,MDCD,4125
+MDCD,2013,methotrexate,253,0.32645161290322583,MDCD,7658
+MDCD,2013,sulfasalazine,24,0.03096774193548387,MDCD,7658
+MDCD,2013,leflunomide,21,0.027096774193548386,MDCD,7658
+MDCD,2013,hydroxychloroquine,162,0.20903225806451614,MDCD,7658
+MDCD,2013,Other DMARDs & Minocycline,298,0.38451612903225807,MDCD,7658
+MDCD,2013,methotrexate +  hydroxychloroquine,17,0.02193548387096774,MDCD,7658
+MDCD,2014,methotrexate,181,0.42789598108747046,MDCD,5337
+MDCD,2014,sulfasalazine,19,0.04491725768321513,MDCD,5337
+MDCD,2014,leflunomide,12,0.028368794326241134,MDCD,5337
+MDCD,2014,hydroxychloroquine,111,0.2624113475177305,MDCD,5337
+MDCD,2014,Other DMARDs & Minocycline,86,0.20330969267139481,MDCD,5337
+MDCD,2014,methotrexate +  hydroxychloroquine,14,0.03309692671394799,MDCD,5337
+MDCD,2015,methotrexate,325,0.41348600508905853,MDCD,8333
+MDCD,2015,sulfasalazine,36,0.04580152671755725,MDCD,8333
+MDCD,2015,leflunomide,20,0.02544529262086514,MDCD,8333
+MDCD,2015,hydroxychloroquine,243,0.30916030534351147,MDCD,8333
+MDCD,2015,Other DMARDs & Minocycline,120,0.15267175572519084,MDCD,8333
+MDCD,2015,methotrexate +  hydroxychloroquine,42,0.05343511450381679,MDCD,8333
+MDCD,2016,methotrexate,376,0.36328502415458935,MDCD,9340
+MDCD,2016,sulfasalazine,39,0.03768115942028986,MDCD,9340
+MDCD,2016,leflunomide,29,0.028019323671497585,MDCD,9340
+MDCD,2016,hydroxychloroquine,345,0.3333333333333333,MDCD,9340
+MDCD,2016,Other DMARDs & Minocycline,205,0.19806763285024154,MDCD,9340
+MDCD,2016,methotrexate +  hydroxychloroquine,41,0.03961352657004831,MDCD,9340
+MDCD,2017,methotrexate,212,0.4140625,MDCD,4965
+MDCD,2017,sulfasalazine,11,0.021484375,MDCD,4965
+MDCD,2017,leflunomide,23,0.044921875,MDCD,4965
+MDCD,2017,hydroxychloroquine,138,0.26953125,MDCD,4965
+MDCD,2017,Other DMARDs & Minocycline,110,0.21484375,MDCD,4965
+MDCD,2017,methotrexate +  hydroxychloroquine,18,0.03515625,MDCD,4965
+MDCR,2008,methotrexate,435,0.48986486486486486,MDCR,4384
+MDCR,2008,sulfasalazine,47,0.05292792792792793,MDCR,4384
+MDCR,2008,leflunomide,36,0.04054054054054054,MDCR,4384
+MDCR,2008,hydroxychloroquine,242,0.2725225225225225,MDCR,4384
+MDCR,2008,Other DMARDs & Minocycline,104,0.11711711711711711,MDCR,4384
+MDCR,2008,methotrexate +  hydroxychloroquine,24,0.02702702702702703,MDCR,4384
+MDCR,2009,methotrexate,403,0.4548532731376975,MDCR,4041
+MDCR,2009,sulfasalazine,38,0.04288939051918736,MDCR,4041
+MDCR,2009,leflunomide,47,0.05304740406320542,MDCR,4041
+MDCR,2009,hydroxychloroquine,256,0.28893905191873587,MDCR,4041
+MDCR,2009,Other DMARDs & Minocycline,114,0.12866817155756208,MDCR,4041
+MDCR,2009,methotrexate +  hydroxychloroquine,28,0.03160270880361174,MDCR,4041
+MDCR,2010,methotrexate,526,0.5038314176245211,MDCR,4814
+MDCR,2010,sulfasalazine,52,0.04980842911877394,MDCR,4814
+MDCR,2010,leflunomide,39,0.03735632183908046,MDCR,4814
+MDCR,2010,hydroxychloroquine,296,0.2835249042145594,MDCR,4814
+MDCR,2010,Other DMARDs & Minocycline,103,0.09865900383141762,MDCR,4814
+MDCR,2010,methotrexate +  hydroxychloroquine,28,0.02681992337164751,MDCR,4814
+MDCR,2011,methotrexate,538,0.47442680776014107,MDCR,5864
+MDCR,2011,sulfasalazine,45,0.03968253968253968,MDCR,5864
+MDCR,2011,leflunomide,54,0.047619047619047616,MDCR,5864
+MDCR,2011,hydroxychloroquine,331,0.29188712522045857,MDCR,5864
+MDCR,2011,Other DMARDs & Minocycline,127,0.11199294532627865,MDCR,5864
+MDCR,2011,methotrexate +  hydroxychloroquine,39,0.03439153439153439,MDCR,5864
+MDCR,2012,methotrexate,519,0.4592920353982301,MDCR,6647
+MDCR,2012,sulfasalazine,58,0.05132743362831858,MDCR,6647
+MDCR,2012,leflunomide,52,0.04601769911504425,MDCR,6647
+MDCR,2012,hydroxychloroquine,338,0.2991150442477876,MDCR,6647
+MDCR,2012,Other DMARDs & Minocycline,127,0.11238938053097344,MDCR,6647
+MDCR,2012,methotrexate +  hydroxychloroquine,36,0.03185840707964602,MDCR,6647
+MDCR,2013,methotrexate,416,0.46952595936794583,MDCR,5550
+MDCR,2013,sulfasalazine,37,0.0417607223476298,MDCR,5550
+MDCR,2013,leflunomide,44,0.04966139954853273,MDCR,5550
+MDCR,2013,hydroxychloroquine,248,0.2799097065462754,MDCR,5550
+MDCR,2013,Other DMARDs & Minocycline,115,0.12979683972911962,MDCR,5550
+MDCR,2013,methotrexate +  hydroxychloroquine,26,0.029345372460496615,MDCR,5550
+MDCR,2014,methotrexate,414,0.43902439024390244,MDCR,5702
+MDCR,2014,sulfasalazine,49,0.051961823966065745,MDCR,5702
+MDCR,2014,leflunomide,39,0.041357370095440084,MDCR,5702
+MDCR,2014,hydroxychloroquine,291,0.30858960763520676,MDCR,5702
+MDCR,2014,Other DMARDs & Minocycline,132,0.13997879109225875,MDCR,5702
+MDCR,2014,methotrexate +  hydroxychloroquine,18,0.019088016967126194,MDCR,5702
+MDCR,2015,methotrexate,364,0.4328180737217598,MDCR,5318
+MDCR,2015,sulfasalazine,45,0.0535077288941736,MDCR,5318
+MDCR,2015,leflunomide,43,0.05112960760998811,MDCR,5318
+MDCR,2015,hydroxychloroquine,250,0.2972651605231867,MDCR,5318
+MDCR,2015,Other DMARDs & Minocycline,122,0.1450653983353151,MDCR,5318
+MDCR,2015,methotrexate +  hydroxychloroquine,17,0.020214030915576695,MDCR,5318
+MDCR,2016,methotrexate,247,0.43409490333919154,MDCR,3556
+MDCR,2016,sulfasalazine,24,0.0421792618629174,MDCR,3556
+MDCR,2016,leflunomide,24,0.0421792618629174,MDCR,3556
+MDCR,2016,hydroxychloroquine,199,0.34973637961335674,MDCR,3556
+MDCR,2016,Other DMARDs & Minocycline,64,0.11247803163444639,MDCR,3556
+MDCR,2016,methotrexate +  hydroxychloroquine,11,0.019332161687170474,MDCR,3556
+MDCR,2017,methotrexate,125,0.40584415584415584,MDCR,1705
+MDCR,2017,sulfasalazine,22,0.07142857142857142,MDCR,1705
+MDCR,2017,leflunomide,14,0.045454545454545456,MDCR,1705
+MDCR,2017,hydroxychloroquine,106,0.34415584415584416,MDCR,1705
+MDCR,2017,Other DMARDs & Minocycline,36,0.11688311688311688,MDCR,1705
+MDCR,2017,methotrexate +  hydroxychloroquine,5,0.016233766233766232,MDCR,1705
+MDCR,2018,methotrexate,63,0.4405594405594406,MDCR,720
+MDCR,2018,sulfasalazine,5,0.03496503496503497,MDCR,720
+MDCR,2018,leflunomide,6,0.04195804195804196,MDCR,720
+MDCR,2018,hydroxychloroquine,47,0.32867132867132864,MDCR,720
+MDCR,2018,Other DMARDs & Minocycline,22,0.15384615384615385,MDCR,720
+Optum_DOD,2008,methotrexate,1247,0.4126406353408339,Optum_DOD,16767
+Optum_DOD,2008,sulfasalazine,191,0.06320317670416943,Optum_DOD,16767
+Optum_DOD,2008,leflunomide,142,0.04698874917273329,Optum_DOD,16767
+Optum_DOD,2008,hydroxychloroquine,706,0.23362011912640634,Optum_DOD,16767
+Optum_DOD,2008,Other DMARDs & Minocycline,641,0.21211118464592985,Optum_DOD,16767
+Optum_DOD,2008,methotrexate +  hydroxychloroquine,95,0.0314361350099272,Optum_DOD,16767
+Optum_DOD,2009,methotrexate,1069,0.45470012760527434,Optum_DOD,14984
+Optum_DOD,2009,sulfasalazine,118,0.05019140791152701,Optum_DOD,14984
+Optum_DOD,2009,leflunomide,88,0.03743088047639302,Optum_DOD,14984
+Optum_DOD,2009,hydroxychloroquine,635,0.27009783071033605,Optum_DOD,14984
+Optum_DOD,2009,Other DMARDs & Minocycline,357,0.15185027647809443,Optum_DOD,14984
+Optum_DOD,2009,methotrexate +  hydroxychloroquine,84,0.03572947681837516,Optum_DOD,14984
+Optum_DOD,2010,methotrexate,1053,0.4618421052631579,Optum_DOD,14864
+Optum_DOD,2010,sulfasalazine,118,0.05175438596491228,Optum_DOD,14864
+Optum_DOD,2010,leflunomide,67,0.029385964912280703,Optum_DOD,14864
+Optum_DOD,2010,hydroxychloroquine,657,0.2881578947368421,Optum_DOD,14864
+Optum_DOD,2010,Other DMARDs & Minocycline,307,0.13464912280701755,Optum_DOD,14864
+Optum_DOD,2010,methotrexate +  hydroxychloroquine,78,0.034210526315789476,Optum_DOD,14864
+Optum_DOD,2011,methotrexate,1152,0.48140409527789385,Optum_DOD,14953
+Optum_DOD,2011,sulfasalazine,110,0.045967404931048894,Optum_DOD,14953
+Optum_DOD,2011,leflunomide,59,0.024655244463017135,Optum_DOD,14953
+Optum_DOD,2011,hydroxychloroquine,689,0.28792310906811536,Optum_DOD,14953
+Optum_DOD,2011,Other DMARDs & Minocycline,305,0.1274550773088174,Optum_DOD,14953
+Optum_DOD,2011,methotrexate +  hydroxychloroquine,78,0.0325950689511074,Optum_DOD,14953
+Optum_DOD,2012,methotrexate,1143,0.46710257458111976,Optum_DOD,14905
+Optum_DOD,2012,sulfasalazine,97,0.039640375970576215,Optum_DOD,14905
+Optum_DOD,2012,leflunomide,82,0.03351042092357989,Optum_DOD,14905
+Optum_DOD,2012,hydroxychloroquine,723,0.29546383326522274,Optum_DOD,14905
+Optum_DOD,2012,Other DMARDs & Minocycline,320,0.13077237433592154,Optum_DOD,14905
+Optum_DOD,2012,methotrexate +  hydroxychloroquine,82,0.03351042092357989,Optum_DOD,14905
+Optum_DOD,2013,methotrexate,982,0.4504587155963303,Optum_DOD,14380
+Optum_DOD,2013,sulfasalazine,111,0.05091743119266055,Optum_DOD,14380
+Optum_DOD,2013,leflunomide,87,0.03990825688073395,Optum_DOD,14380
+Optum_DOD,2013,hydroxychloroquine,640,0.29357798165137616,Optum_DOD,14380
+Optum_DOD,2013,Other DMARDs & Minocycline,279,0.1279816513761468,Optum_DOD,14380
+Optum_DOD,2013,methotrexate +  hydroxychloroquine,81,0.037155963302752296,Optum_DOD,14380
+Optum_DOD,2014,methotrexate,1010,0.45149754135002235,Optum_DOD,13990
+Optum_DOD,2014,sulfasalazine,128,0.057219490388913725,Optum_DOD,13990
+Optum_DOD,2014,leflunomide,93,0.041573535985695124,Optum_DOD,13990
+Optum_DOD,2014,hydroxychloroquine,656,0.2932498882431828,Optum_DOD,13990
+Optum_DOD,2014,Other DMARDs & Minocycline,269,0.1202503352704515,Optum_DOD,13990
+Optum_DOD,2014,methotrexate +  hydroxychloroquine,81,0.03620920876173447,Optum_DOD,13990
+Optum_DOD,2015,methotrexate,1018,0.4337452066467831,Optum_DOD,15571
+Optum_DOD,2015,sulfasalazine,154,0.06561567959096719,Optum_DOD,15571
+Optum_DOD,2015,leflunomide,65,0.027694929697486152,Optum_DOD,15571
+Optum_DOD,2015,hydroxychloroquine,741,0.31572219855134215,Optum_DOD,15571
+Optum_DOD,2015,Other DMARDs & Minocycline,311,0.13250958670643376,Optum_DOD,15571
+Optum_DOD,2015,methotrexate +  hydroxychloroquine,58,0.024712398806987643,Optum_DOD,15571
+Optum_DOD,2016,methotrexate,1151,0.4466433837795887,Optum_DOD,15738
+Optum_DOD,2016,sulfasalazine,135,0.05238649592549476,Optum_DOD,15738
+Optum_DOD,2016,leflunomide,106,0.041133100504462554,Optum_DOD,15738
+Optum_DOD,2016,hydroxychloroquine,766,0.2972448583624369,Optum_DOD,15738
+Optum_DOD,2016,Other DMARDs & Minocycline,348,0.1350407450523865,Optum_DOD,15738
+Optum_DOD,2016,methotrexate +  hydroxychloroquine,71,0.027551416375630577,Optum_DOD,15738
+Optum_DOD,2017,methotrexate,1411,0.45282413350449296,Optum_DOD,18545
+Optum_DOD,2017,sulfasalazine,138,0.044287548138639284,Optum_DOD,18545
+Optum_DOD,2017,leflunomide,181,0.05808729139922978,Optum_DOD,18545
+Optum_DOD,2017,hydroxychloroquine,884,0.28369704749679076,Optum_DOD,18545
+Optum_DOD,2017,Other DMARDs & Minocycline,433,0.1389602053915276,Optum_DOD,18545
+Optum_DOD,2017,methotrexate +  hydroxychloroquine,69,0.022143774069319642,Optum_DOD,18545
+Optum_DOD,2018,methotrexate,797,0.44952058657642413,Optum_DOD,10341
+Optum_DOD,2018,sulfasalazine,111,0.06260575296108291,Optum_DOD,10341
+Optum_DOD,2018,leflunomide,93,0.05245346869712352,Optum_DOD,10341
+Optum_DOD,2018,hydroxychloroquine,537,0.30287648054145516,Optum_DOD,10341
+Optum_DOD,2018,Other DMARDs & Minocycline,193,0.10885504794134236,Optum_DOD,10341
+Optum_DOD,2018,methotrexate +  hydroxychloroquine,42,0.023688663282571912,Optum_DOD,10341
+Optum_Panther,2008,methotrexate,1803,0.4048955760161689,Optum_Panther,11534
+Optum_Panther,2008,sulfasalazine,137,0.030765775881428252,Optum_Panther,11534
+Optum_Panther,2008,leflunomide,220,0.04940489557601617,Optum_Panther,11534
+Optum_Panther,2008,hydroxychloroquine,722,0.16213788457219852,Optum_Panther,11534
+Optum_Panther,2008,Other DMARDs & Minocycline,1345,0.30204356613518973,Optum_Panther,11534
+Optum_Panther,2008,methotrexate +  hydroxychloroquine,226,0.05075230181899843,Optum_Panther,11534
+Optum_Panther,2009,methotrexate,2712,0.35963400079565044,Optum_Panther,17374
+Optum_Panther,2009,sulfasalazine,298,0.03951730539716218,Optum_Panther,17374
+Optum_Panther,2009,leflunomide,370,0.04906511072802015,Optum_Panther,17374
+Optum_Panther,2009,hydroxychloroquine,1308,0.1734517968439199,Optum_Panther,17374
+Optum_Panther,2009,Other DMARDs & Minocycline,2418,0.32064712902798037,Optum_Panther,17374
+Optum_Panther,2009,methotrexate +  hydroxychloroquine,435,0.05768465720726694,Optum_Panther,17374
+Optum_Panther,2010,methotrexate,2753,0.37338939373389396,Optum_Panther,20143
+Optum_Panther,2010,sulfasalazine,223,0.030245490302454905,Optum_Panther,20143
+Optum_Panther,2010,leflunomide,370,0.050183100501831,Optum_Panther,20143
+Optum_Panther,2010,hydroxychloroquine,1339,0.18160857181608572,Optum_Panther,20143
+Optum_Panther,2010,Other DMARDs & Minocycline,2284,0.3097789230977892,Optum_Panther,20143
+Optum_Panther,2010,methotrexate +  hydroxychloroquine,404,0.0547945205479452,Optum_Panther,20143
+Optum_Panther,2011,methotrexate,3333,0.3571198971391835,Optum_Panther,28236
+Optum_Panther,2011,sulfasalazine,296,0.03171541840780028,Optum_Panther,28236
+Optum_Panther,2011,leflunomide,412,0.04414443372977606,Optum_Panther,28236
+Optum_Panther,2011,hydroxychloroquine,1824,0.1954355512696882,Optum_Panther,28236
+Optum_Panther,2011,Other DMARDs & Minocycline,2988,0.3201542912246866,Optum_Panther,28236
+Optum_Panther,2011,methotrexate +  hydroxychloroquine,480,0.05143040822886532,Optum_Panther,28236
+Optum_Panther,2012,methotrexate,4340,0.35025421677023644,Optum_Panther,37012
+Optum_Panther,2012,sulfasalazine,318,0.025663788233395206,Optum_Panther,37012
+Optum_Panther,2012,leflunomide,589,0.047534500847389236,Optum_Panther,37012
+Optum_Panther,2012,hydroxychloroquine,2429,0.1960293761601162,Optum_Panther,37012
+Optum_Panther,2012,Other DMARDs & Minocycline,3959,0.31950609313211203,Optum_Panther,37012
+Optum_Panther,2012,methotrexate +  hydroxychloroquine,756,0.06101202485675087,Optum_Panther,37012
+Optum_Panther,2013,methotrexate,4929,0.3502202643171806,Optum_Panther,38784
+Optum_Panther,2013,sulfasalazine,417,0.02962910331107006,Optum_Panther,38784
+Optum_Panther,2013,leflunomide,636,0.0451897115247975,Optum_Panther,38784
+Optum_Panther,2013,hydroxychloroquine,2838,0.20164842972857752,Optum_Panther,38784
+Optum_Panther,2013,Other DMARDs & Minocycline,4463,0.31710956373454596,Optum_Panther,38784
+Optum_Panther,2013,methotrexate +  hydroxychloroquine,791,0.05620292738382834,Optum_Panther,38784
+Optum_Panther,2014,methotrexate,5072,0.3513438625658077,Optum_Panther,41849
+Optum_Panther,2014,sulfasalazine,457,0.031656968689387645,Optum_Panther,41849
+Optum_Panther,2014,leflunomide,662,0.0458575782765309,Optum_Panther,41849
+Optum_Panther,2014,hydroxychloroquine,3085,0.21370185646993628,Optum_Panther,41849
+Optum_Panther,2014,Other DMARDs & Minocycline,4382,0.30354668883347186,Optum_Panther,41849
+Optum_Panther,2014,methotrexate +  hydroxychloroquine,778,0.053893045164865615,Optum_Panther,41849
+Optum_Panther,2015,methotrexate,4599,0.3485411140583554,Optum_Panther,36593
+Optum_Panther,2015,sulfasalazine,461,0.03493747631678666,Optum_Panther,36593
+Optum_Panther,2015,leflunomide,626,0.04744221295945434,Optum_Panther,36593
+Optum_Panther,2015,hydroxychloroquine,2909,0.2204622963243653,Optum_Panther,36593
+Optum_Panther,2015,Other DMARDs & Minocycline,3905,0.2959454338764684,Optum_Panther,36593
+Optum_Panther,2015,methotrexate +  hydroxychloroquine,695,0.05267146646456991,Optum_Panther,36593
+Optum_Panther,2016,methotrexate,4314,0.34553464156988384,Optum_Panther,33232
+Optum_Panther,2016,sulfasalazine,475,0.03804565478574289,Optum_Panther,33232
+Optum_Panther,2016,leflunomide,553,0.044293151782138565,Optum_Panther,33232
+Optum_Panther,2016,hydroxychloroquine,2885,0.23107729275130157,Optum_Panther,33232
+Optum_Panther,2016,Other DMARDs & Minocycline,3620,0.28994793752503006,Optum_Panther,33232
+Optum_Panther,2016,methotrexate +  hydroxychloroquine,638,0.05110132158590308,Optum_Panther,33232
+Optum_Panther,2017,methotrexate,3630,0.3429057245418477,Optum_Panther,28743
+Optum_Panther,2017,sulfasalazine,472,0.044587190629132814,Optum_Panther,28743
+Optum_Panther,2017,leflunomide,486,0.04590969204609862,Optum_Panther,28743
+Optum_Panther,2017,hydroxychloroquine,2444,0.2308709616474589,Optum_Panther,28743
+Optum_Panther,2017,Other DMARDs & Minocycline,3034,0.2866049499338749,Optum_Panther,28743
+Optum_Panther,2017,methotrexate +  hydroxychloroquine,520,0.049121481201587,Optum_Panther,28743
+Optum_Panther,2018,methotrexate,732,0.33167195287720885,Optum_Panther,5217
+Optum_Panther,2018,sulfasalazine,97,0.04395106479383779,Optum_Panther,5217
+Optum_Panther,2018,leflunomide,105,0.047575894879927506,Optum_Panther,5217
+Optum_Panther,2018,hydroxychloroquine,514,0.23289533303126417,Optum_Panther,5217
+Optum_Panther,2018,Other DMARDs & Minocycline,636,0.2881739918441323,Optum_Panther,5217
+Optum_Panther,2018,methotrexate +  hydroxychloroquine,123,0.05573176257362936,Optum_Panther,5217
+SIDIAP,2008,methotrexate,86,0.7288135593220338,SIDIAP,1677
+SIDIAP,2008,leflunomide,32,0.2711864406779661,SIDIAP,1677
+SIDIAP,2009,methotrexate,125,0.7352941176470589,SIDIAP,1857
+SIDIAP,2009,leflunomide,45,0.2647058823529412,SIDIAP,1857
+SIDIAP,2010,methotrexate,130,0.8552631578947368,SIDIAP,1590
+SIDIAP,2010,leflunomide,22,0.14473684210526316,SIDIAP,1590
+SIDIAP,2011,methotrexate,102,0.864406779661017,SIDIAP,1303
+SIDIAP,2011,leflunomide,16,0.13559322033898305,SIDIAP,1303
+SIDIAP,2012,methotrexate,121,0.7076023391812866,SIDIAP,1268
+SIDIAP,2012,leflunomide,19,0.1111111111111111,SIDIAP,1268
+SIDIAP,2012,hydroxychloroquine,31,0.18128654970760233,SIDIAP,1268
+SIDIAP,2013,methotrexate,100,0.7142857142857143,SIDIAP,1200
+SIDIAP,2013,leflunomide,14,0.1,SIDIAP,1200
+SIDIAP,2013,hydroxychloroquine,26,0.18571428571428572,SIDIAP,1200
+SIDIAP,2014,methotrexate,98,0.6049382716049383,SIDIAP,1133
+SIDIAP,2014,sulfasalazine,7,0.043209876543209874,SIDIAP,1133
+SIDIAP,2014,leflunomide,18,0.1111111111111111,SIDIAP,1133
+SIDIAP,2014,hydroxychloroquine,39,0.24074074074074073,SIDIAP,1133
+SIDIAP,2015,methotrexate,131,0.7043010752688172,SIDIAP,1066
+SIDIAP,2015,sulfasalazine,7,0.03763440860215054,SIDIAP,1066
+SIDIAP,2015,leflunomide,11,0.05913978494623656,SIDIAP,1066
+SIDIAP,2015,hydroxychloroquine,37,0.1989247311827957,SIDIAP,1066
+SIDIAP,2016,methotrexate,65,0.5078125,SIDIAP,1016
+SIDIAP,2016,leflunomide,22,0.171875,SIDIAP,1016
+SIDIAP,2016,hydroxychloroquine,41,0.3203125,SIDIAP,1016
+THIN,2008,methotrexate,203,0.5087719298245614,THIN,1361
+THIN,2008,sulfasalazine,121,0.3032581453634085,THIN,1361
+THIN,2008,leflunomide,8,0.020050125313283207,THIN,1361
+THIN,2008,hydroxychloroquine,59,0.14786967418546365,THIN,1361
+THIN,2008,Other DMARDs & Minocycline,8,0.020050125313283207,THIN,1361
+THIN,2009,methotrexate,218,0.45416666666666666,THIN,1458
+THIN,2009,sulfasalazine,146,0.30416666666666664,THIN,1458
+THIN,2009,leflunomide,5,0.010416666666666666,THIN,1458
+THIN,2009,hydroxychloroquine,99,0.20625,THIN,1458
+THIN,2009,Other DMARDs & Minocycline,6,0.0125,THIN,1458
+THIN,2009,methotrexate +  hydroxychloroquine,6,0.0125,THIN,1458
+THIN,2010,methotrexate,214,0.4582441113490364,THIN,1392
+THIN,2010,sulfasalazine,112,0.2398286937901499,THIN,1392
+THIN,2010,leflunomide,8,0.017130620985010708,THIN,1392
+THIN,2010,hydroxychloroquine,109,0.2334047109207709,THIN,1392
+THIN,2010,Other DMARDs & Minocycline,13,0.0278372591006424,THIN,1392
+THIN,2010,methotrexate +  hydroxychloroquine,11,0.023554603854389723,THIN,1392
+THIN,2011,methotrexate,224,0.4609053497942387,THIN,1321
+THIN,2011,sulfasalazine,114,0.2345679012345679,THIN,1321
+THIN,2011,leflunomide,14,0.02880658436213992,THIN,1321
+THIN,2011,hydroxychloroquine,115,0.2366255144032922,THIN,1321
+THIN,2011,Other DMARDs & Minocycline,8,0.01646090534979424,THIN,1321
+THIN,2011,methotrexate +  hydroxychloroquine,11,0.02263374485596708,THIN,1321
+THIN,2012,methotrexate,233,0.4429657794676806,THIN,1420
+THIN,2012,sulfasalazine,100,0.19011406844106463,THIN,1420
+THIN,2012,leflunomide,14,0.026615969581749048,THIN,1420
+THIN,2012,hydroxychloroquine,156,0.2965779467680608,THIN,1420
+THIN,2012,Other DMARDs & Minocycline,9,0.017110266159695818,THIN,1420
+THIN,2012,methotrexate +  hydroxychloroquine,14,0.026615969581749048,THIN,1420
+THIN,2013,methotrexate,251,0.4718045112781955,THIN,1463
+THIN,2013,sulfasalazine,99,0.18609022556390978,THIN,1463
+THIN,2013,leflunomide,12,0.022556390977443608,THIN,1463
+THIN,2013,hydroxychloroquine,142,0.2669172932330827,THIN,1463
+THIN,2013,Other DMARDs & Minocycline,14,0.02631578947368421,THIN,1463
+THIN,2013,methotrexate +  hydroxychloroquine,14,0.02631578947368421,THIN,1463
+THIN,2014,methotrexate,203,0.4572072072072072,THIN,1256
+THIN,2014,sulfasalazine,89,0.20045045045045046,THIN,1256
+THIN,2014,hydroxychloroquine,107,0.240990990990991,THIN,1256
+THIN,2014,Other DMARDs & Minocycline,21,0.0472972972972973,THIN,1256
+THIN,2014,methotrexate +  hydroxychloroquine,24,0.05405405405405406,THIN,1256
+THIN,2015,methotrexate,165,0.4198473282442748,THIN,1050
+THIN,2015,sulfasalazine,74,0.18829516539440203,THIN,1050
+THIN,2015,leflunomide,8,0.020356234096692113,THIN,1050
+THIN,2015,hydroxychloroquine,118,0.30025445292620867,THIN,1050
+THIN,2015,Other DMARDs & Minocycline,13,0.033078880407124686,THIN,1050
+THIN,2015,methotrexate +  hydroxychloroquine,15,0.03816793893129771,THIN,1050
+THIN,2016,methotrexate,118,0.3881578947368421,THIN,857
+THIN,2016,sulfasalazine,57,0.1875,THIN,857
+THIN,2016,leflunomide,5,0.01644736842105263,THIN,857
+THIN,2016,hydroxychloroquine,102,0.3355263157894737,THIN,857
+THIN,2016,Other DMARDs & Minocycline,9,0.029605263157894735,THIN,857
+THIN,2016,methotrexate +  hydroxychloroquine,13,0.04276315789473684,THIN,857
+THIN,2017,methotrexate,78,0.36792452830188677,THIN,609
+THIN,2017,sulfasalazine,49,0.23113207547169812,THIN,609
+THIN,2017,leflunomide,8,0.03773584905660377,THIN,609
+THIN,2017,hydroxychloroquine,65,0.30660377358490565,THIN,609
+THIN,2017,Other DMARDs & Minocycline,4,0.018867924528301886,THIN,609
+THIN,2017,methotrexate +  hydroxychloroquine,8,0.03773584905660377,THIN,609
