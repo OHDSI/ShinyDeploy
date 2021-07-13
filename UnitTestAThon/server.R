@@ -41,26 +41,29 @@ shinyServer(function(input, output, session) {
   
   output$mainTable <- renderDataTable({
     result <- getCoverageAllPackages()
-    linkTemplate <- "<a href = https://codecov.io/github/OHDSI/%s?branch=%s>Details</a>"
+    repoLinkTemplate <- "<a href = https://github.com/OHDSI/%s>%s</a>"
+    detailsLinkTemplate <- "<a href = https://codecov.io/github/OHDSI/%s/branch/%s>Details</a>"
     result <- baseline %>%
       select(.data$name, startCoverage = .data$coverage, startLines = .data$lines) %>%
       inner_join(result, by = "name") %>%
-      mutate(improvement = .data$coverage - .data$startCoverage,
+      mutate(linkedName = sprintf(repoLinkTemplate, .data$name, .data$name),
+             improvement = .data$coverage - .data$startCoverage,
              improvementLines = .data$lines - .data$startLines,
-             link = sprintf(linkTemplate, .data$name, .data$branch)) %>%
-      select(.data$name, 
+             link = sprintf(detailsLinkTemplate, .data$name, .data$branch)) %>%
+      arrange(.data$name) %>%
+      select(.data$linkedName, 
              .data$startCoverage, 
              .data$coverage, 
              .data$improvement, 
              .data$startLines, 
              .data$lines, 
              .data$improvementLines, 
-             .data$link) %>%
-      arrange(.data$name)
+             .data$link)
+    
     options = list(pageLength = 10000, 
                    searching = FALSE, 
                    lengthChange = FALSE,
-                   ordering = FALSE,
+                   ordering = TRUE,
                    paging = FALSE,
                    columnDefs = list(percentDef(1:3)))
     sketch = htmltools::withTags(table(
@@ -70,7 +73,7 @@ shinyServer(function(input, output, session) {
           th(rowspan = 2, "Package"),
           th(colspan = 3, "Coverage (percent)"),
           th(colspan = 3, "Coverage (lines)"),
-          th(rowspan = 2, "Link")
+          th(rowspan = 2, "Report")
         ),
         tr(
           lapply(rep(c("Start", "Current", "Improvement"), 2), th)
@@ -82,6 +85,7 @@ shinyServer(function(input, output, session) {
                        escape = FALSE,
                        rownames = FALSE,
                        container = sketch,
+                       selection = "none",
                        class = "stripe nowrap compact") %>%
       formatStyle( c("startCoverage", "coverage"),
                    backgroundColor = styleInterval(80, c(NA, "lightgreen"))) %>%
