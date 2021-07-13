@@ -1,0 +1,10 @@
+Based on the estimates of a particular method for the 800 negative and positive controls, we can then compute the following metrics: 
+<ul>
+<li><strong>AUC</strong>: the ability to discriminate between positive controls and negative controls.</li>
+<li><strong>Coverage</strong>: how often the true effect size is within the 95% confidence interval.</li>
+<li><strong>Mean precision</strong>: Precision is computed as 1 / (standard error)2, higher precision means narrower confidence intervals. We use the geometric mean to account for the skewed distribution of the precision.</li>
+<li><strong>Mean squared error (MSE)</strong>: Mean squared error between the log of the effect size point-estimate and the log of the true effect size.</li>
+<li><strong>Type 1 error</strong>: For negative controls, how often was the null rejected (at alpha = 0.05). This is equivalent to the false positive rate and 1 - specificity.</li>
+<li><strong>Type 2 error</strong>: For positive controls, how often was the null not rejected (at alpha = 0.05). This is equivalent to the false negative rate and 1 - sensitivity.</li>
+<li><strong>Non-estimable</strong>: For how many of the controls was the method unable to produce an estimate? There can be various reasons why an estimate cannot be produced, for example because there were no subjects left after propensity score matching, or because no subjects remained having the outcome.</li>
+</ul>

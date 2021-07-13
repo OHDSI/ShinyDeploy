@@ -1,0 +1,42 @@
+Four methods for constructing the counterfactual are included:
+
+<p><strong>Historic rates</strong></p>
+<p>Traditionally, vaccine surveillance methods compute an expected count based an incidence rate estimated during some historic time period, for example in the years prior to the initiation of the surveillance study. 
+We will evaluate two variants:</p>
+<ul>
+<li>Unadjusted, entire year. Using a single rate computed across the entire historic year for the entire population.</li>
+<li>Age and sex adjusted, entire year. Using a rate stratifying by age (in 5 year increments) and sex, computed across the entire historic year. This allows the expected rate to be adjusted for the demographics of the vaccinated.</li>
+<li>Unadjusted, time-at-risk relative to outpatient visit. Using a single rate computed during the time-at-risk relative to a random outpatient visit in the historic year.</li>
+<li>Age and sex adjusted, time-at-risk relative to outpatient visit. Using a rate stratifying by age and sex, computed during the time-at-risk relative to a random outpatient visit in the historic year.</li>
+</ul>
+<p><strong>Cohort method using a contemporary non-user comparator</strong></p>
+<p>A comparator cohort study most closely emulates a randomized clinical trial, comparing the target cohort (those vaccinated) to some comparator cohort.
+We define two types of non-user comparator cohort, one having an outpatient visit on the index date, and another having a random date as the index date.
+For both comparator variants we exclude subjects having a vaccinations for the same disease as the target vaccine on or before the index date.
+We will evaluate four method variants:</p>
+<ul>
+<li>Unadjusted comparison to random outpatient visit. The comparator cohort will be a random sample (of outpatient visits) of equal size as the target cohort.</li>
+<li>1-on-1 propensity score (PS) matched outpatient visit. The comparator cohort before PS matching will be a stratified (by age and sex) random sample of four times the size as the target cohort. (two times for the Seasonal Flu Vaccination (all) target cohort for computational reasons). Propensity models will use a large generic set of covariates, including demographics and covariates per drug, condition, procedure, measurement, etc., and will be fitted using large-scale regularized regression as described previously.</li>
+<li>Unadjusted comparison to random date. The comparator cohort will be a random sample (of random dates) of equal size as the target cohort.</li>
+<li>1-on-1 propensity score (PS) matched random date. The comparator cohort before PS matching will be a stratified (by age and sex) random sample of four times the size as the target cohort. (two times for the Seasonal Flu Vaccination (all) target cohort for computational reasons). Propensity models will use a large generic set of covariates, including demographics and covariates per drug, condition, procedure, measurement, etc., and will be fitted using large-scale regularized regression as described previously.</li>
+</ul>
+<p><strong>Self-Controlled Case Series (SCCS) / Self-Controlled Risk Interval (SCRI)</strong></p>
+<p>The SCCS and SCRI designs are self-controlled, comparing the time-at-risk (the time shortly following the vaccination) to some other time in the same patient’s record.
+The SCCS design uses all patient time when not at risk as the control time. 
+The SCRI design uses a pre-specified control interval relative to the vaccination date as the control time. 
+This unexposed time can be both before or after the time at risk.
+We will evaluate four variants:</p>
+<ul>
+<li>A simple SCCS, using all patient time when not at risk as the control time, with the exception of the 30 days prior to vaccination which is excluded from the analysis to avoid bias due to contra-indications.</li>
+<li>An SCCS adjusting for age and season. Age and season will be modeled to be constant within each calendar month, and vary across months as bicubic splines.</li>
+<li>An SCRI, using a control interval of 43 to 15 days prior to vaccination.</li>
+<li>An SCRI, using a control interval of 43 to 71 days after to vaccination.</li>
+</ul>
+<p><strong>Case-control</strong></p>
+<p>The case-control design compares cases (those with the outcome) to controls (those that do not have the outcome), and looks back in time for exposures to a vaccine.
+We will evaluate two variants:</p>
+<ul>
+<li>Using up to four age and sex matched controls per case. For age we will use a two-year caliper.</li>
+<li>By sampling controls from the general non-case population, and adjusting for age and sex in the outcome model. The control sample will be four times the number of controls. Age will be modeled as one variable per 5-year age category.</li>
+</ul>
+</div>
