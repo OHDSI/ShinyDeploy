@@ -66,7 +66,7 @@ getAllReadmes <- function(repoTable) {
   # Remove rows where README.md not found (wrong case?)
   result <- result[!grepl("404", result$readme), ]
   # Remove rows where README does not adhere to template
-  result <- result[grepl("<img src=\"https://img.shields.io/badge/Study%20Status", result$readme), ]
+  result <- result[grepl("https://img.shields.io/badge/Study%20Status", result$readme), ]
   # Remove rows where template is still empty
   result <- result[!grepl("\\[Study title\\]", result$readme), ]
   return(result)
@@ -106,7 +106,11 @@ parseReadmes <- function(repoTable) {
     startOfStucturedElements <- max(posEmptyLine[posEmptyLine < startOfDescription])
     structuredElements <- substr(readmeHeader, startOfStucturedElements, startOfDescription)
     structuredElements <- strsplit(structuredElements, "\n- ")[[1]]
-    status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readmeHeader))
+    if (grepl("\\[!\\[Study Status:", readmeHeader)) {
+      status <- gsub("\\].*", "", gsub(".*\\[!\\[Study Status: ", "", readmeHeader))
+    } else {
+      status <- gsub("\".*", "", gsub(".*alt=\"Study Status: ", "", readmeHeader))
+    }
     result <- data.frame(title = trimws(gsub("\n==.*", "", readmeHeader)),
                          useCases = getElement("Analytics use case\\(s\\):", structuredElements),
                          studyType = getElement("Study type:", structuredElements),
