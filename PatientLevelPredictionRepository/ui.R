@@ -301,11 +301,12 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                         
                                                         shinydashboard::box(title = "Development R Package", status = 'info', solidHeader = T,
                                                                             shiny::p("Click here to download an R package that contains all the settings requires to replicate the model development using any OMOP CDM database."),
-                                                          shiny::actionButton(inputId = 'downloadPackageDev', label = "Download Development")
+                                                                            shiny::actionButton(inputId = 'downloadPackageDev', label = "Download Development")
                                                         ),
                                                         shinydashboard::box(title = "Validation R Package", status = 'info', solidHeader = T,
                                                                             shiny::p("Click here to download an R package that contains all the settings requires to validate the existing model using any OMOP CDM database."),
                                                           shiny::actionButton(inputId = 'downloadPackageVal', label = "Download Validation")
+                                                          
                                                         )
                                         )
                                         
