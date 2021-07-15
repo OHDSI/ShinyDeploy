@@ -4,6 +4,8 @@ library(DatabaseConnector)
 source("DataPulls.R")
 
 connPool <- NULL # Will be initialized if using a DB
+dbConnectorVersionStr <- as.character(utils::packageVersion("DatabaseConnector"))[[1]]
+dbConnectorVersion <- as.integer(strsplit(dbConnectorVersionStr, split="[.]")[[1]][1])
 
 # Cleanup the database connPool if it was created
 onStop(function() {
@@ -53,14 +55,30 @@ dataFile <- shinySettings$dataFile
 suppressWarnings(rm("cohort", "cohortCount", "database"))
 
 if (dataStorage == "database") {
-  connPool <- dbPool(
-    drv = DatabaseConnector::DatabaseConnectorDriver(),
-    dbms = shinySettings$connectionDetails$dbms,
-    server = shinySettings$connectionDetails$server,
-    port = shinySettings$connectionDetails$port,
-    user = shinySettings$connectionDetails$user,
-    password = shinySettings$connectionDetails$password
-  )  
+  # This is a hack to allow for users to run the Shiny app using
+  # the v3.x version of DB connector while also supporting the
+  # v4 driver that is now installed on data.ohdsi.org
+  if (dbConnectorVersion <= 3) {
+    # DatabaseConnector v3.x or less
+    connPool <- dbPool(
+      drv = DatabaseConnector::DatabaseConnectorDriver(),
+      dbms = shinySettings$connectionDetails$dbms,
+      server = shinySettings$connectionDetails$server,
+      port = shinySettings$connectionDetails$port,
+      user = shinySettings$connectionDetails$user,
+      password = shinySettings$connectionDetails$password
+    )  
+  } else {
+    # DatabaseConnector v4.x or higher
+    connPool <- dbPool(
+      drv = DatabaseConnector::DatabaseConnectorDriver(),
+      dbms = shinySettings$connectionDetails$dbms,
+      server = shinySettings$connectionDetails$server(),
+      port = shinySettings$connectionDetails$port(),
+      user = shinySettings$connectionDetails$user(),
+      password = shinySettings$connectionDetails$password()
+    )  
+  }
   loadDataFromDB(connPool)
 } else if (dataStorage == "s3") {
   fileExists <- aws.s3::head_object(dataFile, bucket = dataFolder)

@@ -230,7 +230,7 @@ shinyServer(function(input, output, session) {
   output$csDmardPivotTable <- renderDataTable({
     columnsToInclude <- c("drug","count","pct")
     databaseIds <- unique(dmardsTotal$database)
-    databaseIdsWithCounts <- unique(dmardsTotal[,c("database","total")])
+    databaseIdsWithCounts <- unique(dmardsTotal[,c("database","total","diagnosed")])
     table <- dmardsTotal[dmardsTotal$database == databaseIdsWithCounts$database[1], columnsToInclude]
     colnames(table)[2] <- paste(colnames(table)[2], databaseIdsWithCounts$database[1], sep = "_")
     colnames(table)[3] <- paste(colnames(table)[3], databaseIdsWithCounts$database[1], sep = "_")
@@ -245,8 +245,8 @@ shinyServer(function(input, output, session) {
 
     createHeadings <- function(database) {
       return(list(
-        tags$th(colspan = 1, paste0(database, "_cnt")),
-        tags$th(colspan = 1, paste0(database, "_pct"))
+        tags$th(colspan = 1, paste0(database, "_pct_treated")),
+        tags$th(colspan = 1, paste0(database, "_cnt"))
       ))
     }
     
@@ -258,7 +258,10 @@ shinyServer(function(input, output, session) {
           lapply(databaseIdsWithCounts$database, th, colspan = 2, class = "dt-center no-border no-padding")
         ),
         tr(
-          lapply(paste0("(n = ", format(databaseIdsWithCounts$total, big.mark = ","), ")"), th, colspan = 2, class = "dt-center no-padding")
+          lapply(paste0("(Diagnosed = ", format(databaseIdsWithCounts$diagnosed, big.mark = ","), ")"), th, colspan = 2, class = "dt-center no-border no-padding")
+        ),
+        tr(
+          lapply(paste0("(Treated = ", format(databaseIdsWithCounts$total, big.mark = ","), " (", format((databaseIdsWithCounts$total/databaseIdsWithCounts$diagnosed)*100, digits = 1, nsmall=1), "%))"), th, colspan = 2, class = "dt-center no-padding")
         ),
         tr(
           lapply(databaseIdsWithCounts$database, FUN = createHeadings)
