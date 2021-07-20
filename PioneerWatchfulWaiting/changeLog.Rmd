@@ -7,12 +7,9 @@ output:
 ---
 
 ## 2021-Mar-11: Initial Release
-
 Initial results provided from 8 databases.
 
-
 ## 2021-Mar-18: Adding results
-
 Now showing results from 10 databases for task #3.
 
 ## 2021-Apr-06: Adding and correcting results
@@ -22,7 +19,6 @@ Now showing task #3 results from 8 databases with correct time-to-event data.
 Now showing results for pre-task#4 for 7 databases.
 
 ## 2021-Jul-15: Adding task #5 results & bug fixes
-Now shoing results for task #5 for 5 databases.
-Some bug fixed from the previous version.
+Now showing results for task #5 for 5 databases.
+Some bugs fixed from the previous version.
 ------
-
