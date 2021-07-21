@@ -18,11 +18,7 @@ shinyServer(function(input, output, session) {
   
   getCoverage <- function(name) {
     urlTemplate <- "https://codecov.io/api/gh/OHDSI/%s/branch/%s"
-    if (name == "PatientLevelPrediction") {
-      branch <- "development"
-    } else {
-      branch <- "develop"
-    }
+    branch <- "develop"
     url <- sprintf(urlTemplate, name, branch)
     data <- readLines(url, warn = FALSE)
     data <- RJSONIO::fromJSON(data)
