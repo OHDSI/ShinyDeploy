@@ -1,0 +1,3 @@
+[submodule "LegendT2dmCohortExplorer"]
+	path = LegendT2dmCohortExplorer
+	url = https://github.com/ohdsi-studies/LegendT2dmCohortExplorer
