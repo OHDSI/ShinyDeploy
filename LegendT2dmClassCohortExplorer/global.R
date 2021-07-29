@@ -6,6 +6,15 @@ source("R/Tables.R")
 source("R/Plots.R")
 source("R/Results.R")
 
+getConfiguration <- function(label) {
+  sourceFile <- "config.json"
+  if (file.exists(sourceFile)) {
+    RJSONIO::fromJSON(readChar(sourceFile, file.info(sourceFile)$size))[[label]]
+  } else {
+    ""
+  }
+}
+
 # Settings when running on server:
 defaultLocalDataFolder <- "data"
 defaultLocalDataFile <- "PreMerged.RData"
@@ -16,7 +25,7 @@ defaultDatabase <- Sys.getenv("shinydbDatabase")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("shinydbUser")
 defaultPassword <- Sys.getenv("shinydbPw")
-defaultResultsSchema <- "legendt2dm_class_diagnostics" # Sys.getenv("shinyResultsSchema")
+defaultResultsSchema <- getConfiguration("resultsSchema")
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c("vocabulary")
 
