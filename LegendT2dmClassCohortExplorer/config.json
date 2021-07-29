@@ -1,3 +1,4 @@
 {
- "resultsSchema": "legendt2dm_class_diagnostics" 
+ "resultsSchema": "legendt2dm_class_diagnostics",
+"headerText": "LEGEND-T2DM Class Cohorts" 
 }

@@ -54,7 +54,7 @@ if (is(dataSource, "environment")) {
 }
 
 header <-
-  shinydashboard::dashboardHeader(title = "LEGEND-T2DM Class Cohorts", titleWidth = 350)
+  shinydashboard::dashboardHeader(title = headerText, titleWidth = 350)
 
 sidebarMenu <-
   shinydashboard::sidebarMenu(

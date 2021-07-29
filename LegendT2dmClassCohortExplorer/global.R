@@ -26,6 +26,7 @@ defaultPort <- 5432
 defaultUser <- Sys.getenv("shinydbUser")
 defaultPassword <- Sys.getenv("shinydbPw")
 defaultResultsSchema <- getConfiguration("resultsSchema")
+defaultHeaderText <- getConfiguration("headerText")
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c("vocabulary")
 
@@ -64,8 +65,10 @@ if (!exists("shinySettings")) {
             y = defaultResultsSchema) %>%
     unique() %>%
     sort()
+  headerText <- defaultHeaderText
 } else {
   writeLines("Using settings provided by user")
+  headerText <- shinySettings$headerText
   databaseMode <- !is.null(shinySettings$connectionDetails)
   if (databaseMode) {
     connectionDetails <- shinySettings$connectionDetails
