@@ -16,7 +16,7 @@ defaultDatabase <- Sys.getenv("shinydbDatabase")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("shinydbUser")
 defaultPassword <- Sys.getenv("shinydbPw")
-defaultResultsSchema <- Sys.getenv("shinyResultsSchema")
+defaultResultsSchema <- "legendt2dm_class_diagnostics" # Sys.getenv("shinyResultsSchema")
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c("vocabulary")
 
