@@ -3,6 +3,10 @@ library(shinydashboard)
 library(DT)
 library(htmltools)
 source("PlotsAndTables.R")
+source("utilities.R")
+source("survplot_core.R")
+source("ggsurvtable.R")
+
 
 truncateStringDef <- function(columns, maxChars) {
   list(
@@ -137,7 +141,8 @@ shinyServer(function(input, output, session) {
   
   # Filter Options -----
   cohortIdTimeToEvent <- reactive({
-    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdTimeToEvent() & cohortXref$strataName %in% input$strataTimeToEvent,c("cohortId")]))
+    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdTimeToEvent() 
+                             & cohortXref$strataName %in% input$strataTimeToEvent,c("cohortId")]))
   })
   
   targetCohortIdTimeToEvent <- reactive({
@@ -145,7 +150,14 @@ shinyServer(function(input, output, session) {
   })
   
 
+  cohortIdMetricsDistribution <- reactive({
+    return(unlist(cohortXref[cohortXref$targetId %in% targetCohortIdMetricsDistribution() 
+                             & cohortXref$strataName %in% input$strataMetricsDistribution, c("cohortId")]))
+  })
   
+  targetCohortIdMetricsDistribution <- reactive({
+    return(targetCohort$targetId[targetCohort$targetName %in% input$targetMetricsDistribution])
+  })
   
   
   cohortIdList <- reactive({
@@ -269,79 +281,86 @@ shinyServer(function(input, output, session) {
   
   
   # timeToEvent-----------------
-  getSurvivalInfo <- reactive({
-    table <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent & cohortCount$cohortId %in% cohortIdTimeToEvent(), ]
-    # print(cohortTimeToEvent)
-    return(table)
-  })
   
   output$survivalHeader <- renderText({
-    # print(cohortCount[cohortCount$databaseId %in% input$databases & cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]])
     paste(input$targetTimeToEvent, input$strataTimeToEvent, sep=" ")
   })
   
+  output$dlTimeToEvent <- downloadHandler(
+    filename = function() {
+      "timeToEvent.csv"
+    },
+    content = function(file) {
+      target_id <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent &
+                                 cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]]
+      targetIdTimeToEventData <- cohortTimeToEvent %>% dplyr::filter(targetId == target_id,
+                                                                     databaseId == input$databasesTimeToEvent)
+      write.csv(targetIdTimeToEventData, file, row.names = FALSE, na = "")
+    }
+  ) 
+  
   output$TimeToEventDeath <- renderPlot({
-    target_id <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent & cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]]
-    if (length(target_id) == 0){
+    target_id <- cohortCount[cohortCount$databaseId %in% input$databasesTimeToEvent &
+                             cohortCount$cohortId %in% cohortIdTimeToEvent(), ][[1]]
+    target_id_entries_num <- cohortCount[cohortCount$cohortId == target_id, "cohortEntries"][[1]]
+    
+    if (length(target_id) == 0 | target_id_entries_num <= 100 | is.null(input$KMPlot)){
       plot <- ggplot2::ggplot()
       return(plot)
     }
+    
+    targetIdTimeToEventData <- cohortTimeToEvent %>% dplyr::filter(targetId == target_id,
+                                                               databaseId == input$databasesTimeToEvent)
+    
+    accumulatedData <- data.frame(time = c(), surv = c(), n.censor = c(), 
+                                  n.event = c(), upper = c(), lower = c())
+    for(plotName in input$KMPlot){
+      oId <- KMIds$id[KMIds$name == plotName]
+      data <- targetIdTimeToEventData %>% dplyr::filter(outcomeId == oId)
+      if (length(data) > 0){
+        data <- as.data.frame(data[, c('time', 'surv', 'n.risk',  'n.censor', 'n.event', 'upper', 'lower')])
+        data$strata <- plotName
+      }
+      else{
+        data <- targetIdTimeToEventData %>% dplyr::filter(outcomeId == -1)
+      }
+      accumulatedData <- rbind(accumulatedData, data)
+    }
+    
+    plot <- ggsurvplot_core(accumulatedData,
+                            risk.table = "nrisk_cumcensor",
+                            conf.int = TRUE,
+                            legend.title = 'Event',
+                            ylim = c(min(accumulatedData$lower), 1),
+                            ggtheme = ggplot2::theme_bw()
+                  )
 
-    symptomsCohortId <- cohortStagingCount[cohortStagingCount$name == 'Symptoms', 'cohortId'][[1]]
-    deathCohortId <- cohortStagingCount[cohortStagingCount$name == 'Death', 'cohortId'][[1]]
-    treatmentCohortId <- cohortStagingCount[cohortStagingCount$name == 'Treatment Initiation', 'cohortId'][[1]]
-
-    targetIdTimeToEvent <- cohortTimeToEvent %>% dplyr::filter(targetId == target_id)
-    
-    if (length(symptomsCohortId)>0){
-      dataBoth <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == c(999999))
-    }
-    else{
-      dataBoth <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
-    }
-    if (length(symptomsCohortId)>0){
-      dataSymptoms <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == symptomsCohortId)
-    }
-    else{
-      dataSymptoms <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
-    }
-    if (length(deathCohortId)>0){
-      dataDeath <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == deathCohortId)
-    }
-    else{
-      dataDeath <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
-    }
-    if (length(treatmentCohortId)>0){
-      dataTreatment <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == treatmentCohortId)
-    }
-    else{
-      dataTreatment <- targetIdTimeToEvent %>% dplyr::filter(outcomeId == -1)
-    }
-    
-    plot <- ggplot2::ggplot()
-    plot <- plot + ggplot2::geom_line(data = dataDeath,
-                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
-                                      size = 2)
-    plot <- plot + ggplot2::geom_line(data = dataSymptoms,
-                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
-                                      size = 2)
-    plot <- plot + ggplot2::geom_line(data = dataBoth, 
-                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
-                                      size = 2)
-    plot <- plot + ggplot2::geom_line(data = dataTreatment, 
-                                      ggplot2::aes(x = time, y = survival, color = as.factor(outcomeId)),
-                                      size = 2)
-    plot <- plot + ggplot2::ylim(min(dataSymptoms$survival, dataDeath$survival, dataBoth$survival), 1)
-    plot <- plot + ggplot2::xlab('days')
-    plot <- plot + ggplot2::scale_color_hue(labels = c("Death", "Symptoms", "Death or Symptoms", "Treatment"))
-    plot <- plot + ggplot2::labs(color = "Time to Event \n")
-    
     return(plot)
   })
   
   
   
-
+  # Metrics Distribution
+  output$metricsHeader <- renderText({
+    paste(input$targetMetricsDistribution, input$strataMetricsDistribution, sep=" ")
+  })
+  
+  
+  getMetricsTable <- reactive ({
+    target_id <- cohortCount[cohortCount$databaseId %in% input$databasesMetricsDistribution 
+                             & cohortCount$cohortId %in% cohortIdMetricsDistribution(), ][[1]]
+    metricsTable <- metricsDistribution %>% dplyr::filter(cohortDefinitionId == target_id, 
+                                                          databaseId == input$databasesMetricsDistribution)
+    names(metricsTable)[names(metricsTable) == 'iqr'] <- 'IQR'
+    return(metricsTable[c('analysisName', 'IQR', 'minimum', 'q1', 'median', 'q3', 'maximum')])
+  })
+  
+  
+  output$metricsTable <- renderDataTable(
+    getMetricsTable()
+  )
+  
+  
   # Cohort Counts ---------
   output$borderCohortCounts <- renderUI({
     return(renderBorderTag())

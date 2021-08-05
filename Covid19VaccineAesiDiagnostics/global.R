@@ -1,5 +1,6 @@
 library(magrittr)
 
+
 source("R/StartUpScripts.R")
 source("R/DisplayFunctions.R")
 source("R/Tables.R")
@@ -32,7 +33,8 @@ if (defaultDatabaseMode) {
 appInformationText <- paste0(appInformationText, 
                              " mode. Application was last initated on ", 
                              lubridate::now(tzone = "EST"),
-                             " EST. Cohort Diagnostics website is at https://ohdsi.github.io/CohortDiagnostics/")
+                             " EST. Cohort Diagnostics website is at https://ohdsi.github.io/CohortDiagnostics/",
+							 "FOR REVIEW PURPOSES ONLY. DO NOT USE.")
 
 if (!exists("shinySettings")) {
   writeLines("Using default settings")
