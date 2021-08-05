@@ -21,7 +21,10 @@ if(useDatabase){
   
   con <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
                                  dbms = "postgresql",
-                                 server = Sys.getenv("shinydbServer"),
+                                 #server = Sys.getenv("shinydbServer"),
+                      server = paste(Sys.getenv("shinydbServer"),
+                            Sys.getenv("shinydbDatabase"),
+                            sep = "/"),
                                  # port = Sys.getenv("shinydbPort"),
                                  user = Sys.getenv("covid19vaccinationplpdbUser"),
                                  password = Sys.getenv("covid19vaccinationplpdbPw"))
