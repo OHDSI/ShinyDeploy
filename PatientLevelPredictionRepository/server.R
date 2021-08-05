@@ -97,7 +97,7 @@ server <- shiny::shinyServer(function(input, output, session) {
 
   output$modelCovariateInfo <- DT::renderDataTable(data.frame(covariates = nrow(covariateSummary()),
                                                               nonZeroCount = sum(covariateSummary()$covariateValue!=0),
-                                                              intercept = ifelse(class(plpResult()$model$model)=='character' || !'model '%in% names(plpResult()$model),0,plpResult()$model$model$coefficients[1])))
+                                                              intercept = ifelse(class(plpResult()$model$model)=='character' || !'model '%in% names(plpResult()$model),plpResult()$model$model$coefficient[1],plpResult()$model$model$coefficient[1])))
 
   # Download plpresult
   output$plpResult <- shiny::downloadHandler(
@@ -325,55 +325,55 @@ server <- shiny::shinyServer(function(input, output, session) {
     # validationTable <- shiny::reactive(getValSummary(con, mySchema, summaryTable[filterIndex(),'Analysis'][trueRow()]))
     validationTable <- shiny::reactive(getValSummary(con, mySchema, summaryTable[filterIndex(),'Analysis'][trueRow()]))
   }
-  output$validationTable <- DT::renderDataTable(dplyr::select(validationTable(),c(Analysis, Dev, Val, AUC)), rownames= FALSE)
   
-  #===============
-  # database info
-  #===============
-
-  valFilterIndex <- shiny::reactive({getFilter(validationTable(), input)})
-  valSelectedRow <- shiny::reactive({
-    if(is.null(input$validationTable_rows_selected[1])){
-      return(1)
-    }else{
-      # return(input$validationTable_rows_selected[1])
-      return(input$validationTable_rows_selected)
+  shiny::reactive({print(validationTable())})
+  #output$validationTable <- DT::renderDataTable(dplyr::select(validationTable(),c(Analysis, Dev, Val, AUC)), rownames= FALSE)
+  output$validationTable <- DT::renderDataTable({
+    if(nrow(validationTable())>0){
+      validationTable()[,c('Analysis','T','O', 'Val', 'AUC','calibrationInLarge', 'T Size', 'O Count','Val (%)')]
+    } else{
+      NULL
     }
-  })
-  
+  }, escape = FALSE, filter = 'top', rownames= FALSE ) #options = list(filter = 'top'))
+    
   # plots for the validation section.
   # should make this store the loaded ones to save time
   valtemplist <- list()
   valResult <- shiny::reactive({
     
-    valTable <- validationTable()
-    rows <- sort(valSelectedRow())
-    names <- valTable[rows, "Val"]
-    for (i in 1:length(rows)){
-      valtemplist[[rows[i]]] <- getPlpResult(result,validation,valTable, inputType, i, val = T, 
-                                       mySchema = mySchema, connectionDetails = connectionDetails)
+    valTable <- validationTable()[input$validationTable_rows_selected,]
+    if(nrow(valTable)>0){
+      names <- valTable[, "Val"]
+      Ts <- valTable[, "T"]
+      Os <- valTable[, "O"]
+      for (i in 1:nrow(valTable)){
+        valtemplist[[i]] <- getPlpResult(result,validation,valTable, inputType, i, val = T, 
+                                               mySchema = mySchema, connectionDetails = connectionDetails)
       }
-    list(results = valtemplist, databaseName = names)
-  })
-  
-  valPlots <- shiny::reactive({
-    results <- valResult()
-    if(is.null(valResult()$results[[1]]$performanceEvaluation)){
-      return(NULL)
-    } else{
-      valCalPlot <- plotCals(evaluationList = valResult()$results, 
-                             modelNames =  valResult()$databaseName)
-      valRocPlot <- plotRocs(evaluationList = valResult()$results, 
-                             modelNames = valResult()$databaseName)
-      list(valRocPlot= valRocPlot, valCalPlot = valCalPlot)
+      list(results = valtemplist, databaseName = names, Ts=Ts, Os=Os)
+    }else{
+      list(results = list(list()), databaseName = '', Ts='', Os='')
     }
   })
   
   output$valRoc <- shiny::renderPlot({
-    try(valPlots()$valRocPlot)
+    
+    if(is.null(valResult()$results[[1]]$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotRocs(evaluationList = valResult()$results, 
+                             modelNames = paste0(1:length(valResult()$Ts),':',substr(valResult()$Ts,1,5),'-',substr(valResult()$Os,1,5),'-', substr(valResult()$databaseName,1,5)))
+    }
   })
   output$valCal <- shiny::renderPlot({
-    try(valPlots()$valCalPlot)
+    
+    if(is.null(valResult()$results[[1]]$performanceEvaluation)){
+      return(NULL)
+    } else{
+      plotCals(evaluationList = valResult()$results, 
+                             modelNames =  paste0(1:length(valResult()$Ts),':',substr(valResult()$Ts,1,5),'-',substr(valResult()$Os,1,5),'-', substr(valResult()$databaseName,1,5)))
+    }
+    
   })
 
   #=======================
