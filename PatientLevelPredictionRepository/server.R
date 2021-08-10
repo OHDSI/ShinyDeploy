@@ -22,83 +22,69 @@ library(shinycssloaders)
 source("helpers.R")
 source("plots.R")
 
+source("modules/summaryTable.R")
+source("modules/covariateSummary.R")
+source("modules/settings.R")
+source("modules/cutoff.R")
+source("modules/discrimination.R")
+source("modules/calibration.R")
+source("modules/netBenefit.R")
+source("modules/validation.R")
+source("modules/download.R")
+
 server <- shiny::shinyServer(function(input, output, session) {
   session$onSessionEnded(shiny::stopApp)
-
-  filterIndex <- shiny::reactive({getFilter(summaryTable,input)})
   
-  # need to remove over columns:
-  output$summaryTable <- DT::renderDataTable(DT::datatable(summaryTable[filterIndex(),!colnames(summaryTable)%in%c('Analysis','analysisId','resultId','researcherId','addExposureDaysToStart','addExposureDaysToEnd', 'plpResultLocation', 'plpResultLoad')],
-                                                           rownames= FALSE, selection = 'single',
-                                             extensions = 'Buttons', options = list(
-                                               dom = 'Blfrtip' , 
-                                               buttons = c(I('colvis'), 'copy', 'excel', 'pdf' ),
-                                               scrollX = TRUE
-                                               #pageLength = 100, lengthMenu=c(10, 50, 100,200)
-                                             ),
-                                             
-                                             container = htmltools::withTags(table(
-                                               class = 'display',
-                                               thead(
-                                                 #tags$th(title=active_columns[i], colnames(data)[i])
-                                                 tr(apply(data.frame(colnames=c('Dev', 'Val', 'T','O', 'Model','Covariate setting',
-                                                                                'TAR', 'AUC', 'AUPRC', 
-                                                                                'T Size', 'O Count','Val (%)', 'O Incidence (%)', 'timeStamp'), 
-                                                                     labels=c('Database used to develop the model', 'Database used to evaluate model', 'Target population - the patients you want to predict risk for','Outcome - what you want to predict', 
-                                                                     'Model type','Id for the covariate/settings used','Time-at-risk period', 'Area under the reciever operating characteristics (test or validation)', 'Area under the precision recall curve (test or validation)',
-                                                                     'Target population size in the data', 'Outcome count in the data','The percentage of data used to evaluate the model', 'Percentage of target population that have outcome during time-at-risk','date and time of execution')), 1,
-                                                          function(x) th(title=x[2], x[1])))
-                                               )
-                                             ))
-                                                          
-                                             )
-  )
-                                             
   #=============
   # sidebar menu
   #=============
   if(useDatabase == F){
     output$sidebarMenu <- shinydashboard::renderMenu(shinydashboard::sidebarMenu(id ='menu',
-                                addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
-                                addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
-                                # addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
-                                addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
-                                # addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingsInfo"),
-                                addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
-                                addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
-                                addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
+                                                                                 addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Summary", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                                                                 # addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                                                 # addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingsInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Log", tabName = "Log", icon = shiny::icon("list")), "LogInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
     ))
   } else {
     output$sidebarMenu <- shinydashboard::renderMenu(shinydashboard::sidebarMenu(id ='menu',
-                               addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
-                               addInfo(shinydashboard::menuItem("Library", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
-                               # addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
-                               # addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
-                               # addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingsInfo"),
-                               addInfo(shinydashboard::menuItem("Upload", tabName = "Upload", icon = shiny::icon("upload")), "SettingsInfo"),
-                               addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
-                               addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
+                                                                                 addInfo(shinydashboard::menuItem("Description", tabName = "Description", icon = shiny::icon("home")), "DescriptionInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Library", tabName = "Summary", icon = shiny::icon("table")), "SummaryInfo"),
+                                                                                 # addInfo(shinydashboard::menuItem("Performance", tabName = "Performance", icon = shiny::icon("bar-chart")), "PerformanceInfo"),
+                                                                                 # addInfo(shinydashboard::menuItem("Model", tabName = "Model", icon = shiny::icon("clipboard")), "ModelInfo"),
+                                                                                 # addInfo(shinydashboard::menuItem("Settings", tabName = "Settings", icon = shiny::icon("cog")), "SettingsInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Upload", tabName = "Upload", icon = shiny::icon("upload")), "SettingsInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Data Info", tabName = "DataInfo", icon = shiny::icon("database")), "DataInfoInfo"),
+                                                                                 addInfo(shinydashboard::menuItem("Help", tabName = "Help", icon = shiny::icon("info")), "HelpInfo")
     ))
   }
   
+  # use the summary module
+  resultRow <- summaryServer('sumTab', summaryTable)
+  
   # this loads all the results
-  plpResult <- shiny::reactive({getPlpResult(result,validation,summaryTable, inputType, val = F, trueRow(),mySchema = mySchema, connectionDetails = connectionDetails)})
-
-  covariateSummary <- shiny::reactive({
-     if(input$singleView == "Model"){
-      covariateSummary <- loadCovSumFromDb(summaryTable[trueRow(),], mySchema, con)
-      return(covariateSummary)
-     }
-  }
-  )
-  # covariate table
-  output$modelView <- DT::renderDataTable(editCovariates(covariateSummary())$table,
-                                          colnames = editCovariates(covariateSummary())$colnames)
-
-  output$modelCovariateInfo <- DT::renderDataTable(data.frame(covariates = nrow(covariateSummary()),
-                                                              nonZeroCount = sum(covariateSummary()$covariateValue!=0),
-                                                              intercept = ifelse(class(plpResult()$model$model)=='character' || !'model '%in% names(plpResult()$model),plpResult()$model$model$coefficient[1],plpResult()$model$model$coefficient[1])))
-
+  plpResult <- shiny::reactive({getPlpResult(result,
+                                             validation,
+                                             summaryTable, 
+                                             inputType, 
+                                             val = F, 
+                                             resultRow,
+                                             mySchema = mySchema, 
+                                             connectionDetails = connectionDetails)})
+  
+  
+  covariateSummaryServer('covariateSummary',
+                         plpResult,
+                         summaryTable, 
+                         resultRow, 
+                         mySchema, 
+                         con,
+                         inputSingleView = input$singleView) 
+  
+  
   # Download plpresult
   output$plpResult <- shiny::downloadHandler(
     filename = function(){
@@ -108,402 +94,56 @@ server <- shiny::shinyServer(function(input, output, session) {
       saveRDS(plpResult(), file)
     }
   )
-
-  # Downloadable csv of model ----
-  output$downloadData <- shiny::downloadHandler(
-    filename = function(){'model.csv'},
-    content = function(file) {
-      write.csv(covariateSummary()[,c('covariateName','covariateValue','CovariateCount','CovariateMeanWithOutcome','CovariateMeanWithNoOutcome' )]
-                , file, row.names = FALSE)
-    }
-  )
-
-  # input tables
-  output$modelTable <- DT::renderDataTable(formatModSettings(plpResult()$model$modelSettings  ))
-  output$covariateTable <- DT::renderDataTable(formatCovSettings(plpResult()$model$metaData$call$covariateSettings))
-  output$populationTable <- DT::renderDataTable(formatPopSettings(plpResult()$model$populationSettings))
   
-  output$hpTable <- DT::renderDataTable(DT::datatable(as.data.frame(plpResult()$model$hyperParamSearch),
-                                        options = list(scrollX = TRUE)))
-  output$attritionTable <- DT::renderDataTable(plpResult()$inputSetting$populationSettings$attrition)
-
-  output$sideSettings  <- shiny::renderTable(t(data.frame(Development = as.character(summaryTable[trueRow(),'Dev']), 
-                                                        Validation = as.character(summaryTable[trueRow(),'Val']),
-                                                        Model = as.character(summaryTable[trueRow(),'Model']))), rownames = T, colnames = F)
+  # add settings module
+  setingsServer('settings', 
+                plpResult)
   
-  output$sideSettings2  <- shiny::renderTable(t(data.frame(T = paste0(substring(as.character(summaryTable[trueRow(),'T']),0,25),'...') , 
-                                                           O = paste0(substring(as.character(summaryTable[trueRow(),'O']),0,25),'...')  )), 
-                                              rownames = T, colnames = F)
+  # add cutoff module
+  cutoffServer('cutoff', 
+               plpResult)
   
-  
-  # PLOTTING FUNCTION
-  plotters <- shiny::reactive({
-    
-    eval <- plpResult()$performanceEvaluation
-    if(is.null(eval)){return(NULL)}
-    
-    calPlot <- NULL 
-    rocPlot <- NULL
-    prPlot <- NULL
-    f1Plot <- NULL
-    
-    if(!is.null(eval)){
-      #intPlot <- plotShiny(eval, input$slider1) -- RMS
-      intPlot <- plotShiny(eval)
-      rocPlot <- intPlot$roc
-      prPlot <- intPlot$pr
-      f1Plot <- intPlot$f1score
-      
-      list(rocPlot= rocPlot,
-           prPlot=prPlot, f1Plot=f1Plot)
-    }
-  })
-  
-  
-  performance <- shiny::reactive({
-    
-    eval <- plpResult()$performanceEvaluation
-    
-    if(is.null(eval)){
-      return(NULL)
-    } else {
-      intPlot <- getORC(eval, input$slider1)
-      threshold <- intPlot$threshold
-      prefthreshold <- intPlot$prefthreshold
-      TP <- intPlot$TP
-      FP <- intPlot$FP
-      TN <- intPlot$TN
-      FN <- intPlot$FN
-    }
-    
-    twobytwo <- as.data.frame(matrix(c(FP,TP,TN,FN), byrow=T, ncol=2))
-    colnames(twobytwo) <- c('Ground Truth Negative','Ground Truth Positive')
-    rownames(twobytwo) <- c('Predicted Positive','Predicted Negative')
-    
-    list(threshold = threshold, 
-         prefthreshold = prefthreshold,
-         twobytwo = twobytwo,
-         Incidence = (TP+FN)/(TP+TN+FP+FN),
-         Threshold = threshold,
-         Sensitivity = TP/(TP+FN),
-         Specificity = TN/(TN+FP),
-         PPV = TP/(TP+FP),
-         NPV = TN/(TN+FN) )
-  })
-  
-  # update threshold slider based on results size
-  shiny::observe({ 
-    if(!is.null(plpResult()$performanceEvaluation)){
-      n <- nrow(plpResult()$performanceEvaluation$thresholdSummary[plpResult()$performanceEvaluation$thresholdSummary$Eval%in%c('test','validation'),])
-    }else{
-      n <- 100
-    }
-
-      shiny::updateSliderInput(session, inputId = "slider1", 
-                        min = 1, max = n, value = round(n/2))
-  })
-  
-  
-  # preference plot
-  output$prefdist <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPreferencePDF(plpResult()$performanceEvaluation) #+ 
-        # ggplot2::geom_vline(xintercept=plotters()$prefthreshold) -- RMS
-    }
-  })
-  
-  output$preddist <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPredictedPDF(plpResult()$performanceEvaluation) # + 
-        #ggplot2::geom_vline(xintercept=plotters()$threshold) -- RMS     
-    }
-  })
-  
-  output$box <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotPredictionDistribution(plpResult()$performanceEvaluation)
-    }
-  })
+  # discrimination module 
+  discriminationServer('discrimination', 
+                       plpResult)
   
   #=======================
   # cal for different evals
+  calibrationServer('calibration', 
+                    plpResult) 
   
-  output$recalSelect = renderUI({
-    types <- unique(plpResult()$performanceEvaluation$calibrationSummary$Eval)
-    selectInput('recal', 'Type:', types)
-  })
   
-  output$calTable <- shiny::renderTable({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      data <- plpResult()$performanceEvaluation$evaluationStatistics
-      data <- as.data.frame(data)
-      data$Metric <- as.character(data$Metric)
-      data$Value <- as.double(as.character(data$Value))
-      ind <- data$Metric %in% c('CalibrationIntercept', 
-                        'CalibrationSlope',
-                        'CalibrationInLarge',
-                        'Emean',
-                         'E90',
-                         'Emax', 
-                        'correctionFactor',
-                        'adjustGradient',
-                        'adjustIntercept')
-      
-      result <- reshape2::dcast(data[ind,],
-                      Eval ~ Metric, value.var = 'Value')
-      row.names(result) <- NULL
-      result
-      
-    }
-  })
+  nbServer('netBenefit', plpResult) 
   
-  output$cal <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotSparseCalibration2(evaluation = plpResult()$performanceEvaluation, 
-                             type = input$recal)
-    }
-  })
-  
-  output$demo <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      tryCatch(plotDemographicSummary(evaluation = plpResult()$performanceEvaluation, 
-                                      type = input$recal),
-               error= function(cond){return(NULL)})
-    }
-  })
-  
-  #=======================
-  # NETBENEFIT
-  #=======================
-  
-  output$nbSelect = renderUI({
-    types <- unique(plpResult()$performanceEvaluation$thresholdSummary$Eval)
-    selectInput('nbSelect', 'Type:', types)
-  })
-  
-  output$nbTable <- shiny::renderTable({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      result <- extractNetBenefit(performanceEvaluation = plpResult()$performanceEvaluation, 
-                        type=input$nbSelect)
-      unique(result)
-    }
-  })
-  
-  output$nbPlot <- shiny::renderPlot({
-    if(is.null(plpResult()$performanceEvaluation)){
-      return(NULL)
-    } else{
-      result <- extractNetBenefit(performanceEvaluation = plpResult()$performanceEvaluation, 
-                                  type=input$nbSelect)
-      result <- unique(result)
-      plot(result$pt, result$netBenefit)
-    }
-  })
   
   #=======================
   # validation table and selection
   #=======================
-  if (useDatabase == F){
-  validationTable <- shiny::reactive(dplyr::filter(summaryTable[filterIndex(),],
-                                                   Analysis == summaryTable[filterIndex(),'Analysis'][trueRow()]))
-  }
-  else{
-    # validationTable <- shiny::reactive(getValSummary(con, mySchema, summaryTable[filterIndex(),'Analysis'][trueRow()]))
-    validationTable <- shiny::reactive(getValSummary(con, mySchema, summaryTable[filterIndex(),'Analysis'][trueRow()]))
-  }
+  validationServer('validation', 
+                   result,
+                   validation,
+                   plpResult = plpResult,
+                   inputType = inputType,
+                   useDatabase = T,
+                   summaryTable = summaryTable,
+                   resultRow = resultRow,
+                   con = con, 
+                   mySchema = mySchema,
+                   connectionDetails = connectionDetails) 
   
-  shiny::reactive({print(validationTable())})
-  #output$validationTable <- DT::renderDataTable(dplyr::select(validationTable(),c(Analysis, Dev, Val, AUC)), rownames= FALSE)
-  output$validationTable <- DT::renderDataTable({
-    if(nrow(validationTable())>0){
-      validationTable()[,c('Analysis','T','O', 'Val', 'AUC','calibrationInLarge', 'T Size', 'O Count','Val (%)')]
-    } else{
-      NULL
-    }
-  }, escape = FALSE, filter = 'top', rownames= FALSE ) #options = list(filter = 'top'))
-    
-  # plots for the validation section.
-  # should make this store the loaded ones to save time
-  valtemplist <- list()
-  valResult <- shiny::reactive({
-    
-    valTable <- validationTable()[input$validationTable_rows_selected,]
-    if(nrow(valTable)>0){
-      names <- valTable[, "Val"]
-      Ts <- valTable[, "T"]
-      Os <- valTable[, "O"]
-      for (i in 1:nrow(valTable)){
-        valtemplist[[i]] <- getPlpResult(result,validation,valTable, inputType, i, val = T, 
-                                               mySchema = mySchema, connectionDetails = connectionDetails)
-      }
-      list(results = valtemplist, databaseName = names, Ts=Ts, Os=Os)
-    }else{
-      list(results = list(list()), databaseName = '', Ts='', Os='')
-    }
-  })
   
-  output$valRoc <- shiny::renderPlot({
-    
-    if(is.null(valResult()$results[[1]]$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotRocs(evaluationList = valResult()$results, 
-                             modelNames = paste0(1:length(valResult()$Ts),':',substr(valResult()$Ts,1,5),'-',substr(valResult()$Os,1,5),'-', substr(valResult()$databaseName,1,5)))
-    }
-  })
-  output$valCal <- shiny::renderPlot({
-    
-    if(is.null(valResult()$results[[1]]$performanceEvaluation)){
-      return(NULL)
-    } else{
-      plotCals(evaluationList = valResult()$results, 
-                             modelNames =  paste0(1:length(valResult()$Ts),':',substr(valResult()$Ts,1,5),'-',substr(valResult()$Os,1,5),'-', substr(valResult()$databaseName,1,5)))
-    }
-    
-  })
-
+  downloadServer('download')
   #=======================
   # get researcher info
   #=======================
   output$researcherInfo <- shiny::renderTable(plpResult()$researcherInfo)
-
-  # Do the tables and plots:
   
-  output$performance <- shiny::renderTable(performance()$performance, 
-                                           rownames = F, digits = 3)
-  output$twobytwo <- shiny::renderTable(performance()$twobytwo, 
-                                        rownames = T, digits = 0)
-  
-  
-  output$threshold <- shiny::renderText(format(performance()$threshold,digits=5))
-  
-  output$roc <- plotly::renderPlotly({
-    plotters()$rocPlot
-  })
-  
-  output$pr <- plotly::renderPlotly({
-    plotters()$prPlot
-  })
-  output$f1 <- plotly::renderPlotly({
-    plotters()$f1Plot
-  })
-  
-  
-  
-  
-  
-  
-  # covariate model plots
-  covs <- shiny::reactive({
-    if(is.null(covariateSummary()))
-      return(NULL)
-    plotCovariateSummary(formatCovariateTable(covariateSummary()))
-  })
-  
-  output$covariateSummaryBinary <- plotly::renderPlotly({ covs()$binary })
-  output$covariateSummaryMeasure <- plotly::renderPlotly({ covs()$meas })
   
   # LOG
   output$log <- shiny::renderText( paste(plpResult()$log, collapse="\n") )
   
-  # dashboard
-  
-  output$performanceBoxIncidence <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "Incidence", paste0(round(performance()$Incidence*100, digits=3),'%'), icon = shiny::icon("ambulance"),
-      color = "green"
-    )
-  })
-  
-  output$performanceBoxThreshold <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "Threshold", format((performance()$Threshold), scientific = F, digits=3), icon = shiny::icon("edit"),
-      color = "yellow"
-    )
-  })
-  
-  output$performanceBoxPPV <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "PPV", paste0(round(performance()$PPV*1000)/10, "%"), icon = shiny::icon("thumbs-up"),
-      color = "orange"
-    )
-  })
-  
-  output$performanceBoxSpecificity <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "Specificity", paste0(round(performance()$Specificity*1000)/10, "%"), icon = shiny::icon("bullseye"),
-      color = "purple"
-    )
-  })
-  
-  output$performanceBoxSensitivity <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "Sensitivity", paste0(round(performance()$Sensitivity*1000)/10, "%"), icon = shiny::icon("low-vision"),
-      color = "blue"
-    )
-  })
-  
-  output$performanceBoxNPV <- shinydashboard::renderInfoBox({
-    shinydashboard::infoBox(
-      "NPV", paste0(round(performance()$NPV*1000)/10, "%"), icon = shiny::icon("minus-square"),
-      color = "black"
-    )
-  })
-  
-  
-  # SELECTING RESULTS - for PERFORMANCE/MODEl
-    trueRow <- shiny::reactiveVal(value = 1)
-  
-  # # row selection updates dropdowns
-  shiny::observeEvent(input$summaryTable_rows_selected,{
-    #selectedRow(input$summaryTable_rows_selected)
-    oldTrueRow <- trueRow()
-    trueRow(filterIndex()[input$summaryTable_rows_selected])
-    if (oldTrueRow != trueRow()){
-        shiny::updateSelectInput(session, "selectResult",
-                           selected = myResultList[[trueRow()]]
-                           )
-    }
-  })
-  # 
-  #drop downs update row and other drop down
-  sumProxy <- DT::dataTableProxy("summaryTable", session = session)
-
-  shiny::observeEvent(input$selectResult,{
-    val <- which(myResultList==input$selectResult)
-    if (val != trueRow()){
-        trueRow(val)
-      }
-    DT::selectRows(sumProxy, which(filterIndex()==val)) # reset filter here?
-  })
-  
-
   
   # HELPER INFO
-  showInfoBox <- function(title, htmlFileName) {
-    shiny::showModal(shiny::modalDialog(
-      title = title,
-      easyClose = TRUE,
-      footer = NULL,
-      size = "l",
-      shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
-    ))
-  }
-  
   
   observeEvent(input$DescriptionInfo, {
     showInfoBox("Description", "html/Description.html")
@@ -530,94 +170,5 @@ server <- shiny::shinyServer(function(input, output, session) {
     showInfoBox("HelpInfo", "html/Help.html")
   })
   
-  
-  observeEvent(input$rocHelp, {
-    showInfoBox("ROC Help", "html/rocHelp.html")
-  })
-  observeEvent(input$prcHelp, {
-    showInfoBox("PRC Help", "html/prcHelp.html")
-  })
-  observeEvent(input$f1Help, {
-    showInfoBox("F1 Score Plot Help", "html/f1Help.html")
-  })
-  observeEvent(input$boxHelp, {
-    showInfoBox("Box Plot Help", "html/boxHelp.html")
-  })
-  observeEvent(input$predDistHelp, {
-    showInfoBox("Predicted Risk Distribution Help", "html/predDistHelp.html")
-  })
-  observeEvent(input$prefDistHelp, {
-    showInfoBox("Preference Score Distribution Help", "html/prefDistHelp.html")
-  })
-  observeEvent(input$calHelp, {
-    showInfoBox("Calibration Help", "html/calHelp.html")
-  })
-  observeEvent(input$demoHelp, {
-    showInfoBox("Demographic Help", "html/demoHelp.html")
-  })
-
-  
-  ### DOWNLOAD
-  
-  downLoadSkeleton <- function(outputFolder,
-                               packageName,
-                               skeletonType = 'SkeletonPredictionStudy'){
-    download.file(url = paste0("https://github.com/ohdsi/",skeletonType,"/archive/master.zip")
-                  , destfile = file.path(outputFolder, "package.zip"))
-    # unzip the .zip file
-    unzip(zipfile = file.path(outputFolder, "package.zip"), exdir = outputFolder)
-    file.rename( from = file.path(outputFolder, paste0(skeletonType, '-master')),
-                 to = file.path(outputFolder,  packageName))
-    unlink(file.path(outputFolder, "package.zip"))
-    return(file.path(outputFolder, packageName))
-  }
-  
-  # change name
-  replaceName <- function(packageLocation = getwd(),
-                          packageName = 'ValidateRCRI',
-                          skeletonType = 'SkeletonPredictionValidationStudy'){
-    
-    filesToRename <- c(paste0(skeletonType,".Rproj"),paste0("R/",skeletonType,".R"))
-    for(f in filesToRename){
-      ParallelLogger::logInfo(paste0('Renaming ', f))
-      fnew <- gsub(skeletonType, packageName, f)
-      file.rename(from = file.path(packageLocation,f), to = file.path(packageLocation,fnew))
-    }
-    
-    filesToEdit <- c(file.path(packageLocation,"DESCRIPTION"),
-                     file.path(packageLocation,"README.md"),
-                     file.path(packageLocation,"extras/CodeToRun.R"),
-                     dir(file.path(packageLocation,"R"), full.names = T))
-    for( f in filesToEdit ){
-      ParallelLogger::logInfo(paste0('Editing ', f))
-      x <- readLines(f)
-      y <- gsub( skeletonType, packageName, x )
-      cat(y, file=f, sep="\n")
-      
-    }
-    
-    return(packageName)
-  }
-  
-  # Downloadable model dev
-  observeEvent(input$downloadPackageDev, {
-
-    dir.create(file.path('/Users/jreps/Downloads', 'devPackage'), recursive = T)
-    #Hydra::hydrate(specifications = specifications, outputFolder = outputPackageLocation)
-    createPackage <- tryCatch({downLoadSkeleton(outputFolder = file.path('/Users/jreps/Downloads'),
-                                                packageName = 'devPackage',
-                                                skeletonType = 'SkeletonPredictionStudy')#'SkeletonPredictionValidationStudy'
-    }, error = function(e){return(NULL)})
-    
-    if(!is.null(createPackage)){
-      createPackage <- tryCatch({replaceName(packageLocation = file.path('/Users/jreps/Downloads', 'devPackage'),
-                                             packageName = 'devPackage',
-                                             skeletonType = 'SkeletonPredictionStudy')},
-                                error = function(e){return(NULL)})
-    }
-    
-  
-  })
-  
-
+ 
 })

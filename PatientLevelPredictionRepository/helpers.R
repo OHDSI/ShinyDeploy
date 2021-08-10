@@ -1,41 +1,32 @@
-# this function finds the filter index
-getFilter <- function(summaryTable,input){
-  ind <- 1:nrow(summaryTable)
-  if(input$devDatabase!='All'){
-    ind <- intersect(ind,which(as.character(summaryTable$Dev)==input$devDatabase))
-  }
-  if(input$valDatabase!='All'){
-    ind <- intersect(ind,which(as.character(summaryTable$Val)==input$valDatabase))
-  }
-  if(input$T!='All'){
-    ind <- intersect(ind,which(summaryTable$T==input$T))
-  }
-  if(input$O!='All'){
-    ind <- intersect(ind,which(summaryTable$O==input$O))
-  }
-  if(input$modelSettingName!='All'){
-    ind <- intersect(ind,which(as.character(summaryTable$Model)==input$modelSettingName))
-  }
-  if(input$TAR!='All'){
-    ind <- intersect(ind,which(as.character(summaryTable$TAR)==input$TAR))
-  }
-
-  
-  return(ind)
-}
-
 # need to add mySchema and connectionDetails to input
-getPlpResult <- function(result, validation,summaryTable, inputType,trueRow, val = F, mySchema = NULL, connectionDetails = NULL){
+getPlpResult <- function(result, 
+                         validation,
+                         summaryTable, 
+                         inputType,
+                         resultRow, 
+                         val = F, 
+                         mySchema = NULL, 
+                         connectionDetails = NULL){
   
+  if(class(resultRow)%in%c("integer","numeric")){
+    ind <- resultRow
+  } else if(length(resultRow())>0){
+    ind <- resultRow()
+  } else{
+    ind <- NULL
+    }
+
+  if(!is.null(ind)){
+    
   if(result == 'database'){
-    tempResult <- loadPlpFromDb(summaryTable[trueRow,], mySchema, con, val = val)
+    tempResult <- loadPlpFromDb(summaryTable[ind,], mySchema, con, val = val)
     return(tempResult)
   }
   
   
   if(inputType == 'plpResult'){
-    i <- trueRow
-    if(i ==1){
+    i <- resultRow
+    if(i == 1){
       tempResult <- result
       tempResult$type <- 'test'
     }else{
@@ -49,8 +40,8 @@ getPlpResult <- function(result, validation,summaryTable, inputType,trueRow, val
     tempResult$log <- 'log not available'
   }else if( inputType == 'file') {
     tempResult <- NULL
-    loc <- summaryTable[trueRow,]$plpResultLocation
-    locLoaderFunc <- summaryTable[trueRow,]$plpResultLoad
+    loc <- summaryTable[ind,]$plpResultLocation
+    locLoaderFunc <- summaryTable[ind,]$plpResultLoad
     logLocation <- gsub('plpResult','plpLog.txt', gsub('validationResult.rds','plpLog.txt',gsub('plpResult.rds','plpLog.txt', as.character(loc))))
     if(file.exists(logLocation)){
       txt <- readLines(logLocation)
@@ -66,6 +57,9 @@ getPlpResult <- function(result, validation,summaryTable, inputType,trueRow, val
     stop('Incorrect class')
   }
   return(tempResult)
+  } else{
+    return(NULL)
+  }
 }
 
 
@@ -161,3 +155,12 @@ addInfo <- function(item, infoId) {
   return(item)
 }
     
+showInfoBox <- function(title, htmlFileName) {
+  shiny::showModal(shiny::modalDialog(
+    title = title,
+    easyClose = TRUE,
+    footer = NULL,
+    size = "l",
+    shiny::HTML(readChar(htmlFileName, file.info(htmlFileName)$size) )
+  ))
+}
