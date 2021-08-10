@@ -193,3 +193,4 @@ cohortInfo <- cohortInfo[order(cohortInfo$name),]
 dbTermsOfUse <- readr::read_csv("./databaseTermsOfUse.csv", col_types = readr::cols())
 colnames(dbTermsOfUse) <- SqlRender::snakeCaseToCamelCase(colnames(dbTermsOfUse))
 database <- dplyr::left_join(database, dbTermsOfUse, by="databaseId")
+database <- database[order(database$databaseId),]
