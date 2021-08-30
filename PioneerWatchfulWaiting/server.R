@@ -326,9 +326,16 @@ shinyServer(function(input, output, session) {
       }
       accumulatedData <- rbind(accumulatedData, data)
     }
+
+    color_map <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    names(color_map) <- KMIds$name
+   
     
     plot <- ggsurvplot_core(accumulatedData,
                             risk.table = "nrisk_cumcensor",
+                            palette = color_map,
+                            legend.labs = input$KMPlot,
+                            cmap = color_map,
                             conf.int = TRUE,
                             legend.title = 'Event',
                             ylim = c(min(accumulatedData$lower), 1),
