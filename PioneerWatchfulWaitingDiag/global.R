@@ -164,7 +164,8 @@ if (databaseMode) {
       fileExists <- aws.s3::head_object(serverDataFile, bucket = serverDataFolder)
       if (fileExists) {
         writeLines("Using merged data detected in S3 Bucket")
-        aws.s3::s3load(serverDataFile, bucket = serverDataFolder)
+        dataSource <-
+          createS3DataSource(serverDataFile, serverDataFolder, envir = .GlobalEnv)
       } else {
         stop(paste0("Could not find ", dataFile, " in S3 Bucket"))
       }

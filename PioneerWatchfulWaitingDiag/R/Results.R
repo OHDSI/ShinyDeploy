@@ -9,6 +9,10 @@ createFileDataSource <- function(premergedDataFile, envir = new.env()) {
   return(envir)
 }
 
+createS3DataSource <- function(premergedDataFile, bucketFolder, envir = new.env()) {
+  aws.s3::s3load(premergedDataFile, bucket = bucketFolder, envir = envir)
+  return(envir)
+}
 
 renderTranslateQuerySql <- function(connection, sql, ..., snakeCaseToCamelCase = FALSE) {
   if (is(connection, "Pool")) {
