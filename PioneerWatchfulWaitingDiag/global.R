@@ -9,6 +9,8 @@ source("R/Results.R")
 # Settings when running on server:
 defaultLocalDataFolder <- "data"
 defaultLocalDataFile <- "PreMerged.RData"
+serverDataFolder <- Sys.getenv("OHDSI_SHINY_DATA_BUCKET")
+serverDataFile <- "PioneerWatchfulWaitingDiag/PreMerged.RData"
 
 connectionPool <- NULL
 defaultServer <- Sys.getenv("shinydbServer")
@@ -20,7 +22,7 @@ defaultResultsSchema <- 'thrombosisthrombocytopenia'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
 
-defaultDatabaseMode <- TRUE # Use file system if FALSE
+defaultDatabaseMode <- FALSE # Use file system if FALSE
 
 appInformationText <- "V 2.1"
 appInformationText <- "Powered by OHDSI Cohort Diagnostics application - Version 2.1. This app is working in"
@@ -145,11 +147,25 @@ if (databaseMode) {
     )
 } else {
   localDataPath <- file.path(dataFolder, defaultLocalDataFile)
-  if (!file.exists(localDataPath)) {
-    stop(sprintf("Local data file %s does not exist.", localDataPath))
+  if (file.exists(localDataPath)) {
+    dataSource <-
+      createFileDataSource(localDataPath, envir = .GlobalEnv)
   }
-  dataSource <-
-    createFileDataSource(localDataPath, envir = .GlobalEnv)
+  else {
+    if (is_installed("aws.s3") && is_installed("aws.ec2metadata")) {
+      library("aws.ec2metadata") # not sure if this is necessary, copied it from the results app
+      fileExists <- aws.s3::head_object(dataFile, bucket = dataFolder)
+      if (fileExists) {
+        writeLines("Using merged data detected in S3 Bucket")
+        aws.s3::s3load(serverDataFile, bucket = serverDataFolder)
+      } else {
+        stop(paste0("Could not find ", dataFile, " in S3 Bucket"))
+      }
+    }
+    else {
+      stop(sprintf("Local data file %s does not exist and S3 packages are not installed.", localDataPath))
+    }
+  }
 }
 
 if (exists("database")) {
