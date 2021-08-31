@@ -161,7 +161,7 @@ if (databaseMode) {
   else {
     if (is_installed("aws.s3") && is_installed("aws.ec2metadata")) {
       library("aws.ec2metadata") # not sure if this is necessary, copied it from the results app
-      fileExists <- aws.s3::head_object(dataFile, bucket = dataFolder)
+      fileExists <- aws.s3::head_object(serverDataFile, bucket = serverDataFolder)
       if (fileExists) {
         writeLines("Using merged data detected in S3 Bucket")
         aws.s3::s3load(serverDataFile, bucket = serverDataFolder)
