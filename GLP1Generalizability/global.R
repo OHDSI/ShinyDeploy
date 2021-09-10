@@ -4,6 +4,7 @@ source("PlotsAndTables.R")
 shinySettings <- list(dataFolder = "shinyDataSmall", blind = FALSE)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
+load(file.path(dataFolder, "PreMergedShinyData.RData"))
 connection <- NULL
 positiveControlOutcome <- NULL
 
