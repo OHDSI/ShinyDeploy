@@ -1404,6 +1404,35 @@ shiny::shinyServer(function(input, output, session) {
     return(data)
   })
   
+  ##getConceptSetSynonyms-----
+  getConceptSetSynonyms <- shiny::reactive(x = {
+    data <- getMetadataForConceptId()
+    
+    if (!doesObjectHaveData(data)) {
+      return(NULL)
+    }
+    
+    tags$table(
+      tags$tr(
+        tags$td(
+          tags$h4(paste0(
+            data$concept %>% 
+              dplyr::filter(.data$conceptId == activeSelected()$conceptId) %>% 
+              dplyr::pull(.data$conceptName),
+            " (",
+            activeSelected()$conceptId,
+            ")"
+          ))
+        )
+      ),
+      tags$tr(
+        tags$td(
+          tags$h6(data$conceptSynonym$conceptSynonymName %>% unique() %>% sort() %>% paste0(collapse = ", "))
+        )
+      )
+    )
+  })
+  
   ##Inclusion rule ----
   ###getDatabaseIdFromSelectedRowInCohortCountTableTarget----
   getDatabaseIdFromSelectedRowInCohortCountTableTarget <-
@@ -1912,6 +1941,9 @@ shiny::shinyServer(function(input, output, session) {
         cohortIds = activeSelected()$cohortId,
         conceptIds = activeSelected()$conceptId
       )
+    if (!doesObjectHaveData(data)) {
+      return(NULL)
+    }
     if (!doesObjectHaveData(data$databaseConceptCount)) {
       return(NULL)
     }
@@ -3088,31 +3120,11 @@ shiny::shinyServer(function(input, output, session) {
   
   ##output:: conceptSetBowserConceptSynonymName
   output$conceptSetBowserConceptSynonymName <- shiny::renderUI(expr = {
-     data <- getMetadataForConceptId()
-    
-    if (!doesObjectHaveData(data)) {
-      return(NULL)
-    }
-    
-    tags$table(
-      tags$tr(
-        tags$td(
-          tags$h4(paste0(
-            data$concept %>% 
-              dplyr::filter(.data$conceptId == activeSelected()$conceptId) %>% 
-              dplyr::pull(.data$conceptName),
-            " (",
-            activeSelected()$conceptId,
-            ")"
-          ))
-        )
-      ),
-      tags$tr(
-        tags$td(
-          tags$h6(data$conceptSynonym$conceptSynonymName %>% unique() %>% sort() %>% paste0(collapse = ", "))
-        )
-      )
-    )
+     data <- getConceptSetSynonyms()
+     if (!doesObjectHaveData(data)) {
+       return(NULL)
+     }
+     return(data)
   })
   
   ##output: conceptBrowserTable----
@@ -3204,7 +3216,8 @@ shiny::shinyServer(function(input, output, session) {
                     "records" = .data$conceptCount)
     table <-
       getSketchDesignForTablesInCohortDefinitionTab(conceptRelationshipTable,
-                                                    databaseCount = databaseCount)
+                                                    databaseCount = databaseCount,
+                                                    numberOfColums = 6)
     return(table)
   })
   
@@ -3226,6 +3239,7 @@ shiny::shinyServer(function(input, output, session) {
                        conceptId),
       value = 0
     )
+    
     data <- getMetadataForConceptId()
     validate(need(
       doesObjectHaveData(data),
@@ -3240,7 +3254,8 @@ shiny::shinyServer(function(input, output, session) {
                     "records" = .data$conceptCount)
     table <-
       getSketchDesignForTablesInCohortDefinitionTab(conceptMapping,
-                                                    databaseCount = databaseCount)
+                                                    databaseCount = databaseCount,
+                                                    numberOfColums = 3)
     return(table)
   })
   
@@ -4422,12 +4437,10 @@ shiny::shinyServer(function(input, output, session) {
     ))
     tsibbleDataFromSTLModel <- getStlModelOutputForTsibbleDataValueFields(tsibbleData = data, 
                                                       valueFields = titleCaseToCamelCase(input$timeSeriesPlotFilters))
-    browser()
     plot <- plotTimeSeriesFromTsibble(
       tsibbleData = tsibbleDataFromSTLModel,
       plotFilters = titleCaseToCamelCase(input$timeSeriesPlotFilters),
       indexAggregationType = input$timeSeriesAggregationPeriodSelection,
-      timeSeriesStatistics = input$timeSeriesStatistics,
       timeSeriesPeriodRangeFilter = input$timeSeriesPeriodRangeFilter
     )
     
@@ -5126,12 +5139,6 @@ shiny::shinyServer(function(input, output, session) {
           value = "conceptSetBrowser",
           shiny::conditionalPanel(
             condition = "output.isConceptIdFromTargetOrComparatorConceptTableSelected==true",
-            tags$h4(paste0(
-              data$conceptName,
-              " (",
-              data$conceptId,
-              ")"
-            )),
             tags$table(width = "100%",
                        tags$tr(
                          tags$td(
@@ -5207,9 +5214,27 @@ shiny::shinyServer(function(input, output, session) {
         )
         inc = inc + 1
       }
-      
-      do.call(tabsetPanel, panels)
+      shiny::conditionalPanel(
+        condition = "output.isConceptIdFromTargetOrComparatorConceptTableSelected==true",
+        shinydashboard::box(
+          title = shiny::htmlOutput(outputId = "conceptSetSynonymsForIndexEventBreakdown"),
+          width = NULL,
+          status = NULL,
+          collapsible = TRUE,
+          collapsed = TRUE,
+          do.call(tabsetPanel, panels)
+        )
+      )
     })
+  
+  ##output: conceptSetSynonymsForIndexEventBreakdown----
+  output$conceptSetSynonymsForIndexEventBreakdown <- shiny::renderUI(expr = {
+    data <- getConceptSetSynonyms()
+    if (!doesObjectHaveData(data)) {
+      return(NULL)
+    }
+    return(data)
+  })
   
   ##output: conceptBrowserTableForIndexEvent----
   output$conceptBrowserTableForIndexEvent <- DT::renderDT(expr = {

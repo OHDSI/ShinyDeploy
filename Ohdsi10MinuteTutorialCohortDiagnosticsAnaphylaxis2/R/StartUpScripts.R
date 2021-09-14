@@ -330,7 +330,9 @@ consolidationOfSelectedFieldValues <- function(input,
 
 #takes data as input and returns data table with sketch design
 #used in resolved, excluded and orphan concepts in cohort definition tab
-getSketchDesignForTablesInCohortDefinitionTab <- function(data, databaseCount) {
+getSketchDesignForTablesInCohortDefinitionTab <- function(data, 
+                                                          databaseCount,
+                                                          numberOfColums = 4) {
   colnamesInData <- colnames(data)
   colnamesInData <- colnamesInData[!colnamesInData %in% "databaseId"]
   colnamesInData <- colnamesInData[!colnamesInData %in% "persons"]
@@ -402,7 +404,7 @@ getSketchDesignForTablesInCohortDefinitionTab <- function(data, databaseCount) {
     scrollX = TRUE,
     scrollY = "20vh",
     columnDefs = list(truncateStringDef(1, 50),
-                      minCellCountDef(4 + (1:(
+                      minCellCountDef(numberOfColums + (1:(
                         2 * length(databaseIds)
                       ))))
   )
@@ -456,7 +458,7 @@ getSketchDesignForTablesInCohortDefinitionTab <- function(data, databaseCount) {
   if (!is.null(maxSubject)) {
     dataTable <- DT::formatStyle(
       table = dataTable,
-      columns =  5 + 1:(length(databaseIds) * 2),
+      columns =  (numberOfColums + 1) + 1:(length(databaseIds) * 2),
       background = DT::styleColorBar(c(0, maxSubject), "lightblue"),
       backgroundSize = "98% 88%",
       backgroundRepeat = "no-repeat",
@@ -466,7 +468,7 @@ getSketchDesignForTablesInCohortDefinitionTab <- function(data, databaseCount) {
   if (!is.null(maxCount)) {
     dataTable <- DT::formatStyle(
       table = dataTable,
-      columns =  5 + 1:(length(databaseIds) * 2),
+      columns =  (numberOfColums + 1) + 1:(length(databaseIds) * 2),
       background = DT::styleColorBar(c(0, maxCount), "lightblue"),
       backgroundSize = "98% 88%",
       backgroundRepeat = "no-repeat",
@@ -506,7 +508,7 @@ getStlModelOutputForTsibbleDataValueFields <- function(tsibbleData, valueFields 
     if (tsibble::is_yearmonth(modelData[[valueField]]$periodBegin)) {
       modelData[[valueField]] <- modelData[[valueField]] %>% 
         dplyr::mutate(periodDate = as.Date(.data$periodBegin))
-    } else if (is.double(modelData[[valueField]]$periodBegin)) {
+    } else if (is.double(modelData[[valueField]]$periodBegin) || is.integer(modelData[[valueField]]$periodBegin)) {
       modelData[[valueField]] <- modelData[[valueField]] %>% 
         dplyr::mutate(periodDate = as.Date(paste0(.data$periodBegin, "-01-01")))
     }
