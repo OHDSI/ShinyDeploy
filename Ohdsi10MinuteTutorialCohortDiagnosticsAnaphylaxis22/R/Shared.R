@@ -268,24 +268,37 @@ renderTranslateQuerySql <-
       if (is.null(attr(connection, "dbms"))) {
         stop("dbms not provided. Unable to translate query.")
       }
-      return(
-        DatabaseConnector::renderTranslateQuerySql(
-          connection = connection,
-          sql = sql,
-          ...,
-          snakeCaseToCamelCase = snakeCaseToCamelCase
+      data <-
+        suppressWarnings(
+          DatabaseConnector::renderTranslateQuerySql(
+            connection = connection,
+            sql = sql,
+            ...,
+            snakeCaseToCamelCase = snakeCaseToCamelCase
+          )
         ) %>% dplyr::tibble()
-      )
+      return(data)
     }
   }
 
 # private function - not exported
 getDataFromResultsDatabaseSchema <- function(dataSource,
-                                             cohortIds = NULL,
-                                             conceptIds = NULL,
-                                             databaseIds = NULL,
+                                             cohortId = NULL,
+                                             conceptId = NULL,
+                                             conceptId1 = NULL,
+                                             conceptSetId = NULL,
+                                             databaseId = NULL,
+                                             vocabularyDatabaseSchema = NULL,
                                              dataTableName) {
   if (is(dataSource, "environment")) {
+    object <- c("cohortId",
+                "conceptId",
+                "databaseId",
+                "conceptSetId")
+    if (!is.null(vocabularyDatabaseSchema)) {
+      paste0("vocabularyDatabaseSchema provided for function 'getResultsConcept', ",
+             "\nbut working in local file mode. VocabularyDatabaseSchema will be ignored.")
+    }
     if (!exists(dataTableName, envir = dataSource)) {
       return(NULL)
     }
@@ -296,17 +309,16 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
       warning(paste0(dataTableName, " in environment was found to have o rows."))
     }
     data <- get(dataTableName, envir = dataSource)
-    if (!is.null(cohortIds)) {
-      data <- data %>%
-        dplyr::filter(.data$cohortId %in% !!cohortIds)
+    for (i in (1:length(object))) {
+      if (!is.null(get(object[[i]]))) {
+        data <- data %>%
+          dplyr::filter(!!as.name(object[[i]]) %in% !!get(object[[i]]))
+      }
     }
-    if (!is.null(databaseIds)) {
-      data <- data %>%
-        dplyr::filter(.data$databaseId %in% !!databaseIds)
-    }
-    if (!is.null(conceptIds)) {
-      data <- data %>%
-        dplyr::filter(.data$conceptId %in% !!conceptIds)
+    if (doesObjectHaveData(conceptId1)) {#for concept relationship only
+      data <- data %>% 
+        dplyr::filter(.data$conceptId1 %in% conceptId |
+                        .data$conceptId2 %in% conceptId)
     }
   } else {
     if (is.null(dataSource$connection)) {
@@ -317,30 +329,42 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
       stop("Connection to database seems to be closed.")
     }
     
-    sql <- "SELECT *
-            FROM  @results_database_schema.@data_table
-            {@cohort_ids == '' & @database_id !=''} ? { WHERE database_id in (@database_id)}
-            {@cohort_ids != '' & @database_id !=''} ? {  WHERE database_id in (@database_id) AND cohort_id in (@cohort_ids)}
-            {@cohort_ids != '' & @database_id ==''} ? {  WHERE cohort_id in (@cohort_ids)}
+    sql <- "SELECT * \n
+            FROM  @results_database_schema.@data_table \n
+            WHERE 1 = 1 \n
+              {@database_id !=''} ? {AND database_id in (@database_id) \n}
+              {@cohort_id !=''} ? {AND cohort_id in (@cohort_id) \n}
+              {@concept_id !=''} ? {AND concept_id in (@concept_id) \n}
+              {@concept_set_id !=''} ? {AND concept_set_id in (@concept_set_id) \n}
+              {@concept_id_1 !=''} ? {(concept_id_1 IN (@concept_ids) OR concept_id_2 IN (@concept_ids)) \n}
             ;"
+    if (!is.null(vocabularyDatabaseSchema)) {
+      resultsDatabaseSchema <- vocabularyDatabaseSchema
+    } else {
+      resultsDatabaseSchema <- dataSource$resultsDatabaseSchema
+    }
     data <-
       renderTranslateQuerySql(
         connection = dataSource$connection,
         sql = sql,
-        results_database_schema = dataSource$resultsDatabaseSchema,
-        cohort_ids = cohortIds,
+        results_database_schema = resultsDatabaseSchema,
+        cohort_id = cohortId,
         data_table = camelCaseToSnakeCase(dataTableName),
-        database_id = quoteLiterals(databaseIds),
+        database_id = quoteLiterals(databaseId),
+        concept_id = conceptId,
+        concept_set_id = conceptSetId,
+        concept_id_1 = conceptId1,# for concept relationship only
         snakeCaseToCamelCase = TRUE
       )
   }
-  
   if (nrow(data) == 0) {
     return(NULL)
   }
   return(data)
 }
 
+
+# Metadata ----
 #' Returns data from meta data table of Cohort Diagnostics results data model
 #'
 #' @description
@@ -352,15 +376,120 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
 #' Returns a data frame (tibble)
 #'
 #' @export
-getResultsMetadata <- function(dataSource) {
-  data <- getDataFromResultsDatabaseSchema(dataSource,
-                                           dataTableName = "metadata")
+getExecutionMetadata <- function(dataSource) {
+  databaseMetadata <-
+    getDataFromResultsDatabaseSchema(dataSource,
+                                     dataTableName = "metadata")
+  if (is.null(databaseMetadata)) {
+    return(NULL)
+  }
+  databaseMetadata <- databaseMetadata %>%
+    dplyr::filter(!.data$variableField == "databaseId")
+  columnNames <-
+    databaseMetadata$variableField %>% unique() %>% sort()
+  columnNamesNoJson <-
+    columnNames[stringr::str_detect(string = tolower(columnNames),
+                                    pattern = "json",
+                                    negate = TRUE)]
+  columnNamesJson <-
+    columnNames[stringr::str_detect(string = tolower(columnNames),
+                                    pattern = "json",
+                                    negate = FALSE)]
+  transposeNonJsons <- databaseMetadata %>%
+    dplyr::filter(.data$variableField %in% c(columnNamesNoJson)) %>%
+    dplyr::rename(name = "variableField") %>%
+    dplyr::group_by(.data$databaseId, .data$startTime, .data$name) %>%
+    dplyr::summarise(valueField = max(.data$valueField),
+                     .groups = "keep") %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(names_from = .data$name,
+                       values_from = .data$valueField) %>%
+    dplyr::mutate(startTime = stringr::str_replace(
+      string = .data$startTime,
+      pattern = "TM_",
+      replacement = ""
+    ))
+  transposeNonJsons$startTime <-
+    transposeNonJsons$startTime %>% lubridate::as_datetime()
+  
+  transposeJsons <- databaseMetadata %>%
+    dplyr::filter(.data$variableField %in% c(columnNamesJson)) %>%
+    dplyr::rename(name = "variableField") %>%
+    dplyr::group_by(.data$databaseId, .data$startTime, .data$name) %>%
+    dplyr::summarise(valueField = max(.data$valueField),
+                     .groups = "keep") %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(names_from = .data$name,
+                       values_from = .data$valueField) %>%
+    dplyr::mutate(startTime = stringr::str_replace(
+      string = .data$startTime,
+      pattern = "TM_",
+      replacement = ""
+    ))
+  transposeJsons$startTime <-
+    transposeJsons$startTime %>% lubridate::as_datetime()
+  
+  transposeJsonsTemp <- list()
+  for (i in (1:nrow(transposeJsons))) {
+    transposeJsonsTemp[[i]] <- transposeJsons[i,]
+    for (j in (1:length(columnNamesJson))) {
+      transposeJsonsTemp[[i]][[columnNamesJson[[j]]]] <-
+        transposeJsonsTemp[[i]][[columnNamesJson[[j]]]] %>%
+        RJSONIO::fromJSON(digits = 23) %>%
+        RJSONIO::toJSON(digits = 23)
+    }
+  }
+  transposeJsons <- dplyr::bind_rows(transposeJsonsTemp)
+  data <- transposeNonJsons %>%
+    dplyr::left_join(transposeJsons,
+                     by = c("databaseId", "startTime"))
+  if ('observationPeriodMaxDate' %in% colnames(data)) {
+    data$observationPeriodMaxDate <-
+      tryCatch(
+        expr = lubridate::as_date(data$observationPeriodMaxDate),
+        error = data$observationPeriodMaxDate
+      )
+  }
+  if ('observationPeriodMinDate' %in% colnames(data)) {
+    data$observationPeriodMinDate <-
+      tryCatch(
+        expr = lubridate::as_date(data$observationPeriodMinDate),
+        error = data$observationPeriodMinDate
+      )
+  }
+  if ('sourceReleaseDate' %in% colnames(data)) {
+    data$sourceReleaseDate <-
+      tryCatch(
+        expr = lubridate::as_date(data$sourceReleaseDate),
+        error = data$sourceReleaseDate
+      )
+  }
+  if ('personDaysInDatasource' %in% colnames(data)) {
+    data$personDaysInDatasource <-
+      tryCatch(
+        expr = as.numeric(data$personDaysInDatasource),
+        error = data$personDaysInDatasource
+      )
+  }
+  if ('recordsInDatasource' %in% colnames(data)) {
+    data$recordsInDatasource <-
+      tryCatch(
+        expr = as.numeric(data$recordsInDatasource),
+        error = data$recordsInDatasource
+      )
+  }
+  if ('personDaysInDatasource' %in% colnames(data)) {
+    data$personDaysInDatasource <-
+      tryCatch(
+        expr = as.numeric(data$personDaysInDatasource),
+        error = data$personDaysInDatasource
+      )
+  }
   return(data)
 }
 
 
 # Concept ----
-## Concept details based on concept id -----
 #' Returns conceptIds details from concept table
 #'
 #' @description
@@ -379,54 +508,36 @@ getResultsMetadata <- function(dataSource) {
 getConcept <- function(dataSource = .GlobalEnv,
                        vocabularyDatabaseSchema = NULL,
                        conceptIds = NULL) {
-  table <- "concept"
-  if (!is.null(vocabularyDatabaseSchema) &&
-      is(dataSource, "environment")) {
-    warning(
-      "vocabularyDatabaseSchema provided for function 'getResultsConcept', \nbut working in local file mode. VocabularyDatabaseSchema will be ignored."
-    )
+  resultsDatabaseSchema <- NULL
+  if (!is.null(vocabularyDatabaseSchema)) {
+    resultsDatabaseSchema <- vocabularyDatabaseSchema
   }
-  if (is(dataSource, "environment")) {
-    if (any(!exists(table),
-            length(table) == 0,
-            nrow(table) == 0)) {
-      return(NULL)
-    }
-    data <- get(table, envir = dataSource)
-    if (!is.null(conceptIds)) {
-      data <- data %>%
-        dplyr::filter(.data$conceptId %in% conceptIds)
-    }
-  } else {
-    sql <- "SELECT *
-            FROM @vocabulary_database_schema.concept
-            {@concept_ids != ''} ? {WHERE concept_id IN (@concept_ids)};"
-    if (!is.null(conceptIds)) {
-      sql <-
-        SqlRender::render(sql = sql,
-                          concept_ids = conceptIds)
-    }
-    if (!is.null(vocabularyDatabaseSchema)) {
-      sql <-
-        SqlRender::render(sql = sql,
-                          vocabulary_database_schema = vocabularyDatabaseSchema)
-    } else {
-      sql <-
-        SqlRender::render(
-          sql = sql,
-          vocabulary_database_schema = dataSource$vocabularyDatabaseSchema
-        )
-    }
-    data <-
-      renderTranslateQuerySql(
-        connection = dataSource$connection,
-        sql = sql,
-        snakeCaseToCamelCase = TRUE
-      )
-  }
-  if (nrow(data) == 0) {
-    return(NULL)
-  }
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource = dataSource,
+    dataTableName = "concept",
+    conceptId = conceptIds,
+    vocabularyDatabaseSchema = resultsDatabaseSchema
+  )
+  return(data)
+}
+
+
+#' Returns the relationship table from results data model
+#'
+#' @description
+#' Returns the relationship table from results data model
+#'
+#' @template DataSource
+#'
+#' @return
+#' Returns a data frame (tibble)
+#'
+#' @export
+getRelationship <- function(dataSource = .GlobalEnv) {
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource = dataSource,
+    dataTableName = "relationship"
+  )
   return(data)
 }
 
@@ -449,54 +560,12 @@ getConcept <- function(dataSource = .GlobalEnv,
 getConceptRelationship <- function(dataSource = .GlobalEnv,
                                    vocabularyDatabaseSchema = NULL,
                                    conceptIds = NULL) {
-  table <- "conceptRelationship"
-  if (!is.null(vocabularyDatabaseSchema) &&
-      is(dataSource, "environment")) {
-    warning(
-      "vocabularyDatabaseSchema provided for function 'getConceptRelationship', \nbut working in local file mode. VocabularyDatabaseSchema will be ignored."
-    )
-  }
-  if (is(dataSource, "environment")) {
-    if (any(!exists(table),
-            length(table) == 0,
-            nrow(table) == 0)) {
-      return(NULL)
-    }
-    data <- get(table, envir = dataSource)
-    if (doesObjectHaveData(conceptIds)) {
-      data <- data %>% 
-        dplyr::filter(.data$conceptId1 %in% conceptIds |
-                        .data$conceptId2 %in% conceptIds)
-    }
-  } else {
-    sql <-
-      "SELECT *
-       FROM @vocabulary_database_schema.concept_relationship
-       WHERE concept_id_1 IN (@concept_ids)
-           OR concept_id_2 IN (@concept_ids);"
-    if (!is.null(conceptIds)) {
-      sql <-
-        SqlRender::render(sql = sql,
-                          concept_ids = conceptIds)
-    }
-    if (!is.null(vocabularyDatabaseSchema)) {
-      sql <-
-        SqlRender::render(sql = sql,
-                          vocabulary_database_schema = vocabularyDatabaseSchema)
-    } else {
-      sql <-
-        SqlRender::render(
-          sql = sql,
-          vocabulary_database_schema = dataSource$vocabularyDatabaseSchema
-        )
-    }
-    data <-
-      renderTranslateQuerySql(
-        connection = dataSource$connection,
-        sql = sql,
-        snakeCaseToCamelCase = TRUE
-      )
-  }
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource = dataSource,
+    dataTableName = "conceptRelationship",
+    vocabularyDatabaseSchema = vocabularyDatabaseSchema,
+    conceptId1 = conceptIds
+  )
   return(data)
 }
 
@@ -579,7 +648,7 @@ getConceptAncestor <- function(dataSource = .GlobalEnv,
 #'
 #' @template DataSource
 #'
-#' @template ConceptIds
+#' @template ConceptId
 #'
 #' @template VocabularyDatabaseSchema
 #'
@@ -589,7 +658,7 @@ getConceptAncestor <- function(dataSource = .GlobalEnv,
 #' @export
 getConceptSynonym <- function(dataSource = .GlobalEnv,
                               vocabularyDatabaseSchema = NULL,
-                              conceptIds = NULL) {
+                              conceptId = NULL) {
   table <- "conceptSynonym"
   if (!is.null(vocabularyDatabaseSchema) &&
       is(dataSource, "environment")) {
@@ -604,17 +673,17 @@ getConceptSynonym <- function(dataSource = .GlobalEnv,
       return(NULL)
     }
     data <- get(table, envir = dataSource) %>%
-      dplyr::filter(.data$conceptId %in% conceptIds)
+      dplyr::filter(.data$conceptId %in% conceptId)
     
   } else {
     sql <-
       "SELECT *
        FROM @vocabulary_database_schema.concept_synonym
        WHERE concept_id IN (@concept_ids);"
-    if (!is.null(conceptIds)) {
+    if (!is.null(conceptId)) {
       sql <-
         SqlRender::render(sql = sql,
-                          concept_ids = conceptIds)
+                          concept_ids = conceptId)
     }
     if (!is.null(vocabularyDatabaseSchema)) {
       sql <-
@@ -658,8 +727,8 @@ getResultsConceptCount <- function(dataSource,
                                    conceptIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    databaseIds = databaseIds,
-    conceptIds = conceptIds,
+    databaseId = databaseIds,
+    conceptId = conceptIds,
     dataTableName = "conceptCount"
   )
   return(data)
@@ -687,95 +756,10 @@ getResultsConceptMapping <- function(dataSource,
                                      conceptIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    databaseIds = databaseIds,
-    conceptIds = conceptIds,
+    databaseId = databaseIds,
+    conceptId = conceptIds,
     dataTableName = "conceptMapping"
   )
-  return(data)
-}
-
-
-#' Returns summary data from concept_count table of Cohort Diagnostics results data model
-#'
-#' @description
-#' Returns summary data from concept_count table of Cohort Diagnostics results data model
-#'
-#' @template DataSource
-#'
-#' @template DatabaseIds
-#'
-#' @param conceptIds     A list of concept ids to get counts for
-#'
-#' @param minDate       Minimum date of range
-#' @param maxDate       Maximum date of range
-#'
-#' @return
-#' Returns a data frame (tibble)
-#'
-#' @export
-getResultsConceptCountSummary <- function(dataSource,
-                                          databaseIds,
-                                          conceptIds,
-                                          minDate = NULL,
-                                          maxDate = NULL) {
-  if (!is.null(minDate)) {
-    warning('minDate is currently not implemented, ignoring')
-  }
-  if (!is.null(maxDate)) {
-    warning('maxDate is currently not implemented, ignoring')
-  }
-  
-  if (is(dataSource, "environment")) {
-    if (!exists("conceptCount", envir = dataSource)) {
-      return(NULL)
-    }
-    data <- get("conceptCount") %>%
-      dplyr::filter(.data$domainField == "All") %>%
-      dplyr::filter(.data$domainTable == "All") %>%
-      dplyr::filter(.data$eventYear == 0) %>% 
-      dplyr::filter(.data$eventMonth == 0) %>% 
-      dplyr::filter(.data$conceptId %in% !!conceptIds) %>%
-      dplyr::filter(.data$databaseId %in% !!databaseIds) %>%
-      dplyr::select(.data$databaseId,
-                    .data$conceptId,
-                    .data$conceptCount,
-                    .data$subjectCount)
-  } else {
-    if (is.null(dataSource$connection)) {
-      stop("No connection provided. Unable to query database.")
-    }
-    
-    if (!DatabaseConnector::dbIsValid(dataSource$connection)) {
-      stop("Connection to database seems to be closed.")
-    }
-    
-    sql <- "SELECT a.database_id,
-              a.concept_id,
-            	a.concept_count,
-            	b.subject_count
-            FROM @results_database_schema.concept_count
-            	WHERE database_id IN (@database_id)
-            		AND concept_id IN (@conceptIds)
-            		AND domain_table IN ('All')
-            		AND domain_field IN ('All')
-            		AND event_year = 0
-            		AND event_month = 0
-            	ORDER BY a.database_id, a.concept_id desc
-            ;"
-    data <-
-      renderTranslateQuerySql(
-        connection = dataSource$connection,
-        sql = sql,
-        results_database_schema = dataSource$resultsDatabaseSchema,
-        database_id = quoteLiterals(databaseIds),
-        conceptIds = conceptIds,
-        snakeCaseToCamelCase = TRUE
-      )
-  }
-  
-  if (nrow(data) == 0) {
-    return(NULL)
-  }
   return(data)
 }
 
@@ -799,8 +783,8 @@ getResultsConceptSubjects <- function(dataSource,
                                       conceptIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    databaseIds = databaseIds,
-    conceptIds = conceptIds,
+    databaseId = databaseIds,
+    conceptId = conceptIds,
     dataTableName = "conceptSubjects"
   )
   return(data)
@@ -823,6 +807,8 @@ getResultsConceptSubjects <- function(dataSource,
 #' @template ConceptIds
 #' 
 #' @template VocabularyDatabaseSchema
+#' 
+#' @param getDatabaseMetadata Do you want to get database metadata i.e. person/records/person days in observation table
 #' 
 #' @param getConceptRelationship  Do you want conceptRelationship?
 #' 
@@ -851,6 +837,7 @@ getConceptMetadata <- function(dataSource,
                                cohortIds = NULL,
                                vocabularyDatabaseSchema = NULL,
                                conceptIds = NULL,
+                               getDatabaseMetadata = TRUE,
                                getConceptRelationship = TRUE,
                                getConceptAncestor = TRUE,
                                getConceptSynonym = TRUE,
@@ -860,12 +847,26 @@ getConceptMetadata <- function(dataSource,
                                getConceptMappingCount = TRUE,
                                getFixedTimeSeries = TRUE,
                                getRelativeTimeSeries = TRUE) {
-  givenConceptId <- conceptIds
   data <- list()
-  data$relationship <-
-    getVocabularyRelationship(dataSource = dataSource)
+  if (!is.null(databaseIds)) {
+    if (getDatabaseMetadata) {
+      databaseMetadata <- getExecutionMetadata(dataSource = dataSource)
+      if (!is.null(databaseMetadata)) {
+        data$databaseCount <- databaseMetadata %>%
+          dplyr::filter(.data$databaseId %in% c(databaseIds)) %>%
+          dplyr::select(
+            .data$databaseId,
+            .data$personDaysInDatasource,
+            .data$personsInDatasource,
+            .data$recordsInDatasource
+          )
+      }
+    }
+  }
   # results not dependent on cohort definition
   if (getConceptRelationship) {
+    data$relationship <-
+      getVocabularyRelationship(dataSource = dataSource)
     data$conceptRelationship <-
       getConceptRelationship(
         dataSource = dataSource,
@@ -875,8 +876,7 @@ getConceptMetadata <- function(dataSource,
     #output for concept relationship table in shiny app
     conceptRelationship <- dplyr::bind_rows(
       data$conceptRelationship %>%
-        dplyr::filter(is.na(.data$invalidReason) &
-                        .data$conceptId1 == conceptIds) %>%
+        dplyr::filter(is.na(.data$invalidReason)) %>%
         dplyr::rename(
           "conceptId" = .data$conceptId2,
           "referenceConceptId" = .data$conceptId1
@@ -887,8 +887,7 @@ getConceptMetadata <- function(dataSource,
           .data$relationshipId
         ),
       data$conceptRelationship %>%
-        dplyr::filter(is.na(.data$invalidReason) &
-                        .data$conceptId2 == conceptIds) %>%
+        dplyr::filter(is.na(.data$invalidReason)) %>%
         dplyr::rename(
           "conceptId" = .data$conceptId1,
           "referenceConceptId" = .data$conceptId2
@@ -900,7 +899,14 @@ getConceptMetadata <- function(dataSource,
         )
     ) %>%
       dplyr::distinct() %>%
-      dplyr::arrange(.data$conceptId)
+      dplyr::arrange(.data$conceptId) %>% 
+      dplyr::group_by(.data$referenceConceptId, .data$conceptId)
+    browser()
+    
+    #!!!!!!!!! need to collapse relationshipId - to avoid duplication. need to make them come with line break
+    # %>% 
+    #   dplyr::mutate(relationshipId = paste(.data$relationshipId, sep = "<br>", collapse = ";")) %>% 
+    #   dplyr::ungroup()
   }
   
   if (getConceptAncestor) {
@@ -997,6 +1003,7 @@ getConceptMetadata <- function(dataSource,
       tidyr::replace_na(list(relationshipId = "Not applicable",
                              levelsOfSeparation = "Not applicable"))
     
+    relationship <- getRelationship(dataSource = dataSource)
     #drop down for concept relationship table in shiny app
     data$relationshipName <- c(
       "Not applicable",
@@ -1018,109 +1025,109 @@ getConceptMetadata <- function(dataSource,
       unique()
   }
   
-  data$cdmTables <- getDomainInformation()$long
-  
   # results dependent on databaseId
-  if (getConceptCount) {
+  if (all(getConceptCount,!is.null(databaseIds))) {
+    data$cdmTables <- getDomainInformation()$long
     data$databaseConceptCountDetails <-
       getResultsConceptCount(dataSource = dataSource,
                              databaseIds = databaseIds,
                              conceptIds = conceptIdList)
-    
-    data$databaseConceptCount <-
-      data$databaseConceptCountDetails %>%
-      dplyr::filter(.data$domainTable == "All") %>%
-      dplyr::filter(.data$domainField == "All") %>%
-      dplyr::filter(.data$eventYear == 0) %>%
-      dplyr::filter(.data$eventMonth == 0) %>%
-      dplyr::select(.data$conceptId,
-                    .data$databaseId,
-                    .data$conceptCount,
-                    .data$subjectCount)
-    
-    if (getFixedTimeSeries) {
-      data$databaseConceptIdYearMonthLevelTsibble <-
+    if (!is.null(data$databaseConceptCountDetails)) {
+      data$databaseConceptCount <-
         data$databaseConceptCountDetails %>%
-        dplyr::rename("domainTableShort" = .data$domainTable) %>%
-        dplyr::rename("domainFieldShort" = .data$domainField) %>%
-        dplyr::filter(
-          .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
-        ) %>%
-        dplyr::filter(.data$eventYear > 0, .data$eventMonth > 0) %>%
-        dplyr::mutate(periodBegin = lubridate::as_date(paste0(
-          .data$eventYear,
-          "-",
-          .data$eventMonth,
-          "-01"
-        ))) %>%
-        dplyr::select(
-          .data$conceptId,
-          .data$databaseId,
-          .data$domainFieldShort,
-          .data$domainTableShort,
-          .data$periodBegin,
-          .data$conceptCount,
-          .data$subjectCount
-        ) %>%
-        dplyr::mutate(periodBegin = tsibble::yearmonth(.data$periodBegin)) %>%
-        tsibble::as_tsibble(
-          key = c(
-            .data$conceptId,
-            .data$databaseId,
-            .data$domainFieldShort,
-            .data$domainTableShort
-          ),
-          index = .data$periodBegin
-        ) %>%
-        dplyr::arrange(
-          .data$conceptId,
-          .data$databaseId,
-          .data$domainFieldShort,
-          .data$domainTableShort,
-          .data$periodBegin,
-          .data$conceptCount,
-          .data$subjectCount
-        )
+        dplyr::filter(.data$domainTable == "All") %>%
+        dplyr::filter(.data$domainField == "All") %>%
+        dplyr::filter(.data$eventYear == 0) %>%
+        dplyr::filter(.data$eventMonth == 0) %>%
+        dplyr::select(.data$conceptId,
+                      .data$databaseId,
+                      .data$conceptCount,
+                      .data$subjectCount)
       
-      data$databaseConceptIdYearLevelTsibble <-
-        data$databaseConceptCountDetails %>%
-        dplyr::rename("domainTableShort" = .data$domainTable) %>%
-        dplyr::rename("domainFieldShort" = .data$domainField) %>%
-        dplyr::filter(
-          .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
-        ) %>%
-        dplyr::filter(.data$eventYear > 0, .data$eventMonth == 0) %>%
-        dplyr::mutate(periodBegin = lubridate::as_date(paste0(.data$eventYear,
-                                                              "-",
-                                                              "01-01"))) %>%
-        dplyr::select(
-          .data$conceptId,
-          .data$databaseId,
-          .data$domainFieldShort,
-          .data$domainTableShort,
-          .data$periodBegin,
-          .data$conceptCount,
-          .data$subjectCount
-        ) %>%
-        dplyr::mutate(periodBegin = clock::get_year(.data$periodBegin)) %>%
-        tsibble::as_tsibble(
-          key = c(
+      if (getFixedTimeSeries) {
+        data$databaseConceptIdYearMonthLevelTsibble <-
+          data$databaseConceptCountDetails %>%
+          dplyr::rename("domainTableShort" = .data$domainTable) %>%
+          dplyr::rename("domainFieldShort" = .data$domainField) %>%
+          dplyr::filter(
+            .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
+          ) %>%
+          dplyr::filter(.data$eventYear > 0, .data$eventMonth > 0) %>%
+          dplyr::mutate(periodBegin = lubridate::as_date(paste0(
+            .data$eventYear,
+            "-",
+            .data$eventMonth,
+            "-01"
+          ))) %>%
+          dplyr::select(
             .data$conceptId,
             .data$databaseId,
             .data$domainFieldShort,
-            .data$domainTableShort
-          ),
-          index = .data$periodBegin
-        ) %>%
-        dplyr::arrange(
-          .data$conceptId,
-          .data$databaseId,
-          .data$domainFieldShort,
-          .data$domainTableShort,
-          .data$periodBegin,
-          .data$conceptCount,
-          .data$subjectCount
-        )
+            .data$domainTableShort,
+            .data$periodBegin,
+            .data$conceptCount,
+            .data$subjectCount
+          ) %>%
+          dplyr::mutate(periodBegin = tsibble::yearmonth(.data$periodBegin)) %>%
+          tsibble::as_tsibble(
+            key = c(
+              .data$conceptId,
+              .data$databaseId,
+              .data$domainFieldShort,
+              .data$domainTableShort
+            ),
+            index = .data$periodBegin
+          ) %>%
+          dplyr::arrange(
+            .data$conceptId,
+            .data$databaseId,
+            .data$domainFieldShort,
+            .data$domainTableShort,
+            .data$periodBegin,
+            .data$conceptCount,
+            .data$subjectCount
+          )
+        
+        data$databaseConceptIdYearLevelTsibble <-
+          data$databaseConceptCountDetails %>%
+          dplyr::rename("domainTableShort" = .data$domainTable) %>%
+          dplyr::rename("domainFieldShort" = .data$domainField) %>%
+          dplyr::filter(
+            .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
+          ) %>%
+          dplyr::filter(.data$eventYear > 0, .data$eventMonth == 0) %>%
+          dplyr::mutate(periodBegin = lubridate::as_date(paste0(.data$eventYear,
+                                                                "-",
+                                                                "01-01"))) %>%
+          dplyr::select(
+            .data$conceptId,
+            .data$databaseId,
+            .data$domainFieldShort,
+            .data$domainTableShort,
+            .data$periodBegin,
+            .data$conceptCount,
+            .data$subjectCount
+          ) %>%
+          dplyr::mutate(periodBegin = clock::get_year(.data$periodBegin)) %>%
+          tsibble::as_tsibble(
+            key = c(
+              .data$conceptId,
+              .data$databaseId,
+              .data$domainFieldShort,
+              .data$domainTableShort
+            ),
+            index = .data$periodBegin
+          ) %>%
+          dplyr::arrange(
+            .data$conceptId,
+            .data$databaseId,
+            .data$domainFieldShort,
+            .data$domainTableShort,
+            .data$periodBegin,
+            .data$conceptCount,
+            .data$subjectCount
+          )
+      }
     }
   }
   
@@ -1130,9 +1137,9 @@ getConceptMetadata <- function(dataSource,
         getResultsConceptCooccurrence(
           dataSource = dataSource,
           databaseIds = databaseIds,
-          cohortIds = cohortIds
+          cohortIds = cohortIds,
+          conceptIds = data$concept$conceptId %>% unique()
         ) %>%
-        dplyr::filter(.data$conceptId %in% c(data$concept$conceptId %>% unique())) %>%
         dplyr::select(
           .data$conceptId,
           .data$databaseId,
@@ -1154,9 +1161,9 @@ getConceptMetadata <- function(dataSource,
         getResultsIndexEventBreakdown(
           dataSource = dataSource,
           cohortIds = cohortIds,
-          databaseIds = databaseIds
-        ) %>%
-        dplyr::filter(.data$conceptId %in% c(data$concept$conceptId %>% unique()))
+          databaseIds = databaseIds,
+          conceptIds = data$concept$conceptId %>% unique()
+        )
     }
   }
   
@@ -1166,7 +1173,6 @@ getConceptMetadata <- function(dataSource,
                                                    cohortIds = cohortIds,
                                                    databaseIds = databaseIds)
     if (!is.null(relativeTimeSeries)) {
-      #filter to active conceptId
       if (!is.null(relativeTimeSeries$temporalCovariateRef)) {
         relativeTimeSeries$temporalCovariateRef <-
           relativeTimeSeries$temporalCovariateRef %>%
@@ -1182,13 +1188,11 @@ getConceptMetadata <- function(dataSource,
           ) %>%
           dplyr::inner_join(relativeTimeSeries$temporalCovariateRef,
                             by = "covariateId") %>%
-          dplyr::select(-.data$covariateId,-.data$covariateName) %>%
+          dplyr::select(-.data$covariateId, -.data$covariateName) %>%
           dplyr::inner_join(relativeTimeSeries$temporalAnalysisRef,
                             by = "analysisId") %>%
           dplyr::filter(.data$isBinary == 'Y') %>%
-          dplyr::select(-.data$isBinary,
-                        -.data$missingMeansZero,
-                        -.data$analysisId) %>%
+          dplyr::select(-.data$isBinary,-.data$missingMeansZero,-.data$analysisId) %>%
           dplyr::inner_join(
             relativeTimeSeries$temporalTimeRef %>%
               dplyr::filter(.data$endDay - .data$startDay == 30) %>%
@@ -1227,7 +1231,7 @@ getConceptMetadata <- function(dataSource,
               .data$domainId,
               .data$analysisName
             ),
-            index = .data$periodBegin
+            index = .data$periodBegin  #x-axis
           )
       }
     }
@@ -1255,43 +1259,19 @@ getConceptMetadata <- function(dataSource,
 #' @export
 getResultsResolvedConcepts <- function(dataSource,
                                        databaseIds = NULL,
-                                       cohortIds = NULL) {
+                                       cohortIds = NULL,
+                                       conceptSetIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
+    conceptSetId = conceptSetIds,
     dataTableName = "conceptResolved"
   )
-  conceptIdDetails <- getConcept(dataSource = dataSource,
-                                 conceptIds = data$conceptId %>% unique()) %>%
-    dplyr::select(
-      .data$conceptId,
-      .data$conceptName,
-      .data$vocabularyId,
-      .data$domainId,
-      .data$standardConcept
-    )
-  conceptCount <-
-    getResultsConceptCountSummary(
-      dataSource = dataSource,
-      conceptIds = data$conceptId %>% unique(),
-      databaseIds = databaseIds
-    )
-  data <- data %>%
-    dplyr::inner_join(conceptIdDetails,
-                      by = "conceptId") %>%
-    dplyr::left_join(conceptCount,
-                     by = c("databaseId",
-                            "conceptId")) %>%
-    dplyr::relocate(
-      .data$databaseId,
-      .data$cohortId,
-      .data$conceptSetId,
-      .data$conceptId,
-      .data$conceptName,
-      .data$conceptCount,
-      .data$subjectCount
-    )
+  if (any((is.null(data)),
+          nrow(data) == 0)) {
+    return(NULL)
+  }
   return(data)
 }
 
@@ -1314,57 +1294,19 @@ getResultsResolvedConcepts <- function(dataSource,
 #' @export
 getResultsExcludedConcepts <- function(dataSource,
                                        databaseIds = NULL,
-                                       cohortIds = NULL) {
+                                       cohortId = NULL,
+                                       conceptSetId = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortId,
+    databaseId = databaseIds,
+    conceptSetId = conceptSetId,
     dataTableName = "conceptExcluded"
   )
   if (any((is.null(data)),
           nrow(data) == 0)) {
     return(NULL)
   }
-  conceptIdDetails <- getConcept(dataSource = dataSource,
-                                 conceptIds = data$conceptId %>% unique()) %>%
-    dplyr::select(
-      .data$conceptId,
-      .data$conceptName,
-      .data$vocabularyId,
-      .data$domainId,
-      .data$standardConcept
-    )
-  
-  if (any((is.null(conceptIdDetails)),
-          nrow(conceptIdDetails) == 0)) {
-    return(NULL)
-  }
-  
-  conceptCount <-
-    getResultsConceptCountSummary(
-      dataSource = dataSource,
-      conceptIds = data$conceptId %>% unique(),
-      databaseIds = databaseIds
-    )
-  if (any((is.null(conceptCount)),
-          nrow(conceptCount) == 0)) {
-    return(NULL)
-  }
-  data <- data %>%
-    dplyr::inner_join(conceptIdDetails,
-                      by = "conceptId") %>%
-    dplyr::left_join(conceptCount,
-                     by = c("databaseId",
-                            "conceptId")) %>%
-    dplyr::relocate(
-      .data$databaseId,
-      .data$cohortId,
-      .data$conceptSetId,
-      .data$conceptId,
-      .data$conceptName,
-      .data$conceptCount,
-      .data$subjectCount
-    )
   return(data)
 }
 
@@ -1377,6 +1319,8 @@ getResultsExcludedConcepts <- function(dataSource,
 #' @template DataSource
 #'
 #' @template CohortIds
+#' 
+#' @template ConceptSetIds
 #'
 #' @template DatabaseIds
 #'
@@ -1386,58 +1330,19 @@ getResultsExcludedConcepts <- function(dataSource,
 #' @export
 getResultsOrphanConcept <- function(dataSource,
                                     cohortIds = NULL,
-                                    databaseIds = NULL) {
+                                    databaseIds = NULL,
+                                    conceptSetIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
+    conceptSetId = conceptSetIds,
     dataTableName = "orphanConcept"
   )
   if (any((is.null(data)),
           nrow(data) == 0)) {
     return(NULL)
   }
-  
-  conceptIdDetails <- getConcept(dataSource = dataSource,
-                                 conceptIds = data$conceptId %>% unique()) %>%
-    dplyr::select(
-      .data$conceptId,
-      .data$conceptName,
-      .data$vocabularyId,
-      .data$domainId,
-      .data$standardConcept
-    )
-  if (any((is.null(conceptIdDetails)),
-          nrow(conceptIdDetails) == 0)) {
-    return(NULL)
-  }
-  
-  conceptCount <-
-    getResultsConceptCountSummary(
-      dataSource = dataSource,
-      conceptIds = data$conceptId %>% unique(),
-      databaseIds = databaseIds
-    )
-  if (any((is.null(conceptCount)),
-          nrow(conceptCount) == 0)) {
-    return(NULL)
-  }
-  
-  data <- data %>%
-    dplyr::inner_join(conceptIdDetails,
-                      by = "conceptId") %>%
-    dplyr::left_join(conceptCount,
-                     by = c("databaseId",
-                            "conceptId")) %>%
-    dplyr::relocate(
-      .data$databaseId,
-      .data$cohortId,
-      .data$conceptSetId,
-      .data$conceptId,
-      .data$conceptName,
-      .data$conceptCount,
-      .data$subjectCount
-    )
   return(data)
 }
 
@@ -1451,6 +1356,8 @@ getResultsOrphanConcept <- function(dataSource,
 #' @template DataSource
 #'
 #' @template CohortIds
+#' 
+#' @template ConceptId
 #'
 #' @template DatabaseIds
 #'
@@ -1460,11 +1367,13 @@ getResultsOrphanConcept <- function(dataSource,
 #' @export
 getResultsConceptCooccurrence <- function(dataSource,
                                           databaseIds = NULL,
-                                          cohortIds = NULL) {
+                                          cohortIds = NULL,
+                                          conceptIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
+    conceptId = conceptIds,
     dataTableName = "conceptCooccurrence"
   )
   return(data)
@@ -1610,8 +1519,8 @@ getResultsCohortCount <- function(dataSource,
                                   databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "cohortCount"
   )
   return(data)
@@ -1638,8 +1547,8 @@ getResultsInclusionRuleStatistics <- function(dataSource,
                                               databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "inclusionRuleStats"
   )
   return(data)
@@ -1665,8 +1574,8 @@ getResultsCohortInclusion <- function(dataSource,
                                       databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "cohortInclusion"
   )
   return(data)
@@ -1693,8 +1602,8 @@ getResultsCohortInclusionStats <- function(dataSource,
                                            databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "cohortInclusionStats"
   )
   return(data)
@@ -1721,8 +1630,8 @@ getResultsCohortSummaryStats <- function(dataSource,
                                          databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "cohortSummaryStats"
   )
   return(data)
@@ -1757,8 +1666,8 @@ getResultsFixedTimeSeries <- function(dataSource,
   # cohortId = 0, represent all persons in observation_period
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = c(cohortIds, 0) %>% unique(),
-    databaseIds = databaseIds,
+    cohortId = c(cohortIds, 0) %>% unique(),
+    databaseId = databaseIds,
     dataTableName = "timeSeries"
   )
   if (any(is.null(data),
@@ -1902,8 +1811,8 @@ getResultsTimeDistribution <- function(dataSource,
                                        databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "timeDistribution"
   )
   return(data)
@@ -1930,8 +1839,8 @@ getResultsIncidenceRate <- function(dataSource,
                                     databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "incidenceRate"
   )
   return(data)
@@ -1957,12 +1866,14 @@ getResultsIncidenceRate <- function(dataSource,
 #' @export
 getResultsIndexEventBreakdown <- function(dataSource,
                                           cohortIds = NULL,
-                                          databaseIds = NULL) {
+                                          databaseIds = NULL,
+                                          conceptIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
-    dataTableName = "indexEventBreakdown"
+    cohortId = cohortIds,
+    databaseId = databaseIds,
+    dataTableName = "indexEventBreakdown",
+    conceptId = conceptIds
   )
   return(data)
 }
@@ -1991,14 +1902,10 @@ getResultsVisitContext <- function(dataSource,
                                    databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "visitContext"
   )
-  if (any(is.null(data),
-          nrow(data) == 0)) {
-    return(NULL)
-  }
   return(data)
 }
 
@@ -2025,8 +1932,8 @@ getResultsCohortRelationships <- function(dataSource,
                                           databaseIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource = dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "cohortRelationships"
   )
   return(data)
@@ -2039,7 +1946,9 @@ getResultsCohortRelationships <- function(dataSource,
 #'
 #' @template DataSource
 #'
-#' @template CohortIds
+#' @param targetCohortIds A vector of cohort ids representing target cohorts
+#' 
+#' @param comparatorCohortIds A vector of cohort ids representing comparator cohorts
 #'
 #' @template DatabaseIds
 #'
@@ -2047,9 +1956,12 @@ getResultsCohortRelationships <- function(dataSource,
 #' Returns data for use in cohort_overlap
 #'
 #' @export
-getCohortOverlap <- function(dataSource,
-                             cohortIds = NULL,
-                             databaseIds = NULL) {
+getResultsCohortOverlap <- function(dataSource,
+                                    targetCohortIds = NULL,
+                                    comparatorCohortIds = NULL,
+                                    databaseIds = NULL) {
+  
+  cohortIds <- c(targetCohortIds, comparatorCohortIds) %>% unique()
   cohortCounts <-
     getResultsCohortCount(dataSource = dataSource,
                           cohortIds = cohortIds,
@@ -2060,11 +1972,9 @@ getCohortOverlap <- function(dataSource,
     return(NULL)
   }
   
-  combisOfTargetComparator <- t(utils::combn(cohortIds, 2)) %>%
-    as.data.frame() %>%
-    dplyr::tibble()
-  colnames(combisOfTargetComparator) <-
-    c('targetCohortId', 'comparatorCohortId')
+  combisOfTargetComparator <- tidyr::crossing(dplyr::tibble(targetCohortId = targetCohortIds),
+                                              dplyr::tibble(comparatorCohortId = comparatorCohortIds)) %>%
+    dplyr::filter(.data$targetCohortId != .data$comparatorCohortId)
   
   cohortRelationship <-
     getResultsCohortRelationships(dataSource = dataSource,
@@ -2079,7 +1989,8 @@ getCohortOverlap <- function(dataSource,
   fullOffSet <-  cohortRelationship %>%
     dplyr::filter(.data$startDay == -99999) %>%
     dplyr::filter(.data$endDay == 99999) %>%
-    dplyr::filter(.data$comparatorCohortId %in% cohortIds) %>%
+    dplyr::filter(.data$cohortId %in% targetCohortIds) %>%
+    dplyr::filter(.data$comparatorCohortId %in% comparatorCohortIds) %>%
     dplyr::select(.data$databaseId,
                   .data$cohortId,
                   .data$comparatorCohortId,
@@ -2103,8 +2014,6 @@ getCohortOverlap <- function(dataSource,
     dplyr::mutate(cOnlySubjects = .data$comparatorCohortSubjects - .data$bothSubjects) %>%
     dplyr::mutate(eitherSubjects = .data$cOnlySubjects + .data$tOnlySubjects + .data$bothSubjects) %>%
     dplyr::rename(targetCohortId = .data$cohortId) %>%
-    dplyr::inner_join(combisOfTargetComparator,
-                      by = c('targetCohortId', 'comparatorCohortId')) %>%
     dplyr::select(
       .data$databaseId,
       .data$targetCohortId,
@@ -2136,7 +2045,9 @@ getCohortOverlap <- function(dataSource,
         ),
       by = c('databaseId', 'cohortId', 'comparatorCohortId')
     ) %>%
-    dplyr::rename(targetCohortId = .data$cohortId)
+    dplyr::rename(targetCohortId = .data$cohortId) %>% 
+    dplyr::filter(.data$targetCohortId %in% targetCohortIds) %>%
+    dplyr::filter(.data$comparatorCohortId %in% comparatorCohortIds)
   
   noOffset <- cohortRelationship %>%
     dplyr::filter(.data$comparatorCohortId %in% cohortIds) %>%
@@ -2160,26 +2071,22 @@ getCohortOverlap <- function(dataSource,
         dplyr::select(-.data$sameDaySubjects),
       by = c('databaseId', 'cohortId', 'comparatorCohortId')
     ) %>%
-    dplyr::rename(targetCohortId = .data$cohortId)
+    dplyr::rename(targetCohortId = .data$cohortId) %>% 
+    dplyr::filter(.data$targetCohortId %in% targetCohortIds) %>%
+    dplyr::filter(.data$comparatorCohortId %in% comparatorCohortIds)
   
   result <- fullOffSet %>%
     dplyr::left_join(beforeOffset,
                      by = c('databaseId', 'targetCohortId', 'comparatorCohortId')) %>%
     dplyr::left_join(noOffset,
-                     by = c('databaseId', 'targetCohortId', 'comparatorCohortId'))
+                     by = c('databaseId', 'targetCohortId', 'comparatorCohortId')) %>% 
+    dplyr::filter(.data$targetCohortId != .data$comparatorCohortId)
   
   return(result)
 }
 
 
-
-
 ## Characterization ----
-
-
-
-
-
 #' Returns cohort characterization output of feature extraction
 #'
 #' @description
@@ -2887,8 +2794,8 @@ getResultsCovariateValue <- function(dataSource,
                                      databaseIds) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "covariateValue"
   )
   return(data)
@@ -2900,8 +2807,8 @@ getResultsCovariateValueDist <- function(dataSource,
                                          databaseIds) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "covariateValueDist"
   )
   return(data)
@@ -2913,8 +2820,8 @@ getResultsTemporalCovariateValue <- function(dataSource,
                                              databaseIds) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "temporalCovariateValue"
   )
   return(data)
@@ -2926,8 +2833,8 @@ getResultsTemporalCovariateValueDist <- function(dataSource,
                                                  databaseIds) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
-    cohortIds = cohortIds,
-    databaseIds = databaseIds,
+    cohortId = cohortIds,
+    databaseId = databaseIds,
     dataTableName = "temporalCovariateValueDist"
   )
   return(data)
@@ -3105,7 +3012,7 @@ getResultsTemporalAnalysisRef <- function(dataSource) {
 #'
 #' @export
 getCirceRenderedExpression <- function(cohortDefinition) {
-  cohortJson <- RJSONIO::toJSON(x = cohortDefinition, digits = 23)
+  cohortJson <- RJSONIO::toJSON(x = cohortDefinition, digits = 23, pretty = TRUE)
   circeExpression <-
     CirceR::cohortExpressionFromJson(expressionJson = cohortJson)
   circeExpressionMarkdown <-
@@ -3277,4 +3184,77 @@ getDomainInformation <- function(packageName = NULL) {
     dplyr::mutate(dplyr::across(where(is.character), ~ tidyr::replace_na(.x, as.character('')))) %>%
     dplyr::mutate(dplyr::across(where(is.logical), ~ tidyr::replace_na(.x, as.character('')))) %>%
     dplyr::mutate(dplyr::across(where(is.numeric), ~ tidyr::replace_na(.x, as.numeric(''))))
+}
+
+
+
+#' Extract results from cohort diagnostics
+#'
+#' @description
+#' Extract results from cohort diagnostics results data model for vector of cohort ids
+#'
+#' @template DataSource
+#'
+#' @template CohortIds
+#'
+#' @return
+#' list of R objects that may then be converted to reports
+#' @export
+getResultsCompiledOutput <- function(dataSource,
+                                     cohortIds) {
+  output <- list()
+  for (i in (1:length(cohortIds))) {
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohort"]] <-
+      getResultsCohort(dataSource = dataSource) %>%
+      dplyr::filter(.data$cohortId %in% cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortCount"]] <-
+      getResultsCohortCount(dataSource = dataSource,
+                            cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["inclusionRuleStatistics"]] <-
+      getResultsInclusionRuleStatistics(dataSource = dataSource,
+                                        cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortInclusion"]] <-
+      getResultsCohortInclusion(dataSource = dataSource,
+                                cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortInclusionStats"]] <-
+      getResultsCohortInclusionStats(dataSource = dataSource,
+                                     cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortSummaryStats"]] <-
+      getResultsCohortSummaryStats(dataSource = dataSource,
+                                   cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["fixedTimeSeries"]] <-
+      getResultsFixedTimeSeries(dataSource = dataSource,
+                                cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["timeDistribution"]] <-
+      getResultsTimeDistribution(dataSource = dataSource,
+                                 cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["incidenceRate"]] <-
+      getResultsIncidenceRate(dataSource = dataSource,
+                              cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["indexEventBreakdown"]] <-
+      getResultsIndexEventBreakdown(dataSource = dataSource,
+                                    cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["visitContext"]] <-
+      getResultsVisitContext(dataSource = dataSource,
+                             cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortRelationships"]] <-
+      getResultsCohortRelationships(dataSource = dataSource,
+                                    cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["cohortOverlap"]] <-
+      getResultsCohortOverlap(dataSource = dataSource,
+                              cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["circe"]] <-
+      getCirceRenderedExpression(
+        cohortDefinition = output[[paste0("cohortId", cohortIds[[i]])]][["cohort"]] %>%
+          dplyr::pull(.data$json) %>%
+          RJSONIO::fromJSON(digits = 23)
+      )
+    output[[paste0("cohortId", cohortIds[[i]])]][["resolvedConcepts"]] <-
+      getResultsResolvedConcepts(dataSource = dataSource,
+                                 cohortIds = cohortIds[[i]])
+    output[[paste0("cohortId", cohortIds[[i]])]][["characterization"]] <-
+      getMultipleCharacterizationResults(dataSource = dataSource,
+                                         cohortIds = cohortIds[[i]])
+  }
+  return(output)
 }
