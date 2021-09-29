@@ -1,14 +1,38 @@
-library(magrittr)
-
+#Prepare table 1 ----
 prepareTable1 <- function(covariates,
                           pathToCsv = "Table1Specs.csv") {
-  if ('conceptName' %in% colnames(covariates)) {
-    covariates <- covariates %>% 
-      dplyr::mutate(covariateName = conceptName)
-  }
-  # remove negative values that are created because of minCellCount
-  covariates <- covariates %>% 
-    dplyr::filter(.data$mean > 0)
+  covariates <- covariates %>%
+    dplyr::mutate(covariateName = stringr::str_to_sentence(
+      stringr::str_replace_all(
+        string = .data$covariateName,
+        pattern = "^.*: ",
+        replacement = ""
+      )
+    ))
+  
+  covariates <- covariates %>%
+    dplyr::mutate(
+      covariateName = stringr::str_replace(
+        string = .data$covariateName,
+        pattern = "black or african american",
+        replacement = "Black or African American"
+      )
+    ) %>%
+    dplyr::mutate(
+      covariateName = stringr::str_replace(
+        string = .data$covariateName,
+        pattern = "white",
+        replacement = "White"
+      )
+    ) %>%
+    dplyr::mutate(
+      covariateName = stringr::str_replace(
+        string = .data$covariateName,
+        pattern = "asian",
+        replacement = "Asian"
+      )
+    )
+  
   space <- "&nbsp;"
   specifications <- readr::read_csv(
     file = pathToCsv,
@@ -20,14 +44,14 @@ prepareTable1 <- function(covariates,
       ~ tidyr::replace_na(data = .x, replace = '')
     ))
   
-  resultsTable <- dplyr::tibble()
+  resultsTable <- tidyr::tibble()
   
   if (nrow(specifications) == 0) {
     return(resultsTable)
   }
   
   for (i in 1:nrow(specifications)) {
-    specification <- specifications[i,]
+    specification <- specifications[i, ]
     if (specification %>% dplyr::pull(.data$covariateIds) == "") {
       covariatesSubset <- covariates %>%
         dplyr::filter(.data$analysisId %in% specification$analysisId) %>%
@@ -93,6 +117,7 @@ prepareTable1 <- function(covariates,
 }
 
 
+#Prepare table for comparision ----
 prepareTable1Comp <- function(balance,
                               pathToCsv = "Table1Specs.csv") {
   balance <- balance %>%
@@ -123,7 +148,7 @@ prepareTable1Comp <- function(balance,
   }
   
   for (i in 1:nrow(specifications)) {
-    specification <- specifications[i,]
+    specification <- specifications[i, ]
     if (specification %>% dplyr::pull(.data$covariateIds) == "") {
       balanceSubset <- balance %>%
         dplyr::filter(.data$analysisId %in% specification$analysisId) %>%
@@ -169,7 +194,8 @@ prepareTable1Comp <- function(balance,
                                   balanceSubset$covariateName),
           MeanT = balanceSubset$mean1,
           MeanC = balanceSubset$mean2,
-          StdDiff = balanceSubset$stdDiff,
+          databaseId = balanceSubset$databaseId,
+          StdDiff = balanceSubset$absStdDiff,
           header = 0,
           position = i
         )
@@ -187,10 +213,34 @@ prepareTable1Comp <- function(balance,
       dplyr::select(-.data$header, -.data$position) %>%
       dplyr::distinct()
   }
+  
+  resultsTable <- resultsTable %>%
+    dplyr::mutate(
+      characteristic = stringr::str_replace(
+        string = .data$characteristic,
+        pattern = "black or african american",
+        replacement = "Black or African American"
+      )
+    ) %>%
+    dplyr::mutate(
+      characteristic = stringr::str_replace(
+        string = .data$characteristic,
+        pattern = "white",
+        replacement = "White"
+      )
+    ) %>%
+    dplyr::mutate(
+      characteristic = stringr::str_replace(
+        string = .data$characteristic,
+        pattern = "asian",
+        replacement = "Asian"
+      )
+    )
+  
   return(resultsTable)
 }
 
-
+# Compare cohort characteristics ----
 compareCohortCharacteristics <-
   function(characteristics1, characteristics2) {
     m <- dplyr::full_join(
@@ -202,7 +252,12 @@ compareCohortCharacteristics <-
         "databaseId",
         "covariateName",
         "analysisId",
-        "timeIdChoices"
+        "isBinary",
+        "analysisName",
+        "analysisNameLong",
+        "domainId",
+        "startDay",
+        "endDay"
       ),
       suffix = c("1", "2")
     ) %>%
@@ -214,7 +269,7 @@ compareCohortCharacteristics <-
     return(m)
   }
 
-
+#Compare temporal characteristics ----
 compareTemporalCohortCharacteristics <-
   function(characteristics1, characteristics2) {
     m <- characteristics1 %>%
@@ -226,7 +281,14 @@ compareTemporalCohortCharacteristics <-
           "databaseId",
           "covariateName",
           "analysisId",
-          "temporalChoices"
+          "isBinary",
+          "analysisName",
+          "analysisNameLong",
+          "domainId",
+          "timeId",
+          "startDay",
+          "endDay",
+          "choices"
         ),
         suffix = c("1", "2")
       ) %>%
