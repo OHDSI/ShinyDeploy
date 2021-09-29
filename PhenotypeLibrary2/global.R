@@ -31,7 +31,7 @@ defaultVocabularySchema <- "phenotypeLibrary"
 
 
 #Mode
-defaultDatabaseMode <- FALSE # Use file system if FALSE
+defaultDatabaseMode <- TRUE # Use file system if FALSE
 defaultResultsSchema <- 'phenotypeLibrary'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
