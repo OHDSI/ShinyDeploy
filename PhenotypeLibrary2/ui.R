@@ -76,7 +76,7 @@ sidebarMenu <-
       input.tabs != 'compareCohortCharacterization'",
       shinyWidgets::pickerInput(
         inputId = "selectedDatabaseId",
-        label = "Database",
+        label = "Datasource",
         choices = database$databaseId,
         selected = database$databaseId[1],
         multiple = FALSE,
@@ -107,7 +107,7 @@ sidebarMenu <-
       input.tabs == 'compareCohortCharacterization'",
       shinyWidgets::pickerInput(
         inputId = "selectedDatabaseIds",
-        label = "Database",
+        label = "Datasource",
         choices = database$databaseId,
         selected = database$databaseId[1],
         multiple = TRUE,
@@ -784,28 +784,46 @@ bodyTabItems <- shinydashboard::tabItems(
       title = "Cohort Overlap (Subjects)",
       width = NULL,
       status = "primary",
-      tags$table(width = "100%", 
-                 tags$tr(
-                   tags$td(
-                     shiny::radioButtons(
-                       inputId = "overlapPlotType",
-                       label = "",
-                       choices = c("Percentages", "Counts"),
-                       selected = "Percentages",
-                       inline = TRUE
+      shiny::tabsetPanel(
+        type = "tab",
+        id = "cohortOverlapTab",
+        shiny::tabPanel(
+          title = "Plot",
+          value = "cohortOverlapPlotTab",
+          tags$table(width = "100%", 
+                     tags$tr(
+                       tags$td(
+                         shiny::radioButtons(
+                           inputId = "overlapPlotType",
+                           label = "",
+                           choices = c("Percentages", "Counts"),
+                           selected = "Percentages",
+                           inline = TRUE
+                         )
+                       ),
+                       
                      )
-                   ),
-                   tags$td(align = "right",
-                           shiny::downloadButton(
-                             "saveCohortOverlapTable",
-                             label = "",
-                             icon = shiny::icon("download"),
-                             style = "margin-top: 5px; margin-bottom: 5px;"
-                           )
-                   )
-                 )
-      ),
-      plotly::plotlyOutput("overlapPlot", height = "auto")
+          ),
+          plotly::plotlyOutput("overlapPlot", height = "auto")
+          ),
+        shiny::tabPanel(
+          title = "Raw Table",
+          value = "cohortOverlapTableTab",
+          tags$table(width = "100%",
+                     tags$tr(
+                       tags$td(
+                         align = "right",
+                         shiny::downloadButton(
+                           "saveCohortOverlapTable",
+                           label = "",
+                           icon = shiny::icon("download"),
+                           style = "margin-top: 5px; margin-bottom: 5px;"
+                         )
+                       )
+                     )),
+          DT::dataTableOutput(outputId = "cohortOverlapTable")
+        ))
+     
     )
   ),
   shinydashboard::tabItem(
@@ -910,7 +928,7 @@ bodyTabItems <- shinydashboard::tabItems(
     createShinyBoxWithSplitForTwoOutputIds(leftOutputId = "temporalCharacterizationSelectedCohort",
                                            leftOutputLabel = "Cohort",
                                            rightOutputId = "temporalCharacterizationSelectedDatabase",
-                                           rightOutputLabel = "Database",
+                                           rightOutputLabel = "Datasource",
                                            leftUnits = 70),
     tags$table(tags$tr(
       tags$td(
@@ -978,7 +996,7 @@ bodyTabItems <- shinydashboard::tabItems(
     createShinyBoxWithSplitForTwoOutputIds(leftOutputId = "cohortCharCompareSelectedCohort", 
                                            leftOutputLabel = "Cohort",
                                            rightOutputId = "cohortCharCompareSelectedDatabase",
-                                           rightOutputLabel = "Database",
+                                           rightOutputLabel = "Datasource",
                                            leftUnits = 70),
     tags$table(
       tags$tr(
@@ -990,40 +1008,6 @@ bodyTabItems <- shinydashboard::tabItems(
             selected = "Plot",
             inline = TRUE
           ),
-        ),
-        tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")),
-        tags$td(
-          shiny::conditionalPanel(
-            condition = "input.characterizationCompareMethod == 'Plot'",
-            shiny::sliderInput(
-              inputId = "compareCohortXMeanFilter",
-              label = "Filter X-axis",
-              min = c(0.0),
-              max = c(1.0),
-              value = c(0.0, 1.0),
-              dragRange = TRUE,
-              pre = "Mean ",
-              step = 0.1,
-              sep = ""
-            )
-          )
-        ),
-        tags$td(HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")),
-        tags$td(
-          shiny::conditionalPanel(
-            condition = "input.characterizationCompareMethod == 'Plot'",
-            shiny::sliderInput(
-              inputId = "compareCohortYMeanFilter",
-              label = "Filter Y-axis",
-              min = c(0.0),
-              max = c(1.0),
-              value = c(0.0, 1.0),
-              dragRange = TRUE,
-              pre = "Mean ",
-              step = 0.1,
-              sep = ""
-            )
-          )
         ),
         tags$td(
           shiny::conditionalPanel(
@@ -1046,25 +1030,6 @@ bodyTabItems <- shinydashboard::tabItems(
                                 shinyWidgets::pickerInput(
                                   inputId = "compareCharacterizationAnalysisNameFilter",
                                   label = "Analysis name",
-                                  choices = c(""),
-                                  selected = c(""),
-                                  multiple = TRUE,
-                                  width = 200,
-                                  choicesOpt = list(style = rep_len("color: black;", 999)),
-                                  options = shinyWidgets::pickerOptions(
-                                    actionsBox = TRUE,
-                                    liveSearch = TRUE,
-                                    size = 10,
-                                    liveSearchStyle = "contains",
-                                    liveSearchPlaceholder = "Type here to search",
-                                    virtualScroll = 50
-                                  )
-                                )
-                              ),
-                              tags$td(
-                                shinyWidgets::pickerInput(
-                                  inputId = "compareCharacterizationDomainNameFilter",
-                                  label = "Domain name",
                                   choices = c(""),
                                   selected = c(""),
                                   multiple = TRUE,
@@ -1133,7 +1098,7 @@ bodyTabItems <- shinydashboard::tabItems(
     createShinyBoxWithSplitForTwoOutputIds(leftOutputId = "temporalCharCompareSelectedCohort", 
                                            leftOutputLabel = "Cohort",
                                            rightOutputId = "temporalCharCompareSelectedDatabase",
-                                           rightOutputLabel = "Database",
+                                           rightOutputLabel = "Datasource",
                                            leftUnits = 70),
     tags$table(
       tags$tr(

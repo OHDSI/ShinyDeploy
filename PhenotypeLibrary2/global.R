@@ -21,18 +21,17 @@ defaultLocalDataFile <- "PreMerged.RData"
 # defaultUser <- Sys.getenv("shinydbUser")
 # defaultPassword <- Sys.getenv("shinydbPw")
 # OHDSI Phenotype DB
-defaultServer <- Sys.getenv("phoebedbServer")
-defaultDatabase <- Sys.getenv("phoebedb")
+defaultServer <- Sys.getenv("phenotypeLibraryServer")
+defaultDatabase <- Sys.getenv("phenotypeLibrarydb")
 defaultPort <- 5432
-defaultUser <- Sys.getenv("phoebedbUser")
-defaultPassword <- Sys.getenv("phoebedbPw")
-defaultResultsSchema <- "phenotypeLibrary"
-defaultVocabularySchema <- "phenotypeLibrary"
+defaultUser <- Sys.getenv("phenotypeLibrarydbUser")
+defaultPassword <- Sys.getenv("phenotypeLibrarydbPw")
 
 
 #Mode
 defaultDatabaseMode <- TRUE # Use file system if FALSE
 defaultResultsSchema <- 'phenotypeLibrary'
+# defaultResultsSchema <- 'cdSkeletoncohortdiagnosticsstudy2'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
 

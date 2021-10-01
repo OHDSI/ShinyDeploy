@@ -475,16 +475,28 @@ plotTimeDistribution <- function(data, shortNameRef = NULL) {
   )
   checkmate::reportAssertions(collection = errorMessage)
   
-  colorReference <- read.csv(paste0(getwd(),"/colorReference.csv")) %>% 
-    dplyr::filter(.data$type == "databaseShortName") %>% 
-    dplyr::mutate(databaseShortName = .data$name,color = .data$value) %>% 
-    dplyr::select(-.data$name,-.data$type,-.data$value)
-    
+  initialColor <- read.csv(paste0(getwd(),"/colorReference.csv")) %>% 
+    dplyr::filter(.data$type == "database",.data$name == "database") %>% 
+    dplyr::pull(.data$value)
+  
+  colorReference <- data %>% 
+    dplyr::select(.data$databaseId) %>% 
+    unique()
 
+  lightColors <- colorRampPalette(c(initialColor, "#000000"))(ceiling(nrow(colorReference)/2) + 1) %>% 
+    head(-1) %>% 
+    tail(-1)
+  
+  darkColors <- colorRampPalette(c(initialColor, "#000000"))(floor(nrow(colorReference)/2) + 2) %>% 
+    head(-1) 
+  
+  colorReference <- colorReference %>% 
+    dplyr::mutate(color = c(lightColors,darkColors))
+ 
   plotData <-
     addShortName(data = data, shortNameRef = shortNameRef)  %>% 
     addDatabaseShortName(shortNameRef = database) %>% 
-    dplyr::inner_join(colorReference,by = "databaseShortName")
+    dplyr::inner_join(colorReference, by = "databaseId")
     
   
   sortShortName <- plotData %>%
@@ -999,10 +1011,6 @@ plotCalendarIncidence <- function(data,
 
 plotCohortComparisonStandardizedDifference <- function(balance,
                                                        shortNameRef = NULL,
-                                                       xLimitMin = 0,
-                                                       xLimitMax = 1,
-                                                       yLimitMin = 0,
-                                                       yLimitMax = 1,
                                                        domain = "all") {
   domains <-
     c("Condition",
@@ -1078,26 +1086,6 @@ plotCohortComparisonStandardizedDifference <- function(balance,
     )
   
   
-  # Make sure colors are consistent, no matter which domains are included:
-  # colors <-
-  #   c(
-  #     "#1B9E77",
-  #     "#D95F02",
-  #     "#7570B3",
-  #     "#E7298A",
-  #     "#66A61E",
-  #     "#E6AB02",
-  #     "#A6761D",
-  #     "#444444"
-  #   )
-  # colors <- colors[c(domains, "other") %in% unique(balance$domain)]
-  # 
-  # balance$domain <-
-  #   factor(balance$domain, levels = c(domains, "other")) %>% unique()
-  
-  # targetLabel <- paste(strwrap(targetLabel, width = 50), collapse = "\n")
-  # comparatorLabel <- paste(strwrap(comparatorLabel, width = 50), collapse = "\n")
-  
   xCohort <- balance %>%
     dplyr::distinct(balance$targetCohort) %>%
     dplyr::pull()
@@ -1105,26 +1093,44 @@ plotCohortComparisonStandardizedDifference <- function(balance,
     dplyr::distinct(balance$comparatorCohort) %>%
     dplyr::pull()
   
-  plot <- plotly::plot_ly(balance, x = ~mean1, y = ~mean2, text = ~tooltip, type = 'scatter',
-          mode = "markers", color = ~domain, colors = ~colors, opacity = 0.4, marker = list(size = 12,
-                                                                                            line = list(color = 'rgb(255,255,255)', width = 1))) %>% 
-    plotly::layout(xaxis = list(title = list(text =  paste("Covariate Mean in ", xCohort),
-                                             font = list(size = 18)),
-                                range = c(0, 1)),
-                   yaxis = list(title = list(text =  paste("Covariate Mean in ", yCohort),
-                                             font = list(size = 18)),
-                                range = c(0, 1))
-                   )
+  browser()
   
+  balance <- balance %>% 
+    addDatabaseShortName(shortNameRef = database)
+  
+  distinctDatabaseShortName <- balance$databaseShortName %>% unique()
+  databasePlots <- list()
+  for (i in 1:length(distinctDatabaseShortName)) {
+    data <- balance %>% 
+      dplyr::filter(.data$databaseShortName == distinctDatabaseShortName[i])
+    databasePlots[[i]] <- plotly::plot_ly(balance, x = ~mean1, y = ~mean2, text = ~tooltip, type = 'scatter',
+                            mode = "markers", color = ~domain, colors = ~colors, opacity = 0.4, marker = list(size = 12,
+                                                                                                              line = list(color = 'rgb(255,255,255)', width = 1))) %>% 
+      plotly::layout(xaxis = list(title = list(text =  paste("Covariate Mean in ", xCohort),
+                                               font = list(size = 18)),
+                                  range = c(0, 1)),
+                     yaxis = list(title = list(text =  paste("Covariate Mean in ", yCohort),
+                                               font = list(size = 18)),
+                                  range = c(0, 1)),
+                     annotations = list(
+                       x = 0.5,
+                       y = 1.02,
+                       text = camelCaseToTitleCase(distinctDatabaseShortName[i]),
+                       showarrow = FALSE,
+                       xref = "paper",
+                       yref = "paper",
+                       xanchor = "center",
+                       yanchor = "middle",
+                       font = list(size = 18)
+                     )
+      )
+  }
+  plot <- plotly::subplot(databasePlots)
   return(plot)
 }
 
 plotTemporalCompareStandardizedDifference <- function(balance,
                                                       shortNameRef = NULL,
-                                                      xLimitMin = 0,
-                                                      xLimitMax = 1,
-                                                      yLimitMin = 0,
-                                                      yLimitMax = 1,
                                                       domain = "all") {
   domains <-
     c("Condition",
@@ -1367,6 +1373,7 @@ plotCohortOverlap <- function(data,
   # )
   # checkmate::reportAssertions(collection = errorMessage)
  
+
   
   data <- data %>%
     addShortName(
@@ -1379,6 +1386,21 @@ plotCohortOverlap <- function(data,
       cohortIdColumn = "comparatorCohortId",
       shortNameColumn = "comparatorShortName"
     )
+  targetCohortCompoundName <- data  %>% 
+    dplyr::inner_join(cohort %>% 
+                        dplyr::mutate(targetCohortId = .data$cohortId) %>% 
+                        dplyr::select(.data$targetCohortId,.data$compoundName),
+                      by = "targetCohortId") %>% 
+    dplyr::pull(.data$compoundName) %>% unique()
+  targetCohortCompoundName <- paste("Target Cohorts :",paste(targetCohortCompoundName,collapse = ","))
+  
+  comparatorCohortCompoundName <- data  %>% 
+    dplyr::inner_join(cohort %>% 
+                        dplyr::mutate(comparatorCohortId = .data$cohortId) %>% 
+                        dplyr::select(.data$comparatorCohortId,.data$compoundName),
+                      by = "comparatorCohortId") %>% 
+    dplyr::pull(.data$compoundName) %>% unique()
+  comparatorCohortCompoundName <- paste("Comparator Cohorts :",paste(comparatorCohortCompoundName,collapse = ","))                    
   
   plotData <- data %>%
     dplyr::mutate(
@@ -1424,7 +1446,7 @@ plotCohortOverlap <- function(data,
     )  %>%
     dplyr::mutate(
       tooltip = paste0(
-        "Database: ",
+        "Source: ",
         .data$databaseId,
         "\n",
         "\n",
@@ -1458,9 +1480,9 @@ plotCohortOverlap <- function(data,
     dplyr::mutate(
       subjectsIn = dplyr::recode(
         .data$subjectsIn,
-        absTOnlySubjects = "Left cohort only",
+        absTOnlySubjects = "Target cohort only",
         absBothSubjects = "Both cohorts",
-        absCOnlySubjects = "Right cohort only"
+        absCOnlySubjects = "Comparator cohort only"
       )
     )
   
@@ -1491,7 +1513,7 @@ plotCohortOverlap <- function(data,
   plotData$subjectsIn <-
     factor(
       plotData$subjectsIn,
-      levels = c("Left cohort only", "Both cohorts", "Right cohort only")
+      levels = c("Target cohort only", "Both cohorts", "Comparator cohort only")
     )
   
   if (yAxis == "Percentages") {
@@ -1532,10 +1554,9 @@ plotCohortOverlap <- function(data,
       comparatorShortName = factor(.data$comparatorShortName, levels = sortComparatorShortName$comparatorShortName),
       .data$comparatorShortName
     )
-    
-  
   
   distinctComparatorShortName <- plotData$comparatorShortName %>% unique()
+  # distinctTargetShortName <- plotData$targetShortName %>% unique()
   distinctDatabaseIds <- plotData$databaseId %>% unique()
   databasePlots <- list()
   for (i in 1:length(distinctDatabaseIds)) {
@@ -1579,7 +1600,7 @@ plotCohortOverlap <- function(data,
                                               x = ~xAxisValues, y = ~targetShortName, type = 'bar',
                                               name = ~subjectsIn, text = ~tooltip, hoverinfo = 'text',
                                               color = ~subjectsIn, colors = c( rgb(0.4, 0.4, 0.9), rgb(0.3, 0.2, 0.4),rgb(0.8, 0.2, 0.2)),
-                                              showlegend = showLegend, height = max(400, 200 * length(distinctComparatorShortName))) %>%
+                                              showlegend = showLegend, height = max(400, 250 * length(distinctComparatorShortName))) %>%
         plotly::layout(barmode = 'stack',
                        legend = list(orientation = "h",x = 0.4),
                        xaxis = list(range = c(0, xAxisMax),
@@ -1614,11 +1635,21 @@ plotCohortOverlap <- function(data,
   m <- list(
     l = 50,
     r = 50,
-    b = 100,
+    b = 200,
     t = 50
   )
   plot <- plotly::subplot(databasePlots) %>% 
-    plotly::layout(margin = m)
+    plotly::layout(annotations = list(
+      x = 0.5 ,
+      y = -0.4 + (0.055 * length(distinctComparatorShortName)),
+      text = paste(targetCohortCompoundName,"\n",comparatorCohortCompoundName),
+      showarrow = F,
+      xanchor = "center",
+      yanchor = "middle",
+      xref = 'paper',
+      yref = 'paper',
+      font = list(size = 14)
+    ),margin = m)
   
   # plotData$targetShortName <- factor(plotData$targetShortName,
   #                                    levels = sortTargetShortName$targetShortName)

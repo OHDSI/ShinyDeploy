@@ -285,6 +285,7 @@ renderTranslateQuerySql <-
 getDataFromResultsDatabaseSchema <- function(dataSource,
                                              cohortId = NULL,
                                              conceptId = NULL,
+                                             coConceptId = NULL,
                                              conceptId1 = NULL,
                                              conceptSetId = NULL,
                                              databaseId = NULL,
@@ -297,6 +298,7 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
     object <- c(
       "cohortId",
       "conceptId",
+      "coConceptId",
       "databaseId",
       "conceptSetId",
       "startDay",
@@ -349,6 +351,7 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
               {@database_id !=''} ? {AND database_id in (@database_id) \n}
               {@cohort_id !=''} ? {AND cohort_id in (@cohort_id) \n}
               {@concept_id !=''} ? {AND concept_id in (@concept_id) \n}
+              {@co_concept_id !=''} ? {AND co_concept_id in (@co_concept_id) \n}
               {@concept_set_id !=''} ? {AND concept_set_id in (@concept_set_id) \n}
               {@concept_id_1 !=''} ? {AND (concept_id_1 IN (@concept_ids) OR concept_id_2 IN (@concept_ids)) \n}
               {@start_day !=''} ? {AND start_day IN (@start_day) \n}
@@ -369,6 +372,7 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
         data_table = camelCaseToSnakeCase(dataTableName),
         database_id = quoteLiterals(databaseId),
         concept_id = conceptId,
+        co_concept_id = coConceptId,
         concept_set_id = conceptSetId,
         concept_id_1 = conceptId1,
         # for concept relationship only
@@ -845,7 +849,7 @@ getResultsConceptSubjects <- function(dataSource,
 #' 
 #' @param getConceptMappingCount  Do you want concept mapping count?
 #' 
-#' @param getFixedTimeSeries Do you want a conceptIds database level time series data reported on actual dates?
+#' @param getFixedTimeSeries Do you want a conceptIds datasource level time series data reported on actual dates?
 #' 
 #' @param getRelativeTimeSeries Do you want cohort level time series data reported relative to cohort start date?
 #'
@@ -1366,40 +1370,6 @@ getResultsOrphanConcept <- function(dataSource,
 }
 
 
-#' Returns concept cooccurrence for a list of cohortIds and databaseIds combinations
-#'
-#' @description
-#' Given a list of cohortIds, databaseIds combinations the function returns
-#' precomputed concept cooccurrence conceptIds for the combination.
-#'
-#' @template DataSource
-#'
-#' @template CohortIds
-#' 
-#' @template ConceptId
-#'
-#' @template DatabaseIds
-#'
-#' @return
-#' Returns a data frame (tibble)
-#'
-#' @export
-getResultsConceptCooccurrence <- function(dataSource,
-                                          databaseIds = NULL,
-                                          cohortIds = NULL,
-                                          conceptIds = NULL) {
-  data <- getDataFromResultsDatabaseSchema(
-    dataSource,
-    cohortId = cohortIds,
-    databaseId = databaseIds,
-    dataTableName = "indexEventBreakdown"
-  )
-  browser()
-  #needs to be post processed
-  return(data)
-}
-
-
 getConceptSetDetailsFromCohortDefinition <-
   function(cohortDefinitionExpression) {
     if ("expression" %in% names(cohortDefinitionExpression)) {
@@ -1507,16 +1477,125 @@ getVocabularyRelationship <- function(dataSource) {
 #' Returns data from cohort table of Cohort Diagnostics results data model
 #'
 #' @template DataSource
+#' 
+#' @template CohortIds
 #'
 #' @return
 #' Returns a data frame (tibble)
 #'
 #' @export
-getResultsCohort <- function(dataSource) {
+getResultsCohort <- function(dataSource, cohortIds = NULL) {
   data <- getDataFromResultsDatabaseSchema(dataSource,
-                                           dataTableName = "cohort")
+                                           dataTableName = "cohort", 
+                                           cohortId = cohortIds)
   return(data)
 }
+
+
+# Database ----
+#' Returns data from Database table of Cohort Diagnostics results data model
+#'
+#' @description
+#' Returns data from Database table of Cohort Diagnostics results data model
+#'
+#' @template DataSource
+#' 
+#' @template DatabaseIds
+#'
+#' @return
+#' Returns a data frame (tibble)
+#'
+#' @export
+getResultsDatabase <- function(dataSource, 
+                               databaseIds = NULL) {
+  data <- getDataFromResultsDatabaseSchema(dataSource,
+                                           dataTableName = "database", 
+                                           databaseId = databaseIds)
+  return(data)
+}
+
+
+# Concept Sets ----
+#' Returns data from Concept sets table of Cohort Diagnostics results data model
+#'
+#' @description
+#' Returns data from Concept sets table of Cohort Diagnostics results data model
+#'
+#' @template DataSource
+#' 
+#' @template CohortIds
+#' 
+#' @template ConceptSetIds
+#'
+#' @return
+#' Returns a data frame (tibble)
+#'
+#' @export
+getResultsConceptSet <- function(dataSource,
+                                 cohortIds = NULL,
+                                 conceptSetIds = NULL) {
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource,
+    dataTableName = "conceptSets",
+    cohortId = cohortIds,
+    conceptSetId = conceptSetIds
+  )
+  return(data)
+}
+
+
+# Concept Set expression
+#' Returns a Concept Set expression (R-object) from a cohort definition
+#'
+#' @description
+#' Returns a Concept Set expression from a cohort definition
+#'
+#' @template DataSource
+#'
+#' @template CohortId
+#'
+#' @template ConceptSetId
+#'
+#' @return
+#' Returns a data frame (tibble)
+#'
+#' @export
+getResultsConceptSetExpression <- function(dataSource,
+                                           cohortId,
+                                           conceptSetId) {
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource,
+    dataTableName = "conceptSet",
+    cohortId = cohortId,
+    conceptSetId = conceptSetId
+  )
+  if (length(cohortId) > 0) {
+    stop("Please only provide one integer value for cohortId")
+  }
+  if (length(cohortId) > 0) {
+    stop("Please only provide one integer value for conceptSetId")
+  }
+  if (is.null(data)) {
+    warning(
+      paste0(
+        "No concept set returned for the combination of cohort id = ",
+        cohortId,
+        " and concept set id = ",
+        conceptSetId
+      )
+    )
+  }
+  if (nrow(data) > 1) {
+    stop("More than one expression returned. Please check the integerity of your results.")
+  }
+  
+  expression <- data %>%
+    dplyr::pull(.data$concept_set_expression) %>%
+    RJSONIO::fromJSON(digits = 23)
+  
+  return(expression)
+}
+
 
 
 #' Returns data from cohort_count table of Cohort Diagnostics results data model
@@ -1727,10 +1806,13 @@ getResultsFixedTimeSeries <- function(dataSource,
         records = .data$records_1 / .data$records_2,
         subjects = .data$subjects_1 / .data$subjects_2,
         personDays = .data$personDays_1 / .data$personDays_2,
+        personDaysInc = NA,
         recordsStart = .data$recordsStart_1 / .data$recordsStart_2,
         subjectsStart = .data$subjectsStart_1 / .data$subjectsStart_2,
+        subjctsStartInc = NA,
         recordsEnd = .data$recordsEnd_1 / .data$recordsEnd_2,
-        subjectsEnd = .data$subjectsEnd_1 / .data$subjectsEnd_2
+        subjectsEnd = .data$subjectsEnd_1 / .data$subjectsEnd_2,
+        subjectsEndInc = NA
       ) %>%
       dplyr::select(-dplyr::ends_with("1")) %>%
       dplyr::select(-dplyr::ends_with("2")) %>%
@@ -1740,7 +1822,7 @@ getResultsFixedTimeSeries <- function(dataSource,
   
   timeSeriesDescription <- dplyr::tibble(
     seriesType = c('T1', 'T2', 'T3', 'T4', 'T5', 'T6',
-                   'R1', 'R2'),
+                   'R1'),
     seriesTypeShort = c(
       'Subjects cohort period',
       'Subjects observation period',
@@ -1748,8 +1830,7 @@ getResultsFixedTimeSeries <- function(dataSource,
       'Subjects cohort embedded in period',
       'Subjects observation embedded in period',
       'Persons observation embedded in period',
-      'Prevalence Proportion',
-      'Prevalence Rate'
+      'Percent of Subjects among persons in period'
     ),
     seriesTypeLong = c(
       'Subjects in the cohort who have atleast one cohort day in calendar period',
@@ -1758,8 +1839,7 @@ getResultsFixedTimeSeries <- function(dataSource,
       'Subjects in the cohorts whose cohort period are embedded within calendar period',
       'Subjects in the cohorts whose observation period is embedded within calendar period',
       'Persons in the observation table whose observation period is embedded within calendar period',
-      'Prevalence proportion - count of subjects in the cohort who have atleast one cohort day in calendar period divided by count of persons in the data source who have atleast one cohort day in calendar period',
-      'Prevalence rate - calendar period persons days for subjects in the cohort who have atleast one cohort day in calendar period divided by calendar period person days for all persons in the data source who have atleast one cohort day in calendar period * 1,000 * 365t'
+      'Percent of persons in the datasource who have atleast one cohort day in calendar period that met the cohort definition rules in that cohort period'
     )
   )
   
@@ -1876,6 +1956,10 @@ getResultsIncidenceRate <- function(dataSource,
 #' @template DataSource
 #'
 #' @template CohortIds
+#' 
+#' @template ConceptIds
+#' 
+#' @param CoConceptIds A vector of integers representing co-concept ids
 #'
 #' @template DatabaseIds
 #'
@@ -1889,13 +1973,15 @@ getResultsIndexEventBreakdown <- function(dataSource,
                                           cohortIds = NULL,
                                           databaseIds = NULL,
                                           conceptIds = NULL,
+                                          coConceptIds = 0,
                                           daysRelativeIndex = 0) {
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
     cohortId = cohortIds,
     databaseId = databaseIds,
     dataTableName = "indexEventBreakdown",
-    conceptId = conceptIds
+    conceptId = conceptIds,
+    coConceptId = coConceptIds
   )
   return(data)
 }
