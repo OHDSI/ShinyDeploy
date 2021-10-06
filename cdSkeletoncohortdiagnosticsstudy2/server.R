@@ -1993,37 +1993,34 @@ shiny::shinyServer(function(input, output, session) {
     return(dataTable)
   })
   
+  #activeSelected----
   activeSelected <- reactiveVal(list())
   observe({
+    if (any(!is.null(consolidatedCohortIdTarget()),
+            !is.null(consolidatedConceptSetIdTarget()),
+            !is.null(consolidatedDatabaseIdTarget()),
+            !is.null(consolidatedConceptIdTarget()))) {
     tempList <- list()
     tempList$cohortId <- consolidatedCohortIdTarget()
     tempList$conceptSetId <-
       consolidatedConceptSetIdTarget()
     tempList$databaseId <-
       consolidatedDatabaseIdTarget()
-    if (is.null(consolidatedConceptIdTarget())) {
-      tempList$conceptId <- consolidatedConceptIdComparator()
-    } else {
-      tempList$conceptId <- consolidatedConceptIdTarget()
+    tempList$conceptId <- consolidatedConceptIdTarget()
+    
+    if (any(!is.null(consolidatedCohortIdComparator()),
+            !is.null(consolidatedConceptSetIdComparator()),
+            !is.null(consolidatedConceptIdComparator()))) {
+      #there is no databaseId for comparator.
+      tempList$cohortId <-
+        consolidatedCohortIdComparator()
+      tempList$conceptSetId <-
+        consolidatedConceptSetIdComparator()
+      tempList$conceptSetId <-
+        consolidatedConceptIdComparator()
     }
     activeSelected(tempList)
-  })
-  
-  observe({
-    tempList <- list()
-    tempList$cohortId <-
-      consolidatedCohortIdComparator()
-    tempList$conceptSetId <-
-      consolidatedConceptSetIdComparator()
-    tempList$databaseId <-
-      consolidatedDatabaseIdTarget()
-    if (is.null(consolidatedConceptIdComparator())) {
-      tempList$conceptId <- consolidatedConceptIdTarget()
-    } else {
-      tempList$conceptId <- consolidatedConceptIdComparator()
-    }
-    activeSelected(tempList)
-  })
+  }})
   
   ##getMetadataForConceptId----
   getMetadataForConceptId <- shiny::reactive(x = {
@@ -2051,7 +2048,6 @@ shiny::shinyServer(function(input, output, session) {
                        activeSelected()$cohortId),
       value = 0
     )
-    
     data <-
       getConceptMetadata(
         dataSource = dataSource,
@@ -3204,10 +3200,6 @@ shiny::shinyServer(function(input, output, session) {
       data <- data$databaseConceptIdYearLevelTsibble %>% 
         dplyr::filter(.data$conceptId == activeSelected()$conceptId)
     }
-    #!!!!!!!!########## filter domain table and domain field in data$cdmTables - default "All"
-    data <- data %>% 
-      dplyr::filter(.data$domainTableShort == "All") %>% #need input object
-      dplyr::filter(.data$domainFieldShort == "All") #need input object
     progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(
@@ -3225,7 +3217,6 @@ shiny::shinyServer(function(input, output, session) {
     
     tsibbleDataFromSTLModel <- getStlModelOutputForTsibbleDataValueFields(tsibbleData = data,
                                                                           valueFields = c("records", "persons"))
-    
 
     conceptName <- getMetadataForConceptId()$concept %>% 
       dplyr::filter(.data$conceptId == activeSelected()$conceptId) %>% 
@@ -4340,7 +4331,6 @@ shiny::shinyServer(function(input, output, session) {
   )
   
   ##output: incidenceRatePlot----
-  #!!! put generate plot button to prevent reactive rendering of plot before user has finished selecting
   output$incidenceRatePlot <- ggiraph::renderggiraph(expr = {
     validate(need(
       length(consolidatedDatabaseIdTarget()) > 0,
@@ -4399,6 +4389,9 @@ shiny::shinyServer(function(input, output, session) {
   
   ##reactive: getFixedTimeSeriesTsibbleFiltered----
   getFixedTimeSeriesTsibbleFiltered <- reactive({
+    if (any(is.null(input$tabs), !input$tabs == "timeSeries")) {
+      return(NULL)
+    }
     data <- getFixedTimeSeriesTsibble()
     if (!doesObjectHaveData(data)) {
       return(NULL)
@@ -4448,7 +4441,6 @@ shiny::shinyServer(function(input, output, session) {
         .data$periodEnd
       )
     
-    ###!!! there is a bug here input$timeSeriesPeriodRangeFilter - min and max is returning 0
     if (any(
       input$timeSeriesPeriodRangeFilter[1] != 0,
       input$timeSeriesPeriodRangeFilter[2] != 0
@@ -4466,10 +4458,13 @@ shiny::shinyServer(function(input, output, session) {
         records = 0,
         subjects = 0,
         personDays = 0,
+        personDaysIn = 0,
         recordsStart = 0,
         subjectsStart = 0,
+        subjectsStartIn = 0,
         recordsEnd = 0,
-        subjectsEnd = 0
+        subjectsEnd = 0,
+        subjectsEndIn = 0
       )
     
     if (!doesObjectHaveData(data)) {
@@ -4482,6 +4477,9 @@ shiny::shinyServer(function(input, output, session) {
   getTimeSeriesDescription <- shiny::reactive({
     data <- getFixedTimeSeriesTsibble()
     if (!doesObjectHaveData(data)) {
+      return(NULL)
+    }
+    if (!doesObjectHaveData(input$timeSeriesAggregationPeriodSelection)) {
       return(NULL)
     }
     calendarIntervalFirstLetter <-
@@ -4497,8 +4495,7 @@ shiny::shinyServer(function(input, output, session) {
   output$timeSeriesTypeLong <- shiny::renderUI({
     timeSeriesDescription <- getTimeSeriesDescription()
     if (any(is.null(timeSeriesDescription),
-            nrow(timeSeriesDescription) == 0))
-    {
+            nrow(timeSeriesDescription) == 0)) {
       return(NULL)
     }
     seriesTypeLong <- timeSeriesDescription %>%
@@ -4512,8 +4509,7 @@ shiny::shinyServer(function(input, output, session) {
   shiny::observe({
     timeSeriesDescription <- getTimeSeriesDescription()
     if (any(is.null(timeSeriesDescription),
-            nrow(timeSeriesDescription) == 0))
-    {
+            nrow(timeSeriesDescription) == 0)) {
       return(NULL)
     }
     
@@ -4529,15 +4525,58 @@ shiny::shinyServer(function(input, output, session) {
     )
   })
   
+  
+  ##reactive: getTimeSeriesColumnNameCrosswalk----
+  getTimeSeriesColumnNameCrosswalk <- shiny::reactive({
+    data <- getFixedTimeSeriesTsibble()
+    if (!doesObjectHaveData(data)) {
+      return(NULL)
+    }
+    if (!doesObjectHaveData(input$timeSeriesAggregationPeriodSelection)) {
+      return(NULL)
+    }
+    calendarIntervalFirstLetter <-
+      tolower(substr(input$timeSeriesAggregationPeriodSelection, 1, 1))
+    data <- data[[calendarIntervalFirstLetter]]
+    timeSeriesPlotFilters <- attr(x = data,
+                                  which = "timeSeriesColumnNameCrosswalk")
+    if (any(is.null(timeSeriesPlotFilters),
+            nrow(timeSeriesPlotFilters) == 0)) {
+      return(NULL)
+    }
+    timeSeriesPlotFilters <- timeSeriesPlotFilters %>%
+      dplyr::arrange(.data$sequence)
+    return(timeSeriesPlotFilters)
+  })
+  
+  
+  ##pickerInput: timeSeriesPlotFilters (short)----
+  shiny::observe({
+    if (!doesObjectHaveData(getTimeSeriesColumnNameCrosswalk())) {
+      return(NULL)
+    }
+    data <- getTimeSeriesColumnNameCrosswalk() %>% 
+      dplyr::arrange(.data$sequence) %>% 
+      dplyr::pull(.data$longName) %>%
+      unique()
+    shinyWidgets::updatePickerInput(
+      session = session,
+      inputId = "timeSeriesPlotFilters",
+      choicesOpt = list(style = rep_len("color: black;", 999)),
+      choices = data,
+      selected = data[c(2,4,8)]
+    )
+  })
+  
   ##sliderInput: timeSeriesPeriodRangeFilter----
   shiny::observe({
-    #!!! should this be conditional on timeSeries tab selection? Otherwise,
-    #it is pulling time series data at start up
+    if (any(is.null(input$tabs), !input$tabs == "timeSeries")) {
+      return(NULL)
+    }
     calendarIntervalFirstLetter <-
       tolower(substr(input$timeSeriesAggregationPeriodSelection, 1, 1))
     data <- getFixedTimeSeriesTsibble()
-    if (is.null(data))
-    {
+    if (!doesObjectHaveData(data)) {
       return(NULL)
     }
     data <- data[[calendarIntervalFirstLetter]]
@@ -4565,14 +4604,13 @@ shiny::shinyServer(function(input, output, session) {
   
   ##reactive: getFixedTimeSeriesDataForTable----
   getFixedTimeSeriesDataForTable <- shiny::reactive({
-    if (any(
-      is.null(input$timeSeriesTypeFilter),
-      length(input$timeSeriesTypeFilter) == 0,
-      input$timeSeriesTypeFilter == ''
-    )) {
+    if (!doesObjectHaveData(input$timeSeriesTypeFilter)) {
       return(NULL)
     }
     timeSeriesDescription <- getTimeSeriesDescription()
+    if (!doesObjectHaveData(timeSeriesDescription)) {
+      return(NULL)
+    }
     data <- getFixedTimeSeriesTsibbleFiltered()
     validate(need(all(!is.null(data),
                       nrow(data) > 0),
@@ -4596,18 +4634,29 @@ shiny::shinyServer(function(input, output, session) {
   
   ##reactive: getFixedTimeSeriesDataForPlot----
   getFixedTimeSeriesDataForPlot <- shiny::reactive({
-    if (any(
-      is.null(input$timeSeriesTypeFilter),
-      length(input$timeSeriesTypeFilter) == 0,
-      input$timeSeriesTypeFilter == ''
-    )) {
+    if (!doesObjectHaveData(input$timeSeriesTypeFilter)) {
+      return(NULL)
+    }
+    timeSeriesColumnNameCrosswalk <- getTimeSeriesColumnNameCrosswalk()
+    if (!doesObjectHaveData(timeSeriesColumnNameCrosswalk)) {
       return(NULL)
     }
     timeSeriesDescription <- getTimeSeriesDescription()
+    if (!doesObjectHaveData(timeSeriesDescription)) {
+      return(NULL)
+    }
+    if (!doesObjectHaveData(input$timeSeriesPlotFilters)) {
+      return(NULL)
+    }
     data <- getFixedTimeSeriesTsibbleFiltered()
     validate(need(all(!is.null(data),
                       nrow(data) > 0),
                   "No timeseries data for the cohort."))
+    
+    selectedColumns <- getTimeSeriesColumnNameCrosswalk() %>% 
+      dplyr::filter(.data$longName %in% c(input$timeSeriesPlotFilters)) %>% 
+      dplyr::pull(.data$shortName)
+    
     data <- data %>%
       dplyr::inner_join(
         timeSeriesDescription %>%
@@ -4620,11 +4669,8 @@ shiny::shinyServer(function(input, output, session) {
         .data$cohortId,
         .data$seriesType,
         .data$periodBegin,
-        titleCaseToCamelCase(input$timeSeriesPlotFilters)
-      ) 
-    # %>%
-    #   dplyr::rename(value = titleCaseToCamelCase(input$timeSeriesPlotFilters))
-    data <- data %>%
+        titleCaseToCamelCase(selectedColumns)
+      ) %>%
       dplyr::left_join(
         cohort %>%
           dplyr::select(.data$shortName,
@@ -4643,21 +4689,14 @@ shiny::shinyServer(function(input, output, session) {
           .data$seriesType
         ),
         index = .data$periodBegin
-      ) %>%
-      tsibble::fill_gaps(value = 0)
+      )
     return(data)
   })
   
   ##output: fixedTimeSeriesTable----
-  ####!!! conditional on input$timeSeriesTypeFilter having a value?
   output$fixedTimeSeriesTable <- DT::renderDataTable({
-    validate(need(
-      all(
-        !is.null(input$timeSeriesTypeFilter),
-        length(input$timeSeriesTypeFilter) > 0,
-        input$timeSeriesTypeFilter != ''
-      ),
-      "Please select time series type."
+    validate(need(doesObjectHaveData(input$timeSeriesTypeFilter),
+                  "Please select time series type."
     ))
     
     data <- getFixedTimeSeriesDataForTable()
@@ -4690,43 +4729,46 @@ shiny::shinyServer(function(input, output, session) {
     )
     return(dataTable)
   })
-  
-  
+
   ##output: fixedTimeSeriesPlot----
   output$fixedTimeSeriesPlot <- plotly::renderPlotly ({
-    validate(need(
-      all(
-        !is.null(input$timeSeriesTypeFilter),
-        length(input$timeSeriesTypeFilter) > 0,
-        input$timeSeriesTypeFilter != ''
-      ),
+    validate(need(doesObjectHaveData(input$timeSeriesTypeFilter),
       "Please select time series type."
     ))
     data <- getFixedTimeSeriesDataForPlot()
-    validate(need(
-      all(!is.null(data),
-          nrow(data) > 0),
+    validate(need(doesObjectHaveData(data),
       "No timeseries data for the cohort of this series type"
     ))
-    validate(need(titleCaseToCamelCase(input$timeSeriesPlotFilters) %in% colnames(data),
-      paste0(paste0(input$timeSeriesPlotFilters, collapse = ","), " not found in tsibble")
+    
+    longNames <- getTimeSeriesColumnNameCrosswalk() %>% 
+      dplyr::filter(.data$longName %in% c(input$timeSeriesPlotFilters)) %>% 
+      dplyr::pull(.data$longName) %>% 
+      titleCaseToCamelCase()
+    shortNames <- getTimeSeriesColumnNameCrosswalk() %>% 
+      dplyr::filter(.data$longName %in% c(input$timeSeriesPlotFilters)) %>% 
+      dplyr::pull(.data$shortName)
+    
+    validate(need(titleCaseToCamelCase(shortNames) %in% colnames(data),
+      paste0(paste0(shortNames, collapse = ","), " not found in tsibble")
     ))
+    renameDf <- getTimeSeriesColumnNameCrosswalk() %>% 
+      dplyr::mutate(longName = titleCaseToCamelCase(.data$longName)) %>% 
+      dplyr::select(.data$shortName, .data$longName)
+    
+    for (i in (1:nrow(renameDf))) {
+      if (renameDf[i,]$shortName %in% colnames(data)) {
+        data <- data %>%
+          dplyr::rename(!!as.name(renameDf[i,]$longName) := dplyr::all_of(renameDf[i,]$shortName))
+      }
+    }
     tsibbleDataFromSTLModel <- getStlModelOutputForTsibbleDataValueFields(tsibbleData = data, 
-                                                      valueFields = titleCaseToCamelCase(input$timeSeriesPlotFilters))
+                                                      valueFields = titleCaseToCamelCase(longNames))
     plot <- plotTimeSeriesFromTsibble(
       tsibbleData = tsibbleDataFromSTLModel,
-      plotFilters = titleCaseToCamelCase(input$timeSeriesPlotFilters),
+      plotFilters = longNames,
       indexAggregationType = input$timeSeriesAggregationPeriodSelection,
       timeSeriesPeriodRangeFilter = input$timeSeriesPeriodRangeFilter
     )
-    
-    # distinctCohortShortName <- c()
-    # for (i in 1:length(tsibbleDataFromSTLModel)) {
-    #   data  <- tsibbleDataFromSTLModel[[i]]$cohortShortName %>% unique()
-    #   distinctCohortShortName <- union(distinctCohortShortName,data)
-    # }
-    # 
-    # plot <- plotly::ggplotly(plot)
     return(plot)
   })
   
@@ -4854,7 +4896,7 @@ shiny::shinyServer(function(input, output, session) {
     }
     indexEventBreakdown <-
       getResultsIndexEventBreakdown(dataSource = dataSource,
-                                    cohortId = consolidatedCohortIdTarget(),
+                                    cohortIds = consolidatedCohortIdTarget(),
                                     databaseIds = consolidatedDatabaseIdTarget(),
                                     daysRelativeIndex = 0) #!! in new design, we have multiple daysRelativeIndex
     if (!doesObjectHaveData(indexEventBreakdown)) {
@@ -4934,7 +4976,20 @@ shiny::shinyServer(function(input, output, session) {
     }
     data <- data %>%
       dplyr::filter(.data$conceptId > 0) %>%
-      dplyr::arrange(.data$databaseId) %>%
+      dplyr::arrange(.data$databaseId) 
+    
+    if (input$indexEventBreakdownTableFilter == "Records") {
+      data <- data %>%
+        dplyr::mutate(databaseId = paste0(.data$databaseId, " (n = ",
+                                          scales::comma(.data$cohortEntries),
+                                          ")"))
+    } else if (input$indexEventBreakdownTableFilter == "Persons") {
+      data <- data %>%
+        dplyr::mutate(databaseId = paste0(.data$databaseId, " (n = ",
+                                          scales::comma(.data$cohortSubjects),
+                                          ")"))
+    }
+    data <- data %>% 
       dplyr::select(
         .data$databaseId,
         .data$cohortId,
@@ -5062,20 +5117,21 @@ shiny::shinyServer(function(input, output, session) {
           "No index event breakdown data for the chosen combination."
         )
       )
-      data <- data %>% 
-        dplyr::select(-.data$cohortId)
       maxCount <- getMaxValueForStringMatchedColumnsInDataFrame(data = data, string = "value")
       databaseIds <- input$selectedDatabaseIds
       
       personCount <- cohortCount %>% 
         dplyr::filter(.data$cohortId %in% c(data$cohortId %>% unique())) %>% 
         dplyr::filter(.data$databaseId %in% c(consolidatedDatabaseIdTarget())) %>% 
-        dplyr::select(.data$databaseId, .data$cohortSubjects)
+        dplyr::pull(.data$cohortSubjects)
       
       recordCount <- cohortCount %>% 
         dplyr::filter(.data$cohortId %in% c(data$cohortId %>% unique())) %>% 
         dplyr::filter(.data$databaseId %in% c(consolidatedDatabaseIdTarget())) %>% 
-        dplyr::pull(.data$databaseId, .data$cohortEntries)
+        dplyr::pull(.data$cohortEntries)
+      
+      data <- data %>%
+        dplyr::select(-.data$cohortId)
       
       noOfMergeColumns <- 1
       if (input$indexEventBreakdownTableFilter == "Records") {
@@ -5357,9 +5413,6 @@ shiny::shinyServer(function(input, output, session) {
         data <- data$databaseConceptIdYearLevelTsibble %>% 
           dplyr::filter(.data$conceptId == consolidatedConceptIdTarget())
       }
-      data <- data %>% 
-        dplyr::filter(.data$domainTableShort == "All") %>% #need input object
-        dplyr::filter(.data$domainFieldShort == "All") #need input object
       validate(need(
         all(!is.null(data),
             nrow(data) > 0),
@@ -5529,11 +5582,22 @@ shiny::shinyServer(function(input, output, session) {
     if (!doesObjectHaveData(data)) {
       return(NULL)
     }
+    
     # Apply Pivot Longer
     pivotColumns <- c()
     if (input$visitContextPersonOrRecords == 'Person') {
+      data <- data %>% 
+        dplyr::inner_join(cohortCount) %>% 
+        dplyr::mutate(databaseId = paste0(.data$databaseId, " (n = ",
+                                    scales::comma(.data$cohortSubjects),
+                                    ")"))
       pivotColumns <- c("subjects")
     } else {
+      data <- data %>% 
+        dplyr::inner_join(cohortCount) %>% 
+        dplyr::mutate(databaseId = paste0(.data$databaseId, " (n = ",
+                                          scales::comma(.data$cohortEntries),
+                                          ")"))
       pivotColumns <- c("records")
     }
     data <- data %>%
@@ -6014,11 +6078,8 @@ shiny::shinyServer(function(input, output, session) {
     covariatesTofilter <-
       getMultipleCharacterizationData()$covariateRef
     
-    if (all(
-      !is.null(input$conceptSetsSelectedCohortLeft),
-      length(input$conceptSetsSelectedCohortLeft) > 0,
-      input$conceptSetsSelectedCohortLeft != ""
-    )) {
+    if (all(doesObjectHaveData(input$conceptSetsSelectedCohortLeft),
+            doesObjectHaveData(getResolvedConceptsTarget()))) {
       covariatesTofilter <- covariatesTofilter  %>%
         dplyr::inner_join(
           getResolvedConceptsTarget() %>%
@@ -6675,19 +6736,39 @@ shiny::shinyServer(function(input, output, session) {
   ## Compare Characterization/Temporal Characterization ------
   ## Shared----
   ###getCompareCharacterizationAnalysisNameFilter----
+  
+  getCompareCharacterizationDomainNameFilter <-
+    shiny::reactive(x = {
+      return(input$compareCharacterizationDomainNameFilter)
+    })
+  
   getCompareCharacterizationAnalysisNameFilter <-
     shiny::reactive(x = {
       return(input$compareCharacterizationAnalysisNameFilter)
     })
   
-  
+  ###Update: compareCharacterizationDomainNameFilter----
+  shiny::observe({
+    data <- getCompareCharacterizationData()
+    if (doesObjectHaveData(data)) {
+      subset <- data$domainId %>% unique() %>% sort()
+      shinyWidgets::updatePickerInput(
+        session = session,
+        inputId = "compareCharacterizationDomainNameFilter",
+        choicesOpt = list(style = rep_len("color: black;", 999)),
+        choices = subset,
+        selected = subset
+      )
+    }
+  })
   
   ###Update: compareCharacterizationAnalysisNameFilter----
   shiny::observe({
     data <- getCompareCharacterizationData()
-    if (all(!is.null(data),
-            nrow(data) > 0)) {
-      subset <- data$analysisName %>% unique() %>% sort()
+    if (doesObjectHaveData(data)) {
+      subset <- data %>% 
+        dplyr::filter(.data$domainId %in% getCompareCharacterizationDomainNameFilter()) %>% 
+        dplyr::pull(.data$analysisName) %>% unique() %>% sort()
       shinyWidgets::updatePickerInput(
         session = session,
         inputId = "compareCharacterizationAnalysisNameFilter",
@@ -6697,8 +6778,6 @@ shiny::shinyServer(function(input, output, session) {
       )
     }
   })
-  
-
   
   ###getCompareTemporalCharacterizationDomainNameFilter----
   getCompareTemporalCharacterizationDomainNameFilter <-
@@ -6947,6 +7026,10 @@ shiny::shinyServer(function(input, output, session) {
     if (!doesObjectHaveData(data)) {
       return(NULL)
     }
+    
+    data <- data %>% 
+      dplyr::filter(.data$domainId  %in% getCompareCharacterizationDomainNameFilter()) %>% 
+      dplyr::filter(.data$analysisName  %in% getCompareCharacterizationAnalysisNameFilter())
     return(data)
   })
   
@@ -6971,6 +7054,7 @@ shiny::shinyServer(function(input, output, session) {
       dplyr::arrange(.data$sortOrder) %>%
       dplyr::select(-.data$sortOrder) %>%
       dplyr::select(-.data$cohortId1,-.data$cohortId2)
+    
     return(data)
   })
   
@@ -6982,15 +7066,6 @@ shiny::shinyServer(function(input, output, session) {
     data <- getCompareCharacterizationDataFiltered()
     if (!doesObjectHaveData(data)) {
       return(NULL)
-    }
-    if (all(
-      !is.null(getCompareCharacterizationAnalysisNameFilter()),
-      getCompareCharacterizationAnalysisNameFilter() != "",
-      length(getCompareCharacterizationAnalysisNameFilter()) > 0
-    )) {
-      data <- data %>% 
-        dplyr::filter(.data$analysisName %in% getCompareCharacterizationAnalysisNameFilter())
-      
     }
    
     # if (all(
@@ -7486,25 +7561,10 @@ shiny::shinyServer(function(input, output, session) {
           dplyr::filter(.data$isBinary == 'N')
       }
       
-      if (all(
-        !is.null(getCompareTemporalCharacterizationAnalysisNameFilter()),
-        length(getCompareTemporalCharacterizationAnalysisNameFilter()) > 0,
-        getCompareTemporalCharacterizationAnalysisNameFilter() != ""
-      )) {
-        data <- data %>%
-          dplyr::filter(
-            .data$analysisName %in% getCompareTemporalCharacterizationAnalysisNameFilter()
-          )
-      }
+      data <- data %>%
+        dplyr::filter(.data$domainId %in% getCompareTemporalCharacterizationDomainNameFilter()) %>% 
+        dplyr::filter(.data$analysisName %in% getCompareTemporalCharacterizationAnalysisNameFilter())
       
-      if (all(
-        !is.null(getCompareTemporalCharacterizationDomainNameFilter()),
-        length(getCompareTemporalCharacterizationDomainNameFilter()) > 0,
-        getCompareTemporalCharacterizationDomainNameFilter() != ""
-      )) {
-        data <- data %>%
-          dplyr::filter(.data$domainId %in% getCompareTemporalCharacterizationDomainNameFilter())
-      }
       
       if (all(
         !is.null(input$conceptSetsSelectedCohortLeft),
@@ -7921,8 +7981,7 @@ shiny::shinyServer(function(input, output, session) {
       plot <-
         plotTemporalCompareStandardizedDifference(
           balance = data,
-          shortNameRef = cohort
-        )
+          shortNameRef = cohort)
       return(plot)
     })
   

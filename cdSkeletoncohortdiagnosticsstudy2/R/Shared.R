@@ -294,6 +294,7 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
                                              daysRelativeIndex = NULL,
                                              startDay = NULL,
                                              endDay = NULL,
+                                             seriesType = NULL,
                                              dataTableName) {
   if (is(dataSource, "environment")) {
     object <- c(
@@ -305,7 +306,8 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
       "startDay",
       "endDay",
       "daysRelativeIndex",
-      "domainTable"
+      "domainTable",
+      "seriesType"
     )
     if (!is.null(vocabularyDatabaseSchema)) {
       paste0(
@@ -333,7 +335,6 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
     }
     if (doesObjectHaveData(conceptId1)) {
       #for concept relationship only
-      browser()
       data <- data %>%
         dplyr::filter(.data$conceptId1 %in% conceptId |
                         .data$conceptId2 %in% conceptId)
@@ -355,10 +356,11 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
               {@concept_id !=''} ? {AND concept_id in (@concept_id) \n}
               {@co_concept_id !=''} ? {AND co_concept_id in (@co_concept_id) \n}
               {@concept_set_id !=''} ? {AND concept_set_id in (@concept_set_id) \n}
-              {@concept_id_1 !=''} ? {AND (concept_id_1 IN (@concept_ids) OR concept_id_2 IN (@concept_ids)) \n}
+              {@concept_id_1 !=''} ? {AND (concept_id_1 IN (@concept_id_1) OR concept_id_2 IN (@concept_id_1)) \n}
               {@start_day !=''} ? {AND start_day IN (@start_day) \n}
               {@end_day !=''} ? {AND end_day IN (@end_day) \n}
               {@days_relative_index !=''} ? {AND end_day IN (@days_relative_index) \n}
+              {@series_type !=''} ? {AND series_type IN (@series_type) \n}
               {@domain_table !=''} ? {AND domain_table IN (@domain_table) \n}
             ;"
     if (!is.null(vocabularyDatabaseSchema)) {
@@ -381,8 +383,9 @@ getDataFromResultsDatabaseSchema <- function(dataSource,
         # for concept relationship only
         start_day = startDay,
         end_day = endDay,
-        domain_table = domainTable,
+        domain_table = quoteLiterals(domainTable),
         days_relative_index = daysRelativeIndex,
+        series_type = quoteLiterals(seriesType),
         snakeCaseToCamelCase = TRUE
       )
   }
@@ -792,11 +795,11 @@ getResultsConceptMapping <- function(dataSource,
   intersectOfTwo <- domainTables
   if (!is.null(domainTables)) {
     domainTable <- getDomainInformation()$long
-    intersectOfTwo <- intersect(x = tolower(domainTables),
-                                y = domainTable$domainTable) %>% 
+    intersectOfTwo <- intersect(x = domainTables,
+                                y = c("All", domainTable$domainTable)) %>% 
       unique()
-    setdiffOfTwo <- setdiff(x = tolower(domainTables),
-                            y = domainTable$domainTable) %>% 
+    setdiffOfTwo <- setdiff(x = domainTables,
+                            y = c("All", domainTable$domainTable)) %>% 
       unique()
     if (length(setdiffOfTwo) > 1) {
       warning(paste0("Cant match the following in domainTables parameter: ", paste(setdiffOfTwo, collapse = ", ")))
@@ -807,10 +810,6 @@ getResultsConceptMapping <- function(dataSource,
         warning(paste0("Returning results for following domain tables: ", paste(intersectOfTwo, collapse = ", ")))
       }
     }
-    intersectOfTwo <- domainTable %>% 
-      dplyr::filter(.data$domainTable %in% c(intersectOfTwo)) %>% 
-      dplyr::pull(.data$domainTableShort) %>% 
-      unique()
   }
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
@@ -960,7 +959,6 @@ getConceptMetadata <- function(dataSource,
       dplyr::distinct() %>%
       dplyr::arrange(.data$conceptId) %>% 
       dplyr::group_by(.data$referenceConceptId, .data$conceptId)
-    browser()
     
     #!!!!!!!!! need to collapse relationshipId - to avoid duplication. need to make them come with line break
     # %>% 
@@ -1016,7 +1014,7 @@ getConceptMetadata <- function(dataSource,
     data$conceptSynonym <- getConceptSynonym(
       dataSource = dataSource,
       vocabularyDatabaseSchema = vocabularyDatabaseSchema,
-      conceptIds = conceptIds
+      conceptId = conceptIds
     ) %>%
       dplyr::distinct()
   }
@@ -1104,11 +1102,6 @@ getConceptMetadata <- function(dataSource,
       if (getFixedTimeSeries) {
         data$databaseConceptIdYearMonthLevelTsibble <-
           data$databaseConceptCountDetails %>%
-          dplyr::rename("domainTableShort" = .data$domainTable) %>%
-          dplyr::rename("domainFieldShort" = .data$domainField) %>%
-          dplyr::filter(
-            .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
-          ) %>%
           dplyr::filter(.data$eventYear > 0, .data$eventMonth > 0) %>%
           dplyr::mutate(periodBegin = lubridate::as_date(paste0(
             .data$eventYear,
@@ -1119,8 +1112,6 @@ getConceptMetadata <- function(dataSource,
           dplyr::select(
             .data$conceptId,
             .data$databaseId,
-            .data$domainFieldShort,
-            .data$domainTableShort,
             .data$periodBegin,
             .data$conceptCount,
             .data$subjectCount
@@ -1129,29 +1120,19 @@ getConceptMetadata <- function(dataSource,
           tsibble::as_tsibble(
             key = c(
               .data$conceptId,
-              .data$databaseId,
-              .data$domainFieldShort,
-              .data$domainTableShort
+              .data$databaseId
             ),
             index = .data$periodBegin
           ) %>%
           dplyr::arrange(
             .data$conceptId,
             .data$databaseId,
-            .data$domainFieldShort,
-            .data$domainTableShort,
             .data$periodBegin,
             .data$conceptCount,
             .data$subjectCount
           )
-        
         data$databaseConceptIdYearLevelTsibble <-
           data$databaseConceptCountDetails %>%
-          dplyr::rename("domainTableShort" = .data$domainTable) %>%
-          dplyr::rename("domainFieldShort" = .data$domainField) %>%
-          dplyr::filter(
-            .data$domainTableShort %in% c(data$cdmTables$domainTableShort %>% unique(), "All")
-          ) %>%
           dplyr::filter(.data$eventYear > 0, .data$eventMonth == 0) %>%
           dplyr::mutate(periodBegin = lubridate::as_date(paste0(.data$eventYear,
                                                                 "-",
@@ -1159,8 +1140,6 @@ getConceptMetadata <- function(dataSource,
           dplyr::select(
             .data$conceptId,
             .data$databaseId,
-            .data$domainFieldShort,
-            .data$domainTableShort,
             .data$periodBegin,
             .data$conceptCount,
             .data$subjectCount
@@ -1169,17 +1148,13 @@ getConceptMetadata <- function(dataSource,
           tsibble::as_tsibble(
             key = c(
               .data$conceptId,
-              .data$databaseId,
-              .data$domainFieldShort,
-              .data$domainTableShort
+              .data$databaseId
             ),
             index = .data$periodBegin
           ) %>%
           dplyr::arrange(
             .data$conceptId,
             .data$databaseId,
-            .data$domainFieldShort,
-            .data$domainTableShort,
             .data$periodBegin,
             .data$conceptCount,
             .data$subjectCount
@@ -1190,28 +1165,28 @@ getConceptMetadata <- function(dataSource,
   
   if (!is.null(cohortIds)) {
     if (getConceptCooccurrence) {
-      data$conceptCooccurrence <-
-        getResultsConceptCooccurrence(
-          dataSource = dataSource,
-          databaseIds = databaseIds,
-          cohortIds = cohortIds,
-          conceptIds = data$concept$conceptId %>% unique()
-        ) %>%
-        dplyr::select(
-          .data$conceptId,
-          .data$databaseId,
-          .data$cohortId,
-          .data$coConceptId,
-          .data$subjectCount
-        ) %>%
-        dplyr::rename("referenceConceptId" = .data$conceptId) %>%
-        dplyr::rename("conceptId" = .data$coConceptId) %>%
-        dplyr::arrange(
-          .data$referenceConceptId,
-          .data$databaseId,
-          .data$cohortId,
-          dplyr::desc(.data$subjectCount)
-        )
+      # data$conceptCooccurrence <-
+      #   getResultsConceptCooccurrence(
+      #     dataSource = dataSource,
+      #     databaseIds = databaseIds,
+      #     cohortIds = cohortIds,
+      #     conceptIds = data$concept$conceptId %>% unique()
+      #   ) %>%
+      #   dplyr::select(
+      #     .data$conceptId,
+      #     .data$databaseId,
+      #     .data$cohortId,
+      #     .data$coConceptId,
+      #     .data$subjectCount
+      #   ) %>%
+      #   dplyr::rename("referenceConceptId" = .data$conceptId) %>%
+      #   dplyr::rename("conceptId" = .data$coConceptId) %>%
+      #   dplyr::arrange(
+      #     .data$referenceConceptId,
+      #     .data$databaseId,
+      #     .data$cohortId,
+      #     dplyr::desc(.data$subjectCount)
+      #   )
     }
     if (getIndexEventCount) {
       data$indexEventBreakdown <-
@@ -1632,6 +1607,42 @@ getResultsConceptSetExpression <- function(dataSource,
 
 
 
+
+# Concept Set optimization ----
+#' Returns optimization recommendation for concept set expression
+#'
+#' @description
+#' Returns optimization recommendation for a selected concept set expression in the cohort definition
+#' and database id. Note: this optimization is pre-computed and may vary based on the vocabulary
+#' version that was used at the time of optimization.
+#'
+#' @template DataSource
+#'
+#' @template DatabaseIds
+#'
+#' @template CohortIds
+#'
+#' @template ConceptSetIds
+#'
+#' @return
+#' Returns a data frame (tibble)
+#'
+#' @export
+getOptimizedConceptSet <- function(dataSource,
+                                   databaseIds = NULL,
+                                   cohortIds = NULL,
+                                   conceptSetIds = NULL) {
+  data <- getDataFromResultsDatabaseSchema(
+    dataSource,
+    dataTableName = "conceptSetsOptimized",
+    databaseId = databaseIds,
+    cohortId = cohortIds,
+    conceptSetId = conceptSetIds
+  )
+  return(data)
+}
+
+
 #' Returns data from cohort_count table of Cohort Diagnostics results data model
 #'
 #' @description
@@ -1795,12 +1806,33 @@ getResultsCohortSummaryStats <- function(dataSource,
 #' @export
 getResultsFixedTimeSeries <- function(dataSource,
                                       cohortIds = NULL,
-                                      databaseIds = NULL) {
+                                      databaseIds = NULL,
+                                      seriesType = c('T1', 'T2', 'T3')) {
+  fixedTimeSeriesColumnNameLong <- dplyr::tibble(
+    shortName = c("records", "subjects", "personDays", 
+                  "subjectsStartIn", "personDaysIn", "subjectsEndIn", 
+                  "recordsStart", "subjectsStart", 
+                  "recordsEnd", "subjectsEnd"
+    ),
+    longName = c("Records Found Per Period",
+                 "Subjects Found Per Period",
+                 "Person Days Per Period", 
+                 "Incidence Subjects Per Period",
+                 "Incidence Person days Per Period",
+                 "Incident Subjects Ending Per Period",
+                 "Records Starting Per Period", 
+                 "Subjects Starting Per Period",
+                 "Records Ending Per Period", 
+                 "Subjects Ending Per Period"),
+    sequence = c(1,2,3,4,5,6,7,8,9,10)
+  ) %>% 
+    dplyr::arrange(.data$sequence)
   # cohortId = 0, represent all persons in observation_period
   data <- getDataFromResultsDatabaseSchema(
     dataSource,
     cohortId = c(cohortIds, 0) %>% unique(),
     databaseId = databaseIds,
+    seriesType = c('T1', 'T2', 'T3'),
     dataTableName = "timeSeries"
   )
   if (any(is.null(data),
@@ -1843,7 +1875,7 @@ getResultsFixedTimeSeries <- function(dataSource,
         personDaysIn = NA,
         recordsStart = .data$recordsStart_1 / .data$recordsStart_2,
         subjectsStart = .data$subjectsStart_1 / .data$subjectsStart_2,
-        subjctsStartIn = NA,
+        subjectsStartIn = NA,
         recordsEnd = .data$recordsEnd_1 / .data$recordsEnd_2,
         subjectsEnd = .data$subjectsEnd_1 / .data$subjectsEnd_2,
         subjectsEndIn = NA
@@ -1854,26 +1886,29 @@ getResultsFixedTimeSeries <- function(dataSource,
     data <- dplyr::bind_rows(data, r1)
   }
   
+  # commenting out time series segments that have persons/subject embedded within observation period, as it 
+  # does not seem to have value
   timeSeriesDescription <- dplyr::tibble(
-    seriesType = c('T1', 'T2', 'T3', 'T4', 'T5', 'T6',
+    seriesType = c('T1', 'T2', 'T3',# 'T4', 'T5', 'T6',
                    'R1'),
     seriesTypeShort = c(
-      'Subjects cohort period',
-      'Subjects observation period',
-      'Persons observed period',
-      'Subjects cohort embedded in period',
-      'Subjects observation embedded in period',
-      'Persons observation embedded in period',
+      'Subjects in data source limited to cohort period',
+      'Subjects in data source not limited to cohort period',
+      'Persons in data source',
+      # ,
+      # 'Subjects cohort embedded in period',
+      # 'Subjects observation embedded in period',
+      # 'Persons observation embedded in period',
       'Percent of Subjects among persons in period'
     ),
     seriesTypeLong = c(
       'Subjects in the cohort who have atleast one cohort day in calendar period',
       'Subjects in the cohort who have atleast one observation day in calendar period',
       'Persons in the data source who have atleast one observation day in calendar period',
-      'Subjects in the cohorts whose cohort period are embedded within calendar period',
-      'Subjects in the cohorts whose observation period is embedded within calendar period',
-      'Persons in the observation table whose observation period is embedded within calendar period',
-      'Percent of persons in the datasource who have atleast one cohort day in calendar period that met the cohort definition rules in that cohort period'
+      # 'Subjects in the cohorts whose cohort period are embedded within calendar period',
+      # 'Subjects in the cohorts whose observation period is embedded within calendar period',
+      # 'Persons in the observation table whose observation period is embedded within calendar period',
+      'Proportion of persons who met the cohort definition in the calendar period to persons in the observation period in the same calendar period'
     )
   )
   
@@ -1918,6 +1953,8 @@ getResultsFixedTimeSeries <- function(dataSource,
     dataList[[intervals[[i]]]] <- intervalData
     attr(x = dataList[[intervals[[i]]]],
          which = 'timeSeriesDescription') <- timeSeriesDescription
+    attr(x = dataList[[intervals[[i]]]],
+         which = 'timeSeriesColumnNameCrosswalk') <- fixedTimeSeriesColumnNameLong
   }
   return(dataList)
 }
@@ -3265,11 +3302,9 @@ getDomainInformation <- function(packageName = NULL) {
       pattern = " ",
       replacement = ""
     )
-  
   domains <- domains  %>%
     dplyr::mutate(isEraTable = stringr::str_detect(string = .data$domainTable,
                                                    pattern = 'era'))
-  
   data <- list()
   data$wide <- domains
   data$long <- dplyr::bind_rows(
