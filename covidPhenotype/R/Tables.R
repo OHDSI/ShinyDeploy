@@ -1,4 +1,5 @@
-#Prepare table 1 ----
+library(magrittr)
+
 prepareTable1 <- function(covariates,
                           pathToCsv = "Table1Specs.csv") {
   covariates <- covariates %>%
@@ -10,28 +11,12 @@ prepareTable1 <- function(covariates,
       )
     ))
   
-  covariates <- covariates %>%
-    dplyr::mutate(
-      covariateName = stringr::str_replace(
-        string = .data$covariateName,
-        pattern = "black or african american",
-        replacement = "Black or African American"
-      )
-    ) %>%
-    dplyr::mutate(
-      covariateName = stringr::str_replace(
-        string = .data$covariateName,
-        pattern = "white",
-        replacement = "White"
-      )
-    ) %>%
-    dplyr::mutate(
-      covariateName = stringr::str_replace(
-        string = .data$covariateName,
-        pattern = "asian",
-        replacement = "Asian"
-      )
-    )
+  covariates <- covariates %>% 
+    dplyr::mutate(covariateName = stringr::str_replace(string = .data$covariateName, 
+                                                       pattern = "black or african american", 
+                                                       replacement = "Black or African American")) %>% 
+    dplyr::mutate(covariateName = stringr::str_replace(string = .data$covariateName, pattern = "white", replacement = "White")) %>% 
+    dplyr::mutate(covariateName = stringr::str_replace(string = .data$covariateName, pattern = "asian", replacement = "Asian"))
   
   space <- "&nbsp;"
   specifications <- readr::read_csv(
@@ -117,7 +102,6 @@ prepareTable1 <- function(covariates,
 }
 
 
-#Prepare table for comparision ----
 prepareTable1Comp <- function(balance,
                               pathToCsv = "Table1Specs.csv") {
   balance <- balance %>%
@@ -194,7 +178,6 @@ prepareTable1Comp <- function(balance,
                                   balanceSubset$covariateName),
           MeanT = balanceSubset$mean1,
           MeanC = balanceSubset$mean2,
-          databaseId = balanceSubset$databaseId,
           StdDiff = balanceSubset$absStdDiff,
           header = 0,
           position = i
@@ -214,33 +197,17 @@ prepareTable1Comp <- function(balance,
       dplyr::distinct()
   }
   
-  resultsTable <- resultsTable %>%
-    dplyr::mutate(
-      characteristic = stringr::str_replace(
-        string = .data$characteristic,
-        pattern = "black or african american",
-        replacement = "Black or African American"
-      )
-    ) %>%
-    dplyr::mutate(
-      characteristic = stringr::str_replace(
-        string = .data$characteristic,
-        pattern = "white",
-        replacement = "White"
-      )
-    ) %>%
-    dplyr::mutate(
-      characteristic = stringr::str_replace(
-        string = .data$characteristic,
-        pattern = "asian",
-        replacement = "Asian"
-      )
-    )
+  resultsTable <- resultsTable %>% 
+    dplyr::mutate(characteristic = stringr::str_replace(string = .data$characteristic, 
+                                                        pattern = "black or african american", 
+                                                        replacement = "Black or African American")) %>% 
+    dplyr::mutate(characteristic = stringr::str_replace(string = .data$characteristic, pattern = "white", replacement = "White")) %>% 
+    dplyr::mutate(characteristic = stringr::str_replace(string = .data$characteristic, pattern = "asian", replacement = "Asian"))
   
   return(resultsTable)
 }
 
-# Compare cohort characteristics ----
+
 compareCohortCharacteristics <-
   function(characteristics1, characteristics2) {
     m <- dplyr::full_join(
@@ -254,10 +221,7 @@ compareCohortCharacteristics <-
         "analysisId",
         "isBinary",
         "analysisName",
-        "analysisNameLong",
-        "domainId",
-        "startDay",
-        "endDay"
+        "domainId"
       ),
       suffix = c("1", "2")
     ) %>%
@@ -269,7 +233,7 @@ compareCohortCharacteristics <-
     return(m)
   }
 
-#Compare temporal characteristics ----
+
 compareTemporalCohortCharacteristics <-
   function(characteristics1, characteristics2) {
     m <- characteristics1 %>%
@@ -283,7 +247,6 @@ compareTemporalCohortCharacteristics <-
           "analysisId",
           "isBinary",
           "analysisName",
-          "analysisNameLong",
           "domainId",
           "timeId",
           "startDay",
@@ -299,3 +262,4 @@ compareTemporalCohortCharacteristics <-
       dplyr::arrange(-abs(.data$stdDiff))
     return(m)
   }
+
