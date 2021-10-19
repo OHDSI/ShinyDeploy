@@ -21,6 +21,16 @@ library(plotly)
 library(shinycssloaders)
 library(shinydashboard)
 
+source("modules/summaryTable.R")
+source("modules/covariateSummary.R")
+source("modules/settings.R")
+source("modules/cutoff.R")
+source("modules/discrimination.R")
+source("modules/calibration.R")
+source("modules/netBenefit.R")
+source("modules/validation.R")
+source("modules/download.R")
+
 addInfo <- function(item, infoId) {
   infoTag <- tags$small(class = "badge pull-right action-button",
                         style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
@@ -69,252 +79,61 @@ ui <- shinydashboard::dashboardPage(skin = 'black',
                                                                 
                                         ),
                                         shinydashboard::tabItem(tabName = "Summary",
-                                                                
-                                                                
-                                                                                
-                                                                                # do this inside tabs:
+                                                                # do this inside tabs:
                                                                 shiny::tabsetPanel(id = 'allView',
-                                                                      
-                                                                              shiny::tabPanel("All Models Summary",  
-                                                                                              
-                                                                                              shiny::fluidRow(
-                                                                                                shiny::column(2,
-                                                                                                              shiny::h4('Filters'),
-                                                                                                              shiny::selectInput('modelSettingName', 'Model:', c('All',unique(as.character(summaryTable$Model)))),
-                                                                                                              shiny::selectInput('devDatabase', 'Development Database', c('All',unique(as.character(summaryTable$Dev)))),
-                                                                                                              shiny::selectInput('valDatabase', 'Validation Database', c('All',unique(as.character(summaryTable$Val)))),
-                                                                                                              shiny::selectInput('T', 'Target Cohort', c('All',unique(as.character(summaryTable$`T`)))),
-                                                                                                              shiny::selectInput('O', 'Outcome Cohort', c('All',unique(as.character(summaryTable$`O`)))),
-                                                                                                              shiny::selectInput('TAR', 'Time-at-risk end:', c('All',unique(as.character(summaryTable$TAR))))
-                                                                                                ),
-                                                                                                
-                                                                                                shiny::column(10, style = "background-color:#F3FAFC;",
-                                                                                                              shiny::div(DT::dataTableOutput('summaryTable'),
-                                                                                                                         style = "font-size:70%"))
-                                                                                )),
-                                                                              
-                                                                              shiny::tabPanel("Explore Selected Model",
-                                                                              shiny::tabsetPanel(id = 'singleView',
-                                                                              shiny::tabPanel("Development Settings",
-                                                                                              shiny::h3('Model Settings: ',
-                                                                                                        shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/index.html", target="_blank")
-                                                                                              ),
-                                                                                              DT::dataTableOutput('modelTable'),
-
-                                                                                              # shiny::tabPanel("Population Settings",
-                                                                                              shiny::h3('Population Settings: ',
-                                                                                                        shiny::a("help", href="https://ohdsi.github.io/PatientLevelPrediction/reference/createStudyPopulation.html", target="_blank")
-                                                                                              ),
-                                                                                              DT::dataTableOutput('populationTable'),
-
-                                                                                              # shiny::tabPanel("Covariate Settings",
-                                                                                              shiny::h3('Covariate Settings: ',
-                                                                                                        shiny::a("help", href="http://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html", target="_blank")
-                                                                                              ),
-                                                                                              DT::dataTableOutput('covariateTable'),
-
-
-                                                                                              shiny::h3("Hyper-parameters"),
-                                                                                              DT::dataTableOutput('hpTable'),
-                                                                                              shiny::h3("Attrition"),
-                                                                                              DT::dataTableOutput('attritionTable')),
-                                                                              
-                                                                              shiny::tabPanel("Model",
-                                                                                                      shiny::fluidRow(
-                                                                                                        shinydashboard::box( status = 'info',
-                                                                                                                             title = "Binary", solidHeader = TRUE,
-                                                                                                                             shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryBinary'))),
-                                                                                                        shinydashboard::box(status = 'info',
-                                                                                                                            title = "Measurements", solidHeader = TRUE,
-                                                                                                                            side = "right",
-                                                                                                                            shinycssloaders::withSpinner(plotly::plotlyOutput('covariateSummaryMeasure')))),
-                                                                                                      shiny::fluidRow(width=12,
-                                                                                                                      shinydashboard::box(status = 'info', width = 12,
-                                                                                                                                          title = "Covariates", solidHeader = TRUE,
-                                                                                                                                          DT::dataTableOutput('modelCovariateInfo'))),
-                                                                                                      shiny::fluidRow(width=12,
-                                                                                                                      shinydashboard::box(status = 'info', width = 12,
-                                                                                                                                          title = "Model Table", solidHeader = TRUE,
-                                                                                                                                          shiny::downloadButton("downloadData", "Download Model"),
-                                                                                                                                          DT::dataTableOutput('modelView')))
-                                                                              ),
- 
-
-                                                                            shiny::tabPanel("Threshold Dependant", 
-                                                                                              shiny::fluidRow(
-                                                                                                
-                                                                                              shiny::column(width = 12,
-                                                                                                            
-                                                                                                            shinydashboard::box(width = 12,
-                                                                                                                                title = "Cutoff Slider: ",
-                                                                                                                                status = "info", 
-                                                                                                                                solidHeader = TRUE,
-                                                                                                                                shiny::sliderInput("slider1", 
-                                                                                                                                                   shiny::span("Pick Threshold ", shiny::textOutput('threshold'), style="font-family: Arial;font-size:14px;"), 
-                                                                                                                                                   min = 1, max = 100, value = 50, ticks = F
-                                                                                                                                )                  
-                                                                                                            ),
-                                                                                                shinydashboard::box(width = 12,
-                                                                                                                 title = "Dashboard",
-                                                                                                                 status = "warning", solidHeader = TRUE,
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxThreshold"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxIncidence"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxPPV"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxSpecificity"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxSensitivity"),
-                                                                                                                 shinydashboard::infoBoxOutput("performanceBoxNPV")
-                                                                                                                   
-                                                                                               ),
-                                                                                               shinydashboard::box(width = 12,
-                                                                                                                   title = "Cutoff Performance",
-                                                                                                                   status = "warning", solidHeader = TRUE,
-                                                                                                                   shiny::tableOutput('twobytwo')
-                                                                                                                   #infoBoxOutput("performanceBox"),
-                                                                                               )
-                                                                                 )
-                                                                               )
-                                                                             
-                                                                                 
-                                                                        ), # end summary
-                                                                        tabPanel("Discrimination",  
-                                                                              shiny::fluidRow(
-                                                                               shinydashboard::box( status = 'info',
-                                                                                                        title = actionLink("rocHelp", "ROC Plot", icon = icon("info")),
-                                                                                                    solidHeader = TRUE,
-                                                                                                    shinycssloaders::withSpinner(plotly::plotlyOutput('roc'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("prcHelp", "Precision recall plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('pr')))),
-                                                                             
-                                                                              shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("f1Help", "F1 Score Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('f1'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("boxHelp","Box Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('box')))),
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("predDistHelp","Prediction Score Distribution", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('preddist'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("prefDistHelp","Preference Score Distribution", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('prefdist'))))
-         
-                                                                    ),
-                                                                    tabPanel("Calibration", 
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info', width = 3,
-                                                                                                   title = 'Settings',
-                                                                                                   solidHeader = TRUE,
-                                                                                                   uiOutput('recalSelect')
-                                                                               ),
-                                                                               shinydashboard::box(status = 'info', width = 9,
-                                                                                                   title = 'Summary',
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shiny::tableOutput('calTable')
-                                                                               )
-                                                                             ),
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("calHelp","Calibration Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('cal'))),
-                                                                               shinydashboard::box(status = 'info',
-                                                                                                   title = actionLink("demoHelp","Demographic Plot", icon = icon("info")),
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('demo')))
-                                                                             )
-
-                                                                    ),
-                                                                    
-                                                                    tabPanel("Net Benefit", 
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info', width = 12,
-                                                                                                   title = 'Settings',
-                                                                                                   solidHeader = TRUE,
-                                                                                                   uiOutput('nbSelect')
-                                                                               )
-                                                                               
-                                                                             ),
-                                                                             
-                                                                             shiny::fluidRow(
-                                                                               shinydashboard::box(status = 'info', width = 6,
-                                                                                                   title = 'Net Benefit Plot',
-                                                                                                   solidHeader = TRUE,
-                                                                                                   side = "right",
-                                                                                                   shinycssloaders::withSpinner(shiny::plotOutput('nbPlot'))),
-                                                                               
-                                                                               shinydashboard::box(status = 'info', width = 6,
-                                                                                                   title = 'Summary',
-                                                                                                   solidHeader = TRUE,
-                                                                                                   shiny::tableOutput('nbTable')
-                                                                               )
-                                                                             )
-                                                                             
-                                                                    ),
-                                                                    
-                                                                    shiny::tabPanel("Validation",
-                                                                                    
-                                                                                    shiny::div(DT::dataTableOutput('validationTable'), 
-                                                                                               style = "font-size:70%"),
-                                                                                    
-                                                                                    shiny::fluidRow(
-                                                                                      shinydashboard::box(status = 'info',
-                                                                                                          title = actionLink("rocHelp","Roc Plot", icon = icon("info")),
-                                                                                                          solidHeader = TRUE,
-                                                                                                          shinycssloaders::withSpinner(shiny::plotOutput('valRoc'))),
-                                                                                      shinydashboard::box(status = 'info',
-                                                                                                          title = actionLink("calHelp","Calibration Plot", icon = icon("info")),
-                                                                                                          solidHeader = TRUE,
-                                                                                                          side = "right",
-                                                                                                          shinycssloaders::withSpinner(shiny::plotOutput('valCal')))
-                                                                                    ),
-                                                                                    shiny::div(DT::dataTableOutput('databaseInfo'),
-                                                                                               style = "font-size:70%")
-                                                                    ),
-                                                                    # shiny::conditionalPanel("useDatabase == T", 
-                                                                    #placeholder for developer info
-                                                                                shiny::tabPanel("Developer Info",
-                                                                                      shinydashboard::box(status = 'info',
-                                                                                                          title = "Developer Info",
-                                                                                                          solidHeader = TRUE,
-                                                                                                          side = "right",
-                                                                                                          shiny::tableOutput('researcherInfo')
-                                                                                                          )))
-                                        ),
-                                        
-                                        shiny::tabPanel("Download Selected Model",
-                                                        
-                                                        shinydashboard::box(title = "Development R Package", status = 'info', solidHeader = T,
-                                                                            shiny::p("Click here to download an R package that contains all the settings requires to replicate the model development using any OMOP CDM database."),
-                                                                            shiny::actionButton(inputId = 'downloadPackageDev', label = "Download Development")
-                                                        ),
-                                                        shinydashboard::box(title = "Validation R Package", status = 'info', solidHeader = T,
-                                                                            shiny::p("Click here to download an R package that contains all the settings requires to validate the existing model using any OMOP CDM database."),
-                                                          shiny::actionButton(inputId = 'downloadPackageVal', label = "Download Validation")
-                                                          
-                                                        )
-                                        )
+                                                                                   
+                                                                                   shiny::tabPanel("All Models Summary",  
+                                                                                                   summaryViewer('sumTab') 
+                                                                                   ),
+                                                                                   
+                                                                                   shiny::tabPanel("Explore Selected Model",
+                                                                                                   shiny::tabsetPanel(id = 'singleView',
+                                                                                                                      shiny::tabPanel("Development Settings",
+                                                                                                                                      settingsViewer('settings')
+                                                                                                                      ),
+                                                                                                                      
+                                                                                                                      shiny::tabPanel("Model",
+                                                                                                                                      covariateSummaryViewer('covariateSummary')
+                                                                                                                      ),
+                                                                                                                      
+                                                                                                                      shiny::tabPanel("Threshold Dependant", 
+                                                                                                                                      cutoffViewer('cutoff')
+                                                                                                                      ), 
+                                                                                                                      tabPanel("Discrimination",  
+                                                                                                                               discriminationViewer('discrimination')
+                                                                                                                      ),
+                                                                                                                      tabPanel("Calibration", 
+                                                                                                                               calibrationViewer('calibration')
+                                                                                                                      ),
+                                                                                                                      
+                                                                                                                      tabPanel("Net Benefit", 
+                                                                                                                               nbViewer('netBenefit')
+                                                                                                                      ),
+                                                                                                                      
+                                                                                                                      shiny::tabPanel("Validation",
+                                                                                                                                      validationViewer('validation')
+                                                                                                                      ),
+                                                                                                                      
+                                                                                                                      shiny::tabPanel("Developer Info",
+                                                                                                                                      shinydashboard::box(status = 'info',
+                                                                                                                                                          title = "Developer Info",
+                                                                                                                                                          solidHeader = TRUE,
+                                                                                                                                                          side = "right",
+                                                                                                                                                          shiny::tableOutput('researcherInfo')
+                                                                                                                                      ))
+                                                                                                                      )
+                                                                                   ),
+                                                                                   
+                                                                                   shiny::tabPanel("Download Selected Model",
+                                                                                                   downloadViewer('download')
+                                                                                   )
+                                                                                   
+                                                                                   
+                                                                )
+                                                                )
                                         
                                         
-                                        ))
-
                                         
-                                    
                                         
                                         
                                       )

@@ -24,4 +24,3 @@ Some bugs fixed from the previous version.
 
 ## 2021-Oct-14: Aligning with the package v0.4.4 
 Updates to time to event analysis & fixes to cohort characterization & comparison.
-------

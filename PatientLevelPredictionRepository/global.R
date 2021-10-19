@@ -21,7 +21,10 @@ if(useDatabase){
   
   con <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
                                  dbms = "postgresql",
-                                 server = Sys.getenv("shinydbServer"),
+                                 #server = Sys.getenv("shinydbServer"),
+                      server = paste(Sys.getenv("shinydbServer"),
+                            Sys.getenv("shinydbDatabase"),
+                            sep = "/"),
                                  # port = Sys.getenv("shinydbPort"),
                                  user = Sys.getenv("covid19vaccinationplpdbUser"),
                                  password = Sys.getenv("covid19vaccinationplpdbPw"))
@@ -61,14 +64,4 @@ if(useDatabase){
   summaryTable <- getSummary(result, inputType, validation)
   
 }
-
-
-myResultList <- lapply(1:nrow(summaryTable), function(i){paste( 'Dev:', as.character(summaryTable$Dev[i]),
-                                                                '- Val:',as.character(summaryTable$Val[i]),
-                                                                 '-T:', as.character(summaryTable$T[i]),
-                                                               '- O:',as.character(summaryTable$O[i]),
-                                                               '- TAR:', as.character(summaryTable$TAR[i]),
-                                                               '- Model:', as.character(summaryTable$Model[i]),
-                                                               'Predictor:', as.character(summaryTable$covariateSettingId[i]))})
-
 

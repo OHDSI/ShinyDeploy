@@ -1,0 +1,60 @@
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 4.3.6
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_69
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		CohortID:           21683
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          21680
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        21547
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Covariates:         12724
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Population size:    21276
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Cases:              316
+2021-04-09 14:13:52	[Main thread]	WARN	PatientLevelPrediction	personSplitter	deprecatedWarning: 'personSplitter' is deprecated. Use 'randomSplitter' instead. See help("Deprecated") 
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Creating a 25% test and 75% train (into 3 folds) random stratified split by class
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Data split into 5319 test cases and 15957 train cases (5319, 5319, 5319)
+2021-04-09 14:13:52	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2021-04-09 14:15:38	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 18 redundant covariates
+2021-04-09 14:15:38	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 7608 infrequent covariates
+2021-04-09 14:15:38	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Normalizing covariates
+2021-04-09 14:16:47	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Tidying covariates took 2.92 mins
+2021-04-09 14:16:47	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 14:16:59	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 14:17:07	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2021-04-09 14:18:36	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2021-04-09 14:18:36	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2021-04-09 14:18:36	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 1.81 mins
+2021-04-09 14:18:45	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Creating variable importance data frame
+2021-04-09 14:18:45	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Getting predictions on train set
+2021-04-09 14:18:45	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 14:18:57	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 14:18:58	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 1.33 secs
+2021-04-09 14:18:58	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 14:19:24	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 14:19:31	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 14:19:35	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 0.558 secs
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction		Train set evaluation
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                81.55
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      78.70
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      84.40
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              12.88
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration in large- Mean predicted risk 0.0149 : observed risk 0.0149
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Weak calibration intercept: 1e-04 - gradient:1.025
+2021-04-09 14:19:36	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Hosmer-Lemeshow calibration gradient: 1.45 intercept:         -0.01
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.13
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction		Test set evaluation
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUC:                74.27
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% lower AUC:      68.41
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	95% upper AUC:      80.13
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	AUPRC:              7.74
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Brier:              0.01
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Calibration in large- Mean predicted risk 0.0149 : observed risk 0.0149
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Weak calibration intercept: -0.0036 - gradient:1.004
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Hosmer-Lemeshow calibration gradient: 1.05 intercept:         -0.00
+2021-04-09 14:19:37	[Main thread]	INFO	PatientLevelPrediction	evaluatePlp	Average Precision:  0.08
+2021-04-09 14:19:38	[Main thread]	INFO	PatientLevelPrediction	reformatPerformance	starting reformatPerformance
+2021-04-09 14:19:38	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2021-04-09 14:19:38
+2021-04-09 14:19:38	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2021-04-09 14:20:52	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2021-04-09 14:20:52
+2021-04-09 14:20:52	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2021-04-09 14:20:53	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\./EhdenRaPredictionResults/Analysis_69\plpResult
+2021-04-09 14:20:53	[Main thread]	INFO	PatientLevelPrediction		Log saved to ./EhdenRaPredictionResults/Analysis_69/plplog.txt
+2021-04-09 14:20:53	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.
