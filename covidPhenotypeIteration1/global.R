@@ -166,7 +166,7 @@ if (exists("cohort")) {
   cohort <- get("cohort")
   cohort <- cohort %>%
     dplyr::arrange(.data$cohortId) %>%
-    dplyr::mutate(shortName = paste0("C", dplyr::row_number())) %>%
+    dplyr::mutate(shortName = paste0("C", .data$cohortId)) %>%
     dplyr::mutate(compoundName = paste0(.data$shortName, ": ", .data$cohortName,"(", .data$cohortId, ")"))
 }
 
