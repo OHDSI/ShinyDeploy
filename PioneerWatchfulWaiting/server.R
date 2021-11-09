@@ -57,14 +57,6 @@ styleAbsColorBar <- function(maxValue, colorPositive, colorNegative, angle = 90)
              angle, maxValue, maxValue, colorPositive, colorNegative, maxValue, maxValue))
 }
 
-getCovariateDataSubset <- function(cohortId, databaseList, comparatorCohortId = NULL) {
-  if (usingDbStorage()) {
-    return(getCovariateValue(connPool, cohortId = cohortId, databaseList = databaseList, comparatorCohortId = comparatorCohortId))
-  } else {
-    return(covariateValue[covariateValue$cohortId %in% c(cohortId, comparatorCohortId) & covariateValue$databaseId %in% databaseList, ])
-  }
-}
-
 getDataTableSettings <- function() {
   dtSettings <- list(
     options = list(pageLength = 25,
@@ -483,9 +475,9 @@ shinyServer(function(input, output, session) {
   })
   
   getCharacterizationTable <- reactive({
-    data <- getCovariateDataSubset(cohortId(), input$databases)
+    covariateDataSubset <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId %in% input$databases, ]
     covariateFiltered <- getFilteredCovariates()
-    table <- merge.data.table(as.data.table(covariateFiltered), as.data.table(data))
+    table <- merge.data.table(as.data.table(covariateFiltered), as.data.table(covariateDataSubset))
     table$cohortName <- targetCohortName()
     return(table[,c("cohortId","cohortName","covariateId","covariateName","covariateAnalysisId","windowId","databaseId","mean")])
   })
@@ -588,7 +580,6 @@ shinyServer(function(input, output, session) {
       return(data.table())
     }
     covariateFiltered <- getFilteredCovariates()
-    covariateValue <- getCovariateDataSubset(cohortId(), input$database, comparatorCohortId())
     covs1 <- covariateValue[covariateValue$cohortId == cohortId() & covariateValue$databaseId == input$database, ]
     covs2 <- covariateValue[covariateValue$cohortId == comparatorCohortId() & covariateValue$databaseId == input$database, ]
     covs1 <- merge(covs1, covariateFiltered)
