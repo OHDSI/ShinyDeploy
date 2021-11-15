@@ -27,3 +27,7 @@ Updates to time to event analysis & fixes to cohort characterization & compariso
 
 ## 2021-Nov-09: Data update
 Triggering the data update to show results with correct clinical characterization.
+
+## 2021-Nov-15: Data update
+Triggering the data update to show results with correct clinical characterization.
+------
