@@ -43,6 +43,9 @@ createRenderedHtml <- function(filename, targetSql) {
   close(con)
 
   output <- character()
+  output <- c(output, "---")
+  output <- c(output, "title: \"&nbsp;\"")
+  output <- c(output, "---")
   isInSqlSnippet <- FALSE
   sqlWritten <- FALSE
   for (line in markdownLines) {
@@ -60,17 +63,17 @@ createRenderedHtml <- function(filename, targetSql) {
       sqlWritten <- TRUE
     }
   }
-  writeLines(output, con <- file(file.path("/tmp","querylibrary-rendered.Rmd")))
+  writeLines(output, con <- file(paste0(getwd(), "/www/rendered.Rmd")))
   close(con)
-  rmarkdown::render(file.path("/tmp","querylibrary-rendered.Rmd"),
-                    output_file = "querylibrary-rendered.html",
-                    output_dir = "/tmp",
+  rmarkdown::render(paste0(getwd(), "/www/rendered.Rmd"),
+                    output_file = "rendered.html",
+                    output_dir = paste0(getwd(), "/www"),
                     quiet = TRUE,
                     output_format = rmarkdown::html_document(theme = NULL,
                                                              mathjax = NULL,
                                                              highlight = "pygments",
-                                                             css = paste0(getwd(), "/www/rendered.css")))
-  return(file.path("/tmp","querylibrary-rendered.html"))
+                                                             css = "rendered.css"))
+  return("www/rendered.html")
 }
 # r <-
 # getSqlFromMarkdown('inst/shinyApps/QueryLibrary/queries/care_site/CS01_Care_site_place_of_service_counts.Rmd')
