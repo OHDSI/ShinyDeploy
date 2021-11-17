@@ -62,7 +62,7 @@ server <- shinyServer(
     output$html <- renderText(
       {
         if (!is.null(renderedFilename())){
-          includeHTML(renderedFilename())      
+          includeHTML(paste0(tempFolder, "/", renderedFilename()))      
         } else
           return("select a query")
       }
@@ -329,7 +329,7 @@ server <- shinyServer(
     
     output$about <- renderText(
       {
-        includeHTML(createRenderedHtml("./about.md", ""))
+        includeHTML(paste0(tempFolder, "/", createRenderedHtml("./about.md", "")))
       }
     )
     
