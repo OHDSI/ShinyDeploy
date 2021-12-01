@@ -285,7 +285,7 @@ plotIncidenceRate <- function(data,
   
   if (stratifyByGender) {
     plotData$tooltip <-
-      c(paste0(plotData$tooltip, "\nGender = ", plotData$gender))
+      c(paste0(plotData$tooltip, "\nSex = ", plotData$gender))
   }
   
   if (stratifyByCalendarYear) {
@@ -375,7 +375,7 @@ plotIncidenceRate <- function(data,
       dplyr::distinct(.data$databaseId, .data$shortName) %>%
       dplyr::arrange(.data$databaseId) %>%
       dplyr::group_by(.data$databaseId) %>%
-      dplyr::summarise(count = dplyr::n()) %>%
+      dplyr::summarise(count = dplyr::n(), .groups = "keep") %>%
       dplyr::ungroup()
     spacing <-
       unlist(sapply(spacing$count, function(x)
@@ -498,6 +498,10 @@ plotCohortComparisonStandardizedDifference <- function(balance,
   yCohort <- balance %>%  
     dplyr::distinct(balance$comparatorCohort) %>% 
     dplyr::pull()
+  
+  if (nrow(balance) ==0) {
+    return(NULL)
+  }
   
   plot <-
     ggplot2::ggplot(balance,
