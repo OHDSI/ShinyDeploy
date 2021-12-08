@@ -26,7 +26,7 @@ shinyUI(
                      selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
                      selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[4]),
                      selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                     checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[[1]]),
+                     checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId),
                      checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description, selected = cohortMethodAnalysis$description[[1]])
               ),
               column(9,
