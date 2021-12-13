@@ -22,7 +22,7 @@ defaultDatabase <- Sys.getenv("phoebedb")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("phoebedbUser")
 defaultPassword <- Sys.getenv("phoebedbPw")
-defaultResultsSchema <- Sys.getenv("phoebedbTargetSchema")
+defaultResultsSchema <- "results_symposium_2020" #Sys.getenv("phoebedbTargetSchema")
 defaultVocabularySchema <- Sys.getenv("phoebedbVocabSchema")
 
 defaultDatabaseMode <- TRUE # Use file system if FALSE
@@ -36,7 +36,7 @@ phenotypeLibraryModeDefaultTitle <- "Phenotype Library"
 defaultAboutText <- "<table>
   <tr>
     <td>
-      <h3>Phenotype Library</h3>
+      <h3>Phenotype Library (Obsolete)</h3>
     </td>
     <td style=\"text-align: right;\">
       <img src=\"https://avatars2.githubusercontent.com/u/6570077?s=280&v=4\", width=100, height=100>
@@ -44,6 +44,7 @@ defaultAboutText <- "<table>
   </tr>
   <tr>
     <td>
+      <p>Note: the Phenotype definitions are now undergoing a major refresh. The cohort definitions in this library, will be replaced.</p>
       <p>OHDSI Phenotype Library is an open community resource maintained by the OHDSI community to support phenotype development, evaluation, sharing and re-use. The Phenotype Library is maintained by community librarians. They are volunteer collaborators who are curating the content contributed by the rest of the community to ensure it is appropriately organized and conforms to community library standards.</p>
       <p>The OHDSI Phenotype work group is responsible to facilitate the generation and maintenance of  the content in the library. To be included, every cohort definition is expected to belong to one Phenotype, and it should have at least one full result set from Cohort Diagnostics executed on  at least one data source. The output should have been contributed to the Phenotype library.</p>
       <p>All cohort definitions in the phenotype library are expressed in JSON and SQL (OHDSI SQL) instructions that are compatible with OHDSI analytic tools and OHDSI OMOP CDM v5.0+. Currently, cohort definitions in the Phenotype Library are implemented in OHDSI SQL compatible with OMOP CDM v5.0+, with JSON specifications compatible with the OHDSI ATLAS platform. Supporting content is organized in the respective folders: literature, notes and evaluation. Literature review is organized using a standardized template</p>
