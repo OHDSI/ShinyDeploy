@@ -1,5 +1,6 @@
 label,analysisId,covariateIds
 Age group,3,
+Inclusion year,	6,
 Gender: female,1,8532001
 Race,4,
 Ethnicity,5,
