@@ -11,22 +11,16 @@ dashboardPage(
     h1("All available work packages"),
     fluidRow(
       column(4,
-             selectInput("man",
-                         "Manufacturer:",
+             selectInput("packageId",
+                         "Package ID:",
                          c("All",
-                           unique(as.character(mpg$manufacturer))))
+                           unique(as.character(packageDescriptions$packageId))))
       ),
       column(4,
-             selectInput("trans",
-                         "Transmission:",
+             selectInput("textField",
+                         "Some text:",
                          c("All",
-                           unique(as.character(mpg$trans))))
-      ),
-      column(4,
-             selectInput("cyl",
-                         "Cylinders:",
-                         c("All",
-                           unique(as.character(mpg$cyl))))
+                           unique(as.character(packageDescriptions$textField))))
       )
     ),
     # Create a new row for the table.

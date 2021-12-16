@@ -1,19 +1,17 @@
 library(shinydashboard)
+library(dplyr)
 
 server <- function(input, output) {
   # Filter data based on selections
   output$table <- DT::renderDataTable(DT::datatable({
-    data <- mpg
-    if (input$man != "All") {
-      data <- data[data$manufacturer == input$man,]
+    data <- packageDescriptions
+    if (input$packageId != "All") {
+      data <- data[data$packageId == input$packageId,]
     }
-    if (input$cyl != "All") {
-      data <- data[data$cyl == input$cyl,]
-    }
-    if (input$trans != "All") {
-      data <- data[data$trans == input$trans,]
-    }
-    data
+    # if (input$cyl != "All") {
+    #   data <- data[data$textField == input$textField,]
+    # }
+    data %>% select(-anotherField)
   },
   selection = "single"))
 
@@ -21,7 +19,7 @@ server <- function(input, output) {
     s <- input$table_rows_selected
     if (length(s)) {
       cat('These rows were selected:\n\n')
-      cat(s, sep = ', ')
+      cat(s, packageDescriptions$anotherField[s], sep = ', ')
     }
   })
 }
