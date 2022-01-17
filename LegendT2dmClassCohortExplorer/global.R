@@ -174,11 +174,17 @@ if (exists("database")) {
   }
 }
 
+countDigits <- function(x) {
+  floor(log10(x)) + 1
+}
+
 if (exists("cohort")) {
   cohort <- get("cohort")
+  totalDigits <- countDigits(length(cohort$cohortId))
   cohort <- cohort %>%
     dplyr::arrange(.data$cohortId) %>%
-    dplyr::mutate(shortName = paste0("C", dplyr::row_number())) %>%
+    dplyr::mutate(shortName = paste0("C", formatC(dplyr::row_number(),
+                                                  width = totalDigits, format = "d", flag = "0"))) %>%
     dplyr::mutate(compoundName = paste0(.data$shortName, ": ", .data$cohortName,"(", .data$cohortId, ")"))
 }
 
