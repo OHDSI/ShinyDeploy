@@ -32,7 +32,7 @@ if (exists("shinySettings")) {
   connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "sqlite", server = sqliteDbPath)
 } else {
   writeLines("Connecting to remote database")
-  dbms <- Sys.getenv("shinydbDatabase", unset = "postgresql")
+  dbms <- "postgresql"
   connectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
     server = paste0(Sys.getenv("phenotypeLibraryServer"), "/", Sys.getenv("phenotypeLibrarydb")),
