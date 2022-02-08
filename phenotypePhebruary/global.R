@@ -35,10 +35,10 @@ if (exists("shinySettings")) {
   dbms <- "postgresql"
   connectionDetails <- DatabaseConnector::createConnectionDetails(
     dbms = dbms,
-    server = paste0(Sys.getenv("shinydbServer"), "/", Sys.getenv("shinydbDatabase")),
-    port = 5432,
-    user = Sys.getenv("shinydbUser"),
-    password = Sys.getenv("shinydbPw")
+    server = paste0(Sys.getenv("phenotypeLibraryServer"), "/", Sys.getenv("phenotypeLibrarydb")),
+    port = Sys.getenv("phenotypeLibraryDbPort", unset = 5432),
+    user = Sys.getenv("phenotypeLibrarydbUser"),
+    password = Sys.getenv("phenotypeLibrarydbPw")
   )
 
   resultsDatabaseSchema <- Sys.getenv("shinydbResultsSchema", unset = "phenotype_phebruary")
