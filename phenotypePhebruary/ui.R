@@ -43,12 +43,15 @@ cohortReferenceWithDatabaseId <- function(cohortOutputId, databaseOutputId) {
   )
 }
 
-
-choicesFordatabaseOrVocabularySchema <- list(
-  'From site' = database$databaseIdWithVocabularyVersion,
-  'Reference Vocabulary' = vocabularyDatabaseSchemas
-)
-
+if (is(dataSource, "environment")) {
+  choicesFordatabaseOrVocabularySchema <-
+    c(database$databaseIdWithVocabularyVersion)
+} else {
+  choicesFordatabaseOrVocabularySchema <- list(
+    'From site' = database$databaseIdWithVocabularyVersion,
+    'Reference Vocabulary' = vocabularyDatabaseSchemas
+  )
+}
 
 header <-
   shinydashboard::dashboardHeader(title = "Cohort Diagnostics")

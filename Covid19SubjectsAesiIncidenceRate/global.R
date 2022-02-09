@@ -5,6 +5,7 @@
 #Updated data on 01/17/2022 (upload 2)
 #Updated data on 01/17/2022
 #Updated data on 01/12/2022
+
 library(magrittr)
 
 source("R/StartUpScripts.R")
@@ -29,15 +30,15 @@ alternateVocabularySchema <- c('vocabulary')
 
 defaultDatabaseMode <- TRUE # Use file system if FALSE
 
-appInformationText <- "V 2.1.1"
-appInformationText <- "Powered by OHDSI Cohort Diagnostics application - Version 2.1.1 This app is working in"
+appVersionNum <- "Version: 2.2.2"
+appInformationText <- paste("Powered by OHDSI Cohort Diagnostics application", paste0(appVersionNum, "."), "This app is working in")
 if (defaultDatabaseMode) {
   appInformationText <- paste0(appInformationText, " database")
 } else {
   appInformationText <- paste0(appInformationText, " local file")
 }
 appInformationText <- paste0(appInformationText, 
-                             " mode. Application was last initated on ", 
+                             " mode. Application was last initiated on ", 
                              lubridate::now(tzone = "EST"),
                              " EST. Cohort Diagnostics website is at https://ohdsi.github.io/CohortDiagnostics/")
 
@@ -194,3 +195,8 @@ if (exists("covariateRef")) {
 } else {
   prettyAnalysisIds <- c(0)
 }
+
+
+
+
+
