@@ -1,0 +1,1057 @@
+"database_id","exposure_id","target_id","comparator_id","outcome_id","analysis_id","sequence_number","description","subjects"
+"optum_extended_dod",1,1,2,4008,1,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,1,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,1,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,1,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,1,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,1,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,1,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,1,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,1,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,1,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,1,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,1,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,1,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,1,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,1,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,1,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,1,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,1,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,1,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,1,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,1,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,1,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,1,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,1,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,1,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,1,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,1,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,1,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,1,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,1,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,1,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,1,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,1,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,1,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,1,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,1,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,1,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,1,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,1,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,1,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,1,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,1,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,1,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,1,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,1,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,1,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,1,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,1,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,1,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,1,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,1,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,1,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,1,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,1,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,1,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,1,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,1,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,1,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,1,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,1,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,1,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,1,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,1,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,1,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,1,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,1,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,1,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,1,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,1,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,1,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,1,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,1,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,1,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,1,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,1,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,2,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,2,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,2,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,2,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,2,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,2,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,2,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,2,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,2,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,2,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,2,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,2,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,2,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,2,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,2,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,2,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,2,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,2,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,2,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,2,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,2,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,2,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,2,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,2,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,2,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,2,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,2,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,2,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,2,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,2,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,2,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,2,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,2,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,2,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,2,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,2,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,2,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,2,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,2,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,2,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,2,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,2,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,2,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,2,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,2,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,2,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,2,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,2,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,2,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,2,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,2,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,2,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,2,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,2,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,2,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,2,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,2,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,2,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,2,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,2,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,2,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,2,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,2,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,2,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,2,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,2,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,2,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,2,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,2,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,2,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,2,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,2,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,2,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,2,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,2,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,3,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,3,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,3,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,3,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,3,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,3,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,3,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,3,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,3,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,3,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,3,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,3,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,3,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,3,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,3,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,3,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,3,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,3,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,3,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,3,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,3,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,3,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,3,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,3,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,3,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,3,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,3,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,3,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,3,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,3,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,3,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,3,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,3,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,3,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,3,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,3,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,3,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,3,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,3,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,3,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,3,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,3,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,3,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,3,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,3,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,3,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,3,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,3,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,3,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,3,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,3,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,3,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,3,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,3,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,3,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,3,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,3,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,3,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,3,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,3,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,3,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,3,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,3,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,3,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,3,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,3,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,3,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,3,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,3,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,3,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,3,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,3,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,3,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,3,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,3,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,3,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,3,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,3,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,3,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,3,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,3,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,3,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,3,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,3,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,3,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,3,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,3,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,3,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,3,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,3,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,3,6,"Matched on propensity score",0
+"optum_extended_dod",1,1,2,4008,4,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,4,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,4,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,4,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,4,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,4,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,4,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,4,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,4,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,4,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,4,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,4,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,4,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,4,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,4,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,4,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,4,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,4,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,4,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,4,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,4,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,4,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,4,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,4,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,4,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,4,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,4,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,4,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,4,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,4,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,4,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,4,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,4,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,4,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,4,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,4,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,4,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,4,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,4,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,4,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,4,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,4,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,4,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,4,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,4,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,4,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,4,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,4,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,4,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,4,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,4,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,4,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,4,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,4,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,4,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,4,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,4,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,4,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,4,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,4,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,4,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,4,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,4,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,4,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,4,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,4,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,4,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,4,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,4,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,4,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,4,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,4,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,4,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,4,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,4,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,4,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,4,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,4,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,4,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,4,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,4,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,4,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,4,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,4,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,4,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,4,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,4,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,4,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,4,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,4,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,4,6,"Matched on propensity score",0
+"optum_extended_dod",1,1,2,4008,5,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,5,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,5,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,5,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,5,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,5,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,5,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,5,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,5,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,5,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,5,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,5,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,5,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,5,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,5,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,5,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,5,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,5,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,5,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,5,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,5,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,5,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,5,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,5,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,5,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,5,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,5,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,5,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,5,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,5,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,5,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,5,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,5,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,5,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,5,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,5,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,5,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,5,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,5,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,5,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,5,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,5,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,5,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,5,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,5,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,5,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,5,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,5,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,5,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,5,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,5,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,5,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,5,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,5,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,5,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,5,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,5,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,5,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,5,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,5,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,5,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,5,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,5,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,5,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,5,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,5,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,5,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,5,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,5,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,5,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,5,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,5,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,5,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,5,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,5,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,6,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,6,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,6,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,6,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,6,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,6,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,6,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,6,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,6,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,6,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,6,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,6,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,6,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,6,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,6,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,6,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,6,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,6,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,6,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,6,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,6,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,6,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,6,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,6,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,6,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,6,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,6,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,6,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,6,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,6,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,6,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,6,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,6,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,6,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,6,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,6,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,6,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,6,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,6,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,6,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,6,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,6,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,6,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,6,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,6,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,6,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,6,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,6,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,6,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,6,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,6,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,6,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,6,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,6,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,6,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,6,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,6,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,6,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,6,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,6,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,6,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,6,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,6,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,6,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,6,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,6,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,6,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,6,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,6,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,6,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,6,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,6,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,6,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,6,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,6,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,7,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,7,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,7,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,7,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,7,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,7,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,7,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,7,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,7,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,7,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,7,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,7,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,7,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,7,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,7,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,7,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,7,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,7,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,7,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,7,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,7,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,7,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,7,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,7,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,7,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,7,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,7,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,7,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,7,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,7,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,7,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,7,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,7,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,7,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,7,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,7,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,7,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,7,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,7,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,7,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,7,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,7,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,7,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,7,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,7,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,7,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,7,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,7,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,7,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,7,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,7,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,7,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,7,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,7,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,7,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,7,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,7,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,7,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,7,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,7,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,7,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,7,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,7,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,7,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,7,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,7,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,7,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,7,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,7,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,7,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,7,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,7,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,7,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,7,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,7,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,7,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,7,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,7,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,7,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,7,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,7,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,7,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,7,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,7,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,7,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,7,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,7,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,7,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,7,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,7,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,7,6,"Matched on propensity score",0
+"optum_extended_dod",1,1,2,4008,8,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,8,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,8,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,8,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,8,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,8,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,8,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,8,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,8,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,8,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,8,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,8,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,8,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,8,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,8,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,8,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,8,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,8,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,8,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,8,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,8,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,8,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,8,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,8,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,8,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,8,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,8,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,8,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,8,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,8,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,8,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,8,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,8,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,8,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,8,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,8,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,8,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,8,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,8,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,8,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,8,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,8,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,8,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,8,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,8,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,8,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,8,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,8,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,8,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,8,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,8,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,8,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,8,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,8,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,8,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,8,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,8,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,8,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,8,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,8,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,8,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,8,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,8,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,8,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,8,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,8,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,8,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,8,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,8,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,8,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,8,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,8,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,8,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,8,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,8,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,8,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,8,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,8,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,8,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,8,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,8,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,8,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,8,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,8,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,8,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,8,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,8,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,8,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,8,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,8,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,8,6,"Matched on propensity score",0
+"optum_extended_dod",1,1,2,4008,9,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,9,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,9,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,9,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,9,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,9,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,9,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,9,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,9,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,9,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,9,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,9,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,9,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,9,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,9,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,9,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,9,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,9,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,9,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,9,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,9,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,9,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,9,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,9,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,9,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,9,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,9,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,9,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,9,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,9,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,9,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,9,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,9,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,9,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,9,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,9,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,9,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,9,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,9,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,9,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,9,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,9,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,9,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,9,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,9,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,9,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,9,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,9,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,9,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,9,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,9,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,9,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,9,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,9,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,9,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,9,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,9,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,9,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,9,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,9,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,9,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,9,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,9,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,9,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,9,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,9,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,9,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,9,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,9,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,9,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,9,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,9,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,9,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,9,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,9,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,10,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,10,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,10,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,10,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",2,1,2,4008,10,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,10,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,10,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,10,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,10,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",1,1,2,4009,10,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,10,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,10,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,10,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",2,1,2,4009,10,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,10,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,10,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,10,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,10,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",1,1,3,4008,10,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,10,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,10,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,10,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",3,1,3,4008,10,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,10,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,10,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,10,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,10,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",1,1,3,4009,10,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,10,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,10,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,10,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",3,1,3,4009,10,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,10,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,10,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,10,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,10,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",4,4,1,4008,10,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,10,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,10,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,10,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,10,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",1,4,1,4008,10,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,10,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,10,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,10,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",4,4,1,4009,10,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,10,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,10,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,10,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,10,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",1,4,1,4009,10,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,10,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,10,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,10,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,10,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",5,5,3,4008,10,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,10,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,10,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,10,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,10,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",3,5,3,4008,10,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,10,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,10,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,10,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,10,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",5,5,3,4009,10,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,10,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,10,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,10,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,10,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",3,5,3,4009,10,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,10,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,10,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,10,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,10,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",1,1,2,4008,11,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,11,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,11,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,11,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,11,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,11,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,11,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,11,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,11,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,11,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,11,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,11,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,11,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,11,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,11,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,11,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,11,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,11,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,11,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,11,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,11,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,11,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,11,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,11,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,11,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,11,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,11,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,11,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,11,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,11,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,11,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,11,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,11,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,11,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,11,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,11,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,11,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,11,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,11,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,11,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,11,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,11,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,11,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,11,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,11,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,11,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,11,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,11,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,11,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,11,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,11,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,11,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,11,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,11,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,11,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,11,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,11,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,11,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,11,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,11,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,11,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,11,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,11,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,11,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,11,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,11,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,11,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,11,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,11,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,11,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,11,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,11,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,11,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,11,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,11,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,11,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,11,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,11,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,11,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,11,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,11,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,11,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,11,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,11,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,11,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,11,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,11,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,11,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,11,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,11,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,11,6,"Matched on propensity score",0
+"optum_extended_dod",1,1,2,4008,12,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4008,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4008,12,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4008,12,4,"No prior outcome",446224
+"optum_extended_dod",1,1,2,4008,12,5,"Have at least 1 days at risk",445304
+"optum_extended_dod",1,1,2,4008,12,6,"Matched on propensity score",150881
+"optum_extended_dod",2,1,2,4008,12,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4008,12,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4008,12,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4008,12,4,"No prior outcome",153868
+"optum_extended_dod",2,1,2,4008,12,5,"Have at least 1 days at risk",153507
+"optum_extended_dod",2,1,2,4008,12,6,"Matched on propensity score",150881
+"optum_extended_dod",1,1,2,4009,12,1,"Original cohorts",454211
+"optum_extended_dod",1,1,2,4009,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,2,4009,12,3,"Restricting duplicate subjects to first cohort",454153
+"optum_extended_dod",1,1,2,4009,12,4,"No prior outcome",442166
+"optum_extended_dod",1,1,2,4009,12,5,"Have at least 1 days at risk",441254
+"optum_extended_dod",1,1,2,4009,12,6,"Matched on propensity score",149354
+"optum_extended_dod",2,1,2,4009,12,1,"Original cohorts",155939
+"optum_extended_dod",2,1,2,4009,12,2,"Restrict to common period",155939
+"optum_extended_dod",2,1,2,4009,12,3,"Restricting duplicate subjects to first cohort",155759
+"optum_extended_dod",2,1,2,4009,12,4,"No prior outcome",152274
+"optum_extended_dod",2,1,2,4009,12,5,"Have at least 1 days at risk",151920
+"optum_extended_dod",2,1,2,4009,12,6,"Matched on propensity score",149354
+"optum_extended_dod",1,1,3,4008,12,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4008,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4008,12,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4008,12,4,"No prior outcome",446181
+"optum_extended_dod",1,1,3,4008,12,5,"Have at least 1 days at risk",445261
+"optum_extended_dod",1,1,3,4008,12,6,"Matched on propensity score",119136
+"optum_extended_dod",3,1,3,4008,12,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4008,12,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4008,12,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4008,12,4,"No prior outcome",126944
+"optum_extended_dod",3,1,3,4008,12,5,"Have at least 1 days at risk",126694
+"optum_extended_dod",3,1,3,4008,12,6,"Matched on propensity score",119136
+"optum_extended_dod",1,1,3,4009,12,1,"Original cohorts",454211
+"optum_extended_dod",1,1,3,4009,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,1,3,4009,12,3,"Restricting duplicate subjects to first cohort",454110
+"optum_extended_dod",1,1,3,4009,12,4,"No prior outcome",442124
+"optum_extended_dod",1,1,3,4009,12,5,"Have at least 1 days at risk",441212
+"optum_extended_dod",1,1,3,4009,12,6,"Matched on propensity score",118362
+"optum_extended_dod",3,1,3,4009,12,1,"Original cohorts",127943
+"optum_extended_dod",3,1,3,4009,12,2,"Restrict to common period",127943
+"optum_extended_dod",3,1,3,4009,12,3,"Restricting duplicate subjects to first cohort",127880
+"optum_extended_dod",3,1,3,4009,12,4,"No prior outcome",126133
+"optum_extended_dod",3,1,3,4009,12,5,"Have at least 1 days at risk",125883
+"optum_extended_dod",3,1,3,4009,12,6,"Matched on propensity score",118362
+"optum_extended_dod",4,4,1,4008,12,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4008,12,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4008,12,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4008,12,4,"No prior outcome",175931
+"optum_extended_dod",4,4,1,4008,12,5,"Have at least 1 days at risk",175542
+"optum_extended_dod",4,4,1,4008,12,6,"Matched on propensity score",154874
+"optum_extended_dod",1,4,1,4008,12,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4008,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4008,12,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4008,12,4,"No prior outcome",446198
+"optum_extended_dod",1,4,1,4008,12,5,"Have at least 1 days at risk",445278
+"optum_extended_dod",1,4,1,4008,12,6,"Matched on propensity score",154874
+"optum_extended_dod",4,4,1,4009,12,1,"Original cohorts",181255
+"optum_extended_dod",4,4,1,4009,12,2,"Restrict to common period",181255
+"optum_extended_dod",4,4,1,4009,12,3,"Restricting duplicate subjects to first cohort",181083
+"optum_extended_dod",4,4,1,4009,12,4,"No prior outcome",173458
+"optum_extended_dod",4,4,1,4009,12,5,"Have at least 1 days at risk",173073
+"optum_extended_dod",4,4,1,4009,12,6,"Matched on propensity score",152762
+"optum_extended_dod",1,4,1,4009,12,1,"Original cohorts",454211
+"optum_extended_dod",1,4,1,4009,12,2,"Restrict to common period",454211
+"optum_extended_dod",1,4,1,4009,12,3,"Restricting duplicate subjects to first cohort",454125
+"optum_extended_dod",1,4,1,4009,12,4,"No prior outcome",442142
+"optum_extended_dod",1,4,1,4009,12,5,"Have at least 1 days at risk",441230
+"optum_extended_dod",1,4,1,4009,12,6,"Matched on propensity score",152762
+"optum_extended_dod",5,5,3,4008,12,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4008,12,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4008,12,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4008,12,4,"No prior outcome",19447
+"optum_extended_dod",5,5,3,4008,12,5,"Have at least 1 days at risk",19408
+"optum_extended_dod",5,5,3,4008,12,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4008,12,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4008,12,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4008,12,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4008,12,4,"No prior outcome",127004
+"optum_extended_dod",3,5,3,4008,12,5,"Have at least 1 days at risk",126753
+"optum_extended_dod",3,5,3,4008,12,6,"Matched on propensity score",0
+"optum_extended_dod",5,5,3,4009,12,1,"Original cohorts",20178
+"optum_extended_dod",5,5,3,4009,12,2,"Restrict to common period",20178
+"optum_extended_dod",5,5,3,4009,12,3,"Restricting duplicate subjects to first cohort",20169
+"optum_extended_dod",5,5,3,4009,12,4,"No prior outcome",19062
+"optum_extended_dod",5,5,3,4009,12,5,"Have at least 1 days at risk",19024
+"optum_extended_dod",5,5,3,4009,12,6,"Matched on propensity score",0
+"optum_extended_dod",3,5,3,4009,12,1,"Original cohorts",127943
+"optum_extended_dod",3,5,3,4009,12,2,"Restrict to common period",127943
+"optum_extended_dod",3,5,3,4009,12,3,"Restricting duplicate subjects to first cohort",127940
+"optum_extended_dod",3,5,3,4009,12,4,"No prior outcome",126193
+"optum_extended_dod",3,5,3,4009,12,5,"Have at least 1 days at risk",125942
+"optum_extended_dod",3,5,3,4009,12,6,"Matched on propensity score",0
