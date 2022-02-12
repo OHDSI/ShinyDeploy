@@ -1,8 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-shinySettings <- list(dataFolder = "G:/OutcomeMisclassificationEval/mergedShinyDataFolder")
-#shinySettings <- list(dataFolder = "./data")
+#shinySettings <- list(dataFolder = "G:/OutcomeMisclassificationEval/mergedShinyDataFolder")
+shinySettings <- list(dataFolder = "./data")
 dataFolder <- shinySettings$dataFolder
 connection <- NULL
 
