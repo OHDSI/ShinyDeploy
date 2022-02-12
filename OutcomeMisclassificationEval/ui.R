@@ -71,23 +71,23 @@ shinyUI(
                                  uiOutput("attritionPlotCaption"),
                                  plotOutput("attritionPlot", width = 600, height = 600),
                                  div(style = "display: inline-block;vertical-align:top;")),
-                        # tabPanel("Population characteristics",
-                        #          uiOutput("table1Caption"),
-                        #          radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
-                        #          dataTableOutput("table1Table")),
+                        tabPanel("Population characteristics",
+                                 uiOutput("table1Caption"),
+                                 radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
+                                 dataTableOutput("table1Table")),
                         tabPanel("Propensity model",
                                  div(strong("Table 3."), "Fitted propensity model"),
                                  dataTableOutput("propensityModelTable")),
                         tabPanel("Propensity scores",
                                  plotOutput("psDistPlot"),
                                  div(strong("Figure 2."), "Preference score distribution"),
+                                 div(style = "display: inline-block;vertical-align:top;")),
+                        tabPanel("Covariate balance",
+                                 uiOutput("hoverInfoBalanceScatter"),
+                                 plotOutput("balancePlot",
+                                             hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
+                                 uiOutput("balancePlotCaption"),
                                  div(style = "display: inline-block;vertical-align:top;"))
-                        # tabPanel("Covariate balance",
-                        #          uiOutput("hoverInfoBalanceScatter"),
-                        #          plotOutput("balancePlot",
-                        #                      hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
-                        #          uiOutput("balancePlotCaption"),
-                        #          div(style = "display: inline-block;vertical-align:top;"))
             )
           )
         )
