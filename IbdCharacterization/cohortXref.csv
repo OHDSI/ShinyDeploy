@@ -1,0 +1,351 @@
+cohortId,targetId,targetName,strataId,strataName,cohortType
+306,306,[KI-IBD] Persons with IBD with at least 365d prior observation,0,All,Target
+307,307,[KI-IBD] Persons with IBD with no required prior observation,0,All,Target
+308,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,0,All,Target
+309,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,0,All,Target
+310,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,0,All,Target
+311,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,0,All,Target
+314,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,0,All,Target
+315,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,0,All,Target
+322,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,0,All,Target
+323,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,0,All,Target
+306002002,306,[KI-IBD] Persons with IBD with at least 365d prior observation,200,without Pregnant women,TwoS
+307002002,307,[KI-IBD] Persons with IBD with no required prior observation,200,without Pregnant women,TwoS
+308002002,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,200,without Pregnant women,TwoS
+309002002,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,200,without Pregnant women,TwoS
+310002002,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,200,without Pregnant women,TwoS
+311002002,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,200,without Pregnant women,TwoS
+314002002,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,200,without Pregnant women,TwoS
+315002002,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,200,without Pregnant women,TwoS
+322002002,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,200,without Pregnant women,TwoS
+323002002,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,200,without Pregnant women,TwoS
+306002012,306,[KI-IBD] Persons with IBD with at least 365d prior observation,201,without Overweight,TwoS
+307002012,307,[KI-IBD] Persons with IBD with no required prior observation,201,without Overweight,TwoS
+308002012,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,201,without Overweight,TwoS
+309002012,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,201,without Overweight,TwoS
+310002012,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,201,without Overweight,TwoS
+311002012,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,201,without Overweight,TwoS
+314002012,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,201,without Overweight,TwoS
+315002012,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,201,without Overweight,TwoS
+322002012,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,201,without Overweight,TwoS
+323002012,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,201,without Overweight,TwoS
+306002022,306,[KI-IBD] Persons with IBD with at least 365d prior observation,202,without Underweight,TwoS
+307002022,307,[KI-IBD] Persons with IBD with no required prior observation,202,without Underweight,TwoS
+308002022,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,202,without Underweight,TwoS
+309002022,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,202,without Underweight,TwoS
+310002022,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,202,without Underweight,TwoS
+311002022,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,202,without Underweight,TwoS
+314002022,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,202,without Underweight,TwoS
+315002022,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,202,without Underweight,TwoS
+322002022,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,202,without Underweight,TwoS
+323002022,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,202,without Underweight,TwoS
+306002032,306,[KI-IBD] Persons with IBD with at least 365d prior observation,203,without Normal weight,TwoS
+307002032,307,[KI-IBD] Persons with IBD with no required prior observation,203,without Normal weight,TwoS
+308002032,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,203,without Normal weight,TwoS
+309002032,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,203,without Normal weight,TwoS
+310002032,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,203,without Normal weight,TwoS
+311002032,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,203,without Normal weight,TwoS
+314002032,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,203,without Normal weight,TwoS
+315002032,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,203,without Normal weight,TwoS
+322002032,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,203,without Normal weight,TwoS
+323002032,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,203,without Normal weight,TwoS
+306002042,306,[KI-IBD] Persons with IBD with at least 365d prior observation,204,without Prevalent obesity,TwoS
+307002042,307,[KI-IBD] Persons with IBD with no required prior observation,204,without Prevalent obesity,TwoS
+308002042,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,204,without Prevalent obesity,TwoS
+309002042,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,204,without Prevalent obesity,TwoS
+310002042,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,204,without Prevalent obesity,TwoS
+311002042,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,204,without Prevalent obesity,TwoS
+314002042,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,204,without Prevalent obesity,TwoS
+315002042,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,204,without Prevalent obesity,TwoS
+322002042,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,204,without Prevalent obesity,TwoS
+323002042,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,204,without Prevalent obesity,TwoS
+306000011,306,[KI-IBD] Persons with IBD with at least 365d prior observation,1,with Full 365-day follow up,TwS
+307000011,307,[KI-IBD] Persons with IBD with no required prior observation,1,with Full 365-day follow up,TwS
+308000011,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,1,with Full 365-day follow up,TwS
+309000011,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,1,with Full 365-day follow up,TwS
+310000011,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,1,with Full 365-day follow up,TwS
+311000011,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,1,with Full 365-day follow up,TwS
+314000011,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,1,with Full 365-day follow up,TwS
+315000011,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,1,with Full 365-day follow up,TwS
+322000011,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,1,with Full 365-day follow up,TwS
+323000011,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,1,with Full 365-day follow up,TwS
+306000021,306,[KI-IBD] Persons with IBD with at least 365d prior observation,2,with Full 3-year follow up,TwS
+307000021,307,[KI-IBD] Persons with IBD with no required prior observation,2,with Full 3-year follow up,TwS
+308000021,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,2,with Full 3-year follow up,TwS
+309000021,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,2,with Full 3-year follow up,TwS
+310000021,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,2,with Full 3-year follow up,TwS
+311000021,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,2,with Full 3-year follow up,TwS
+314000021,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,2,with Full 3-year follow up,TwS
+315000021,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,2,with Full 3-year follow up,TwS
+322000021,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,2,with Full 3-year follow up,TwS
+323000021,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,2,with Full 3-year follow up,TwS
+306000031,306,[KI-IBD] Persons with IBD with at least 365d prior observation,3,with Full 5-year follow up,TwS
+307000031,307,[KI-IBD] Persons with IBD with no required prior observation,3,with Full 5-year follow up,TwS
+308000031,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,3,with Full 5-year follow up,TwS
+309000031,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,3,with Full 5-year follow up,TwS
+310000031,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,3,with Full 5-year follow up,TwS
+311000031,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,3,with Full 5-year follow up,TwS
+314000031,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,3,with Full 5-year follow up,TwS
+315000031,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,3,with Full 5-year follow up,TwS
+322000031,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,3,with Full 5-year follow up,TwS
+323000031,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,3,with Full 5-year follow up,TwS
+306000041,306,[KI-IBD] Persons with IBD with at least 365d prior observation,4,with Full 10-year follow up,TwS
+307000041,307,[KI-IBD] Persons with IBD with no required prior observation,4,with Full 10-year follow up,TwS
+308000041,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,4,with Full 10-year follow up,TwS
+309000041,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,4,with Full 10-year follow up,TwS
+310000041,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,4,with Full 10-year follow up,TwS
+311000041,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,4,with Full 10-year follow up,TwS
+314000041,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,4,with Full 10-year follow up,TwS
+315000041,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,4,with Full 10-year follow up,TwS
+322000041,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,4,with Full 10-year follow up,TwS
+323000041,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,4,with Full 10-year follow up,TwS
+306000051,306,[KI-IBD] Persons with IBD with at least 365d prior observation,5,with Sex = Female,TwS
+307000051,307,[KI-IBD] Persons with IBD with no required prior observation,5,with Sex = Female,TwS
+308000051,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,5,with Sex = Female,TwS
+309000051,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,5,with Sex = Female,TwS
+310000051,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,5,with Sex = Female,TwS
+311000051,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,5,with Sex = Female,TwS
+314000051,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,5,with Sex = Female,TwS
+315000051,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,5,with Sex = Female,TwS
+322000051,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,5,with Sex = Female,TwS
+323000051,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,5,with Sex = Female,TwS
+306000061,306,[KI-IBD] Persons with IBD with at least 365d prior observation,6,with Sex = Male,TwS
+307000061,307,[KI-IBD] Persons with IBD with no required prior observation,6,with Sex = Male,TwS
+308000061,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,6,with Sex = Male,TwS
+309000061,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,6,with Sex = Male,TwS
+310000061,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,6,with Sex = Male,TwS
+311000061,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,6,with Sex = Male,TwS
+314000061,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,6,with Sex = Male,TwS
+315000061,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,6,with Sex = Male,TwS
+322000061,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,6,with Sex = Male,TwS
+323000061,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,6,with Sex = Male,TwS
+306000071,306,[KI-IBD] Persons with IBD with at least 365d prior observation,7,with Very early onset (2-6y),TwS
+307000071,307,[KI-IBD] Persons with IBD with no required prior observation,7,with Very early onset (2-6y),TwS
+308000071,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,7,with Very early onset (2-6y),TwS
+309000071,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,7,with Very early onset (2-6y),TwS
+310000071,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,7,with Very early onset (2-6y),TwS
+311000071,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,7,with Very early onset (2-6y),TwS
+314000071,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,7,with Very early onset (2-6y),TwS
+315000071,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,7,with Very early onset (2-6y),TwS
+322000071,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,7,with Very early onset (2-6y),TwS
+323000071,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,7,with Very early onset (2-6y),TwS
+306000081,306,[KI-IBD] Persons with IBD with at least 365d prior observation,8,with Early onset (6-10y),TwS
+307000081,307,[KI-IBD] Persons with IBD with no required prior observation,8,with Early onset (6-10y),TwS
+308000081,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,8,with Early onset (6-10y),TwS
+309000081,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,8,with Early onset (6-10y),TwS
+310000081,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,8,with Early onset (6-10y),TwS
+311000081,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,8,with Early onset (6-10y),TwS
+314000081,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,8,with Early onset (6-10y),TwS
+315000081,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,8,with Early onset (6-10y),TwS
+322000081,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,8,with Early onset (6-10y),TwS
+323000081,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,8,with Early onset (6-10y),TwS
+306000091,306,[KI-IBD] Persons with IBD with at least 365d prior observation,9,with Pediatrics,TwS
+307000091,307,[KI-IBD] Persons with IBD with no required prior observation,9,with Pediatrics,TwS
+308000091,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,9,with Pediatrics,TwS
+309000091,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,9,with Pediatrics,TwS
+310000091,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,9,with Pediatrics,TwS
+311000091,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,9,with Pediatrics,TwS
+314000091,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,9,with Pediatrics,TwS
+315000091,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,9,with Pediatrics,TwS
+322000091,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,9,with Pediatrics,TwS
+323000091,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,9,with Pediatrics,TwS
+306000101,306,[KI-IBD] Persons with IBD with at least 365d prior observation,10,with Age 18 - 65,TwS
+307000101,307,[KI-IBD] Persons with IBD with no required prior observation,10,with Age 18 - 65,TwS
+308000101,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,10,with Age 18 - 65,TwS
+309000101,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,10,with Age 18 - 65,TwS
+310000101,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,10,with Age 18 - 65,TwS
+311000101,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,10,with Age 18 - 65,TwS
+314000101,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,10,with Age 18 - 65,TwS
+315000101,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,10,with Age 18 - 65,TwS
+322000101,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,10,with Age 18 - 65,TwS
+323000101,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,10,with Age 18 - 65,TwS
+306000111,306,[KI-IBD] Persons with IBD with at least 365d prior observation,11,with Age >= 65,TwS
+307000111,307,[KI-IBD] Persons with IBD with no required prior observation,11,with Age >= 65,TwS
+308000111,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,11,with Age >= 65,TwS
+309000111,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,11,with Age >= 65,TwS
+310000111,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,11,with Age >= 65,TwS
+311000111,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,11,with Age >= 65,TwS
+314000111,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,11,with Age >= 65,TwS
+315000111,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,11,with Age >= 65,TwS
+322000111,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,11,with Age >= 65,TwS
+323000111,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,11,with Age >= 65,TwS
+306000121,306,[KI-IBD] Persons with IBD with at least 365d prior observation,12,with Black or African American,TwS
+307000121,307,[KI-IBD] Persons with IBD with no required prior observation,12,with Black or African American,TwS
+308000121,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,12,with Black or African American,TwS
+309000121,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,12,with Black or African American,TwS
+310000121,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,12,with Black or African American,TwS
+311000121,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,12,with Black or African American,TwS
+314000121,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,12,with Black or African American,TwS
+315000121,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,12,with Black or African American,TwS
+322000121,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,12,with Black or African American,TwS
+323000121,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,12,with Black or African American,TwS
+306000131,306,[KI-IBD] Persons with IBD with at least 365d prior observation,13,with White,TwS
+307000131,307,[KI-IBD] Persons with IBD with no required prior observation,13,with White,TwS
+308000131,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,13,with White,TwS
+309000131,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,13,with White,TwS
+310000131,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,13,with White,TwS
+311000131,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,13,with White,TwS
+314000131,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,13,with White,TwS
+315000131,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,13,with White,TwS
+322000131,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,13,with White,TwS
+323000131,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,13,with White,TwS
+306000141,306,[KI-IBD] Persons with IBD with at least 365d prior observation,14,with Asian,TwS
+307000141,307,[KI-IBD] Persons with IBD with no required prior observation,14,with Asian,TwS
+308000141,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,14,with Asian,TwS
+309000141,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,14,with Asian,TwS
+310000141,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,14,with Asian,TwS
+311000141,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,14,with Asian,TwS
+314000141,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,14,with Asian,TwS
+315000141,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,14,with Asian,TwS
+322000141,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,14,with Asian,TwS
+323000141,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,14,with Asian,TwS
+306000151,306,[KI-IBD] Persons with IBD with at least 365d prior observation,15,with Index date: 1995-2000,TwS
+307000151,307,[KI-IBD] Persons with IBD with no required prior observation,15,with Index date: 1995-2000,TwS
+308000151,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,15,with Index date: 1995-2000,TwS
+309000151,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,15,with Index date: 1995-2000,TwS
+310000151,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,15,with Index date: 1995-2000,TwS
+311000151,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,15,with Index date: 1995-2000,TwS
+314000151,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,15,with Index date: 1995-2000,TwS
+315000151,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,15,with Index date: 1995-2000,TwS
+322000151,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,15,with Index date: 1995-2000,TwS
+323000151,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,15,with Index date: 1995-2000,TwS
+306000161,306,[KI-IBD] Persons with IBD with at least 365d prior observation,16,with Index date: 2000-2005,TwS
+307000161,307,[KI-IBD] Persons with IBD with no required prior observation,16,with Index date: 2000-2005,TwS
+308000161,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,16,with Index date: 2000-2005,TwS
+309000161,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,16,with Index date: 2000-2005,TwS
+310000161,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,16,with Index date: 2000-2005,TwS
+311000161,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,16,with Index date: 2000-2005,TwS
+314000161,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,16,with Index date: 2000-2005,TwS
+315000161,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,16,with Index date: 2000-2005,TwS
+322000161,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,16,with Index date: 2000-2005,TwS
+323000161,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,16,with Index date: 2000-2005,TwS
+306000171,306,[KI-IBD] Persons with IBD with at least 365d prior observation,17,with Index date: 2005-2010,TwS
+307000171,307,[KI-IBD] Persons with IBD with no required prior observation,17,with Index date: 2005-2010,TwS
+308000171,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,17,with Index date: 2005-2010,TwS
+309000171,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,17,with Index date: 2005-2010,TwS
+310000171,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,17,with Index date: 2005-2010,TwS
+311000171,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,17,with Index date: 2005-2010,TwS
+314000171,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,17,with Index date: 2005-2010,TwS
+315000171,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,17,with Index date: 2005-2010,TwS
+322000171,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,17,with Index date: 2005-2010,TwS
+323000171,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,17,with Index date: 2005-2010,TwS
+306000181,306,[KI-IBD] Persons with IBD with at least 365d prior observation,18,with Index date: 2010-2015,TwS
+307000181,307,[KI-IBD] Persons with IBD with no required prior observation,18,with Index date: 2010-2015,TwS
+308000181,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,18,with Index date: 2010-2015,TwS
+309000181,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,18,with Index date: 2010-2015,TwS
+310000181,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,18,with Index date: 2010-2015,TwS
+311000181,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,18,with Index date: 2010-2015,TwS
+314000181,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,18,with Index date: 2010-2015,TwS
+315000181,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,18,with Index date: 2010-2015,TwS
+322000181,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,18,with Index date: 2010-2015,TwS
+323000181,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,18,with Index date: 2010-2015,TwS
+306000191,306,[KI-IBD] Persons with IBD with at least 365d prior observation,19,with Index date: 2015-2020,TwS
+307000191,307,[KI-IBD] Persons with IBD with no required prior observation,19,with Index date: 2015-2020,TwS
+308000191,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,19,with Index date: 2015-2020,TwS
+309000191,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,19,with Index date: 2015-2020,TwS
+310000191,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,19,with Index date: 2015-2020,TwS
+311000191,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,19,with Index date: 2015-2020,TwS
+314000191,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,19,with Index date: 2015-2020,TwS
+315000191,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,19,with Index date: 2015-2020,TwS
+322000191,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,19,with Index date: 2015-2020,TwS
+323000191,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,19,with Index date: 2015-2020,TwS
+306000201,306,[KI-IBD] Persons with IBD with at least 365d prior observation,20,with Index date: 2020-2025,TwS
+307000201,307,[KI-IBD] Persons with IBD with no required prior observation,20,with Index date: 2020-2025,TwS
+308000201,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,20,with Index date: 2020-2025,TwS
+309000201,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,20,with Index date: 2020-2025,TwS
+310000201,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,20,with Index date: 2020-2025,TwS
+311000201,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,20,with Index date: 2020-2025,TwS
+314000201,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,20,with Index date: 2020-2025,TwS
+315000201,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,20,with Index date: 2020-2025,TwS
+322000201,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,20,with Index date: 2020-2025,TwS
+323000201,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,20,with Index date: 2020-2025,TwS
+306000211,306,[KI-IBD] Persons with IBD with at least 365d prior observation,21,with Location = England,TwS
+307000211,307,[KI-IBD] Persons with IBD with no required prior observation,21,with Location = England,TwS
+308000211,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,21,with Location = England,TwS
+309000211,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,21,with Location = England,TwS
+310000211,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,21,with Location = England,TwS
+311000211,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,21,with Location = England,TwS
+314000211,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,21,with Location = England,TwS
+315000211,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,21,with Location = England,TwS
+322000211,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,21,with Location = England,TwS
+323000211,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,21,with Location = England,TwS
+306000221,306,[KI-IBD] Persons with IBD with at least 365d prior observation,22,with Location = Scotland,TwS
+307000221,307,[KI-IBD] Persons with IBD with no required prior observation,22,with Location = Scotland,TwS
+308000221,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,22,with Location = Scotland,TwS
+309000221,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,22,with Location = Scotland,TwS
+310000221,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,22,with Location = Scotland,TwS
+311000221,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,22,with Location = Scotland,TwS
+314000221,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,22,with Location = Scotland,TwS
+315000221,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,22,with Location = Scotland,TwS
+322000221,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,22,with Location = Scotland,TwS
+323000221,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,22,with Location = Scotland,TwS
+306000231,306,[KI-IBD] Persons with IBD with at least 365d prior observation,23,with Location = Wales,TwS
+307000231,307,[KI-IBD] Persons with IBD with no required prior observation,23,with Location = Wales,TwS
+308000231,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,23,with Location = Wales,TwS
+309000231,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,23,with Location = Wales,TwS
+310000231,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,23,with Location = Wales,TwS
+311000231,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,23,with Location = Wales,TwS
+314000231,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,23,with Location = Wales,TwS
+315000231,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,23,with Location = Wales,TwS
+322000231,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,23,with Location = Wales,TwS
+323000231,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,23,with Location = Wales,TwS
+306000241,306,[KI-IBD] Persons with IBD with at least 365d prior observation,24,with Location = Northern Ireland,TwS
+307000241,307,[KI-IBD] Persons with IBD with no required prior observation,24,with Location = Northern Ireland,TwS
+308000241,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,24,with Location = Northern Ireland,TwS
+309000241,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,24,with Location = Northern Ireland,TwS
+310000241,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,24,with Location = Northern Ireland,TwS
+311000241,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,24,with Location = Northern Ireland,TwS
+314000241,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,24,with Location = Northern Ireland,TwS
+315000241,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,24,with Location = Northern Ireland,TwS
+322000241,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,24,with Location = Northern Ireland,TwS
+323000241,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,24,with Location = Northern Ireland,TwS
+306002001,306,[KI-IBD] Persons with IBD with at least 365d prior observation,200,with Pregnant women,TwS
+307002001,307,[KI-IBD] Persons with IBD with no required prior observation,200,with Pregnant women,TwS
+308002001,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,200,with Pregnant women,TwS
+309002001,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,200,with Pregnant women,TwS
+310002001,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,200,with Pregnant women,TwS
+311002001,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,200,with Pregnant women,TwS
+314002001,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,200,with Pregnant women,TwS
+315002001,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,200,with Pregnant women,TwS
+322002001,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,200,with Pregnant women,TwS
+323002001,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,200,with Pregnant women,TwS
+306002011,306,[KI-IBD] Persons with IBD with at least 365d prior observation,201,with Overweight,TwS
+307002011,307,[KI-IBD] Persons with IBD with no required prior observation,201,with Overweight,TwS
+308002011,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,201,with Overweight,TwS
+309002011,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,201,with Overweight,TwS
+310002011,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,201,with Overweight,TwS
+311002011,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,201,with Overweight,TwS
+314002011,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,201,with Overweight,TwS
+315002011,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,201,with Overweight,TwS
+322002011,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,201,with Overweight,TwS
+323002011,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,201,with Overweight,TwS
+306002021,306,[KI-IBD] Persons with IBD with at least 365d prior observation,202,with Underweight,TwS
+307002021,307,[KI-IBD] Persons with IBD with no required prior observation,202,with Underweight,TwS
+308002021,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,202,with Underweight,TwS
+309002021,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,202,with Underweight,TwS
+310002021,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,202,with Underweight,TwS
+311002021,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,202,with Underweight,TwS
+314002021,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,202,with Underweight,TwS
+315002021,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,202,with Underweight,TwS
+322002021,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,202,with Underweight,TwS
+323002021,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,202,with Underweight,TwS
+306002031,306,[KI-IBD] Persons with IBD with at least 365d prior observation,203,with Normal weight,TwS
+307002031,307,[KI-IBD] Persons with IBD with no required prior observation,203,with Normal weight,TwS
+308002031,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,203,with Normal weight,TwS
+309002031,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,203,with Normal weight,TwS
+310002031,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,203,with Normal weight,TwS
+311002031,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,203,with Normal weight,TwS
+314002031,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,203,with Normal weight,TwS
+315002031,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,203,with Normal weight,TwS
+322002031,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,203,with Normal weight,TwS
+323002031,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,203,with Normal weight,TwS
+306002041,306,[KI-IBD] Persons with IBD with at least 365d prior observation,204,with Prevalent obesity,TwS
+307002041,307,[KI-IBD] Persons with IBD with no required prior observation,204,with Prevalent obesity,TwS
+308002041,308,[KI-IBD] Undetermined IBD (both type-specific codes) with at least 365d prior observation,204,with Prevalent obesity,TwS
+309002041,309,[KI-IBD] Undetermined IBD (both type-specific codes) with no required prior observation,204,with Prevalent obesity,TwS
+310002041,310,[KI-IBD] Undetermined IBD (no type-specific codes) with at least 365d prior observation,204,with Prevalent obesity,TwS
+311002041,311,[KI-IBD] Undetermined IBD (no type-specific codes) with no required prior observation,204,with Prevalent obesity,TwS
+314002041,314,[KI-IBD] Persons with Crohn's disease with at least 365d prior observation,204,with Prevalent obesity,TwS
+315002041,315,[KI-IBD] Persons with Crohn's disease with no required prior observation,204,with Prevalent obesity,TwS
+322002041,322,[KI-IBD] Persons with ulcerative colitis with at least 365d prior observation,204,with Prevalent obesity,TwS
+323002041,323,[KI-IBD] Persons with ulcerative colitis with no required prior observation,204,with Prevalent obesity,TwS
