@@ -18,7 +18,7 @@ defaultDatabase <- Sys.getenv("phenotypeLibrarydb")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("phenotypeLibrarydbUser")
 defaultPassword <- Sys.getenv("phenotypeLibrarydbPw")
-defaultResultsSchema <- 'phenotype_phebruary2'
+defaultResultsSchema <- 'phenotype_phebruary'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
 
