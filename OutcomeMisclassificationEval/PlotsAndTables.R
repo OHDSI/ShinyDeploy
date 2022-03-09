@@ -69,7 +69,7 @@ prepareCountsTable <- function(mainResults,
   table$comparatorYears <- table$comparatorDays/365.25
   table$targetOdds <- table$eventsTarget/(table$target - table$eventsTarget)
   table$comparatorOdds <- table$eventsComparator/(table$comparator - table$eventsComparator)
-  
+
   a <- table$eventsTarget
   b <- table$eventsComparator
   c <- table$target - table$eventsTarget
@@ -86,24 +86,25 @@ prepareCountsTable <- function(mainResults,
   countsTable$target <- formatC(round(countsTable$target), big.mark = ",", format = "d")
   countsTable$comparator <- formatC(round(countsTable$comparator), big.mark = ",", format = "d")
   countsTable$total <- formatC(round(countsTable$total), big.mark = ",", format = "d")
-  
+
   powerTable <- table[, c("targetOdds", "comparatorOdds", "mdrr")]
   powerTable$targetOdds <- sprintf("%.4f", powerTable$targetOdds)
   powerTable$comparatorOdds <- sprintf("%.4f", powerTable$comparatorOdds)
   powerTable$mdrr <- sprintf("%.2f", powerTable$mdrr)
-  
+
   obs.or <- (a/b) / (c/d)
   se.log.obs.or <- sqrt(1/a + 1/b + 1/c + 1/d)
+
   lci.obs.or <- exp(log(obs.or) - qnorm(1 - alpha/2) * se.log.obs.or)
   uci.obs.or <- exp(log(obs.or) + qnorm(1 - alpha/2) * se.log.obs.or)
-  
+
   orTable <- table[, c("targetOdds", "comparatorOdds")]
   orTable$oddsRatio <- obs.or
   orTable$ci95lb <- lci.obs.or
   orTable$ci95ub <- uci.obs.or
   orTable$targetOdds <- sprintf("%.4f", orTable$targetOdds)
   orTable$comparatorOdds <- sprintf("%.4f", orTable$comparatorOdds)
-  
+
   return(list(countsTable, powerTable, orTable))
 }
 
@@ -112,27 +113,27 @@ prepareMdCountsTable <- function(mainResults,
                                  sens,
                                  spec,
                                  alpha = 0.05) {
-  table <- merge(mainResults, analyses)
 
-  table$targetOdds <- table$eventsTarget/(table$target - table$eventsTarget)
-  table$comparatorOdds <- table$eventsComparator/(table$comparator - table$eventsComparator)
+  table <- merge(mainResults, analyses)
 
   a <- table$eventsTarget
   b <- table$eventsComparator
   c <- table$target - table$eventsTarget
   d <- table$comparator - table$eventsComparator
+  ac <- a + c
+  bd <- b + d
 
-  A <- (a - (1 - spec) * (a + c)) / (sens - (1 - spec)) # cast as doubles?
-  B <- (b - (1 - spec) * (b + d)) / (sens - (1 - spec))
-  C <- (a + c) - A
-  D <- (b + d) - B
-  
+  A <- (a - (1 - spec) * ac) / (sens - (1 - spec)) # cast as doubles?
+  B <- (b - (1 - spec) * bd) / (sens - (1 - spec))
+  C <- ac - A
+  D <- bd - B
+
   AB <- A + B
   CD <- C + D
   AC <- A + C
   BD <- B + D
   ABCD <- A + B + C + D
-  
+
   mdCountsTable <- data.frame(target = c(A, C, AC),
                               comparator = c(B, D, BD),
                               total = c(AB, CD, ABCD),
@@ -140,7 +141,7 @@ prepareMdCountsTable <- function(mainResults,
   mdCountsTable$target <- formatC(round(mdCountsTable$target), big.mark = ",", format = "d")
   mdCountsTable$comparator <- formatC(round(mdCountsTable$comparator), big.mark = ",", format = "d")
   mdCountsTable$total <- formatC(round(mdCountsTable$total), big.mark = ",", format = "d")
-  
+
   if(A < 1 | B < 1 | C < 1 | D < 1) {
     orTable <- data.frame(targetOdds = NA,
                           comparatorOdds = NA,
@@ -148,35 +149,27 @@ prepareMdCountsTable <- function(mainResults,
                           ci95lb = NA,
                           ci95ub = NA)
   } else {
-    corr.or <- (A/B) / (C/D)
-    # se.corr.or <- sqrt(
-    #   (
-    #     (
-    #       (a+b)*a*b*((sens+spec-1)^2)
-    #     ) /
-    #       (
-    #         ((((a+b)*sens)-a)^2) * ((((a+b)*spec)-b)^2)
-    #       )
-    #   ) +
-    #     (
-    #       (
-    #         (c+d)*c*d*((sens+spec-1)^2)
-    #       ) /
-    #         (
-    #           ((((c+d)*sens)-c)^2) * ((((c+d)*spec)-d)^2)
-    #         )
-    #     )
-    # )
-    se.corr.or <- sqrt((1/A) + (1/B) + (1/C) + (1/D)) # FIX THIS
-    lci.corr.or <- exp(log(corr.or) - qnorm(1 - alpha/2) * se.corr.or)
-    uci.corr.or <- exp(log(corr.or) + qnorm(1 - alpha/2) * se.corr.or)
-    
-    orTable <- table[, c("targetOdds", "comparatorOdds")]
+    targetOdds <- (A/C)
+    comparatorOdds <- (B/D)
+    corr.or <- targetOdds / comparatorOdds
+   
+    num1 <- ac * a * c * (sens + spec - 1)^2
+    den1 <- (ac * sens - a)^2 * (ac * spec - c)^2
+    num2 <- bd * b * d * (sens + spec - 1)^2
+    den2 <- (bd * sens - b)^2 * (bd * spec - d)^2
+    se.log.corr.or <- sqrt((num1 / den1) + (num2 / den2))
+    lci.corr.or <- exp(log(corr.or) - qnorm(1 - alpha/2) * se.log.corr.or)
+    uci.corr.or <- exp(log(corr.or) + qnorm(1 - alpha/2) * se.log.corr.or)
+
+    orTable <- table
+    orTable$targetOdds <- targetOdds
+    orTable$comparatorOdds <- comparatorOdds
+    orTable <- orTable[, c("targetOdds", "comparatorOdds")]
     orTable$oddsRatio <- corr.or
     orTable$ci95lb <- lci.corr.or
     orTable$ci95ub <- uci.corr.or
     orTable$targetOdds <- sprintf("%.4f", orTable$targetOdds)
-    orTable$comparatorOdds <- sprintf("%.4f", orTable$comparatorOdds)  
+    orTable$comparatorOdds <- sprintf("%.4f", orTable$comparatorOdds)
   }
   return(list(mdCountsTable, orTable))
 }
@@ -198,7 +191,7 @@ prepareTable1 <- function(balance,
     space <- "&nbsp;"
   }
   specifications <- read.csv(pathToCsv, stringsAsFactors = FALSE)
-  
+
   fixCase <- function(label) {
     idx <- (toupper(label) == label)
     if (any(idx)) {
@@ -207,7 +200,7 @@ prepareTable1 <- function(balance,
     }
     return(label)
   }
-  
+
   formatPercent <- function(x) {
     result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
     result <- gsub("^-", "<", result)
@@ -215,14 +208,14 @@ prepareTable1 <- function(balance,
     result <- gsub(" ", space, result)
     return(result)
   }
-  
+
   formatStdDiff <- function(x) {
     result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
     result <- gsub("NA", "", result)
     result <- gsub(" ", space, result)
     return(result)
   }
-  
+
   resultsTable <- data.frame()
   for (i in 1:nrow(specifications)) {
     if (specifications$analysisId[i] == "") {
@@ -288,14 +281,14 @@ prepareTable1 <- function(balance,
   resultsTable$afterMatchingMeanTreated <- formatPercent(resultsTable$afterMatchingMeanTreated)
   resultsTable$afterMatchingMeanComparator <- formatPercent(resultsTable$afterMatchingMeanComparator)
   resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
-  
+
   headerRow <- as.data.frame(t(rep("", ncol(resultsTable))))
   colnames(headerRow) <- colnames(resultsTable)
   headerRow$beforeMatchingMeanTreated <- targetLabel
   headerRow$beforeMatchingMeanComparator <- comparatorLabel
   headerRow$afterMatchingMeanTreated <- targetLabel
   headerRow$afterMatchingMeanComparator <- comparatorLabel
-  
+
   subHeaderRow <- as.data.frame(t(rep("", ncol(resultsTable))))
   colnames(subHeaderRow) <- colnames(resultsTable)
   subHeaderRow$Characteristic <- "Characteristic"
@@ -305,9 +298,9 @@ prepareTable1 <- function(balance,
   subHeaderRow$afterMatchingMeanTreated <- "%"
   subHeaderRow$afterMatchingMeanComparator <- "%"
   subHeaderRow$afterMatchingStdDiff <- "Std. diff"
-  
+
   resultsTable <- rbind(headerRow, subHeaderRow, resultsTable)
-  
+
   colnames(resultsTable) <- rep("", ncol(resultsTable))
   colnames(resultsTable)[2] <- beforeLabel
   colnames(resultsTable)[5] <- afterLabel
@@ -317,13 +310,13 @@ prepareTable1 <- function(balance,
 prepareRawTable1 <- function(balance,
                              percentDigits = 1,
                              stdDiffDigits = 2,
-                             output = "latex") { 
+                             output = "latex") {
   if (output == "latex") {
     space <- " "
   } else {
     space <- "&nbsp;"
   }
-  
+
   formatPercent <- function(x) {
     result <- format(round(100 * x, percentDigits), digits = percentDigits + 1, justify = "right")
     result <- gsub("^-", "<", result)
@@ -331,29 +324,29 @@ prepareRawTable1 <- function(balance,
     result <- gsub(" ", space, result)
     return(result)
   }
-  
+
   formatStdDiff <- function(x) {
     result <- format(round(x, stdDiffDigits), digits = stdDiffDigits + 1, justify = "right")
     result <- gsub("NA", "", result)
     result <- gsub(" ", space, result)
     return(result)
   }
-  
+
   resultsTable <- balance[, c("covariateName", "analysisId",
                               "beforeMatchingMeanTreated", "beforeMatchingMeanComparator", "beforeMatchingStdDiff",
                               "afterMatchingMeanTreated", "afterMatchingMeanComparator", "afterMatchingStdDiff")]
   resultsTable$covariateName <- stringi::stri_trans_general(resultsTable$covariateName, "Latin-ASCII")
   resultsTable <- resultsTable[order(abs(resultsTable$afterMatchingStdDiff), decreasing = TRUE), ]
-  
+
   resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanTreated[resultsTable$analysisId < 800])
   resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$beforeMatchingMeanComparator[resultsTable$analysisId < 800])
   resultsTable$beforeMatchingStdDiff <- formatStdDiff(resultsTable$beforeMatchingStdDiff)
-  
+
   resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanTreated[resultsTable$analysisId < 800])
   resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800] <- formatPercent(resultsTable$afterMatchingMeanComparator[resultsTable$analysisId < 800])
   resultsTable$afterMatchingStdDiff <- formatStdDiff(resultsTable$afterMatchingStdDiff)
   resultsTable <- resultsTable[-2]
-  
+
   resultsTable <- rbind(c("", "Target", "", "", "Comparator", "", ""),
                         c("Characteristic", "%", "%", "Std. diff.", "%", "%", "Std. diff"),
                         resultsTable)
@@ -364,7 +357,7 @@ plotPs <- function(ps, targetName, comparatorName) {
   if (is.null(ps$databaseId)) {
     ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, group = targetName),
                 data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, group = comparatorName))
-    
+
   } else {
     ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, databaseId = ps$databaseId, group = targetName),
                 data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, databaseId = ps$databaseId, group = comparatorName))
@@ -397,13 +390,13 @@ plotPs <- function(ps, targetName, comparatorName) {
 plotAllPs <- function(ps) {
   ps <- rbind(data.frame(targetName = ps$targetName,
                          comparatorName = ps$comparatorName,
-                         x = ps$preferenceScore, 
-                         y = ps$targetDensity, 
+                         x = ps$preferenceScore,
+                         y = ps$targetDensity,
                          group = "Target"),
               data.frame(targetName = ps$targetName,
                          comparatorName = ps$comparatorName,
-                         x = ps$preferenceScore, 
-                         y = ps$comparatorDensity, 
+                         x = ps$preferenceScore,
+                         y = ps$comparatorDensity,
                          group = "Comparator"))
   ps$group <- factor(ps$group, levels = c("Target", "Comparator"))
   plot <- ggplot2::ggplot(ps, ggplot2::aes(x = x, y = y, color = group, group = group, fill = group)) +
@@ -477,7 +470,7 @@ drawAttritionDiagram <- function(attrition,
   for (i in 2:nrow(attrition)) {
     data <- addStep(data, attrition, i)
   }
-  
+
   data$leftBoxText[length(data$leftBoxText) + 1] <- paste("Study population:\n",
                                                           targetLabel,
                                                           ": n = ",
@@ -490,7 +483,7 @@ drawAttritionDiagram <- function(attrition,
   leftBoxText <- data$leftBoxText
   rightBoxText <- data$rightBoxText
   nSteps <- length(leftBoxText)
-  
+
   boxHeight <- (1/nSteps) - 0.03
   boxWidth <- 0.45
   shadowOffset <- 0.01
@@ -501,7 +494,7 @@ drawAttritionDiagram <- function(attrition,
   y <- function(y) {
     return(1 - (y - 0.5) * (1/nSteps))
   }
-  
+
   downArrow <- function(p, x1, y1, x2, y2) {
     p <- p + ggplot2::geom_segment(ggplot2::aes_string(x = x1, y = y1, xend = x2, yend = y2))
     p <- p + ggplot2::geom_segment(ggplot2::aes_string(x = x2,
@@ -549,7 +542,7 @@ drawAttritionDiagram <- function(attrition,
                                 size = 3.7)
     return(p)
   }
-  
+
   p <- ggplot2::ggplot()
   for (i in 2:nSteps - 1) {
     p <- downArrow(p, x(1), y(i) - (boxHeight/2), x(1), y(i + 1) + (boxHeight/2))
@@ -580,7 +573,7 @@ drawAttritionDiagram <- function(attrition,
                           axis.text = ggplot2::element_blank(),
                           axis.title = ggplot2::element_blank(),
                           axis.ticks = ggplot2::element_blank())
-  
+
   return(p)
 }
 
@@ -622,14 +615,14 @@ plotForest <- function(results) {
   comparatorName <- "comparator"
   breaks <- c(0.125, 0.25, 0.5, 1, 2, 4, 8)
   labels <- c(0.125, paste("0.25\nFavors", targetName), 0.5, 1, 2, paste("4\nFavors", comparatorName), 8)
-  
+
   data <- data.frame(logRr = results$logRr,
                      logLb = results$logRr + qnorm(0.025) * results$seLogRr,
                      logUb = results$logRr + qnorm(0.975) * results$seLogRr,
                      databaseId = as.factor(results$databaseId),
                      analysisDescription = as.factor(results$analysisDescription))
   limits <- rev(unique(data$analysisDescription))
-  
+
   plot <- ggplot2::ggplot(data,
                           ggplot2::aes(x = exp(logRr),
                                        y = analysisDescription,
@@ -639,7 +632,7 @@ plotForest <- function(results) {
     ggplot2::geom_vline(xintercept = 1, colour = "#000000", lty = 1, size = 1) +
     ggplot2::geom_errorbarh(height = 0, size = 1.25, alpha = 0.85) +
     ggplot2::geom_point(shape = 18, size = 4, alpha = 0.85) +
-    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
+    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) +
     ggplot2::scale_y_discrete(limits = limits) +
     ggplot2::scale_x_continuous("Odds ratio", trans = "log10", breaks = breaks, labels = labels) +
     ggplot2::theme(text = ggplot2::element_text(size = 12),
@@ -660,13 +653,13 @@ plotMdForest <- function(results) {
   comparatorName <- "comparator"
   breaks <- c(0.125, 0.25, 0.5, 1, 2, 4, 8)
   labels <- c(0.125, paste("0.25\nFavors", targetName), 0.5, 1, 2, paste("4\nFavors", comparatorName), 8)
-  
+
   data <- data.frame(logRr = log(results$OR),
                      logLb = log(results$LB),
                      logUb = log(results$UB),
                      analysisDescription = as.factor(c("No QBA", "Simple QBA")))
   limits <- rev(as.factor(c("No QBA", "Simple QBA")))
-  
+
   plot <- ggplot2::ggplot(data,
                           ggplot2::aes(x = exp(logRr),
                                        y = analysisDescription,
@@ -676,7 +669,7 @@ plotMdForest <- function(results) {
     ggplot2::geom_vline(xintercept = 1, colour = "#000000", lty = 1, size = 1) +
     ggplot2::geom_errorbarh(height = 0, size = 1.25, alpha = 0.85) +
     ggplot2::geom_point(shape = 18, size = 4, alpha = 0.85) +
-    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) + 
+    ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) +
     ggplot2::scale_y_discrete(limits = limits) +
     ggplot2::scale_x_continuous("Odds ratio", trans = "log10", breaks = breaks, labels = labels) +
     ggplot2::theme(text = ggplot2::element_text(size = 12),
