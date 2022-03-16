@@ -1,114 +1,119 @@
 cohortId,name,atlasId,circeDef
-306,Persons with IBD with at least 365d prior observation,243,TRUE
-307,Persons with IBD with no required prior observation,244,TRUE
-308,Person with undetermined IBD (both type-specific codes) with at least 365d prior observation,362,TRUE
-309,Person with undetermined IBD (both type-specific codes) with no required prior observation,414,TRUE
-310,Person with undetermined IBD (no type-specific codes) with at least 365d prior observation,363,TRUE
-311,Person with undetermined IBD (no type-specific codes) with no required prior observation,413,TRUE
-314,Persons with Crohn's disease with at least 365d prior observation,245,TRUE
-315,Persons with Crohn's disease with no required prior observation,246,TRUE
-322,Persons with ulcerative colitis with at least 365d prior observation,248,TRUE
-323,Persons with ulcerative colitis with no required prior observation,249,TRUE
-450,Irritable bowel syndrome [IBD-OHDSI],368,TRUE
-451,Autoimmune [IBD-OHDSI],119,TRUE
-452,Hypothyroidism [IBD-OHDSI],168,TRUE
-453,Alcohol misuse or dependence [IBD OHDSI],151,TRUE
-455,Hashimoto thyroiditis [IBD-OHDSI],213,TRUE
-456,Vitiligo [IBD-OHDSI],212,TRUE
-457,Grave's disease [IBD-OHDSI],211,TRUE
-458,Celiac disease [IBD-OHDSI],123,TRUE
-459,Rheumatoid arthritis [IBD-OHDSI],122,TRUE
-460,Type 1 diabetes mellitus [IBD-OHDSI],121,TRUE
-461,Prevalent Type 2 Diabetes Mellitus [Charybdis],117,TRUE
-500,Arthritis [IBD-OHDSI],306,TRUE
-501,Arthralgia [IBD-OHDSI],314,TRUE
-502,Pyoderma gangrenosum [IBD-OHDSI],312,TRUE
-503,Erythema nodosuma [IBD-OHDSI],311,TRUE
-504,Uveitis [IBD-OHDSI],310,TRUE
-505,EIM liver [IBD-OHDSI],167,TRUE
-506,EIM eyes [IBD-OHDSI],166,TRUE
-507,EIM skin [IBD-OHDSI],165,TRUE
-508,EIM Axial arthritis [IBD-OHDSI],164,TRUE
-509,EIM Peripheral arthritis [IBD-OHDSI],163,TRUE
-510,Perianal disease [IBD-OHDSI],176,TRUE
-550,Stricturing [IBD-OHDSI],389,TRUE
-552,Penetrating IBD [IBD-OHDSI],386,TRUE
-554,Growth failure [IBD OHDSI],348,TRUE
-555,Abnormal weight loss [IBD OHDSI],159,TRUE
-556,Anorectal fistula [IBD-OHDSI],304,TRUE
-557,Death [Charybdis],52,TRUE
+200,[IBD ID209 V1] Pregnancy [OHDSI],1776627,TRUE
+201,[IBD ID154 V1] Overweight [IBD OHDSI],1776629,TRUE
+202,[IBD ID155 V1] Underweight [IBD OHDSI],1776631,TRUE
+203,[IBD ID195 V1] Normal weight [IBD-OHDSI],1776630,TRUE
+204,[IBD ID45 v1] Prevalent obesity,1776628,TRUE
+306,Persons with IBD with at least 365d prior observation,1776609,TRUE
+307,Persons with IBD with no required prior observation,1776610,TRUE
+308,Person with undetermined IBD (both type-specific codes) with at least 365d prior observation,1777395,TRUE
+309,Person with undetermined IBD (both type-specific codes) with no required prior observation,1777396,TRUE
+310,Person with undetermined IBD (no type-specific codes) with at least 365d prior observation,1777393,TRUE
+311,Person with undetermined IBD (no type-specific codes) with no required prior observation,1777394,TRUE
+314,Persons with Crohn's disease with at least 365d prior observation,1776617,TRUE
+315,Persons with Crohn's disease with no required prior observation,1776618,TRUE
+322,Persons with ulcerative colitis with at least 365d prior observation,1776625,TRUE
+323,Persons with ulcerative colitis with no required prior observation,1776626,TRUE
+450,Irritable bowel syndrome [IBD-OHDSI],1777399,TRUE
+451,Autoimmune [IBD-OHDSI],1777398,TRUE
+452,Hypothyroidism [IBD-OHDSI],1776688,TRUE
+453,Alcohol misuse or dependence [IBD OHDSI],1776670,TRUE
+455,Hashimoto thyroiditis [IBD-OHDSI],1776677,TRUE
+456,Vitiligo [IBD-OHDSI],1776676,TRUE
+457,Grave's disease [IBD-OHDSI],1776675,TRUE
+458,Celiac disease [IBD-OHDSI],1776673,TRUE
+459,Rheumatoid arthritis [IBD-OHDSI],1776672,TRUE
+460,Type 1 diabetes mellitus [IBD-OHDSI],1776671,TRUE
+461,Prevalent Type 2 Diabetes Mellitus [Charybdis],1777397,TRUE
+500,Arthritis [IBD-OHDSI],1777400,TRUE
+501,Arthralgia [IBD-OHDSI],1777404,TRUE
+502,Pyoderma gangrenosum [IBD-OHDSI],1777403,TRUE
+503,Erythema nodosuma [IBD-OHDSI],1777402,TRUE
+504,Uveitis [IBD-OHDSI],1777401,TRUE
+505,EIM liver [IBD-OHDSI],1776682,TRUE
+506,EIM eyes [IBD-OHDSI],1776681,TRUE
+507,EIM skin [IBD-OHDSI],1776680,TRUE
+508,EIM Axial arthritis [IBD-OHDSI],1776679,TRUE
+509,EIM Peripheral arthritis [IBD-OHDSI],1776678,TRUE
+510,Perianal disease [IBD-OHDSI],1776683,TRUE
+550,Stricturing [IBD-OHDSI],1778295,TRUE
+552,Penetrating IBD [IBD-OHDSI],1777408,TRUE
+554,Growth failure [IBD OHDSI],1777407,TRUE
+555,Abnormal weight loss [IBD OHDSI],1776687,TRUE
+556,Anorectal fistula [IBD-OHDSI],1777406,TRUE
+557,Death [Charybdis],1777405,TRUE
 558,Hospitalization [Charybdis],149,TRUE
-559,Low bone density [IBD-OHDSI],196,TRUE
-561,Colectomy present [IBD-OHDSI],105,TRUE
-562,Ileostomy present [IBD-OHDSI],107,TRUE
-563,Colostomy present [IBD-OHDSI],103,TRUE
-564,Drainage of intra-abdominal abscess [IBD-OHDSI],173,TRUE
-565,Drainage of perianal abscess [IBD-OHDSI],172,TRUE
-566,Balloon dilation [IBD-OHDSI],171,TRUE
-567,Strictureplasty [IBD-OHDSI],170,TRUE
-568,Small intestinal resection [IBD-OHDSI],169,TRUE
-569,Intestinal obstruction [IBD-OHDSI],109,TRUE
-570,Gastrointestinal stenosis [IBD-OHDSI],421,TRUE
-571,Colostomy procedure [IBD-OHDSI],102,TRUE
-572,Colectomy procedure [IBD-OHDSI],104,TRUE
-573,Ileostomy procedure [IBD-OHDSI],106,TRUE
-600,JAK inhibitors [IBD-OHDSI],319,TRUE
-601,TNF-alpha inhibitors [IBD-OHDSI],316,TRUE
-602,"Interleukin 12, 23 inhibitors [IBD-OHDSI]",318,TRUE
-603,Anti-migration immunosuppressants [IBD-OHDSI],317,TRUE
-604,IBD antibiotics exposure [IBD-OHDSI],179,TRUE
-605,IBD steroid (broad) exposure [IBD-OHDSI],145,TRUE
-606,Modulen exposure [OHDSI],118,TRUE
-607,IBD steroid exposure [OHDSI],99,TRUE
-608,IBD biologics exposure [OHDSI],98,TRUE
-609,5-ASA exposure [OHDSI],97,TRUE
-610,Immunomodulator exposure [OHDSI],96,TRUE
-650,Low hemoglobin level [IBD-OHDSI],392,TRUE
-651,Low platelet count [IBD-OHDSI],391,TRUE
-652,Low serum albumin level [IBD-OHDSI],388,TRUE
-653,Anemia [IBD-OHDSI],156,TRUE
-654,Iron deficiency anemia [IBD-OHDSI],307,TRUE
-700,Colon cancer benign [IBD-OHDSI],353,TRUE
-701,Cervical cancer malignant [IBD-OHDSI],351,TRUE
-702,Melanoma [IBD-OHDSI],360,TRUE
-703,Cholangiocarcinoma [IBD-OHDSI],359,TRUE
-704,Anal carcinoma [IBD-OHDSI],356,TRUE
-705,Urinary tract neoplasm malignant [IBD-OHDSI],358,TRUE
-706,Urinary tract neoplasm benign [IBD-OHDSI],357,TRUE
-707,Small bowel carcinoma [IBD-OHDSI],355,TRUE
-708,Colon cancer malignant [IBD-OHDSI],354,TRUE
-709,Lung cancer malignant [IBD-OHDSI],352,TRUE
-710,Cervical cancer benign [IBD-OHDSI],349,TRUE
+559,Low bone density [IBD-OHDSI],1776689,TRUE
+561,Colectomy present [IBD-OHDSI],1776651,TRUE
+562,Ileostomy present [IBD-OHDSI],1776653,TRUE
+563,Colostomy present [IBD-OHDSI],1776649,TRUE
+564,Drainage of intra-abdominal abscess [IBD-OHDSI],1776661,TRUE
+565,Drainage of perianal abscess [IBD-OHDSI],1776660,TRUE
+566,Balloon dilation [IBD-OHDSI],1776659,TRUE
+567,Strictureplasty [IBD-OHDSI],1776658,TRUE
+568,Small intestinal resection [IBD-OHDSI],1776657,TRUE
+569,Intestinal obstruction [IBD-OHDSI],1776655,TRUE
+570,Gastrointestinal stenosis [IBD-OHDSI],1776654,TRUE
+571,Colostomy procedure [IBD-OHDSI],1776648,TRUE
+572,Colectomy procedure [IBD-OHDSI],1776650,TRUE
+573,Ileostomy procedure [IBD-OHDSI],1776652,TRUE
+600,JAK inhibitors [IBD-OHDSI],1777412,TRUE
+601,TNF-alpha inhibitors [IBD-OHDSI],1777409,TRUE
+602,"Interleukin 12, 23 inhibitors [IBD-OHDSI]",1777411,TRUE
+603,Anti-migration immunosuppressants [IBD-OHDSI],1777410,TRUE
+604,IBD antibiotics exposure [IBD-OHDSI],1776638,TRUE
+605,IBD steroid (broad) exposure [IBD-OHDSI],1776637,TRUE
+606,Modulen exposure [OHDSI],1776636,TRUE
+607,IBD steroid exposure [OHDSI],1776635,TRUE
+608,IBD biologics exposure [OHDSI],1776634,TRUE
+609,5-ASA exposure [OHDSI],1776633,TRUE
+610,Immunomodulator exposure [OHDSI],1776632,TRUE
+650,Low hemoglobin level [IBD-OHDSI],1777416,TRUE
+651,Low platelet count [IBD-OHDSI],1777415,TRUE
+652,Low serum albumin level [IBD-OHDSI],1777414,TRUE
+653,Anemia [IBD-OHDSI],1776686,TRUE
+654,Iron deficiency anemia [IBD-OHDSI],1777413,TRUE
+700,Colon cancer benign [IBD-OHDSI],1777420,TRUE
+701,Cervical cancer malignant [IBD-OHDSI],1777418,TRUE
+702,Melanoma [IBD-OHDSI],1777427,TRUE
+703,Cholangiocarcinoma [IBD-OHDSI],1777426,TRUE
+704,Anal carcinoma [IBD-OHDSI],1777423,TRUE
+705,Urinary tract neoplasm malignant [IBD-OHDSI],1777425,TRUE
+706,Urinary tract neoplasm benign [IBD-OHDSI],1777424,TRUE
+707,Small bowel carcinoma [IBD-OHDSI],1777422,TRUE
+708,Colon cancer malignant [IBD-OHDSI],1777421,TRUE
+709,Lung cancer malignant [IBD-OHDSI],1777419,TRUE
+710,Cervical cancer benign [IBD-OHDSI],1777417,TRUE
 711,Prevalent malignant neoplasm excluding non-melanoma skin cancer [Charybdis],253,TRUE
-712,Lymphoma [IBD-OHDSI],174,TRUE
-713,Non-melanoma skin cancer [IBD-OHDSI],175,TRUE
-751,Psyllium exposure [IBD-OHDSI],400,TRUE
-752,Mebeverine exposure [IBD-OHDSI],396,TRUE
-753,Peppermint oil exposure [IBD-OHDSI],399,TRUE
-754,Butylscopolamine exposure [IBD-OHDSI],398,TRUE
-755,Alverine exposure [IBD-OHDSI],397,TRUE
-758,"Loperamide, codeine exposure [IBD-OHDSI]",393,TRUE
+712,Lymphoma [IBD-OHDSI],1776685,TRUE
+713,Non-melanoma skin cancer [IBD-OHDSI],1776684,TRUE
+751,Psyllium exposure [IBD-OHDSI],1777435,TRUE
+752,Mebeverine exposure [IBD-OHDSI],1777431,TRUE
+753,Peppermint oil exposure [IBD-OHDSI],1777434,TRUE
+754,Butylscopolamine exposure [IBD-OHDSI],1777433,TRUE
+755,Alverine exposure [IBD-OHDSI],1777432,TRUE
+758,"Loperamide, codeine exposure [IBD-OHDSI]",1777428,TRUE
 800,Suicide and suicidal ideation [Charybdis],252,TRUE
 801,Hospitalization for psychosis [Charybdis],251,TRUE
-802,Anxiety [IBD-OHDSI],148,TRUE
-803,Depression [IBD-OHDSI],147,TRUE
-804,Stress [IBD OHDSI],153,TRUE
-850,Family history IBD [IBD-OHDSI],114,TRUE
-851,Smoking [IBD-OHDSI],115,TRUE
-853,Appendectomy procedure [IBD-OHDSI],120,TRUE
-900,Bloating [IBD-OHDSI],369,TRUE
-901,Rectal bleeding [IBD-OHDSI],308,TRUE
-902,Aphthae [IBD-OHDSI],313,TRUE
-903,Bloody diarrhea [IBD-OHDSI],309,TRUE
-904,Abdominal pain [IBD-OHDSI],303,TRUE
-905,Diarrhea [IBD-OHDSI],302,TRUE
+802,Anxiety [IBD-OHDSI],1776667,TRUE
+803,Depression [IBD-OHDSI],1776666,TRUE
+804,Stress [IBD OHDSI],1776668,TRUE
+850,Family history IBD [IBD-OHDSI],1776674,TRUE
+851,Smoking [IBD-OHDSI],1776669,TRUE
+853,Appendectomy procedure [IBD-OHDSI],1776656,TRUE
+900,Bloating [IBD-OHDSI],1777442,TRUE
+901,Rectal bleeding [IBD-OHDSI],1777439,TRUE
+902,Aphthae [IBD-OHDSI],1777441,TRUE
+903,Bloody diarrhea [IBD-OHDSI],1777440,TRUE
+904,Abdominal pain [IBD-OHDSI],1777438,TRUE
+905,Diarrhea [IBD-OHDSI],1777437,TRUE
 906,Gastrointestinal bleeding events [Charybdis],250,TRUE
-950,Shingles vaccine [IBD-OHDSI],300,TRUE
-951,MMR vaccine [IBD-OHDSI],299,TRUE
-952,HPV vaccine [IBD-OHDSI],298,TRUE
-953,Diphtheria and Pertussis vaccine [IBD-OHDSI],297,TRUE
-954,Hepatitis B vaccine [IBD-OHDSI],295,TRUE
-955,Pneumococcal vaccines [IBD-OHDSI],292,TRUE
-956,Prevnar 13 [IBD-OHDSI],294,TRUE
-957,Pneumovax 23 [IBD-OHDSI],293,TRUE
-958,Influenza vaccine [IBD-OHDSI],296,TRUE
+950,Shingles vaccine [IBD-OHDSI],1777451,TRUE
+951,MMR vaccine [IBD-OHDSI],1777450,TRUE
+952,HPV vaccine [IBD-OHDSI],1777449,TRUE
+953,Diphtheria and Pertussis vaccine [IBD-OHDSI],1777448,TRUE
+954,Hepatitis B vaccine [IBD-OHDSI],1777446,TRUE
+955,Pneumococcal vaccines [IBD-OHDSI],1777443,TRUE
+956,Prevnar 13 [IBD-OHDSI],1777445,TRUE
+957,Pneumovax 23 [IBD-OHDSI],1777444,TRUE
+958,Influenza vaccine [IBD-OHDSI],1777447,TRUE
