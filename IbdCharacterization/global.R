@@ -41,7 +41,7 @@ if (!exists("shinySettings")) {
                                                                                          password = Sys.getenv("IbdCharacterizationDbPw"))
     )
   } else if (file.exists("data")) {
-    shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged.RData")
+    shinySettings <- list(storage = "filesystem", dataFolder = "data", dataFile = "PreMerged_\\d*.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
     shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "IbdCharacterization/z4ud1qrs_PreMerged.RData")
@@ -90,9 +90,16 @@ if (dataStorage == "database") {
     writeLines(paste0("Could not find ", dataFile, " in S3 Bucket"))
   }
 } else {
-  if (file.exists(file.path(dataFolder, dataFile))) {
+  if (length(list.files(dataFolder, pattern = dataFile))) {
     writeLines("Using merged data detected in data folder")
-    load(file.path(dataFolder, dataFile))
+    covariateValue <- c()
+    for (f in list.files(dataFolder, pattern = dataFile)) {
+      load(file.path(dataFolder, f))
+      if (f != "PreMerged_0.RData") {
+        covariateValue <- rbind(covariateValue, subCovValue)
+        rm(list = "subCovValue")
+      }
+    }
   } else {
     zipFiles <- list.files(dataFolder, pattern = ".zip", full.names = TRUE)
     
