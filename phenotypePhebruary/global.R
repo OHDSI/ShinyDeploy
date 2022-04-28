@@ -18,7 +18,7 @@ defaultDatabase <- Sys.getenv("phenotypeLibrarydb")
 defaultPort <- 5432
 defaultUser <- Sys.getenv("phenotypeLibrarydbUser")
 defaultPassword <- Sys.getenv("phenotypeLibrarydbPw")
-defaultResultsSchema <- 'phenotype_phebruary'
+defaultResultsSchema <- 'phenotype_phebruary2'
 defaultVocabularySchema <- defaultResultsSchema
 alternateVocabularySchema <- c('vocabulary')
 
@@ -178,7 +178,6 @@ if (exists("temporalTimeRef")) {
     dplyr::select(.data$timeId, .data$choices) %>%
     dplyr::arrange(.data$timeId)
 }
-
 if (exists("covariateRef")) {
   specifications <- readr::read_csv(
     file = "Table1Specs.csv",
