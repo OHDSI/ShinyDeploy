@@ -166,7 +166,7 @@ domain$name <- as.character(domain$name)
 domainName <- "All"
 
 # This must match the featureTimeWindow.csv from the IBD characterization study
-timeWindow <- data.frame(windowId=c(1:9), name=c("Full history", "1y befre index", "30d before index", "index", 
+timeWindow <- data.frame(windowId=c(1:9), name=c("Full history", "1y befre index", "30d before index", "index to 30d", 
                                                  "index to 1y", "index to 3y", "index to 5y", "index to 10y", "Full follow-up"))
 timeWindow$name <- as.character(timeWindow$name)
 
