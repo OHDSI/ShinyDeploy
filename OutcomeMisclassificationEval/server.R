@@ -271,7 +271,7 @@ shinyServer(function(input, output, session) {
   
   output$mdCountsTableCaption2 <- renderUI({
     text <- "<strong>Table 2.</strong> Exposure [target (<em>%s</em>) vs comparator (<em>%s</em>)] by outcome contingency table
-             <i>with</i> simple QBA correction for outcome misclassification."
+             <i>with</i> QBA correction for outcome misclassification."
     return(HTML(sprintf(text, input$target, input$comparator)))
   })
   

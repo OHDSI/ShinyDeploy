@@ -39,7 +39,7 @@ shinyUI(
                                  HTML("<br/>"),
                                  HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
                                  HTML("<ul>"),
-                                 HTML("<li>The full study protocol is available at: <a href=\"https://github.com/ohdsi-studies/EhdenRaDmardsEstimation/tree/master/documents\">https://github.com/ohdsi-studies/EhdenRaDmardsEstimation/tree/master/documents</a></li>"),
+                                 HTML("<li>The full study protocol is available at: <a href=\"https://www.encepp.eu/encepp/viewResource.htm?id=33215\">https://www.encepp.eu/encepp/viewResource.htm?id=33215</a></li>"),
                                  HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/EhdenRaDmardsEstimation\">https://github.com/ohdsi-studies/EhdenRaDmardsEstimation</a></li>"),
                                  HTML("</ul>")
                         ),
