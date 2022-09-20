@@ -188,7 +188,7 @@ getConnectionPool <- function(connectionDetails) {
 loadShinySettings <- function(configPath) {
   stopifnot(file.exists(configPath))
   shinySettings <- yaml::read_yaml(configPath)
-  
+
   if (is.null(shinySettings$connectionDetails$server)) {
     shinySettings$connectionDetails$server <-
       paste0(Sys.getenv("phenotypeLibraryServer"),
@@ -403,15 +403,55 @@ initializeEnvironment <- function(shinySettings,
   }
 
   if (!is.null(envir$temporalAnalysisRef)) {
+    
+    cohortAnalysisRef <-
+      dplyr::bind_rows(
+        dplyr::tibble(
+          analysisName = c(
+            "c1:precedes (p)",
+            "c1:meets (m)",
+            "c1:overlaps (o)",
+            "c1:finished by (F)",
+            "c1:contains (D)",
+            "c1:starts (s)",
+            "c1:equals (e)",
+            "c1:started by (S)",
+            "c1:during (d)",
+            "c1:finishes (f)",
+            "c1:overlapped by (O)",
+            "c1:met by (M)",
+            "c1:preceded by (P)"
+          ),
+          analysisId = c(-1:-13)
+        ),
+        dplyr::tibble(
+          analysisName = c(
+            "c2:endsIn (osd)",
+            "c2:startsWithStart (seS)",
+            "c2:startsIn (dfO)",
+            "c2:endsWithEnd (Fef)",
+            "c2:startsBeforeStart (pmoFD)",
+            "c2:startsAfterStart (dfOMP)",
+            "c2:startsBeforeEnd",
+            "c2:endsBeforeEnd (pmoFDseSd)",
+            "c2:endsAfterEnd (DSOMP)",
+            "c2:startsInInclusive (seSdfOM)",
+            "c2:endsInInclusive (oFsedf)",
+            "c2:startsOnOrBeforeStart (pmoFDseS)",
+            "c2:startsOnOrBeforeEnd (pmoFDseSdfoM)",
+            "c2:endsOnOrBeforeEnd (pmoFsedf)",
+            "c2:duringInclusive (esdf)"
+          ),
+          analysisId = c(-101:-115)
+        )
+      ) %>%
+      dplyr::mutate(domainId = "Cohort",
+                    isBinary = "Y",
+                    missingMeansZero = "Y")
+    
     envir$temporalAnalysisRef <- dplyr::bind_rows(
       envir$temporalAnalysisRef,
-      dplyr::tibble(
-        analysisId = c(-201, -301),
-        analysisName = c("CohortEraStart", "CohortEraOverlap"),
-        domainId = "Cohort",
-        isBinary = "Y",
-        missingMeansZero = "Y"
-      )
+      cohortAnalysisRef
     )
 
     envir$domainIdOptions <- envir$temporalAnalysisRef %>%
@@ -468,12 +508,14 @@ initializeEnvironment <- function(shinySettings,
     1, 3, 4, 5, 6, 7,
     203, 403, 501, 703,
     801, 901, 903, 904,
-    -301, -201
+    -1:-13,
+    -101:-115
   )
 
   envir$analysisIdInTemporalCharacterization <- c(
     101, 401, 501, 701,
-    -301, -201
+    -1:-13,
+    -101:-115
   )
 
   if (envir$enableAnnotation &

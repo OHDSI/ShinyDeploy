@@ -232,7 +232,7 @@ getCharacterizationOutput <- function(dataSource,
     temporalCovariateValueDist = temporalCovariateValueDist,
     meanThreshold = meanThreshold
   )
-
+  
   postProcessCharacterizationValue <- function(data) {
     if ("timeId" %in% colnames(data$temporalCovariateValue)) {
       data$temporalCovariateValue$timeId <- NULL
@@ -305,7 +305,7 @@ getCharacterizationOutput <- function(dataSource,
     resultCovariateValue <-
       postProcessCharacterizationValue(data = covariateValue)
   }
-
+  
   cohortRelCharRes <-
     getCohortRelationshipCharacterizationResults(
       dataSource = dataSource,
@@ -345,7 +345,7 @@ getCharacterizationOutput <- function(dataSource,
       resultCohortValue
     )
   }
-
+  
   return(
     list(
       covariateValue = temporalCovariateValue,
@@ -945,6 +945,7 @@ getCohortRelationshipCharacterizationResults <-
   function(dataSource = .GlobalEnv,
            cohortIds = NULL,
            databaseIds = NULL) {
+    
     cohortCounts <-
       getResultsCohortCounts(
         dataSource = dataSource,
@@ -959,47 +960,533 @@ getCohortRelationshipCharacterizationResults <-
         cohortIds = cohortIds,
         databaseIds = databaseIds
       )
-
-    # cannot do records because comparator cohorts may have sumValue > target cohort (which is first occurrence only)
-    # subjects overlap
-    subjectsOverlap <- cohortRelationships %>%
-      dplyr::inner_join(cohortCounts,
-        by = c("cohortId", "databaseId")
+    
+    # check if data exists for cohort relationship with time offset = 0
+    # this is required for all cohort relationship report
+    if (nrow(
+      cohortRelationships %>%
+      dplyr::select(.data$startDay) %>%
+      dplyr::distinct() %>%
+      dplyr::filter(.data$startDay == 0)
+    ) == 0) {
+      # there is no results with startDay Offset = 0. 
+      # i.e. we cannot report cohort characterization
+      return(NULL)
+    }
+    
+    variablesToSelectInOutput <-
+      c(
+        "cohortId",
+        "comparatorCohortId",
+        "databaseId",
+        "startDay",
+        "endDay",
+        "startDay",
+        "endDay",
+        "mean",
+        "sumValue"
+      )
+    
+    processData <- function(var, 
+                            variables = variablesToSelectInOutput,
+                            cohortRelationship = cohortRelationships,
+                            cohortCount = cohortCounts,
+                            analysisId,
+                            type = "subjects") {
+      
+      if (type == "subjects") {
+        var2 <- paste0("sub", var)
+      } else {
+        var2 <- paste0("rec", var)
+      }
+      
+      data <- cohortRelationship %>%
+        dplyr::select(
+          dplyr::all_of(c(
+            "cohortId",
+            "comparatorCohortId",
+            "databaseId",
+            "startDay",
+            "endDay",
+            var2
+          ))
+        ) %>%
+        dplyr::rename(sumValue = get("var2")) %>%
+        dplyr::inner_join(cohortCount,
+                          by = c("cohortId", "databaseId"))  %>%
+        dplyr::mutate(mean = .data$sumValue / .data$cohortSubjects) %>%
+        dplyr::select(dplyr::all_of(variables)) %>% 
+        dplyr::mutate(analysisId = !!analysisId)
+      
+      return(data)
+    }
+    
+    # Cohort Characterization in this case is reporting the occurrence of another cohort in relation
+    # to the first occurrence of a target cohort using the ontology described in
+    # Allens interval algebra Ontology https://en.wikipedia.org/wiki/Allen%27s_interval_algebra
+    # Allens interval algebra ontology has 13 base relationships
+    # in this order (pmoFDseSdfOMP) https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html
+    
+    analysisRef <-
+      dplyr::bind_rows(
+        dplyr::tibble(
+          analysisName = c(
+            "c1:precedes (p)",
+            "c1:meets (m)",
+            "c1:overlaps (o)",
+            "c1:finished by (F)",
+            "c1:contains (D)",
+            "c1:starts (s)",
+            "c1:equals (e)",
+            "c1:started by (S)",
+            "c1:during (d)",
+            "c1:finishes (f)",
+            "c1:overlapped by (O)",
+            "c1:met by (M)",
+            "c1:preceded by (P)"
+          ),
+          analysisId = c(-1:-13)
+        ),
+        dplyr::tibble(
+          analysisName = c(
+            "c2:endsIn (osd)",
+            "c2:startsWithStart (seS)",
+            "c2:startsIn (dfO)",
+            "c2:endsWithEnd (Fef)",
+            "c2:startsBeforeStart (pmoFD)",
+            "c2:startsAfterStart (dfOMP)",
+            "c2:startsBeforeEnd",
+            "c2:endsBeforeEnd (pmoFDseSd)",
+            "c2:endsAfterEnd (DSOMP)",
+            "c2:startsInInclusive (seSdfOM)",
+            "c2:endsInInclusive (oFsedf)",
+            "c2:startsOnOrBeforeStart (pmoFDseS)",
+            "c2:startsOnOrBeforeEnd (pmoFDseSdfoM)",
+            "c2:endsOnOrBeforeEnd (pmoFsedf)",
+            "c2:duringInclusive (esdf)"
+          ),
+          analysisId = c(-101:-115)
+        )
       ) %>%
-      dplyr::mutate(sumValue = .data$subCeWindowT + .data$subCsWindowT - .data$subCWithinT) %>%
-      dplyr::mutate(mean = .data$sumValue / .data$cohortSubjects) %>%
-      dplyr::select(
-        .data$cohortId,
-        .data$comparatorCohortId,
-        .data$databaseId,
-        .data$startDay,
-        .data$endDay,
-        .data$mean,
-        .data$sumValue
-      ) %>%
-      dplyr::mutate(analysisId = -301)
-
-    # subjects start
-    subjectsStart <- cohortRelationships %>%
-      dplyr::inner_join(cohortCounts,
-        by = c("cohortId", "databaseId")
-      ) %>%
-      dplyr::mutate(sumValue = .data$subCsWindowT) %>%
-      dplyr::mutate(mean = .data$sumValue / .data$cohortSubjects) %>%
-      dplyr::select(
-        .data$cohortId,
-        .data$comparatorCohortId,
-        .data$databaseId,
-        .data$startDay,
-        .data$endDay,
-        .data$mean,
-        .data$sumValue
-      ) %>%
-      dplyr::mutate(analysisId = -201)
+      dplyr::mutate(domainId = "Cohort",
+                    isBinary = "Y",
+                    missingMeansZero = "Y")
+    
+    # (p precedes) cPrecedesT --> ce_before_ts            (cs < ts)
+    #
+    #  |----C-----|
+    #                  |------T-------|
+    cPrecedesT <- processData(var = "CeBeforeTs", analysisId = -1)
+    
+      
+    # (m meets) cMeetsT --> ce_on_ts                   (ce = ts)
+    #
+    #  |----C-----|
+    #             |------T-------|
+    cMeetsT <- processData(var = "CeOnTs", analysisId = -2)
+    
+    # (o overlaps) cOverlapsT --> ce_in_t_cs_bf_ts       (ce > ts & ce < ts & cs < ts)
+    #
+    #    |----C-----|
+    #         |------T-------|
+    cOverlapsT <- processData(var = "CeInTCsBfTs", analysisId = -3)
+    
+    # (F finished by) cIsFinishedByT --> ce_on_te_cs_bf_ts                (ce = te & cs < ts)
+    #
+    #  |------C-------|
+    #    |---T--------|
+    cIsFinishedByT <- processData(var = "CeOnTeCsBfTs", analysisId = -4)
+    
+    # (D contains) cContainsT --> cs_bf_ts_ce_gt_te                (cs < ts & ce > te)
+    #
+    #  |------C-------|
+    #    |---T----|
+    cContainsT <- processData(var = "CsBfTsCeGtTe", analysisId = -5)
+    
+    # (s starts) cStartsT --> cs_on_ts_ce_bf_te         (cs = ts & ce < te)
+    #
+    #  |----C-----|
+    #  |------T-------|
+    cStartsT <- processData(var = "CsOnTsCeBfTe", analysisId = -6)
+    
+    # (e equals) cEqualsT --> c_equals_t                (cs = ts & ce = te)
+    #
+    #    |---C-----|
+    #    |---T-----|
+    cEqualsT <- processData(var = "CEqualsT", analysisId = -7)
+    
+    # (S started by) cIsStartedByT --> cs_on_ts_ce_gt_te        (cs = ts & ce > te)
+    #
+    #  |------C-------|
+    #  |----T-----|
+    cIsStartedByT <- processData(var = "CsOnTsCeGtTe", analysisId = -8)
+    
+    # (d during) cDuringT --> c_in_t                (cs > ts & ce < te)
+    #
+    #    |---C----|
+    #  |------T-------|
+    cDuringT <- processData(var = "CInT", analysisId = -9)
+    
+    # (f finishes) cFinishesT --> ce_on_te_cs_gt_ts   (ce = te & cs > ts)
+    #
+    #    |---C--------|
+    #  |------T-------|
+    cFinishesT <- processData(var = "CeOnTeCsGtTs", analysisId = -10)
+    
+    # (O overlapped by) cIsOverlappedByT --> cs_in_t_te_in_c (te > cs & te < ce & cs > ts & cs < te)
+    #
+    #         |------C-------|
+    #    |----T-----|
+    cIsOverlappedByT <- processData(var = "CsInTTeInC", analysisId = -11)
+    
+    # (M met by) cIsMetByT--> cs_on_te      (te = cs)
+    #
+    #             |------C-------|
+    #  |----T-----|
+    cIsMetByT <- processData(var = "CsOnTe", analysisId = -12)
+    
+    # (P preceded by) cPrecededByT --> cs_after_te          (Te < Cs)
+    #
+    #                  |------C-------|
+    #  |----T-----|
+    cPrecededByT <- processData(var = "CsAfterTe", analysisId = -13)
+    
+    ######################  
+    # Secondary allens relationships
+    
+    # (x endsIn) --> ce_in_t                      (ce > ts & ce < ts) note: Cs can be </=/> Ts
+    #
+    #    |----C-----|
+    #         |------T-------|   cOverlapsT (o)
+    #
+    #    |----C-----|
+    # |------T-------|           cDuringT (d)
+    #
+    #    |----C-----|
+    #    |------T-------|        cStartsT (s)
+    cEndsInT <- processData(var = "CeInT", analysisId = -101)
+    
+    # (x startsWithStart) --> cs_on_ts              (cs = ts) note: ce can be </=/> Te
+    #
+    #  |----C-----|
+    #  |------T-------|          cStartsT (s)
+    #
+    #  |----C-----|              cEqualsT (e)
+    #  |------T---|
+    #
+    #  |----C-----|              cIsStartedByT (S)
+    #  |------T-|
+    cStartsWithTStart <- processData(var = "CsOnTs", analysisId = -102)
+    
+    # (x startsIn) --> cs_in_t                  (cs > ts & cs < te) note: Ce can be </=/> Te
+    #
+    #    |---C----|
+    #  |------T-------|          cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|          cFinishesT (f)
+    #         |------C-------|   
+    #    |----T-----|            cIsOverlappedByT (O)
+    
+    cStartsInTIn <- processData(var = "CsInT", analysisId = -103)
+    
+    # (x endsWithEnd) --> ce_on_te                (ce = te) note: cs can be </=/> Ts
+    #
+    #    |---C--------|           cIsFinishedByT (F)
+    #      |----T-----|
+    #
+    #    |------C-----|           cEqualsT (e)
+    #    |------T-----|
+    #
+    #    |---C--------|           cFinishesT (f)
+    #  |------T-------|
+    cEndsWithTEnd <- processData(var = "CeOnTe", analysisId = -104)
+    
+    # (x startsBeforeStart) --> cs_before_ts                (cs < ts) note: ce can be </=/> Ts/TE
+    #  |----C-----|
+    #                  |------T-------| cPrecedesT(p)
+    #
+    #  |----C-----|
+    #             |------T-------|       cMeetsT (m)
+    #
+    #    |----C-----|
+    #         |------T-------|         cOverlapsT (o)
+    #
+    #  |------C-------|
+    #    |---T--------|                 cIsFinishedByT (F)
+    #
+    #  |------C-------|
+    #    |---T----|                     cContainsT (D)
+    cStartsBeforeTStarts <- processData(var = "CsBeforeTs", analysisId = -105)
+    
+    # (x startsAfterStart) --> cs_after_ts                 (cs > ts) note: ce can be </=/> TE
+    #    |---C----|
+    #  |------T-------|   cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|   cFinishesT (f)
+    #
+    #         |------C-------|
+    #    |----T-----|    cIsOverlappedByT (O)
+    #
+    #             |------C-------|
+    #  |----T-----|       CsInTTeInC (M)
+    #
+    #                  |------C-------|
+    #  |----T-----|       cPrecededByT (P)
+    cStartsAfterTStarts <- processData(var = "CsAfterTs", analysisId = -106)
+    
+    # (x startsBeforeEnd) --> cs_before_te                (cs < te) note: ce can be </=/> TE
+    #  |----C-----|
+    #                  |------T-------|   cPrecedesT (p)
+    #
+    #  |----C-----|
+    #             |------T-------|        cMeetsT(m)
+    #
+    #    |----C-----|
+    #         |------T-------|            cOverlapsT(o)
+    #
+    #  |------C-------|
+    #    |---T--------|                   cIsFinishedByT(F)
+    #
+    #  |------C-------|
+    #    |---T----|                       cContainsT (D)
+    #
+    #  |----C-----|
+    #  |------T-------|                   cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----|                      cEqualsT (e)
+    #
+    #  |------C-------|
+    #  |----T-----|                       cIsStartedByT(S)
+    #
+    #    |---C----|
+    #  |------T-------|                   cDuringT(d)
+    #
+    #    |---C--------|
+    #  |------T-------|                   cFinishesT(f)
+    #
+    #         |------C-------|
+    #    |----T-----|                     cIsOverlappedByT(O)
+    cStartsBeforeTEnd <- processData(var = "CsBeforeTe", analysisId = -107)
+    
+    # (x endsBeforeEnd) --> ce_before_te                (ce < te) note: ce can be </=/> TE
+    #  |----C-----|
+    #                  |------T-------| cPrecedesT (p)
+    #
+    #
+    #  |----C-----|
+    #             |------T-------| cMeetsT (m)
+    #
+    #
+    #    |----C-----|
+    #         |------T-------| cOverlapsT (o)
+    #
+    #  |----C-----|
+    #  |------T-------|  cStartsT (s)
+    #
+    #    |---C----|
+    #  |------T-------|  cDuringT (d)
+    cEndsBeforeTEnd <- processData(var = "CeBeforeTe", analysisId = -108)
+    
+    # (x endsAfterEnd) --> ce_after_te                (ce > te) note: cs can be </=/> TS/TE
+    #  |------C-------|
+    #    |---T----|       cContainsT (D)
+    #
+    #  |------C-------|
+    #  |----T-----|       cIsStartedByT (S)
+    #
+    #         |------C-------|
+    #    |----T-----|     cIsOverlappedByT (O)
+    #
+    #             |------C-------|
+    #  |----T-----|       cIsMetByT (M)
+    #
+    #                  |------C-------|
+    #  |----T-----|       cPrecededByT (P)
+    cEndsAfterTEnd <- processData(var = "CeAfterTe", analysisId = -109)
+    
+    # (x startsInInclusive) --> cs_window_t               (cs >= ts & cs <= ts) note: ce can be </=/> TE
+    #  |----C-----|
+    #  |------T-------|   cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----|  cEqualsT (e)
+    #
+    #  |------C-------|
+    #  |----T-----|  cIsStartedByT (S)
+    #
+    #    |---C----|
+    #  |------T-------| cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------| cFinishesT (f)
+    #
+    #         |------C-------|
+    #    |----T-----|    cIsOverlappedByT (O)
+    #
+    #             |------C-------|
+    #  |----T-----|      cIsMetByT (M)
+    cStartsInTInclusive <- processData(var = "CsWindowT", analysisId = -110)
+    
+    # (x endsInInclusive) --> ce_window_t                (cs >= ts & cs <= ts) note: ce can be </=/> TE
+    #
+    #    |----C-----|
+    #         |------T-------|   cOverlapsT (o)
+    #
+    #  |------C-------|
+    #    |---T--------|          cIsFinishedByT(F)
+    #
+    #    |----C-----|
+    #    |------T-------|        cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----|             cEqualsT (e)
+    #
+    #    |----C-----|
+    # |------T-------|           cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|          cFinishesT (f)
+    cEndsInTInclusive <- processData(var = "CeWindowT", analysisId = -111)
+    
+    # (x startsOnOrBeforeStart) --> cs_window_ts
+    #  |----C-----|
+    #                  |------T-------|  cPrecedesT (p)
+    #
+    #  |----C-----|
+    #             |------T-------|      CeOnTs (m)
+    #
+    #    |----C-----|
+    #         |------T-------|-      cOverlapsT (o)
+    #
+    #  |------C-------|
+    #    |---T--------|   cIsFinishedByT (F)
+    #
+    #  |------C-------|
+    #    |---T----|       cContainsT (D)
+    #
+    #  |----C-----|
+    #  |------T-------|    cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----|       cEqualsT (e)
+    #
+    #  |------C-------|
+    #  |----T-----|     cIsStartedByT (S)
+    cStartsWindowTStarts <- processData(var = "CsWindowTs", analysisId = -112)
+    
+    # (x startsOnOrBeforeEnd) --> cs_window_te
+    
+    #  |----C-----|
+    #                  |------T-------| cPrecedesT (p)
+    #
+    #  |----C-----|
+    #             |------T-------|      cMeetsT (m)
+    #
+    #    |----C-----|
+    #         |------T-------|          cOverlapsT(o)
+    #
+    #  |------C-------|
+    #    |---T--------|                 cIsFinishedByT (F)
+    #
+    #  |------C-------|
+    #    |---T----|                     cContainsT (D)
+    #
+    #  |----C-----|
+    #  |------T-------|                 cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----|                    cEqualsT (e)
+    #
+    #  |------C-------|
+    #  |----T-----|                     cIsStartedByT (S)
+    #
+    #    |---C----|
+    #  |------T-------|                 cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|                 cFinishesT (f)
+    #
+    #         |------C-------|
+    #    |----T-----|                   cIsOverlappedByT (O)
+    #
+    #             |------C-------|
+    #  |----T-----|                     cIsMetByT (M)
+    cStartsOnOrBeforeTEnd <- processData(var = "CsWindowTe", analysisId = -113)
+    
+    # (x endsOnOrBeforeEnd) --> ce_window_te 
+    #  |----C-----|
+    #                  |------T-------|  cPrecedesT (p)
+    #
+    #  |----C-----|
+    #             |------T-------|  cMeetsT (m)
+    #
+    #    |----C-----|
+    #         |------T-------|  cOverlapsT (o)
+    #
+    #  |------C-------|
+    #    |---T--------| cIsFinishedByT (F)
+    #
+    #  |----C-----|
+    #  |------T-------|  cStartsT (s)
+    #
+    #    |---C-----|
+    #    |---T-----| cEqualsT (e)
+    #
+    #    |---C----|
+    #  |------T-------| cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|  cFinishesT (f)
+    cEndsOnOrBeforeTEnd <- processData(var = "CeWindowTe", analysisId = -114)
+    
+    # (x duringInclusive) --> c_within_t
+    #
+    #    |---C-----|
+    #    |---T-----|             cEqualsT (e)
+    #
+    #  |----C-----|
+    #  |------T-------|          cStartsT (s)
+    #
+    #    |---C----|
+    #  |------T-------|          cDuringT (d)
+    #
+    #    |---C--------|
+    #  |------T-------|          cFinishesT (f)
+    cDuringTInclusive <- processData(var = "CWithinT", analysisId = -115)
 
     data <- dplyr::bind_rows(
-      subjectsOverlap,
-      subjectsStart
+      cPrecedesT,
+      cMeetsT,
+      cOverlapsT,
+      cIsFinishedByT,
+      cContainsT,
+      cStartsT,
+      cEqualsT,
+      cIsStartedByT,
+      cDuringT,
+      cFinishesT,
+      cIsOverlappedByT,
+      cIsMetByT,
+      cPrecededByT,
+      #############
+      cEndsInT,
+      cStartsWithTStart,
+      cStartsInTIn,
+      cEndsWithTEnd,
+      cStartsBeforeTStarts,
+      cStartsAfterTStarts,
+      cStartsBeforeTEnd,
+      cEndsBeforeTEnd,
+      cEndsAfterTEnd,
+      cStartsInTInclusive,
+      cEndsInTInclusive,
+      cStartsWindowTStarts,
+      cStartsOnOrBeforeTEnd,
+      cEndsOnOrBeforeTEnd,
+      cDuringTInclusive
     ) %>%
       dplyr::filter(.data$comparatorCohortId > 0) %>%
       dplyr::mutate(covariateId = (.data$comparatorCohortId * -1000) + .data$analysisId)
@@ -1027,13 +1514,7 @@ getCohortRelationshipCharacterizationResults <-
       )
 
     analysisRef <-
-      dplyr::tibble(
-        analysisId = c(-201, -301),
-        analysisName = c("CohortEraStart", "CohortEraOverlap"),
-        domainId = "Cohort",
-        isBinary = "Y",
-        missingMeansZero = "Y"
-      ) %>%
+      analysisRef %>%
       dplyr::inner_join(data %>%
         dplyr::select(.data$analysisId) %>%
         dplyr::distinct(),
