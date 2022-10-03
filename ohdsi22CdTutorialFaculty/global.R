@@ -7,6 +7,17 @@ lapply(file.path("R", list.files("R", pattern = "*.R")), source, local = diagExp
 
 diagExpEnv$appVersionNum <- "Version: 3.0.2"
 
+dbms <- Sys.getenv("shinydbDbms", unset = "postgresql")
+server <- paste(
+  Sys.getenv("phenotypeLibraryServer"),
+  Sys.getenv("phenotypeLibrarydb"),
+  sep = "/"
+)
+port <- Sys.getenv("phenotypeLibraryDbPort")
+user <- Sys.getenv("phenotypeLibrarydbUser")
+password <- Sys.getenv("phenotypeLibrarydbPw")
+
+
 if (exists("shinySettings")) {
   diagExpEnv$shinySettings <- shinySettings
   diagExpEnv$activeUser <- Sys.info()[['user']]

@@ -1,6 +1,6 @@
 # Alter these configuration settings for usage with remote databases
 connectionDetails:
-  dbms: "sqlite"
+  dbms: "postgresql"
   server: "data/MergedCohortDiagnosticsData.sqlite"
   user: ""
   password: ""
@@ -11,8 +11,8 @@ connectionDetails:
 connectionDetailsSecureKey: ~
 
 tablePrefix: ""
-resultsDatabaseSchema: "main"
-vocabularyDatabaseSchemas: ["main"]
+resultsDatabaseSchema: "ohdsi2022Tut"
+vocabularyDatabaseSchemas: ["ohdsi2022Tut"]
 cohortTableName: "cohort"
 databaseTableName: "database"
 

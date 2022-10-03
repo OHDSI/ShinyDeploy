@@ -189,23 +189,12 @@ loadShinySettings <- function(configPath) {
   stopifnot(file.exists(configPath))
   shinySettings <- yaml::read_yaml(configPath)
   
-  if (is.null(shinySettings$connectionDetails$server)) {
-    shinySettings$connectionDetails$server <-
-      paste0(Sys.getenv("shinydbServer"),
-             "/",
-             Sys.getenv("shinydbDatabase"))
-  }
+  shinySettings$connectionDetails$dbms <- dbms
+  shinySettings$connectionDetails$server <- server
+  shinySettings$connectionDetails$port <- port
+  shinySettings$connectionDetails$user <- user
+  shinySettings$connectionDetails$password <- password
   
-  if (is.null(shinySettings$connectionDetails$user)) {
-    shinySettings$connectionDetails$user <-
-      Sys.getenv("shinydbUser")
-  }
-  
-  if (is.null(shinySettings$connectionDetails$password)) {
-    shinySettings$connectionDetails$password <-
-      Sys.getenv("shinydbPW")
-  }
-
   defaultValues <- list(
     resultsDatabaseSchema = c("main"),
     vocabularyDatabaseSchemas = c("main"),
