@@ -13,7 +13,7 @@ server <- paste(
   Sys.getenv("phenotypeLibrarydb"),
   sep = "/"
 )
-port <- Sys.getenv("phenotypeLibraryDbPort")
+port <- 5432
 user <- Sys.getenv("phenotypeLibrarydbUser")
 password <- Sys.getenv("phenotypeLibrarydbPw")
 
