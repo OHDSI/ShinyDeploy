@@ -17,7 +17,7 @@ testQuery <- function(mdFile, connectionDetails, connection, inputValues, oracle
       parameterValues[[param]] <- value
     }
   }
-  sql <- do.call("renderSql", append(sqlSource, parameterValues))$sql
+  sql <- do.call("render", append(sqlSource, parameterValues))
   warningString <- c()
   handleWarning <- function(e) {
     output$warnings <- e$message

@@ -5,6 +5,7 @@ library(DT)
 shinyServer(function(input, output, session) {
   
   connection <- DatabaseConnector::connect(connectionDetails)
+  renderTranslateExecuteSql(connection, "USE @schema;", schema = Sys.getenv("shinydbSchema"))
   
   currentChoices <- reactiveValues()
 
@@ -184,7 +185,7 @@ shinyServer(function(input, output, session) {
                          URLencode(input$query),
                          "'>",
                          titles,
-                         "</a></br><i>LEGEND version 1.0</i>, October 2018</br>")
+                         "</a></br><i>LEGEND version 1.0.1</i>, April 2022</br>")
       } else {
         titles <- paste0("<a href = '?targetId=",
                          tcoDbs$targetId,
@@ -206,7 +207,7 @@ shinyServer(function(input, output, session) {
                          URLencode(input$database),
                          "'>",
                          titles,
-                         "</a></br><i>LEGEND version 1.0</i>, October 2018</br>")
+                         "</a></br><i>LEGEND version 1.0.1</i>, April 2022</br>")
       }
       options <- list(pageLength = 15,
                       searching = FALSE,
@@ -232,7 +233,7 @@ shinyServer(function(input, output, session) {
       authors <- createAuthors()
       abstract <- createAbstract(connection, tcoDb)
       title <- createTitle(tcoDb)
-      abstract <- div(em("LEGEND version 1.0"),
+      abstract <- div(em("LEGEND version 1.0.1"),
                       h2(title),
                       h3("Authors"),
                       p(authors),

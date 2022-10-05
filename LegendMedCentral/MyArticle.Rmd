@@ -194,9 +194,10 @@ if (is.null(params$load)) {
                                                               sep = "/"),
                                                port = Sys.getenv("shinydbPort"),
                                                user = Sys.getenv("shinydbUser"),
-                                               password = Sys.getenv("shinydbPw"),
-                                               schema = Sys.getenv("shinydbSchema"))
+                                               password = Sys.getenv("shinydbPw"))
+  
   connection <- connect(connectionDetails)
+renderTranslateExecuteSql(connection, "USE @schema;", schema = Sys.getenv("shinydbSchema"))
 
   targetName <- getExposureName(connection = connection, exposureId = params$targetId)
   comparatorName <- getExposureName(connection = connection, exposureId = params$comparatorId)

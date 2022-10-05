@@ -12,6 +12,13 @@ source("markdownParse.R")
 queryFolder <- "./queries"
 configFilename <- "settings.Rds"
 allow_execute <- FALSE
+tempFolder <- paste0(getwd(), "/www")
+if (grepl("shiny-server", getwd(), fixed = TRUE)) {
+  tempFolder <- "/tmp"
+}
+if (tempFolder != paste0(getwd(), "/www")) {
+  file.copy(paste0(getwd(), "/www/rendered.css"), tempFolder)
+}
 
 queriesDf <- loadQueriesTable(queryFolder, "")
 mdFiles <- list.files(queryFolder, recursive = TRUE, pattern = "*.md")

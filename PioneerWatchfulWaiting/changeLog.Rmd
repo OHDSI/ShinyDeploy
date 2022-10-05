@@ -24,3 +24,13 @@ Some bugs fixed from the previous version.
 
 ## 2021-Oct-14: Aligning with the package v0.4.4 
 Updates to time to event analysis & fixes to cohort characterization & comparison.
+
+## 2021-Nov-09: Data update
+Triggering the data update to show results with correct clinical characterization.
+
+## 2021-Nov-15: Data update
+Triggering the data update to show results with correct clinical characterization.
+
+## 2021-Nov-30: Data update
+Data update to show results from 11 databases with version 0.4.4.
+------
