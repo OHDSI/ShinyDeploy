@@ -355,13 +355,18 @@ shinyServer(function(input, output, session) {
         ps <- getPs(connection = connection,
                     targetIds = row$targetId,
                     comparatorIds = row$comparatorId)
+        subjectCounts <- NULL
       } else {
         ps <- getPs(connection = connection,
                     targetIds = row$targetId,
                     comparatorIds = row$comparatorId,
                     databaseId = row$databaseId)
+        subjectCounts <- getSubjectCounts(connection = connection,
+                                          targetId = row$targetId,
+                                          comparatorId = row$comparatorId,
+                                          databaseId = row$databaseId)
       }
-      plot <- plotPs(ps, input$target, input$comparator)
+      plot <- plotPs(ps, input$target, input$comparator, subjectCounts)
       return(plot)
     }
   })
