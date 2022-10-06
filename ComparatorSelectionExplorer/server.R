@@ -2,7 +2,7 @@
 library(shiny)
 library(ggplot2)
 library(scales)
-#library(ggthemes)
+library(ggthemes)
 library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
 
@@ -101,7 +101,7 @@ shinyServer(function(input, output, session) {
       table = covDataTable,
       snakeCaseToCamelCase = TRUE
     )
-  }) %>% bindCache("cohortDefs")
+  })
 
   observe({
     cohortDefinitions <- getCohortDefinitions()
