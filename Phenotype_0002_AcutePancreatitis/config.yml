@@ -1,8 +1,6 @@
 # Alter these configuration settings for usage with remote databases
 connectionDetails:
   dbms: "postgresql"
-  user: ""
-  password: ""
   port: 5432
 
 # Store connection details as a json string in keyring
