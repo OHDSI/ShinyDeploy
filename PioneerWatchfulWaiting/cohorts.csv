@@ -1,31 +1,36 @@
-cohortId, name, atlasID, circeDef
-101,[PIONEER T1] Newly diagnosed Pca, 47, TRUE
-103,[PIONEER T2] PCa treated right away, 49, TRUE
+cohortId,name,atlasId,circeDef
+101,[PIONEER T1] Newly diagnosed PCa,47,TRUE
+103,[PIONEER T2] PCa treated right away,49,TRUE
 111,[PIONEER T3] PCa under conservative management,137,TRUE
-117,[PIONEER T4] PCa treated after conservative management ,143,TRUE
+117,[PIONEER T4] PCa treated after conservative management,143,TRUE
 105,[PIONEER T3.1] PCa high/intermediate risk conservative management,138,TRUE
 107,[PIONEER T3.2] PCa low risk grade conservative management and no intense monitoring,139,TRUE
 109,[PIONEER T3.3] PCa low risk grade conservative management and intense monitoring,140,TRUE
 113,[PIONEER T4.1] Delayed Curative Management,144,TRUE
 115,[PIONEER T4.2] Delayed Palliative Management,145,TRUE
-102,[PIONEER T1a] Newly diagnosed Pca_broad,141,TRUE
-104,[PIONEER T2a] PCa treated right away_broad,142,TRUE
-112,[PIONEER T3a] PCa under conservative management_broad,125,TRUE
-118,[PIONEER T4a] PCa treated after conservative management_broad,129,TRUE
-106,[PIONEER T3.1a] PCa high/intermediate risk conservative managemetn_broad,126,TRUE
-108,[PIONEER T3.2a] PCa low risk grade conservative management and no intense monitoring_broad,127,TRUE
-110,[PIONEER T3.3a] PCa low risk grade conservative management and intense monitoring_broad,128,TRUE
-114,[PIONEER T4.1a] Delayed Curative Management_broad,131,TRUE
-116,[PIONEER T4.2a] Delayed Palliative Management_broad,132,TRUE
-119,[PIONEER T5] Symptom post conservative management ,168,TRUE
-120,[PIONEER T5a] Symptom post conservative management_broad,167,TRUE
+102,[PIONEER T1a] Newly diagnosed PCa broad,141,TRUE
+104,[PIONEER T2a] PCa treated right away broad,142,TRUE
+112,[PIONEER T3a] PCa under conservative management broad,125,TRUE
+118,[PIONEER T4a] PCa treated after conservative management broad,129,TRUE
+106,[PIONEER T3.1a] PCa high/intermediate risk conservative management broad,126,TRUE
+108,[PIONEER T3.2a] PCa low risk grade conservative management and no intense monitoring broad,127,TRUE
+110,[PIONEER T3.3a] PCa low risk grade conservative management and intense monitoring broad,128,TRUE
+114,[PIONEER T4.1a] Delayed Curative Management broad,131,TRUE
+116,[PIONEER T4.2a] Delayed Palliative Management broad,132,TRUE
+119,[PIONEER T5] Symptom post conservative management,168,TRUE
+120,[PIONEER T5a] Symptom post conservative management broad,167,TRUE
+121,[PIONEER T3a sen1] new PCa conservative management sensitivity_1,182,TRUE
+122,[PIONEER T3a sen2] new PCa conservative management sensitivity_2,173,TRUE
+123,[PIONEER T3a sen3] new PCa conservative management sensitivity_3,174,TRUE
+124,[PIONEER T3a sen4] new PCa conservative management sensitivity_4,175,TRUE
+125,[PIONEER T3a sen5] new PCa conservative management sensitivity_5,176,TRUE
 202,[PIONEER O1] Death,46,TRUE
-201,[PIONEER O2] Symptomatic progression ,45,TRUE
-203,[PIONEER O3] Treatment initiation,61,TRUE
-204,[PIONEER O4] Curative treatment,73,TRUE
-205,[PIONEER O5] Palliative treatment ,74,TRUE
+201,[PIONEER O2] Symptomatic progression,45,TRUE
+203,[PIONEER O3] Treatment Initiation,61,TRUE
+204,[PIONEER O4] Curative Treatment Initiation,73,TRUE
+205,[PIONEER O5] Palliative Treatment Initiation,74,TRUE
 206,[PIONEER O6] Hospitalization,87,TRUE
-207,[PIONEER O7] ED visit,90,TRUE
+207,[PIONEER O7] ED Visit,90,TRUE
 301,[PIONEER S1] EAU High Risk,52,TRUE
 302,[PIONEER S2] EAU Low Risk,53,TRUE
 303,[PIONEER S3] EAU Intermediate Risk,54,TRUE
@@ -45,14 +50,14 @@ cohortId, name, atlasID, circeDef
 317,[PIONEER S17] Grade 4 (GS 8),70,TRUE
 318,[PIONEER S18] Grade 5 (GS 9-10),71,TRUE
 319,[PIONEER S19] Family history of Prostate cancer or history of family history of germline mutations,72,TRUE
-"320,""[PIONEER S20] Mutation (germline or somatic) in BRCA2, BRCA1, ATM, MLH1, MSH1, MSH2, MSH6, CHEK2, RAD51B and PALB2 "",83,TRUE"
+320,"[PIONEER S20] Mutation (germline or somatic) in BRCA2, BRCA1, ATM, MLH1, MSH1, MSH2, MSH6, CHEK2, RAD51B and PALB2 ",83,TRUE
 321,[PIONEER S21] Age at diagnosis <55,111,TRUE
 322,[PIONEER S22] Age at diagnosis 55-80,110,TRUE
 323,[PIONEER S23] Age at diagnosis >80,109,TRUE
 324,[PIONEER S24] Charlson CCI=0,120,TRUE
 325,[PIONEER S25] Charlson CCI=1,121,TRUE
 326,[PIONEER S26] Charlson CCI>=2,122,TRUE
-"327,""[PIONEER S27] Any malignancy, except malignant neoplasm of skin"",81,TRUE"
+327,"[PIONEER S27] Any malignancy, except malignant neoplasm of skin",81,TRUE
 334,[PIONEER S28] Performance status ECOG=0,164,TRUE
 335,[PIONEER S29] Performance status ECOG=1,165,TRUE
 336,[PIONEER S30] Performance status ECOG=2+,166,TRUE

@@ -1,6 +1,7 @@
 library(shiny)
 library(pool)
 library(DatabaseConnector)
+library(data.table)
 source("DataPulls.R")
 
 connPool <- NULL # Will be initialized if using a DB
@@ -72,7 +73,7 @@ if (dataStorage == "database") {
       # print(file)
       tableName <- gsub(".csv$", "", file)
       camelCaseName <- SqlRender::snakeCaseToCamelCase(tableName)
-      data <- readr::read_csv(file.path(folder, file), col_types = readr::cols(), guess_max = 1e7, locale = readr::locale(encoding = "UTF-8"))
+      data <- data.table::fread(file.path(folder, file))
       colnames(data) <- SqlRender::snakeCaseToCamelCase(colnames(data))
       
       if (!overwrite && exists(camelCaseName, envir = .GlobalEnv)) {
@@ -134,25 +135,25 @@ if (exists("covariate")) {
    )
    covariate$covariateName[covNameWithId] <- newCovariateName
   }
-  covariate$windowId <- as.numeric(substr(covariate$covariateId, nchar(covariate$covariateId), nchar(covariate$covariateId)))
+  covariate$windowId <- covariate$covariateId %% 10
 }
 
 # Setup filters
-domain <- data.frame()
-domain <- rbind(domain,data.frame(name = "All", covariateAnalysisId = c(1:10000)))
-domain <- rbind(domain,data.frame(name = "Cohort", covariateAnalysisId = c(10000)))
-domain <- rbind(domain,data.frame(name = "Demographics", covariateAnalysisId = c(1:99)))
-domain <- rbind(domain,data.frame(name = "Drug", covariateAnalysisId = c(412)))
-domain <- rbind(domain,data.frame(name = "Condition", covariateAnalysisId = c(212)))
-domain <- rbind(domain,data.frame(name = 'Procedure', covariateAnalysisId = c(712)))
+domain <- data.table()
+domain <- rbind(domain,data.table(name = "All", covariateAnalysisId = c(1:10000)))
+domain <- rbind(domain,data.table(name = "Cohort", covariateAnalysisId = c(10000)))
+domain <- rbind(domain,data.table(name = "Demographics", covariateAnalysisId = c(1:99)))
+domain <- rbind(domain,data.table(name = "Drug", covariateAnalysisId = c(412)))
+domain <- rbind(domain,data.table(name = "Condition", covariateAnalysisId = c(212)))
+domain <- rbind(domain,data.table(name = 'Procedure', covariateAnalysisId = c(712)))
 domain$name <- as.character(domain$name)
 domainName <- "All"
 
 # This must match the featureTimeWindow.csv from the Pioneer study
-timeWindow <- data.frame(windowId=c(1:3), name=c("index to 365", "366d to 730d", "731d+"))
+timeWindow <- data.table(windowId=c(1:4), name=c("-365 to index", "index to 365", "366d to 730d", "731d+"))
 timeWindow$name <- as.character(timeWindow$name)
 
-cohortXref <- readr::read_csv("./cohortXref.csv", col_types = readr::cols())
+cohortXref <- data.table::fread("./cohortXref.csv")
 targetCohort <- cohortXref[,c("targetId","targetName")]
 targetCohort <- unique(targetCohort)
 targetCohort <- targetCohort[order(targetCohort$targetName),]
@@ -177,7 +178,7 @@ strataName <- cohortXref[cohortXref$cohortId == initCharCohortId,c("strataName")
 comparatorName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("targetName")][1]
 comparatorStrataName <- cohortXref[cohortXref$cohortId == initCharCompareCohortId,c("strataName")][1]
 
-cohortInfo <- readr::read_csv("./cohorts.csv", col_types = readr::cols())
+cohortInfo <- data.table::fread("./cohorts.csv")
 cohortInfo <- cohortInfo[order(cohortInfo$name),]
 
 # Read in the database terms of use
@@ -188,12 +189,19 @@ database <- database[order(database$databaseId),]
 
 
 # Add Time to Event names and ids
-ids <- unique(cohortTimeToEvent$outcomeId)
-names <- unique(cohortStagingCount$name[cohortStagingCount$cohortId %in% ids])
-if(length(cohortStagingCount$name[cohortStagingCount$cohortId == max(ids)]) == 0){
-  names <- c(names, 'Symptomatic progr. free surv.')
-}
 
-KMIds <- data.frame(id = ids,
+# Gather unique outcome ids in time to event table
+ids <- unique(cohortTimeToEvent$outcomeId)
+# Find corresponding cohort names
+names <- sapply(ids,function(id){ cohortStagingCount$name[cohortStagingCount$cohortId == id ][1]})
+
+# hack/fix which I don't understand
+#if(length(cohortStagingCount$name[cohortStagingCount$cohortId == max(ids)]) == 0){
+#  names <- c(names, 'Symptomatic progr. free surv.')
+#}
+
+KMIds <- data.table(id = ids,
                     name = names)
 
+#Filter out NA value in name which leads to problems with computations and plotting
+KMIds <- KMIds[!is.na(KMIds$name)]

@@ -32,6 +32,7 @@ ggsurvplot_core <- function(fit, data = NULL, d = NULL, fun = NULL,
                             surv.median.line = c("none", "hv", "h", "v"),
                             ggtheme = theme_survminer(),
                             tables.theme = ggtheme,
+                            cmap = NULL,
                             ...
 ){
   d <- fit
@@ -89,8 +90,14 @@ ggsurvplot_core <- function(fit, data = NULL, d = NULL, fun = NULL,
   
   # Main survival curves
   #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  legend.labs <- sort(legend.labs)
+  palette <- c()
+  for(plot in legend.labs){
+    palette <- c(palette, cmap[[plot]]) 
+  }
+  
   p <- survminer::ggsurvplot_df(d, fun = fun,
-                     color = color, palette = cb_palette, linetype = linetype,
+                     color = color, palette = palette, linetype = linetype,
                      break.x.by = break.x.by, break.time.by = break.time.by, break.y.by = break.y.by,
                      surv.scale = surv.scale, xscale = xscale,
                      conf.int = conf.int, conf.int.fill = conf.int.fill, conf.int.style = conf.int.style,
@@ -106,7 +113,7 @@ ggsurvplot_core <- function(fit, data = NULL, d = NULL, fun = NULL,
   
   # The main plot parameters, will be used to plot survival tables
   pms <- attr(p, "parameters")
-  color <- surv.color <- pms$color <-cb_palette
+  color <- surv.color <- pms$color <- palette
 
 
   res <- list(plot = p)
@@ -114,7 +121,8 @@ ggsurvplot_core <- function(fit, data = NULL, d = NULL, fun = NULL,
   # Extract strata colors used in survival curves
   # Will be used to color the y.text of risk table and cumevents table
   if(risk.table | cumevents | cumcensor | ncensor.plot){
-    scurve_cols <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
+    # scurve_cols <- .extract_ggplot_colors (p, grp.levels = pms$legend.labs)
+    scurve_cols <- cmap[legend.labs]
   }
 
 

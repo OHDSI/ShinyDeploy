@@ -208,6 +208,20 @@ ui <- dashboardPage(title = "QueryLibrary",
             )
           )
         )
+      ),
+      
+      tabItem(
+        tabName = "about",
+        fluidRow(
+          column(
+            width = 12,
+            box(
+              width = NULL,
+              status = "primary",
+              uiOutput(outputId = "about")
+            )
+          )
+        )
       )
     )
   )

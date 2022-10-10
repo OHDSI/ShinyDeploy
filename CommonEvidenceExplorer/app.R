@@ -1,0 +1,2 @@
+library(CemConnector)
+launchCeExplorer()
