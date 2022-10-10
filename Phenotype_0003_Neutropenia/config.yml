@@ -14,10 +14,10 @@ connectionDetailsSecureKey: ~
 # Note - if dbms and port vars are unset in environment variables they will default to above connectionDetails settings
 connectionEnvironmentVariables:
   dbms: "postgres"
-  database: ~
-  server: "shinydbServer"
-  user: "shinydbUser"
-  password: "shinydbPw"
+  database: "phoebedb"
+  server: "phoebedbServer"
+  user: "phoebedbUser"
+  password: "phoebedbPw"
   port: "shinydbPort"
   extraSettings: ~
 
