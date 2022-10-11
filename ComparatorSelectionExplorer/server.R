@@ -2,7 +2,7 @@
 library(shiny)
 library(ggplot2)
 library(scales)
-library(ggthemes)
+#library(ggthemes)
 library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
 
