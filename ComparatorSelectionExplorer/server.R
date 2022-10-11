@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
       table = covDataTable,
       snakeCaseToCamelCase = TRUE
     )
-  }) %>% bindCache("cohortDefs")
+  })
 
   observe({
 
