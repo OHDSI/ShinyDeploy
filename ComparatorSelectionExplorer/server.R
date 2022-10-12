@@ -2,7 +2,6 @@
 library(shiny)
 library(ggplot2)
 library(scales)
-#library(ggthemes)
 library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
 
@@ -103,7 +102,6 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-
     shiny::withProgress({
       cohortDefinitions <- getCohortDefinitions()
 
@@ -410,7 +408,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -459,7 +457,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -509,7 +507,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -559,7 +557,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -610,7 +608,7 @@ shinyServer(function(input, output, session) {
         ")")
 
       colNameComparator <- paste0(
-        cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+        cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
         " (n = ",
         prettyNum(first(covData$n2), big.mark = ","),
         ")")
