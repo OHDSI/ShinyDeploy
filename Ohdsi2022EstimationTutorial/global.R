@@ -1,6 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
+#Trigger for reload
+
 shinySettings <- list(dataFolder = "data", blind = F)
 dataFolder <- shinySettings$dataFolder
 blind <- shinySettings$blind
