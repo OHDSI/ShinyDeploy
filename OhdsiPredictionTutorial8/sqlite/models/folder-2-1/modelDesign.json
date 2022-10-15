@@ -1,0 +1,288 @@
+{
+  "targetId": 600,
+  "outcomeId": 603,
+  "restrictPlpDataSettings": {
+    "studyStartDate": "",
+    "studyEndDate": "",
+    "firstExposureOnly": false,
+    "washoutPeriod": 0,
+    "sampleSize": null,
+    "attr_class": "restrictPlpDataSettings"
+  },
+  "covariateSettings": {
+    "temporal": false,
+    "temporalSequence": false,
+    "DemographicsGender": true,
+    "DemographicsAgeGroup": true,
+    "DemographicsRace": true,
+    "DemographicsEthnicity": true,
+    "ConditionGroupEraLongTerm": true,
+    "DrugGroupEraLongTerm": true,
+    "ProcedureOccurrenceLongTerm": true,
+    "DeviceExposureLongTerm": true,
+    "MeasurementLongTerm": true,
+    "ObservationLongTerm": true,
+    "VisitConceptCountLongTerm": true,
+    "longTermStartDays": -730,
+    "mediumTermStartDays": -180,
+    "shortTermStartDays": -30,
+    "endDays": 0,
+    "includedCovariateConceptIds": [],
+    "addDescendantsToInclude": false,
+    "excludedCovariateConceptIds": [],
+    "addDescendantsToExclude": false,
+    "includedCovariateIds": [],
+    "attr_class": "covariateSettings",
+    "attr_fun": "getDbDefaultCovariateData"
+  },
+  "populationSettings": {
+    "binary": true,
+    "includeAllOutcomes": true,
+    "firstExposureOnly": true,
+    "washoutPeriod": 365,
+    "removeSubjectsWithPriorOutcome": true,
+    "priorOutcomeLookback": 999999,
+    "requireTimeAtRisk": false,
+    "minTimeAtRisk": 364,
+    "riskWindowStart": 1,
+    "startAnchor": "cohort start",
+    "riskWindowEnd": 365,
+    "endAnchor": "cohort start",
+    "restrictTarToCohortEnd": false,
+    "attr_class": "populationSettings"
+  },
+  "sampleSettings": [
+    {
+      "numberOutcomestoNonOutcomes": 1,
+      "sampleSeed": 1,
+      "attr_class": "sampleSettings",
+      "attr_fun": "sameData"
+    }
+  ],
+  "featureEngineeringSettings": [
+    {
+      "attr_class": "featureEngineeringSettings",
+      "attr_fun": "sameData"
+    }
+  ],
+  "preprocessSettings": {
+    "minFraction": 1e-05,
+    "normalize": true,
+    "removeRedundancy": true,
+    "attr_class": "preprocessSettings"
+  },
+  "modelSettings": {
+    "fitFunction": "fitRclassifier",
+    "param": {
+      "1": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "2": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "3": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "4": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "5": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "6": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.05,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "7": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "8": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "9": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "10": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "11": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "12": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.1,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "13": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "14": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 4,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "15": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "16": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 6,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "17": {
+        "ntrees": 100,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "18": {
+        "ntrees": 300,
+        "earlyStopRound": 25,
+        "maxDepth": 8,
+        "minChildWeight": 1,
+        "learnRate": 0.3,
+        "lambda": 1,
+        "alpha": 0,
+        "scalePosWeight": 1
+      },
+      "attr_settings": {
+        "modelType": "Xgboost",
+        "seed": 10155538,
+        "modelName": "Gradient Boosting Machine",
+        "threads": 20,
+        "varImpRFunction": "varImpXgboost",
+        "trainRFunction": "fitXgboost",
+        "predictRFunction": "predictXgboost"
+      },
+      "attr_saveType": "xgboost"
+    },
+    "attr_class": "modelSettings"
+  },
+  "splitSettings": {
+    "test": 0.25,
+    "train": 0.75,
+    "seed": 34594,
+    "nfold": 3,
+    "attr_class": "splitSettings",
+    "attr_fun": "randomSplitter"
+  },
+  "executeSettings": {
+    "runSplitData": true,
+    "runSampleData": true,
+    "runfeatureEngineering": false,
+    "runPreprocessData": true,
+    "runModelDevelopment": true,
+    "runCovariateSummary": true,
+    "attr_class": "executeSettings"
+  },
+  "attr_class": "modelDesign"
+}

@@ -1,0 +1,70 @@
+{
+  "analysisId": "Analysis_1",
+  "analysisSource": "",
+  "developmentDatabase": "PMTX5PCT",
+  "attrition": [
+    {
+      "outcomeId": 602,
+      "description": "Original cohorts",
+      "targetCount": 89189,
+      "uniquePeople": 89189,
+      "outcomes": 827,
+      "attr_row.names": 1,
+      "attr_class": "data.frame"
+    },
+    {
+      "outcomeId": 602,
+      "description": "Initial plpData cohort or population",
+      "targetCount": 89189,
+      "uniquePeople": 89189,
+      "outcomes": 293,
+      "attr_row.names": 2,
+      "attr_class": "data.frame"
+    },
+    {
+      "outcomeId": 602,
+      "description": "First Exposure",
+      "targetCount": 89189,
+      "uniquePeople": 89189,
+      "outcomes": 293,
+      "attr_row.names": 3,
+      "attr_class": "data.frame"
+    },
+    {
+      "outcomeId": 602,
+      "description": "At least 365 days of observation prior",
+      "targetCount": 89189,
+      "uniquePeople": 89189,
+      "outcomes": 293,
+      "attr_row.names": 4,
+      "attr_class": "data.frame"
+    },
+    {
+      "outcomeId": 602,
+      "description": "No prior outcome",
+      "targetCount": 88965,
+      "uniquePeople": 88965,
+      "outcomes": 281,
+      "attr_row.names": 5,
+      "attr_class": "data.frame"
+    },
+    {
+      "outcomeId": 602,
+      "description": "Removing subjects with no time at risk (if any))",
+      "targetCount": 88867,
+      "uniquePeople": 88867,
+      "outcomes": 281,
+      "attr_row.names": 6,
+      "attr_class": "data.frame"
+    }
+  ],
+  "trainingTime": "2.10223780075709 mins",
+  "trainingDate": "2022-10-10",
+  "modelName": "logistic",
+  "finalModelParameters": {
+    "variance": 0.0115,
+    "log_likelihood": -1378.6799
+  },
+  "hyperParamSearch": [0.5489, 0.635, 0.6808],
+  "developmentDatabaseId": "healthverity"
+}

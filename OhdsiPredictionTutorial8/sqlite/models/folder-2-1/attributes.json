@@ -1,0 +1,6 @@
+{
+  "class": "plpModel",
+  "predictionFunction": "predictXgboost",
+  "modelType": "binary",
+  "saveType": "xgboost"
+}

@@ -2,7 +2,6 @@
 library(shiny)
 library(ggplot2)
 library(scales)
-#library(ggthemes)
 library(tidyr)
 library(dplyr, warn.conflicts = FALSE)
 
@@ -51,7 +50,6 @@ renderTranslateQuerySql <-
 resultsSchema <- "comparator_selector"
 similarityTable <- "oscsp_similarity_for_shiny"
 covDataTable <- "oscsp_covdata_for_shiny"
-
 # details of results database
 # change if testing on redshift
 connectionDetails <- DatabaseConnector::createConnectionDetails(
@@ -104,23 +102,18 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    cohortDefinitions <- getCohortDefinitions()
+    shiny::withProgress({
+      cohortDefinitions <- getCohortDefinitions()
 
-    exposureSelection <- cohortDefinitions$cohortDefinitionId
-    names(exposureSelection) <- cohortDefinitions$cohortShortName
-    updateSelectizeInput(
-      session,
-      "selectedExposure",
-      choices = exposureSelection,
-      selected = 8826,
-      server = TRUE)
-
-    updateSelectizeInput(
-      session,
-      "selectedComparator",
-      choices = exposureSelection,
-      selected = 5736,
-      server = TRUE)
+      exposureSelection <- cohortDefinitions$cohortDefinitionId
+      names(exposureSelection) <- cohortDefinitions$cohortShortName
+      updateSelectizeInput(
+        session,
+        "selectedExposure",
+        choices = exposureSelection,
+        selected = 8826,
+        server = TRUE)
+    }, message = "Loading cohort definitions")
   })
 
 
@@ -128,16 +121,19 @@ shinyServer(function(input, output, session) {
   getSimilarity <- shiny::reactive({
     # identify target cohort
     targetCohortId <- input$selectedExposure
+    validate(need(input$selectedExposure, "must select exposure"))
 
-    # identify selected comparator types
-    if (length(input$selectedComparatorTypes) == 2L) { atcSelection <- c(0, 1) }
-    else if (input$selectedComparatorTypes == "RxNorm Ingredients") { atcSelection <- c(0) }
-    else if (input$selectedComparatorTypes == "ATC Classes") { atcSelection <- c(1) }
+    shiny::withProgress({
+      # identify selected comparator types
+      if (length(input$selectedComparatorTypes) == 2L) { atcSelection <- c(0, 1) }
+      else if (input$selectedComparatorTypes == "RxNorm Ingredients") { atcSelection <- c(0) }
+      else if (input$selectedComparatorTypes == "ATC Classes") { atcSelection <- c(1) }
 
-    # send query to get results data 
-    resultsData <- renderTranslateQuerySql(
-      connection = conn,
-      sql = "select
+      # send query to get results data
+      resultsData <- renderTranslateQuerySql(
+        connection = conn,
+        sql = "select
+               cohort_definition_id_2,
                is_atc_2,
                cohort_short_name_2,
                cosine_sim_all,
@@ -152,12 +148,13 @@ shinyServer(function(input, output, session) {
              where cohort_definition_id_1 = @targetCohortId and 
                    is_atc_2 in (@atc)
              order by cosine_sim_all desc",
-      dbms = connectionDetails$dbms,
-      schema = resultsSchema,
-      table = similarityTable,
-      snakeCaseToCamelCase = TRUE,
-      targetCohortId = targetCohortId,
-      atc = atcSelection)
+        dbms = connectionDetails$dbms,
+        schema = resultsSchema,
+        table = similarityTable,
+        snakeCaseToCamelCase = TRUE,
+        targetCohortId = targetCohortId,
+        atc = atcSelection)
+    }, message = "Loading similarity scores", value = 0.5)
 
     resultsData
 
@@ -165,44 +162,67 @@ shinyServer(function(input, output, session) {
 
   #### ---- cosine similarity reactable ---- ####
   output$cosineSimilarityTbl <- reactable::renderReactable({
-    reactable::reactable(
-      data = getSimilarity(),
-      columns = list(
-        "isAtc2" = reactable::colDef(name = "Type", cell = function(value) { ifelse(value == 1, "ATC Class", "RxNorm Ingredient") }, align = "right", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimAll" = reactable::colDef(name = "Avg.", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimDemo" = reactable::colDef(name = "Demographics", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimPres" = reactable::colDef(name = "Presentation", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimMhist" = reactable::colDef(name = "Medical History", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimPmeds" = reactable::colDef(name = "Prior Medications", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cosineSimVisit" = reactable::colDef(name = "Visit Context", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "cohortShortName2" = reactable::colDef(name = "Name", cell = function(value) { ifelse(substr(value, 1, 6) == "RxNorm", gsub("RxNorm - ", "", value), gsub("ATC - ", "", value)) }, align = "left", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
-        "atc3Related" = reactable::colDef(name = "At Level 3", cell = function(value) ifelse(is.na(value) | value == 0, "No", "Yes"), align = "center", vAlign = "center", headerVAlign = "bottom", filterable = TRUE),
-        "atc4Related" = reactable::colDef(name = "At Level 4", cell = function(value) ifelse(is.na(value) | value == 0, "No", "Yes"), align = "center", vAlign = "center", headerVAlign = "bottom", filterable = TRUE)),
-      searchable = TRUE,
-      columnGroups = list(
-        reactable::colGroup(
-          "Comparator",
-          c("cohortShortName2", "isAtc2")),
-        reactable::colGroup(
-          "Covariate Domain",
-          c("cosineSimAll", "cosineSimDemo", "cosineSimPres", "cosineSimMhist", "cosineSimPmeds", "cosineSimVisit")),
-        reactable::colGroup(
-          "ATC Relationship to Target",
-          c("atc3Related", "atc4Related"))),
-      fullWidth = TRUE,
-      bordered = TRUE,
-      showPageSizeOptions = TRUE,
-      pageSizeOptions = c(5, 10, 20, 50, 100, 1000),
-      striped = TRUE,
-      highlight = TRUE,
-      compact = TRUE,
-      theme = reactable::reactableTheme(
-        borderColor = "#dfe2e5",
-        stripedColor = "#f6f8fa",
-        highlightColor = "#eab676",
-        cellPadding = "8px 12px",
-        searchInputStyle = list(width = "100%")),
-      showSortIcon = TRUE) })
+    res <- getSimilarity() %>% select(-.data$cohortDefinitionId2)
+    shiny::withProgress({
+      rt <- reactable::reactable(
+        data = res,
+        columns = list(
+          "isAtc2" = reactable::colDef(name = "Type", cell = function(value) { ifelse(value == 1, "ATC Class", "RxNorm Ingredient") }, align = "right", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimAll" = reactable::colDef(name = "Avg.", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimDemo" = reactable::colDef(name = "Demographics", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimPres" = reactable::colDef(name = "Presentation", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimMhist" = reactable::colDef(name = "Medical History", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimPmeds" = reactable::colDef(name = "Prior Medications", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cosineSimVisit" = reactable::colDef(name = "Visit Context", cell = function(value) { sprintf("%.3f", value) }, align = "center", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "cohortShortName2" = reactable::colDef(name = "Name", cell = function(value) { ifelse(substr(value, 1, 6) == "RxNorm", gsub("RxNorm - ", "", value), gsub("ATC - ", "", value)) }, align = "left", vAlign = "center", headerVAlign = "bottom", minWidth = 125),
+          "atc3Related" = reactable::colDef(name = "At Level 3", cell = function(value) ifelse(is.na(value) | value == 0, "No", "Yes"), align = "center", vAlign = "center", headerVAlign = "bottom", filterable = TRUE),
+          "atc4Related" = reactable::colDef(name = "At Level 4", cell = function(value) ifelse(is.na(value) | value == 0, "No", "Yes"), align = "center", vAlign = "center", headerVAlign = "bottom", filterable = TRUE)),
+        searchable = TRUE,
+        columnGroups = list(
+          reactable::colGroup(
+            "Comparator",
+            c("cohortShortName2", "isAtc2")),
+          reactable::colGroup(
+            "Covariate Domain",
+            c("cosineSimAll", "cosineSimDemo", "cosineSimPres", "cosineSimMhist", "cosineSimPmeds", "cosineSimVisit")),
+          reactable::colGroup(
+            "ATC Relationship to Target",
+            c("atc3Related", "atc4Related"))),
+        fullWidth = TRUE,
+        bordered = TRUE,
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(5, 10, 20, 50, 100, 1000),
+        striped = TRUE,
+        highlight = TRUE,
+        compact = TRUE,
+        selection = "single",
+        theme = reactable::reactableTheme(
+          borderColor = "#dfe2e5",
+          stripedColor = "#f6f8fa",
+          highlightColor = "#eab676",
+          cellPadding = "8px 12px",
+          searchInputStyle = list(width = "100%")),
+        showSortIcon = TRUE)
+    }, message = "Rendering results", value = 0.7)
+
+    rt
+  })
+
+
+  selectedComparator <- shiny::reactive({
+    selection <- reactable::getReactableState("cosineSimilarityTbl", name = "selected")
+    row <- getSimilarity()[selection,]
+    row$cohortDefinitionId2
+  })
+
+  output$selectedComparator <- shiny::reactive({
+    selection <- reactable::getReactableState("cosineSimilarityTbl", name = "selected")
+    return(!is.null(selection))
+  })
+
+  shiny::outputOptions(output,
+                       "selectedComparator",
+                       suspendWhenHidden = FALSE)
 
   #### ---- step-function plot of cosine similarity by rank ---- ####
   output$stepPlot <- renderPlot({
@@ -244,9 +264,13 @@ shinyServer(function(input, output, session) {
 
   ##### ---- function to get covariate data for a given comparison ---- ####
   getCovData <- shiny::reactive({
-    covData <- renderTranslateQuerySql(
-      connection = conn,
-      sql = "with means as (
+    validate(need(input$selectedExposure, "must select exposure"),
+             need(selectedComparator(), "must select comparator"))
+
+    shiny::withProgress({
+      covData <- renderTranslateQuerySql(
+        connection = conn,
+        sql = "with means as (
               	select
               		@cohortDefinitionId1 as cohort_definition_id_1,
               		@cohortDefinitionId2 as cohort_definition_id_2,
@@ -292,13 +316,13 @@ shinyServer(function(input, output, session) {
               	on m.cohort_definition_id_1 = c1.cohort_definition_id 
               join (select distinct cohort_definition_id, cohort_n from @schema.@table) as c2
               	on m.cohort_definition_id_2 = c2.cohort_definition_id ;",
-      dbms = connectionDetails$dbms,
-      snakeCaseToCamelCase = TRUE,
-      schema = resultsSchema,
-      table = covDataTable,
-      cohortDefinitionId1 = input$selectedExposure,
-      cohortDefinitionId2 = input$selectedComparator)
-
+        dbms = connectionDetails$dbms,
+        snakeCaseToCamelCase = TRUE,
+        schema = resultsSchema,
+        table = covDataTable,
+        cohortDefinitionId1 = input$selectedExposure,
+        cohortDefinitionId2 = selectedComparator())
+    }, message = "Loading covariate data")
     # return data
     covData
 
@@ -306,6 +330,9 @@ shinyServer(function(input, output, session) {
 
   #### ---- scatterplot of covariate prevalence ---- ####
   output$scatterPlot <- renderPlot({
+
+    shiny::validate(need(input$selectedExposure, 'must select exposure'),
+                    need(selectedComparator(), 'must select comparator'))
 
     getCovData() %>%
       mutate(type = NA,
@@ -336,7 +363,8 @@ shinyServer(function(input, output, session) {
 
   #### ---- plot of std. diffs. ---- ####
   output$smdPlot <- renderPlot({
-
+    shiny::validate(need(input$selectedExposure, 'must select exposure'),
+                    need(selectedComparator(), 'must select comparator'))
     getCovData() %>%
       mutate(type = NA,
              type = ifelse(covariateType == "demographic", "Demographics", type),
@@ -380,7 +408,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -429,7 +457,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -479,7 +507,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -529,7 +557,7 @@ shinyServer(function(input, output, session) {
       ")")
 
     colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
+      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
       " (n = ",
       prettyNum(first(covData$n2), big.mark = ","),
       ")")
@@ -571,47 +599,52 @@ shinyServer(function(input, output, session) {
     # get data
     covData <- getCovData()
 
-    # create column names with cohort sample sizes
-    colNameTarget <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedExposure],
-      " (n = ",
-      prettyNum(first(covData$n1), big.mark = ","),
-      ")")
+    shiny::withProgress({
+      # create column names with cohort sample sizes
+      colNameTarget <- paste0(
+        cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedExposure],
+        " (n = ",
+        prettyNum(first(covData$n1), big.mark = ","),
+        ")")
 
-    colNameComparator <- paste0(
-      cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == input$selectedComparator],
-      " (n = ",
-      prettyNum(first(covData$n2), big.mark = ","),
-      ")")
+      colNameComparator <- paste0(
+        cohortDefinitions$cohortShortName[cohortDefinitions$cohortDefinitionId == selectedComparator()],
+        " (n = ",
+        prettyNum(first(covData$n2), big.mark = ","),
+        ")")
 
-    # subset data and select relevant columns
-    tableData <- covData %>%
-      filter(covariateType == "visit context") %>%
-      arrange(covariateShortName) %>%
-      select(covariateShortName, mean1, mean2, stdDiff)
+      # subset data and select relevant columns
+      tableData <- covData %>%
+        filter(covariateType == "visit context") %>%
+        arrange(covariateShortName) %>%
+        select(covariateShortName, mean1, mean2, stdDiff)
 
-    # table code
-    reactable::reactable(
-      data = tableData,
-      columns = list(
-        "covariateShortName" = reactable::colDef(name = "Covariate", align = "right", vAlign = "bottom"),
-        "mean1" = reactable::colDef(name = colNameTarget, cell = function(value) { percent(value, accuracy = 0.1) }, align = "center", vAlign = "bottom"),
-        "mean2" = reactable::colDef(name = colNameComparator, cell = function(value) { percent(value, accuracy = 0.1) }, align = "center", vAlign = "bottom"),
-        "stdDiff" = reactable::colDef(name = "Std. Diff.", cell = function(value) { sprintf("%.2f", value) }, align = "center", vAlign = "bottom")),
-      bordered = TRUE,
-      searchable = TRUE,
-      showPageSizeOptions = TRUE,
-      pageSizeOptions = c(5, 10, 20, 50, 100, 1000),
-      striped = TRUE,
-      highlight = TRUE,
-      compact = TRUE,
-      theme = reactable::reactableTheme(
-        borderColor = "#dfe2e5",
-        stripedColor = "#f6f8fa",
-        highlightColor = "#eab676",
-        cellPadding = "8px 12px",
-        searchInputStyle = list(width = "100%")),
-      showSortIcon = TRUE)
+      # table code
+      rt <- reactable::reactable(
+        data = tableData,
+        columns = list(
+          "covariateShortName" = reactable::colDef(name = "Covariate", align = "right", vAlign = "bottom"),
+          "mean1" = reactable::colDef(name = colNameTarget, cell = function(value) { percent(value, accuracy = 0.1) }, align = "center", vAlign = "bottom"),
+          "mean2" = reactable::colDef(name = colNameComparator, cell = function(value) { percent(value, accuracy = 0.1) }, align = "center", vAlign = "bottom"),
+          "stdDiff" = reactable::colDef(name = "Std. Diff.", cell = function(value) { sprintf("%.2f", value) }, align = "center", vAlign = "bottom")),
+        bordered = TRUE,
+        searchable = TRUE,
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(5, 10, 20, 50, 100, 1000),
+        striped = TRUE,
+        highlight = TRUE,
+        compact = TRUE,
+        theme = reactable::reactableTheme(
+          borderColor = "#dfe2e5",
+          stripedColor = "#f6f8fa",
+          highlightColor = "#eab676",
+          cellPadding = "8px 12px",
+          searchInputStyle = list(width = "100%")),
+        showSortIcon = TRUE)
 
+    },
+      message = "Rendering tables",
+      value = 0.7)
+    rt
   })
 })
