@@ -6,7 +6,8 @@ source("R/Tables.R")
 source("R/Plots.R")
 source("R/Results.R")
 
-defaultLocalDataFolder <- "data"
+# defaultLocalDataFolder <- "data"
+defaultLocalDataFolder <- "G:/OhdsiValidation2/cdData"
 defaultLocalDataFile <- "PreMerged.RData"
 
 # Settings when running on server:
