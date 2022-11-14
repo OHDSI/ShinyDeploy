@@ -2,12 +2,19 @@
 inclusionRulesView <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+     shinydashboard::box(
+      collapsible = TRUE,
+      collapsed = TRUE,
+      title = "Inclusion Rules",
+      width = "100%",
+      shiny::htmlTemplate(file.path("html", "inclusionRuleStats.html"))
+    ),
     shinydashboard::box(
       status = "warning",
       width = "100%",
       tags$div(
         style = "max-height: 100px; overflow-y: auto",
-        shiny::uiOutput(outputId = "selectedCohort")
+        shiny::uiOutput(outputId = ns("selectedCohort"))
       )
     ),
     shinydashboard::box(
@@ -65,14 +72,16 @@ inclusionRulesModule <- function(id,
     # Inclusion rules table ------------------
     output$inclusionRuleTable <- reactable::renderReactable(expr = {
       validate(need(length(selectedDatabaseIds()) > 0, "No data sources chosen"))
-      table <- getInclusionRuleStatsEvents(
+      table <- getInclusionRuleStats(
         dataSource = dataSource,
         cohortIds = targetCohortId(),
-        databaseIds = selectedDatabaseIds()
-      ) 
-      
+        databaseIds = selectedDatabaseIds(),
+        mode = 0
+      )
+      validate(need(hasData(table), "There is no data for the selected combination."))
+
       showDataAsPercent <- input$inclusionRulesShowAsPercent
-      
+
       if (showDataAsPercent) {
         table <- table %>%
           dplyr::mutate(
@@ -91,7 +100,7 @@ inclusionRulesModule <- function(id,
             id = .data$ruleSequenceId
           )
       }
-      
+
       table <- table %>%
         dplyr::arrange(.data$cohortId,
                        .data$databaseId,
@@ -112,7 +121,7 @@ inclusionRulesModule <- function(id,
       } else {
         dataColumnFields <- c(input$inclusionRuleTableFilters)
       }
-      
+
       if (all(hasData(showDataAsPercent), !showDataAsPercent)) {
         dataColumnFields <- c(dataColumnFields, "Total")
       }

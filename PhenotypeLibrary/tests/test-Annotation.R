@@ -49,7 +49,6 @@ test_that("Post annotation functions", {
 
 test_that("Annotation shiny server functions", {
   initializeEnvironment(shinySettings,
-                        table1SpecPath = table1SpecPath,
                         dataModelSpecificationsPath = dataModelSpecificationsPath)
   id <-"testAnnotationServer"
   shiny::testServer(annotationModule, args = list(
@@ -60,7 +59,7 @@ test_that("Annotation shiny server functions", {
     selectedCohortIds = shiny::reactive(c(17492, 18342, 17720)),
     cohortTable = cohort,
     databaseTable = database,
-    postAnnotationEnabled = shiny::reactive(TRUE)
+    postAnnotaionEnabled = shiny::reactive(TRUE)
   ), {
 
     session$setInputs(

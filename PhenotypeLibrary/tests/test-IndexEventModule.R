@@ -1,6 +1,5 @@
 test_that("Index Event Breakdown Page", {
   initializeEnvironment(shinySettings,
-                        table1SpecPath = table1SpecPath,
                         dataModelSpecificationsPath = dataModelSpecificationsPath)
   
   # Environment should have initialized
@@ -9,6 +8,8 @@ test_that("Index Event Breakdown Page", {
   shiny::testServer(indexEventBreakdownModule, args = list(
     id = "testindexeventbreakdown", #Any string is ok?
     dataSource = dataSource,
+    cohortTable = cohort,
+    databaseTable = database,
     selectedCohort = shiny::reactive("Any String"),
     selectedDatabaseIds = shiny::reactive("Eunomia"),
     targetCohortId = shiny::reactive({c(14906)})

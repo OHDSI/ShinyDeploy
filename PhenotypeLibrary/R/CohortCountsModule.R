@@ -35,6 +35,13 @@ cohortCountsView <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shinydashboard::box(
+      collapsible = TRUE,
+      collapsed = TRUE,
+      title = "Cohort Counts",
+      width = "100%",
+      shiny::htmlTemplate(file.path("html", "cohortCounts.html"))
+    ),
+    shinydashboard::box(
       status = "warning",
       width = "100%",
       shiny::tags$div(
@@ -66,49 +73,42 @@ cohortCountsView <- function(id) {
         shiny::conditionalPanel(
           condition = "output.cohortCountRowIsSelected == true",
           ns = ns,
-          shinydashboard::box(
-            title = NULL,
-            width = NULL,
-            htmltools::withTags(
-              table(
-                width = "100%",
-                tr(
-                  tags$td(
-                    align = "left",
-                    shiny::radioButtons(
-                      inputId = ns("cohortCountInclusionRuleTableFilters"),
-                      label = "Inclusion Rule Events",
-                      choices = c("All", "Meet", "Gain", "Remain"),
-                      selected = "All",
-                      inline = TRUE
-                    )
-                  ),
-                  tags$td(
-                    align = "left",
-                    shiny::radioButtons(
-                      inputId = ns("cohortCountInclusionRuleTableShowPersonsOrEvents"),
-                      label = "Report",
-                      choices = c("Persons", "Events"),
-                      selected = "Persons",
-                      inline = TRUE
-                    )
-                  ),
-                  tags$td(
-                    shiny::checkboxInput(
-                      inputId = ns("cohortCountInclusionRulesShowAsPercent"),
-                      label = "Show as percent",
-                      value = TRUE
-                    )
-                  ),
-                  tags$td(
-                    align = "right",
-                  )
-                )
+          tags$h4("Inclusion Rule Statistics"),
+
+          shiny::fluidRow(
+            shiny::column(
+              width = 4,
+              shiny::radioButtons(
+                inputId = ns("cohortCountInclusionRuleTableFilters"),
+                label = "Inclusion Rule Events",
+                choices = c("All", "Meet", "Gain", "Remain"),
+                selected = "All",
+                inline = TRUE
               )
             ),
-            shinycssloaders::withSpinner(reactable::reactableOutput(outputId = ns("inclusionRuleStats"))),
-            csvDownloadButton(ns, "inclusionRuleStats")
-          )
+            shiny::column(
+              width = 4,
+              shiny::radioButtons(
+                inputId = ns("showPersonOrEvents"),
+                label = "Report",
+                choices = c("Persons", "Events"),
+                selected = "Persons",
+                inline = TRUE
+              )
+            ),
+            shiny::column(
+              width = 4,
+              shiny::checkboxInput(
+                inputId = ns("showAsPercent"),
+                label = "Show as percent",
+                value = TRUE
+              )
+            )
+          ),
+          shinycssloaders::withSpinner(
+            reactable::reactableOutput(ns("inclusionRuleStats"))
+          ),
+          csvDownloadButton(ns, "inclusionRuleStats")
         )
       )
     )
@@ -158,12 +158,9 @@ cohortCountsModule <- function(id,
       }
 
       data <- data %>%
-        dplyr::inner_join(
-          cohortTable %>% 
-            dplyr::select(.data$cohortId,
-                          .data$cohortName),
-          by = "cohortId") %>%
+        dplyr::inner_join(cohortTable %>% dplyr::select(.data$cohortName, .data$cohortId), by = "cohortId") %>%
         dplyr::arrange(.data$cohortId, .data$databaseId)
+
       return(data)
     })
 
@@ -187,7 +184,7 @@ cohortCountsModule <- function(id,
       } else if (input$cohortCountsTableColumnFilter == "Records") {
         dataColumnFields <- "records"
       }
-      
+
       keyColumnFields <- c("cohortId", "cohortName")
 
       countsForHeader <- NULL
@@ -207,7 +204,7 @@ cohortCountsModule <- function(id,
         countLocation = 1,
         dataColumns = dataColumnFields,
         maxCount = maxCountValue,
-        sort = FALSE, #dont sort this by value. reactTable reactiveState does not give row value, only row number
+        sort = FALSE,
         selection = "single"
       )
       return(displayTable)
@@ -215,6 +212,7 @@ cohortCountsModule <- function(id,
 
     getCohortIdOnCohortCountRowSelect <- shiny::reactive({
       idx <- reactable::getReactableState(outputId = "cohortCountsTable", "selected")
+
       if (!hasData(idx)) {
         return(NULL)
       } else {
@@ -222,11 +220,9 @@ cohortCountsModule <- function(id,
           subset <- getResults() %>%
             dplyr::select(
               .data$cohortId
-            ) %>% 
-            dplyr::distinct() %>% 
-            dplyr::arrange()
-          subset <- subset[idx,] %>%
+            ) %>%
             dplyr::distinct()
+          subset <- subset[idx,]
           return(subset)
         } else {
           return(NULL)
@@ -253,30 +249,28 @@ cohortCountsModule <- function(id,
         return(NULL)
       }
       if (any(
-        !hasData(input$cohortCountInclusionRuleTableShowPersonsOrEvents),
-        input$cohortCountInclusionRuleTableShowPersonsOrEvents == "Persons"
+        !hasData(input$showPersonOrEvents),
+        input$showPersonOrEvents == "Persons"
       )) {
-        data <- getInclusionRuleStatsPersons(
+        mode <- 1
+      } else {
+        mode <- 0
+      }
+      
+      data <- getInclusionRuleStats(
           dataSource = dataSource,
           cohortIds = getCohortIdOnCohortCountRowSelect()$cohortId,
           databaseIds = selectedDatabaseIds(),
-          mode = 1 # modeId = 1 - best event, i.e. person
+          mode = mode # modeId = 1 - best event, i.e. person
         )
-      } else {
-        data <- getInclusionRuleStatsEvents(
-          dataSource = dataSource,
-          cohortIds = getCohortIdOnCohortCountRowSelect()$cohortId,
-          databaseIds = selectedDatabaseIds()
-        )
-      }
-      
-      showDataAsPercent <- input$cohortCountInclusionRulesShowAsPercent
-      
+
+      showDataAsPercent <- input$showAsPercent
+
       validate(need(
         (nrow(data) > 0),
         "There is no data for the selected combination."
       ))
-      
+
       if (all(hasData(showDataAsPercent), showDataAsPercent)) {
         data <- data %>%
           dplyr::mutate(
@@ -295,28 +289,28 @@ cohortCountsModule <- function(id,
             id = .data$ruleSequenceId
           )
       }
-      
+
       data <- data %>%
         dplyr::arrange(.data$cohortId,
                        .data$databaseId,
                        .data$id)
-      
+
       validate(need(
         (nrow(data) > 0),
         "There is no data for the selected combination."
       ))
-      
+
       keyColumnFields <-
         c("id", "ruleName")
       countLocation <- 1
-      
+
       if (any(!hasData(input$cohortCountInclusionRuleTableFilters),
               input$cohortCountInclusionRuleTableFilters == "All")) {
         dataColumnFields <- c("Meet", "Gain", "Remain")
       } else {
         dataColumnFields <- c(input$cohortCountInclusionRuleTableFilters)
       }
-      
+
       if (all(hasData(showDataAsPercent), !showDataAsPercent)) {
         dataColumnFields <- c(dataColumnFields, "Total")
       }
@@ -329,13 +323,13 @@ cohortCountsModule <- function(id,
           source = "cohort",
           fields = "Persons"
         )
-      
+
       maxCountValue <-
         getMaxValueForStringMatchedColumnsInDataFrame(
           data = data,
           string = dataColumnFields
         )
-      
+
       getDisplayTableGroupedByDatabaseId(
         data = data,
         cohort = cohortTable,
@@ -346,8 +340,7 @@ cohortCountsModule <- function(id,
         dataColumns = dataColumnFields,
         maxCount = maxCountValue,
         showDataAsPercent = showDataAsPercent,
-        sort = FALSE,
-        sortable = FALSE
+        sort = TRUE
       )
     })
   }

@@ -2,6 +2,13 @@ visitContextView <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shinydashboard::box(
+      collapsible = TRUE,
+      collapsed = TRUE,
+      title = "Visit Context",
+      width = "100%",
+      shiny::htmlTemplate(file.path("html", "visitContext.html"))
+    ),
+    shinydashboard::box(
       status = "warning",
       width = "100%",
       tags$div(
@@ -25,14 +32,16 @@ visitContextView <- function(id) {
             )
           ),
           tags$td(
-            shiny::checkboxInput(
-              inputId = ns("visitContextShowAsPercent"),
-              label = "Show as percent",
-              value = TRUE
+            shiny::radioButtons(
+              inputId = ns("visitContextPersonOrRecords"),
+              label = "Display",
+              choices = c("Persons", "Records"),
+              selected = "Persons",
+              inline = TRUE
             )
           ),
           tags$td(
-            align = "right",
+            align = "right"
           )
         )
       ),
@@ -74,8 +83,8 @@ visitContextModule <- function(id,
       return(visitContext)
     })
 
-    ## getVisitContextDataEnhanced----
-    getVisitContextDataEnhanced <- shiny::reactive(x = {
+    ## getVisitContexDataEnhanced----
+    getVisitContexDataEnhanced <- shiny::reactive(x = { #spelling error here missing the t in Context
       visitContextData <- getVisitContextData() %>%
         dplyr::rename(visitContextSubject = .data$subjects)
       if (!hasData(visitContextData)) {
@@ -100,8 +109,7 @@ visitContextModule <- function(id,
           ) %>%
           dplyr::rename(
             subjects = .data$cohortSubjects,
-            records = .data$cohortEntries,
-            visitContextSubjectPercent = .data$subjectPercent
+            records = .data$cohortEntries
           ) %>%
           dplyr::select(
             .data$databaseId,
@@ -110,8 +118,7 @@ visitContextModule <- function(id,
             .data$visitContext,
             .data$subjects,
             .data$records,
-            .data$visitContextSubject,
-            .data$visitContextSubjectPercent
+            .data$visitContextSubject
           ) %>%
           dplyr::mutate(
             visitContext = dplyr::case_when(
@@ -139,35 +146,24 @@ visitContextModule <- function(id,
       if (!hasData(visitContextData)) {
         return(NULL)
       }
+      visitContextData <- visitContextData %>%
+        tidyr::pivot_wider(
+          id_cols = c("databaseId", "visitConceptName"),
+          names_from = "visitContext",
+          values_from = c("visitContextSubject")
+        )
+      
       return(visitContextData)
     })
 
     output$visitContextTable <- reactable::renderReactable(expr = {
       validate(need(length(selectedDatabaseIds()) > 0, "No data sources chosen"))
       validate(need(length(targetCohortId()) > 0, "No cohorts chosen"))
-      data <- getVisitContextDataEnhanced()
+      data <- getVisitContexDataEnhanced()
       validate(need(
         nrow(data) > 0,
         "No data available for selected combination."
       ))
-      
-      showDataAsPercent <- input$visitContextShowAsPercent
-      
-      if (showDataAsPercent) {
-        data <- data %>%
-          tidyr::pivot_wider(
-            id_cols = c("databaseId", "visitConceptName"),
-            names_from = "visitContext",
-            values_from = c("visitContextSubjectPercent")
-          )
-      } else {
-        data <- data %>%
-          tidyr::pivot_wider(
-            id_cols = c("databaseId", "visitConceptName"),
-            names_from = "visitContext",
-            values_from = c("visitContextSubject")
-          )
-      }
   
       dataColumnFields <-
         c(
@@ -194,7 +190,7 @@ visitContextModule <- function(id,
           databaseIds = selectedDatabaseIds(),
           cohortIds = targetCohortId(),
           source = "cohort",
-          fields = "Persons"
+          fields = input$visitContextPersonOrRecords
         )
       if (!hasData(countsForHeader)) {
         return(NULL)
@@ -205,7 +201,7 @@ visitContextModule <- function(id,
           data = data,
           string = dataColumnFields
         )
-
+    
       getDisplayTableGroupedByDatabaseId(
         data = data,
         cohort = cohortTable,
@@ -215,7 +211,6 @@ visitContextModule <- function(id,
         countLocation = 1,
         dataColumns = dataColumnFields,
         maxCount = maxCountValue,
-        showDataAsPercent = showDataAsPercent,
         sort = TRUE
       )
     })

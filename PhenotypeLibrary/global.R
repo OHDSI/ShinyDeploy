@@ -1,11 +1,11 @@
 library(magrittr)
 diagExpEnv <- new.env()
-diagExpEnv$shinyConfigPath <- "config.yml"
+diagExpEnv$shinyConfigPath <- getOption("CD-shiny-config", default = "config.yml")
 
 # Source all app files in to isolated namespace
 lapply(file.path("R", list.files("R", pattern = "*.R")), source, local = diagExpEnv)
 
-diagExpEnv$appVersionNum <- "Version: beta release"
+diagExpEnv$appVersionNum <- "Version: 3.1.0"
 
 if (exists("shinySettings")) {
   diagExpEnv$shinySettings <- shinySettings
@@ -18,3 +18,4 @@ if (exists("shinySettings")) {
 
 # Init tables and other parameters in global session
 diagExpEnv$initializeEnvironment(diagExpEnv$shinySettings, envir = diagExpEnv)
+

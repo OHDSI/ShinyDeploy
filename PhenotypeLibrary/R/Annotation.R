@@ -103,7 +103,7 @@ annotationUi <- function(id) {
 #' @param dataSource                Database intance used to store comments and retrieve them
 #' @param activeLoggedInUser        shiny::reactive that returns the active logged in user that stores the comment
 #' @param selectedDatabaseIds       shiny::reactive the current selected by the user
-#' @param postAnnotationEnabled     shiny::reactive - is posting enabled for the user?
+#' @param postAnnotaionEnabled     shiny::reactive - is posting enabled for the user?
 #' @param multiCohortSelection      Boolean is the input set of cohorts many or one?
 annotationModule <- function(id,
                              dataSource,
@@ -112,14 +112,14 @@ annotationModule <- function(id,
                              selectedCohortIds,
                              cohortTable,
                              databaseTable,
-                             postAnnotationEnabled) {
+                             postAnnotaionEnabled) {
   ns <- shiny::NS(id)
 
   annotationServer <- function(input, output, session) {
     # Annotation Section ------------------------------------
     ## posting annotation enabled ------
     output$postAnnotationEnabled <- shiny::reactive({
-      postAnnotationEnabled() & !is.null(activeLoggedInUser())
+      postAnnotaionEnabled() & !is.null(activeLoggedInUser())
     })
     outputOptions(output, "postAnnotationEnabled", suspendWhenHidden = FALSE)
 
@@ -128,18 +128,12 @@ annotationModule <- function(id,
 
     inputCohortIds <- shiny::reactive({
       cohortTable %>%
-        dplyr::filter(.data$compoundName %in% selectedCohortIds()) %>%
-        dplyr::pull(.data$cohortId)
+        dplyr::filter(compoundName %in% selectedCohortIds()) %>%
+        dplyr::pull(cohortId)
     })
 
     getAnnotationReactive <- shiny::reactive({
       reloadAnnotationSection()
-      if (!hasData(selectedDatabaseIds())) {
-        return(NULL)
-      }
-      if (!hasData(inputCohortIds())) {
-        return(NULL)
-      }
       results <- getAnnotationResult(
         dataSource = dataSource,
         diagnosticsId = id,
@@ -157,10 +151,10 @@ annotationModule <- function(id,
 
     dbChoices <- shiny::reactive({
       databaseChoices <- list()
-      dbMapping <- databaseTable %>% dplyr::filter(.data$databaseId %in% selectedDatabaseIds())
+      dbMapping <- databaseTable %>% dplyr::filter(databaseId %in% selectedDatabaseIds())
       for (i in 1:nrow(dbMapping)) {
         row <- dbMapping[i,]
-        databaseChoices[row$databaseId] <- row$databaseId
+        databaseChoices[row$databaseName] <- row$databaseId
       }
       return(databaseChoices)
     })
@@ -213,14 +207,14 @@ annotationModule <- function(id,
           dplyr::mutate(
             Annotation = paste0(
               "<b>",
-              .data$createdBy,
+              createdBy,
               "@",
-              getTimeFromInteger(.data$createdOn),
+              getTimeFromInteger(createdOn),
               ":</b>",
-              .data$annotation
+              annotation
             )
           ) %>%
-          dplyr::select(.data$annotationId, .data$Annotation)
+          dplyr::select(annotationId, Annotation)
 
         reactable::reactable(
           data,
@@ -230,18 +224,18 @@ annotationModule <- function(id,
           ),
           details = function(index) {
             subTable <- results$annotationLink %>%
-              dplyr::filter(.data$annotationId == data[index,]$annotationId) %>%
+              dplyr::filter(annotationId == data[index,]$annotationId) %>%
               dplyr::inner_join(cohortTable %>%
                                   dplyr::select(
-                                    .data$cohortId,
-                                    .data$cohortName
+                                    cohortId,
+                                    cohortName
                                   ),
                                 by = "cohortId"
               )
             distinctCohortName <- subTable %>%
-              dplyr::distinct(.data$cohortName)
+              dplyr::distinct(cohortName)
             distinctDatabaseId <- subTable %>%
-              dplyr::distinct(.data$databaseId)
+              dplyr::distinct(databaseId)
 
             htmltools::div(
               style = "margin:0;padding:0;padding-left:50px;",
@@ -276,6 +270,7 @@ annotationModule <- function(id,
       tempList <- list()
       # Annotation - cohort Ids
       tempList$cohortIds <- inputCohortIds()
+
       # Annotation - database Ids
       if (!is.null(input$database)) {
         selectedDatabaseIds <- input$database
@@ -386,9 +381,9 @@ postAnnotationResult <- function(dataSource,
       created_by = createdBy,
       created_on = createdOn
     )
-  
+
   maxAnnotationId <- maxAnnotationId$annotation_id
-  
+
   # insert annotation link
   annotationLink <-
     tidyr::crossing(
@@ -419,29 +414,31 @@ getAnnotationResult <- function(dataSource,
                                 cohortIds,
                                 databaseIds) {
   data <- NULL
-  # get annotation id's
-  sqlRetrieveAnnotationLink <- "SELECT *
+  annotationLink <- NULL
+  if (hasData(cohortIds) & hasData(databaseIds)) {
+    # get annotation id's
+    sqlRetrieveAnnotationLink <- "SELECT *
                                 FROM @results_database_schema.annotation_link
                                 WHERE diagnostics_id = '@diagnosticsId'
                                 	AND cohort_id IN (@cohortIds)
                                   AND database_id IN (@databaseIds);"
-  annotationLink <-
-    renderTranslateQuerySql(
-      connection = dataSource$connection,
-      dbms = dataSource$dbms,
-      sql = sqlRetrieveAnnotationLink,
-      results_database_schema = dataSource$resultsDatabaseSchema,
-      diagnosticsId = diagnosticsId,
-      cohortIds = cohortIds,
-      databaseIds = quoteLiterals(databaseIds),
-      snakeCaseToCamelCase = TRUE
-    )
-  
+    annotationLink <-
+      renderTranslateQuerySql(
+        connection = dataSource$connection,
+        dbms = dataSource$dbms,
+        sql = sqlRetrieveAnnotationLink,
+        results_database_schema = dataSource$resultsDatabaseSchema,
+        diagnosticsId = diagnosticsId,
+        cohortIds = cohortIds,
+        databaseIds = quoteLiterals(databaseIds),
+        snakeCaseToCamelCase = TRUE
+      )
+  }
   if (hasData(annotationLink)) {
     sqlRetrieveAnnotation <- "SELECT *
                             FROM @results_database_schema.annotation
                             WHERE annotation_id IN (@annotationIds);"
-    
+
     annotation <-
       renderTranslateQuerySql(
         connection = dataSource$connection,
@@ -451,12 +448,12 @@ getAnnotationResult <- function(dataSource,
         annotationIds = annotationLink$annotationId,
         snakeCaseToCamelCase = TRUE
       )
-    
+
     if (hasData(annotation)) {
       data <- list(annotation = annotation,
                    annotationLink = annotationLink)
     }
   }
-  
+
   return(data)
 }

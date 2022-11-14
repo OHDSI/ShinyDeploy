@@ -7,6 +7,13 @@ indexEventBreakdownView <- function(id) {
 
   shiny::tagList(
     shinydashboard::box(
+      collapsible = TRUE,
+      collapsed = TRUE,
+      title = "Index Events",
+      width = "100%",
+      shiny::htmlTemplate(file.path("html", "indexEventBreakdown.html"))
+    ),
+    shinydashboard::box(
       status = "warning",
       width = "100%",
       tags$div(
@@ -24,7 +31,7 @@ indexEventBreakdownView <- function(id) {
             td(
               shiny::radioButtons(
                 inputId = ns("indexEventBreakdownTableRadioButton"),
-                label = "",
+                label = "Concept type",
                 choices = c("All", "Standard concepts", "Non Standard Concepts"),
                 selected = "All",
                 inline = TRUE
@@ -42,8 +49,8 @@ indexEventBreakdownView <- function(id) {
             ),
             td(
               shiny::checkboxInput(
-                inputId = ns("indexEventBreakDownShowAsPercent"),
-                label = "Show as percent",
+                inputId = ns("showAsPercent"),
+                label = "Show as percentage",
                 value = TRUE
               )
             )
@@ -61,6 +68,8 @@ indexEventBreakdownView <- function(id) {
 #'
 indexEventBreakdownModule <- function(id,
                                       dataSource,
+                                      cohortTable,
+                                      databaseTable,
                                       selectedCohort,
                                       targetCohortId,
                                       selectedDatabaseIds) {
@@ -121,9 +130,9 @@ indexEventBreakdownModule <- function(id,
       validate(need(length(selectedDatabaseIds()) > 0, "No data sources chosen"))
       validate(need(length(targetCohortId()) > 0, "No cohorts chosen chosen"))
 
-      showDataAsPercent <- input$indexEventBreakDownShowAsPercent
+      showDataAsPercent <- input$showAsPercent
       data <- indexEventBreakDownDataFilteredByRadioButton()
-     
+
       validate(need(
         all(!is.null(data), nrow(data) > 0),
         "There is no data for the selected combination."
@@ -198,11 +207,10 @@ indexEventBreakdownModule <- function(id,
           string = dataColumnFields
         )
 
-
       getDisplayTableGroupedByDatabaseId(
         data = data,
-        cohort = cohort,
-        databaseTable = database,
+        cohort = cohortTable,
+        databaseTable = databaseTable,
         headerCount = countsForHeader,
         keyColumns = keyColumnFields,
         countLocation = countLocation,
