@@ -1,0 +1,55 @@
+cohortDefinitionId,cohortName,records,persons,databaseId,analysisVariant
+1,Linked mothers (pregnancy episode start),2528482,2146726,truven_ccae,All pregnancies - 60d
+2,Linked mothers (pregnancy episode end),2528482,2146726,truven_ccae,All pregnancies - 60d
+3,Linked infants,2528482,2528482,truven_ccae,All pregnancies - 60d
+4,All mothers (pregnancy episode start),3608356,3064462,truven_ccae,All pregnancies - 60d
+5,All mothers (pregnancy episode end),3608356,3064462,truven_ccae,All pregnancies - 60d
+6,All infants,4935376,4935376,truven_ccae,All pregnancies - 60d
+7,Not linked mothers (pregnancy episode start),995892,917736,truven_ccae,All pregnancies - 60d
+8,Not linked mothers (pregnancy episode end),995892,917736,truven_ccae,All pregnancies - 60d
+9,Not linked infants,2406894,2406894,truven_ccae,All pregnancies - 60d
+1,Linked mothers (pregnancy episode start),2146726,2146726,truven_ccae,First pregnancies - 60d
+2,Linked mothers (pregnancy episode end),2146726,2146726,truven_ccae,First pregnancies - 60d
+3,Linked infants,2146726,2146726,truven_ccae,First pregnancies - 60d
+4,All mothers (pregnancy episode start),3608356,3064462,truven_ccae,First pregnancies - 60d
+5,All mothers (pregnancy episode end),3608356,3064462,truven_ccae,First pregnancies - 60d
+6,All infants,4935376,4935376,truven_ccae,First pregnancies - 60d
+7,Not linked mothers (pregnancy episode start),995892,917736,truven_ccae,First pregnancies - 60d
+8,Not linked mothers (pregnancy episode end),995892,917736,truven_ccae,First pregnancies - 60d
+9,Not linked infants,2788650,2788650,truven_ccae,First pregnancies - 60d
+1,Linked mothers (pregnancy episode start),2567501,2174144,truven_ccae,All pregnanices - 90d
+2,Linked mothers (pregnancy episode end),2567501,2174144,truven_ccae,All pregnanices - 90d
+3,Linked infants,2567501,2567499,truven_ccae,All pregnanices - 90d
+4,All mothers (pregnancy episode start),3608356,3064462,truven_ccae,All pregnanices - 90d
+5,All mothers (pregnancy episode end),3608356,3064462,truven_ccae,All pregnanices - 90d
+6,All infants,4935376,4935376,truven_ccae,All pregnanices - 90d
+7,Not linked mothers (pregnancy episode start),965224,890318,truven_ccae,All pregnanices - 90d
+8,Not linked mothers (pregnancy episode end),965224,890318,truven_ccae,All pregnanices - 90d
+9,Not linked infants,2367877,2367877,truven_ccae,All pregnanices - 90d
+1,Linked mothers (pregnancy episode start),1589010,1301623,optum_extended_dod,All pregnancies - 60d
+2,Linked mothers (pregnancy episode end),1589010,1301623,optum_extended_dod,All pregnancies - 60d
+3,Linked infants,1589010,1589010,optum_extended_dod,All pregnancies - 60d
+4,All mothers (pregnancy episode start),1986822,1684630,optum_extended_dod,All pregnancies - 60d
+5,All mothers (pregnancy episode end),1986822,1684630,optum_extended_dod,All pregnancies - 60d
+6,All infants,3379811,3379811,optum_extended_dod,All pregnancies - 60d
+7,Not linked mothers (pregnancy episode start),420199,383007,optum_extended_dod,All pregnancies - 60d
+8,Not linked mothers (pregnancy episode end),420199,383007,optum_extended_dod,All pregnancies - 60d
+9,Not linked infants,1790801,1790801,optum_extended_dod,All pregnancies - 60d
+1,Linked mothers (pregnancy episode start),1301623,1301623,optum_extended_dod,First pregnancies - 60d
+2,Linked mothers (pregnancy episode end),1301623,1301623,optum_extended_dod,First pregnancies - 60d
+3,Linked infants,1301623,1301623,optum_extended_dod,First pregnancies - 60d
+4,All mothers (pregnancy episode start),1986822,1684630,optum_extended_dod,First pregnancies - 60d
+5,All mothers (pregnancy episode end),1986822,1684630,optum_extended_dod,First pregnancies - 60d
+6,All infants,3379811,3379811,optum_extended_dod,First pregnancies - 60d
+7,Not linked mothers (pregnancy episode start),420199,383007,optum_extended_dod,First pregnancies - 60d
+8,Not linked mothers (pregnancy episode end),420199,383007,optum_extended_dod,First pregnancies - 60d
+9,Not linked infants,2078188,2078188,optum_extended_dod,First pregnancies - 60d
+1,Linked mothers (pregnancy episode start),1589010,1301623,optum_extended_dod,All pregnanices - 90d
+2,Linked mothers (pregnancy episode end),1589010,1301623,optum_extended_dod,All pregnanices - 90d
+3,Linked infants,1589010,1589010,optum_extended_dod,All pregnanices - 90d
+4,All mothers (pregnancy episode start),1986822,1684630,optum_extended_dod,All pregnanices - 90d
+5,All mothers (pregnancy episode end),1986822,1684630,optum_extended_dod,All pregnanices - 90d
+6,All infants,3379811,3379811,optum_extended_dod,All pregnanices - 90d
+7,Not linked mothers (pregnancy episode start),420199,383007,optum_extended_dod,All pregnanices - 90d
+8,Not linked mothers (pregnancy episode end),420199,383007,optum_extended_dod,All pregnanices - 90d
+9,Not linked infants,1790801,1790801,optum_extended_dod,All pregnanices - 90d
