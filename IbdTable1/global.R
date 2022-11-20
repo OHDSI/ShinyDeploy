@@ -93,7 +93,8 @@ if (dataStorage == "database") {
   warning(paste0("wd = ", getwd(), 
     ", dataFolder = ", dataFolder, 
     ", dataFile = ", dataFile, 
-    ", file.path = ", file.path(dataFolder, dataFile)))
+    ", file.path = ", file.path(dataFolder, dataFile), 
+    ", file.exists = ", file.exists(file.path(dataFolder, dataFile))))
   
   if (file.exists(file.path(dataFolder, dataFile))) {
     writeLines("Using merged data detected in data folder")
