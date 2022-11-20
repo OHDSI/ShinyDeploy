@@ -41,7 +41,7 @@ if (!exists("shinySettings")) {
                                                                                          password = Sys.getenv("IbdTable1DbPw"))
     )
   } else if (file.exists("data")) {
-    shinySettings <- list(storage = "filesystem", dataFolder = "./data", dataFile = "PreMerged_Table1.RData")
+    shinySettings <- list(storage = "filesystem", dataFolder = "./data", dataFile = "PreMerged_table1.RData")
   } else if (is_installed("aws.s3") && is_installed("aws.ec2metadata")){
     library("aws.ec2metadata")
     shinySettings <- list(storage = "s3", dataFolder = Sys.getenv("OHDSI_SHINY_DATA_BUCKET"), dataFile = "IbdCharacterization/z4ud1qrs_PreMerged.RData")
@@ -90,12 +90,6 @@ if (dataStorage == "database") {
     writeLines(paste0("Could not find ", dataFile, " in S3 Bucket"))
   }
 } else {
-  warning(paste0("wd = ", getwd(), 
-    ", dataFolder = ", dataFolder, 
-    ", dataFile = ", dataFile, 
-    ", file.path = ", file.path(dataFolder, dataFile), 
-    ", file.exists = ", file.exists(file.path(dataFolder, dataFile))))
-  
   if (file.exists(file.path(dataFolder, dataFile))) {
     writeLines("Using merged data detected in data folder")
     load(file.path(dataFolder, dataFile))
