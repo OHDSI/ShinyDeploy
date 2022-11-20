@@ -28,8 +28,6 @@ usingDbStorage <- function() {
   return(shinySettings$storage=='database')
 }
 
-rm(list = "shinySettings")
-
 # Data Loading Priority: Database, "/data" folder, S3
 if (!exists("shinySettings")) {
   if (Sys.getenv("shinydbServer") != "" && Sys.getenv("IbdTable1DbSchema") != "") {
@@ -131,6 +129,7 @@ if (dataStorage == "database") {
     }
     
     for (i in 1:length(zipFiles)) {
+      warning(paste("Processing", zipFiles[i]))
       writeLines(paste("Processing", zipFiles[i]))
       tempFolder <- tempfile()
       dir.create(tempFolder)
