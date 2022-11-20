@@ -90,6 +90,8 @@ if (dataStorage == "database") {
     writeLines(paste0("Could not find ", dataFile, " in S3 Bucket"))
   }
 } else {
+  warning(paste0("dataFolder = ", dataFolder, ", dataFile = ", dataFile))
+  
   if (file.exists(file.path(dataFolder, dataFile))) {
     writeLines("Using merged data detected in data folder")
     load(file.path(dataFolder, dataFile))
@@ -129,7 +131,6 @@ if (dataStorage == "database") {
     }
     
     for (i in 1:length(zipFiles)) {
-      warning(paste("Processing", zipFiles[i]))
       writeLines(paste("Processing", zipFiles[i]))
       tempFolder <- tempfile()
       dir.create(tempFolder)
