@@ -3,6 +3,8 @@ source("PlotsAndTables.R")
 
 shinySettings <- list(dataFolder = "./data", blind = FALSE)
 dataFolder <- shinySettings$dataFolder
+#dataFolder <- "G:/StudyResults/mskai/shinyData"
+
 blind <- shinySettings$blind
 connection <- NULL
 positiveControlOutcome <- NULL
