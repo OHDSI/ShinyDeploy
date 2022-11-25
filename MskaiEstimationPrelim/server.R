@@ -144,22 +144,15 @@ shinyServer(function(input, output, session) {
     }
     table$description <- cohortMethodAnalysis$description[match(table$analysisId, cohortMethodAnalysis$analysisId)]
     table <- table[, mainColumns]
-    # table$rr <- prettyHr(table$rr)
-    # table$ci95Lb <- prettyHr(table$ci95Lb)
-    # table$ci95Ub <- prettyHr(table$ci95Ub)
-    # table$p <- prettyHr(table$p)
-    # table$calibratedRr <- prettyHr(table$calibratedRr)
-    # table$calibratedCi95Lb <- prettyHr(table$calibratedCi95Lb)
-    # table$calibratedCi95Ub <- prettyHr(table$calibratedCi95Ub)
-    # table$calibratedP <- prettyHr(table$calibratedP)
     table$rr <- prettyHr(round(table$rr, 2))
     table$ci95Lb <- prettyHr(round(table$ci95Lb, 2))
     table$ci95Ub <- prettyHr(round(table$ci95Ub, 2))
     table$p <- prettyHr(round(table$p, 2))
-    table$calibratedRr <- "NA"
-    table$calibratedCi95Lb <- "NA"
-    table$calibratedCi95Ub <- "NA"
+    table$calibratedRr <- prettyHr(round(table$calibratedRr,2))
+    table$calibratedCi95Lb <- prettyHr(round(table$calibratedCi95Lb, 2))
+    table$calibratedCi95Ub <- prettyHr(round(table$calibratedCi95Ub, 2))
     table$calibratedP <- prettyHr(round(table$calibratedP, 2))
+
     colnames(table) <- mainColumnNames
     options = list(pageLength = 15,
                    searching = FALSE,
