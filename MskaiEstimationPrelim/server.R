@@ -3,14 +3,15 @@ library(DT)
 
 mainColumns <- c("description", 
                  "databaseId", 
-                 "rr", 
+                 "rr",
                  "ci95Lb",
                  "ci95Ub",
                  "p",
                  "calibratedRr", 
                  "calibratedCi95Lb",
                  "calibratedCi95Ub",
-                 "calibratedP")
+                 "calibratedP",
+                 "i2")
 
 mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>", 
                      "<span title=\"Data source\">Data source</span>", 
@@ -21,7 +22,8 @@ mainColumnNames <- c("<span title=\"Analysis\">Analysis</span>",
                      "<span title=\"Hazard ratio (calibrated)\">Cal.HR</span>",
                      "<span title=\"Lower bound of the 95 percent confidence interval (calibrated)\">Cal.LB</span>",
                      "<span title=\"Upper bound of the 95 percent confidence interval (calibrated)\">Cal.UB</span>", 
-                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>")
+                     "<span title=\"Two-sided p-value (calibrated)\">Cal.P</span>",
+                     "<span title=\"Heterogeneity metric\">I2</span>")
 
 shinyServer(function(input, output, session) {
   if (blind) {
@@ -123,10 +125,13 @@ shinyServer(function(input, output, session) {
       hideTab("detailsTabsetPanel", "Population characteristics", session = session)
       hideTab("detailsTabsetPanel", "Kaplan-Meier", session = session)
       hideTab("detailsTabsetPanel", "Propensity model", session = session)
+      hideTab("detailsTabsetPanel", "Propensity scores", session = session)
+      hideTab("detailsTabsetPanel", "Covariate balance", session = session)
       showTab("detailsTabsetPanel", "Forest plot", session = session)
     } else {
       showTab("detailsTabsetPanel", "Attrition", session = session)
       showTab("detailsTabsetPanel", "Population characteristics", session = session)
+      showTab("detailsTabsetPanel", "Covariate balance", session = session)
       if (!blind) {
         showTab("detailsTabsetPanel", "Kaplan-Meier", session = session)
       }
@@ -152,6 +157,7 @@ shinyServer(function(input, output, session) {
     table$calibratedCi95Lb <- prettyHr(round(table$calibratedCi95Lb, 2))
     table$calibratedCi95Ub <- prettyHr(round(table$calibratedCi95Ub, 2))
     table$calibratedP <- prettyHr(round(table$calibratedP, 2))
+    table$i2 <- round(table$i2, 2)
 
     colnames(table) <- mainColumnNames
     options = list(pageLength = 15,
@@ -390,14 +396,14 @@ shinyServer(function(input, output, session) {
 
   psDistPlot <- reactive({
     row <- selectedRow()
-    if (is.null(row)) {
+    if (is.null(row) | row$databaseId %in% metaAnalysisDbIds) {
       return(NULL)
-    } else {
-      if (row$databaseId %in% metaAnalysisDbIds) {
-        ps <- getPs(connection = connection,
-                    targetIds = row$targetId,
-                    comparatorIds = row$comparatorId,
-                    analysisId = row$analysisId)
+    # } else {
+    #   if (row$databaseId %in% metaAnalysisDbIds) {
+    #     ps <- getPs(connection = connection,
+    #                 targetIds = row$targetId,
+    #                 comparatorIds = row$comparatorId,
+    #                 analysisId = row$analysisId)
       } else {
         targetId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$target]
         comparatorId <- exposureOfInterest$exposureId[exposureOfInterest$exposureName == input$comparator]
@@ -414,7 +420,8 @@ shinyServer(function(input, output, session) {
       plot <- plotPs(ps, input$target, input$comparator)
       return(plot)
     }
-  })
+  #}
+  )
   
   output$psDistPlot <- renderPlot({
     return(psDistPlot())
