@@ -1,643 +1,492 @@
-
-# used to get the short name in plots
-addShortName <- function(data, shortNameRef = NULL, cohortIdColumn = "cohortId", shortNameColumn = "shortName") {
-  if (is.null(shortNameRef)) {
-    shortNameRef <- data %>%
-      dplyr::distinct(.data$cohortId) %>%
-      dplyr::arrange(.data$cohortId) %>%
-      dplyr::mutate(shortName = paste0("C", dplyr::row_number()))
-  } 
-  
-  shortNameRef <- shortNameRef %>%
-    dplyr::distinct(.data$cohortId, .data$shortName) 
-  colnames(shortNameRef) <- c(cohortIdColumn, shortNameColumn)
-  data <- data %>%
-    dplyr::inner_join(shortNameRef, by = cohortIdColumn)
-  return(data)
-}
-
-addDatabaseShortName <- function(data, shortNameRef = NULL, databaseIdColumn = "databaseId", shortNameColumn = "databaseShortName") {
-  if (is.null(shortNameRef)) {
-    shortNameRef <- data %>%
-      dplyr::distinct(.data$databaseId) %>%
-      dplyr::arrange(.data$databaseId) %>%
-      dplyr::mutate(databaseShortName = paste0("C", dplyr::row_number()))
-  } 
-  
-  shortNameRef <- shortNameRef %>%
-    dplyr::distinct(.data$databaseId, .data$shortName) 
-  colnames(shortNameRef) <- c(databaseIdColumn, shortNameColumn)
-  data <- data %>%
-    dplyr::inner_join(shortNameRef, by = databaseIdColumn)
-  return(data)
-}
+# Copyright 2022 Observational Health Data Sciences and Informatics
+#
+# This file is part of CohortDiagnostics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-getSubjectCountsByDatabasae <-
-  function(data, cohortId, databaseIds) {
-    data %>%
-      dplyr::left_join(cohortCount, by = c('databaseId', 'cohortId')) %>%
-      dplyr::filter(.data$cohortId == cohortId) %>%
-      dplyr::filter(.data$databaseId %in% databaseIds) %>%
-      dplyr::arrange(.data$databaseId) %>%
-      dplyr::mutate(cohortSubjects = dplyr::coalesce(.data$cohortSubjects, 0)) %>%
-      dplyr::mutate(databaseIdsWithCount = paste0(
-        .data$databaseId,
-        "<br>(n = ",
-        scales::comma(.data$cohortSubjects, accuracy = 1),
-        ")"
-      )) %>%
-      dplyr::mutate(databaseIdsWithCountWithoutBr = paste0(
-        .data$databaseId,
-        " (n = ",
-        scales::comma(.data$cohortSubjects, accuracy = 1),
-        ")"
-      )) %>%
-      dplyr::select(
-        .data$databaseId,
-        .data$databaseIdsWithCount,
-        .data$databaseIdsWithCountWithoutBr
-      ) %>%
-      dplyr::distinct() %>%
-      dplyr::arrange(.data$databaseId)
-  }
+loadResultsTable <- function(dataSource, tableName, required = FALSE, tablePrefix = "") {
+  selectTableName <- paste0(tablePrefix, tableName)
 
-#Load results table ----
-# used by global.R to load data into R memory
-loadResultsTable <- function(tableName, resultsTablesOnServer, required = FALSE) {
-  writeLines(text = paste0(" - Loading data from ", tableName))
-  if (required || tableName %in% resultsTablesOnServer) {
-    tryCatch({
-      table <- DatabaseConnector::dbReadTable(connectionPool,
-                                              paste(resultsDatabaseSchema, tableName, sep = "."))
-    }, error = function(err) {
-      stop(
-        "Error reading from ",
-        paste(resultsDatabaseSchema, tableName, sep = "."),
-        ": ",
-        err$message
+  resultsTablesOnServer <-
+    tolower(DatabaseConnector::dbListTables(dataSource$connection, schema = dataSource$resultsDatabaseSchema))
+
+  if (required || selectTableName %in% resultsTablesOnServer) {
+    tryCatch(
+    {
+      table <- DatabaseConnector::dbReadTable(
+        dataSource$connection,
+        paste(dataSource$resultsDatabaseSchema, selectTableName, sep = ".")
       )
-    })
+    },
+      error = function(err) {
+        stop(
+          "Error reading from ",
+          paste(dataSource$resultsDatabaseSchema, selectTableName, sep = "."),
+          ": ",
+          err$message
+        )
+      }
+    )
     colnames(table) <-
       SqlRender::snakeCaseToCamelCase(colnames(table))
     if (nrow(table) > 0) {
-      assign(
-        SqlRender::snakeCaseToCamelCase(tableName),
-        dplyr::as_tibble(table),
-        envir = .GlobalEnv
-      )
-    } else {
-      if (required) {
-        stop(paste0("Required table '", tableName, "' has 0 records."))
-      } else {
-        warning(paste0("Optional table '", tableName, "' has 0 records."))
-      }
+      return(dplyr::as_tibble(table))
     }
   }
+
+  return(NULL)
 }
 
-# isEmpty ----
+
 # Create empty objects in memory for all other tables. This is used by the Shiny app to decide what tabs to show:
-isEmpty <- function(tableName) {
+tableIsEmpty <- function(dataSource, tableName) {
   sql <-
-    sprintf("SELECT 1 FROM %s.%s LIMIT 1;",
-            resultsDatabaseSchema,
-            tableName)
-  oneRow <- DatabaseConnector::dbGetQuery(connectionPool, sql)
+    sprintf(
+      "SELECT 1 FROM %s.%s LIMIT 1;",
+      dataSource$resultsDatabaseSchema,
+      tableName
+    )
+  oneRow <- DatabaseConnector::dbGetQuery(dataSource$connection, sql)
   return(nrow(oneRow) == 0)
 }
 
-
-
-# borrowed from https://stackoverflow.com/questions/19747384/create-new-column-in-dataframe-based-on-partial-string-matching-other-column
-patternReplacement <-
-  function(x,
-           patterns,
-           replacements = patterns,
-           fill = NA,
-           ...)
-  {
-    stopifnot(length(patterns) == length(replacements))
-    
-    ans = rep_len(as.character(fill), length(x))
-    empty = seq_along(x)
-    
-    for (i in seq_along(patterns)) {
-      greps = grepl(patterns[[i]], x[empty], ...)
-      ans[empty[greps]] = replacements[[i]]
-      empty = empty[!greps]
-    }
-    return(ans)
-  }
-
-
-downloadCsv <- function(x, fileName) {
-  if (all(!is.null(x), nrow(x) > 0)) {
-    write.csv(x, fileName)
-  }
+getTimeAsInteger <- function(time = Sys.time()) {
+  return(floor(as.numeric(as.POSIXlt(time))))
 }
 
-# where is the vocabulary tables ----
-getSourcesOfVocabularyTables <- function(dataSource,
-                                         database) {
-  if (is(dataSource, "environment")) {
-    sourceOfVocabularyTables <-
-      c(database$databaseIdWithVocabularyVersion)
-  } else {
-    sourceOfVocabularyTables <- list(
-      'From source data' = database$databaseIdWithVocabularyVersion,
-      'From external reference' = vocabularyDatabaseSchemas
+getTimeFromInteger <- function(x) {
+  originDate <- as.POSIXct("1970-01-01")
+  originDate <- originDate + x
+  return(originDate)
+}
+
+processMetadata <- function(data) {
+  data <- data %>%
+    tidyr::pivot_wider(
+      id_cols = c(.data$startTime, .data$databaseId),
+      names_from = .data$variableField,
+      values_from = .data$valueField
+    ) %>%
+    dplyr::mutate(
+      startTime = stringr::str_replace(
+        string = .data$startTime,
+        pattern = stringr::fixed("TM_"),
+        replacement = ""
+      )
+    ) %>%
+    dplyr::mutate(startTime = paste0(.data$startTime, " ", .data$timeZone)) %>%
+    dplyr::mutate(startTime = as.POSIXct(.data$startTime)) %>%
+    dplyr::group_by(
+      .data$databaseId,
+      .data$startTime
+    ) %>%
+    dplyr::arrange(.data$databaseId, dplyr::desc(.data$startTime), .by_group = TRUE) %>%
+    dplyr::mutate(rn = dplyr::row_number()) %>%
+    dplyr::filter(.data$rn == 1) %>%
+    dplyr::select(-.data$timeZone)
+
+  if ("runTime" %in% colnames(data)) {
+    data$runTime <- round(x = as.numeric(data$runTime), digits = 2)
+  }
+  if ("observationPeriodMinDate" %in% colnames(data)) {
+    data$observationPeriodMinDate <-
+      as.Date(data$observationPeriodMinDate)
+  }
+  if ("observationPeriodMaxDate" %in% colnames(data)) {
+    data$observationPeriodMaxDate <-
+      as.Date(data$observationPeriodMaxDate)
+  }
+  if ("personsInDatasource" %in% colnames(data)) {
+    data$personsInDatasource <- as.numeric(data$personsInDatasource)
+  }
+  if ("recordsInDatasource" %in% colnames(data)) {
+    data$recordsInDatasource <- as.numeric(data$recordsInDatasource)
+  }
+  if ("personDaysInDatasource" %in% colnames(data)) {
+    data$personDaysInDatasource <-
+      as.numeric(data$personDaysInDatasource)
+  }
+  colnamesOfInterest <-
+    c(
+      "startTime",
+      "databaseId",
+      "runTime",
+      "runTimeUnits",
+      "sourceReleaseDate",
+      "cdmVersion",
+      "cdmReleaseDate",
+      "observationPeriodMinDate",
+      "observationPeriodMaxDate",
+      "personsInDatasource",
+      "recordsInDatasource",
+      "personDaysInDatasource"
     )
-  }
-  return(sourceOfVocabularyTables)
-}
 
+  commonColNames <- intersect(colnames(data), colnamesOfInterest)
 
-sumCounts <- function(counts) {
-  result <- sum(abs(counts))
-  if (any(counts < 0)) {
-    return(-result)
-  } else {
-    return(result)
-  }
-}
-
-consolidationOfSelectedFieldValues <- function(input,
-                                               cohort = NULL,
-                                               conceptSets = NULL,
-                                               conceptSetExpressionTarget = NULL,
-                                               conceptSetExpressionComparator = NULL,
-                                               database = NULL,
-                                               resolvedConceptSetDataTarget = NULL,
-                                               resolvedConceptSetDataComparator = NULL,
-                                               orphanConceptSetDataTarget = NULL,
-                                               orphanConceptSetDataComparator = NULL,
-                                               excludedConceptSetDataTarget = NULL,
-                                               excludedConceptSetDataComparator = NULL,
-                                               indexEventBreakdownDataTable = NULL) {
-  data <- list()
-  ##########################Cohort Definition tab ##########################
-  if (input$tabs == 'cohortDefinition') {
-    #selection of cohort
-    if (doesObjectHaveData(input$selectedCompoundCohortName) ||
-        doesObjectHaveData(input$selectedComparatorCompoundCohortName)) {
-      # get the last two rows selected - this is only for cohort table to enable LEFT/RIGHT comparison
-      if (input$selectedCompoundCohortName != "") {
-        data$cohortIdTarget <- cohort %>% 
-          dplyr::filter(.data$compoundName == input$selectedCompoundCohortName) %>% 
-          dplyr::pull(.data$cohortId)
-      }
-      if (doesObjectHaveData(input$selectedComparatorCompoundCohortName)) {
-        data$cohortIdComparator <- cohort %>% 
-          dplyr::filter(.data$compoundName == input$selectedComparatorCompoundCohortName) %>% 
-          dplyr::pull(.data$cohortId)
-      }
-    }
-    
-    #selection on concept set id
-    if (all(
-      doesObjectHaveData(input$targetCohortDefinitionConceptSetsTable_rows_selected),
-      doesObjectHaveData(data$cohortIdTarget)
-    )) {
-      selectedConceptSet <-
-        conceptSetExpressionTarget[input$targetCohortDefinitionConceptSetsTable_rows_selected,]
-      data$conceptSetIdTarget <- selectedConceptSet$conceptSetId
-      
-      if (all(
-        doesObjectHaveData(input$comparatorCohortDefinitionConceptSets_rows_selected),
-        doesObjectHaveData(data$cohortIdComparator)
-      )) {
-        selectedConceptSet <-
-          conceptSetExpressionComparator[input$comparatorCohortDefinitionConceptSets_rows_selected,]
-        data$conceptSetIdComparator <- selectedConceptSet$conceptSetId
-      }
-    }
-    #selection on database id
-    if (doesObjectHaveData(input$selectedDatabaseIds)) {
-        data$selectedDatabaseIdTarget <- input$selectedDatabaseIds
-    }
-    #selection on concept id
-    if (doesObjectHaveData(input$targetCohortDefinitionResolvedConceptTable_rows_selected)) {
-      data$selectedConceptIdTarget <- resolvedConceptSetDataTarget[input$targetCohortDefinitionResolvedConceptTable_rows_selected,]$conceptId
-      data$leftSideActive <- TRUE
-    }
-    if (doesObjectHaveData(input$comparatorCohortDefinitionResolvedConceptTable_rows_selected)) {
-      data$selectedConceptIdComparator <- resolvedConceptSetDataComparator[input$comparatorCohortDefinitionResolvedConceptTable_rows_selected,]$conceptId
-      data$rightSideActive <- TRUE
-    }
-    if (doesObjectHaveData(input$targetCohortDefinitionExcludedConceptTable_rows_selected)) {
-      data$selectedConceptIdTarget <- excludedConceptSetDataTarget[input$targetCohortDefinitionExcludedConceptTable_rows_selected,]$conceptId
-      data$leftSideActive <- TRUE
-    }
-    if (doesObjectHaveData(input$comparatorCohortDefinitionExcludedConceptTable_rows_selected)) {
-      data$selectedConceptIdComparator <- excludedConceptSetDataComparator[input$comparatorCohortDefinitionExcludedConceptTable_rows_selected,]$conceptId
-      data$rightSideActive <- TRUE
-    }
-    if (doesObjectHaveData(input$targetCohortDefinitionOrphanConceptTable_rows_selected)) {
-      data$selectedConceptIdTarget <- orphanConceptSetDataTarget[input$targetCohortDefinitionOrphanConceptTable_rows_selected,]$conceptId
-      data$leftSideActive <- TRUE
-    }
-    if (doesObjectHaveData(input$comparatorCohortDefinitionOrphanConceptTable_rows_selected)) {
-      data$selectedConceptIdComparator <- orphanConceptSetDataComparator[input$comparatorCohortDefinitionOrphanConceptTable_rows_selected,]$conceptId
-      data$rightSideActive <- TRUE
-    }
-  }
-  ####################################################
-  if (input$tabs == 'indexEventBreakdown' || 
-      input$tabs == 'visitContext' ||
-      input$tabs == 'cohortCharacterization' ||
-      input$tabs == 'temporalCharacterization' ||
-      input$tabs == 'compareCohortCharacterization' ||
-      input$tabs == 'compareTemporalCharacterization') {
-    data <- list()
-    
-    #single select cohortId
-    if (all(!is.null(input$selectedCompoundCohortName),
-            !is.null(cohort))) {
-      data$cohortIdTarget <- cohort %>%
-        dplyr::filter(.data$compoundName %in% input$selectedCompoundCohortName) %>%
-        dplyr::arrange(.data$cohortId) %>%
-        dplyr::pull(.data$cohortId) %>%
-        unique()
-    }
-    #mutli select databaseId/ single select databaseId
-    if (input$tabs == 'temporalCharacterization' ||
-        input$tabs == 'compareTemporalCharacterization') {
-      
-      if (doesObjectHaveData(input$selectedDatabaseId)) {
-        data$selectedDatabaseIdTarget <- input$selectedDatabaseId
-      } else {
-        data$selectedDatabaseIdTarget <- NULL
-      }
-    } else {
-      if (doesObjectHaveData(input$selectedDatabaseIds)) {
-        data$selectedDatabaseIdTarget <- input$selectedDatabaseIds
-      }
-    }
-   
-    #mutli select concept set id for one cohort
-    if (doesObjectHaveData(input$conceptSetsSelectedCohortLeft)) {
-      data$conceptSetIdTarget <- conceptSets %>% 
-        dplyr::filter(.data$cohortId %in% data$cohortIdTarget) %>% 
-        dplyr::filter(.data$conceptSetName %in% input$conceptSetsSelectedCohortLeft) %>% 
-        dplyr::pull(.data$conceptSetId)
-    }
-    if (all(doesObjectHaveData(indexEventBreakdownDataTable),
-            doesObjectHaveData(input$indexEventBreakdownTable_rows_selected))) {
-      lastRowsSelected <- input$indexEventBreakdownTable_rows_selected[length(input$indexEventBreakdownTable_rows_selected)]
-      data$selectedConceptIdTarget <- indexEventBreakdownDataTable[lastRowsSelected, ]$conceptId
-      data$leftSideActive <- TRUE
-    }
-  }
-  
-  ####################################################
-  if (input$tabs == 'cohortCounts' ||
-      input$tabs == 'incidenceRate' ||
-      input$tabs == 'timeSeries' ||
-      input$tabs == 'timeDistribution' ||
-      input$tabs == 'cohortOverlap') {
-    data <- list()
-    #multi select cohortId
-    if (doesObjectHaveData(input$selectedCompoundCohortNames)) {
-        data$cohortIdTarget <- cohort %>%
-          dplyr::filter(.data$compoundName %in% input$selectedCompoundCohortNames) %>%
-          dplyr::arrange(.data$cohortId) %>%
-          dplyr::pull(.data$cohortId) %>%
-          unique()
-    }
-    if (doesObjectHaveData(input$selectedComparatorCompoundCohortNames) && input$tabs == 'cohortOverlap') {
-      data$cohortIdComparator <- cohort %>%
-        dplyr::filter(.data$compoundName %in% input$selectedComparatorCompoundCohortNames) %>%
-        dplyr::arrange(.data$cohortId) %>%
-        dplyr::pull(.data$cohortId) %>%
-        unique()
-    }
-    
-    #mutli select databaseId
-    if (doesObjectHaveData(input$selectedDatabaseIds)) {
-      data$selectedDatabaseIdTarget <- input$selectedDatabaseIds
-    }
-    
-  }
+  data <- data %>%
+    dplyr::select(dplyr::all_of(commonColNames))
   return(data)
 }
 
-#takes data as input and returns data table with sketch design
-#used in resolved, excluded and orphan concepts in cohort definition tab
-getSketchDesignForTablesInCohortDefinitionTab <- function(data, 
-                                                          databaseCount,
-                                                          numberOfColums = 4,
-                                                          columnFilters = "Both") {
-  colnamesInData <- colnames(data)
-  colnamesInData <- colnamesInData[!colnamesInData %in% "databaseId"]
-  colnamesInData <- colnamesInData[!colnamesInData %in% "persons"]
-  colnamesInData <- colnamesInData[!colnamesInData %in% "records"]
-  databaseIds <- sort(unique(data$databaseId))
-  
-  fieldsInData <- c()
-  maxCount <- NULL
-  maxSubject <- NULL
-  if (all('records' %in% colnames(data))) {
-    fieldsInData <- c(fieldsInData, "records")
-    maxCount <- max(data$records, na.rm = TRUE)
-  }
-  if (all('persons' %in% colnames(data))) {
-    fieldsInData <- c(fieldsInData, "persons")
-    maxSubject <- max(data$persons, na.rm = TRUE)
-  }
-  
-  databasePersonAndRecordCount <- data %>%
-    dplyr::select(.data$databaseId) %>% 
-    dplyr::inner_join(databaseCount,
-                      by = c("databaseId")) %>% 
-    dplyr::select(.data$databaseId, dplyr::all_of(fieldsInData)) %>% 
-    dplyr::distinct()
-  if ('persons' %in% colnames(databasePersonAndRecordCount)) {
-    databasePersonAndRecordCount <- databasePersonAndRecordCount %>% 
-      dplyr::mutate(persons = scales::comma(.data$persons,
-                                            accuracy = 1))
-  }
-  if ('records' %in% colnames(databasePersonAndRecordCount)) {
-    databasePersonAndRecordCount <- databasePersonAndRecordCount %>% 
-      dplyr::mutate(records = scales::comma(.data$records,
-                                            accuracy = 1))
-  }
-  databasePersonAndRecordCount <- databasePersonAndRecordCount %>% 
-    dplyr::arrange(.data$databaseId)
-  
-  dataTransformed <- data %>%
-    dplyr::arrange(.data$databaseId) %>% 
-    tidyr::pivot_longer(
-      names_to = "type",
-      cols = dplyr::all_of(fieldsInData),
-      values_to = "count"
-    )  #descending to ensure records before persons
-    
-    minimumCellCountDefs <- minCellCountDef(numberOfColums + (1:(
-      2 * length(databaseIds)
-    )))
-    
-    if (columnFilters == "Person Only") {
-      dataTransformed <- dataTransformed %>% 
-        dplyr::filter(.data$type == "persons")
-      
-      minimumCellCountDefs <- minCellCountDef(numberOfColums + (1:(length(databaseIds))))
-    } else if (columnFilters == "Record Only") {
-      dataTransformed <- dataTransformed %>% 
-        dplyr::filter(.data$type == "records")
-      
-      minimumCellCountDefs <- minCellCountDef(numberOfColums + (1:(length(databaseIds))))
-    }
-  dataTransformed <- dataTransformed %>%
-    dplyr::mutate(type = paste0( .data$databaseId,
-                                " ",
-                                .data$type)) %>%
-    dplyr::distinct() %>% 
-    dplyr::arrange(.data$databaseId, dplyr::desc(.data$type)) %>%
-    tidyr::pivot_wider(
-      id_cols = dplyr::all_of(colnamesInData),
-      names_from = type,
-      values_from = count,
-      values_fill = 0
-    )
-  # sort descending by first count field
-  # dataTransformed <- dataTransformed %>% 
-    # dplyr::arrange(dplyr::desc(abs(dplyr::across(dplyr::contains("records")))))
-  
-  options = list(
-    pageLength = 1000,
-    lengthMenu = list(c(10, 100, 1000,-1), c("10", "100", "1000", "All")),
-    searching = TRUE,
-    lengthChange = TRUE,
-    ordering = TRUE,
-    paging = TRUE,
-    info = TRUE,
-    searchHighlight = TRUE,
-    scrollX = TRUE,
-    scrollY = "20vh",
-    columnDefs = list(truncateStringDef(1, 50),
-                      minimumCellCountDefs)
+checkErrorCohortIdsDatabaseIds <- function(errorMessage,
+                                           cohortIds,
+                                           databaseIds) {
+  checkmate::assertDouble(
+    x = cohortIds,
+    null.ok = FALSE,
+    lower = 1,
+    upper = 2^53,
+    any.missing = FALSE,
+    add = errorMessage
   )
-  if (columnFilters == "Both") {
-    databaseRecordAndPersonColumnName <- c()
-    for (i in 1:nrow(databasePersonAndRecordCount)) {
-      if ('records' %in% colnames(databasePersonAndRecordCount)) {
-        databaseRecordAndPersonColumnName <-
-          c(
-            databaseRecordAndPersonColumnName,
-            paste0("Records (", databasePersonAndRecordCount[i,]$records, ")"))
-      }
-      if ('persons' %in% colnames(databasePersonAndRecordCount)) {
-        databaseRecordAndPersonColumnName <-
-          c(
-            databaseRecordAndPersonColumnName,
-            paste0("Persons (", databasePersonAndRecordCount[i,]$persons, ")"))
-      }
-    }
-    
-    #!!!!!!! dynamically generate rowspan from colnamesInData
-    sketch <- htmltools::withTags(table(class = "display",
-                                        thead(
-                                          tr(
-                                            lapply(camelCaseToTitleCase(colnamesInData),
-                                                   th,
-                                                   rowspan = 2),
-                                            lapply(
-                                              databaseIds,
-                                              th,
-                                              colspan = 2,
-                                              class = "dt-center",
-                                              style = "border-right:1px solid silver;border-bottom:1px solid silver"
-                                            )
-                                          ),
-                                          tr(
-                                            lapply(databaseRecordAndPersonColumnName, th, style = "border-right:1px solid silver;border-bottom:1px solid silver")
-                                          )
-                                        )))
-    
-    dataTable <- DT::datatable(
-      dataTransformed,
-      options = options,
-      rownames = FALSE,
-      container = sketch,
-      colnames = colnames(dataTransformed) %>% camelCaseToTitleCase(),
-      escape = FALSE,
-      selection = 'single',
-      filter = "top",
-      class = "stripe nowrap compact"
-    )
-  } else {
-    dataTable <- DT::datatable(
-      dataTransformed,
-      options = options,
-      rownames = FALSE,
-      colnames = colnames(dataTransformed) %>% camelCaseToTitleCase(),
-      escape = FALSE,
-      selection = 'single',
-      filter = "top",
-      class = "stripe nowrap compact"
-    )
-  }
-  
-  
-  if (!is.null(maxSubject)) {
-    dataTable <- DT::formatStyle(
-      table = dataTable,
-      columns =  (numberOfColums + 1) + 1:(length(databaseIds) * 2),
-      background = DT::styleColorBar(c(0, maxSubject), "lightblue"),
-      backgroundSize = "98% 88%",
-      backgroundRepeat = "no-repeat",
-      backgroundPosition = "center"
-    )
-  }
-  if (!is.null(maxCount)) {
-    dataTable <- DT::formatStyle(
-      table = dataTable,
-      columns =  (numberOfColums + 1) + 1:(length(databaseIds) * 2),
-      background = DT::styleColorBar(c(0, maxCount), "lightblue"),
-      backgroundSize = "98% 88%",
-      backgroundRepeat = "no-repeat",
-      backgroundPosition = "center"
-    )
-  }
-  return(dataTable)
+  checkmate::assertCharacter(
+    x = databaseIds,
+    min.len = 1,
+    any.missing = FALSE,
+    unique = TRUE,
+    add = errorMessage
+  )
+  checkmate::reportAssertions(collection = errorMessage)
+  return(errorMessage)
 }
 
-getStlModelOutputForTsibbleDataValueFields <- function(tsibbleData, valueFields = "value") {
-  if (!doesObjectHaveData(tsibbleData)) {
-    return(NULL)
+quoteLiterals <- function(x) {
+  if (is.null(x)) {
+    return("")
+  } else {
+    return(paste0("'", paste(x, collapse = "', '"), "'"))
   }
-  if (!"tbl_ts" %in% class(tsibbleData)) {
-    warning("object is not of tsibble class")
-    return(NULL)
-  }
-  keys <- colnames(attributes(tsibbleData)$key %>%
-                     dplyr::select(-".rows"))
-  index <- attributes(tsibbleData)$index %>%
-    as.character()
-  if (!all(valueFields %in% colnames(tsibbleData))) {
-    warning(paste0("Cannot find: " , paste0(setdiff(valueFields, colnames(tsibbleData)), collapse = ",")))
-    valueFields <- valueFields[!valueFields %in% setdiff(valueFields, colnames(tsibbleData))]
-  }
-  modelData <- list()
-  for (i in (1:length(valueFields))) {
-    valueField <- valueFields[[i]]
-    modelData[[valueField]] <- tsibbleData %>% 
-      dplyr::select(dplyr::all_of(keys), 
-                    dplyr::all_of(index), 
-                    dplyr::all_of(valueField)) %>%
-      dplyr::rename(Total = dplyr::all_of(valueField)) %>% 
-      tsibble::fill_gaps(Total = 0) %>% 
-      fabletools::model(feasts::STL(Total ~  trend(window = 36))) %>%
-      fabletools::components()
-    if (tsibble::is_yearmonth(modelData[[valueField]]$periodBegin)) {
-      modelData[[valueField]] <- modelData[[valueField]] %>% 
-        dplyr::mutate(periodDate = as.Date(.data$periodBegin))
-    } else if (is.double(modelData[[valueField]]$periodBegin) || is.integer(modelData[[valueField]]$periodBegin)) {
-      modelData[[valueField]] <- modelData[[valueField]] %>% 
-        dplyr::mutate(periodDate = as.Date(paste0(.data$periodBegin, "-01-01")))
-    }
-  }
-  return(modelData)
 }
 
-getDatabaseOrCohortCountForConceptIds <- function(data, dataSource, databaseCount = TRUE) {
-  conceptMetadata <- getConceptMetadata(
-    dataSource = dataSource,
-    cohortId = data$cohortId %>% unique(),
-    databaseId = data$databaseId %>% unique(),
-    conceptId = data$conceptId %>% unique(),
-    getIndexEventCount = TRUE,
-    getConceptCount = TRUE,
-    getConceptRelationship = FALSE,
-    getConceptAncestor = FALSE,
-    getConceptSynonym = FALSE,
-    getDatabaseMetadata = TRUE,
-    getConceptCooccurrence = FALSE,
-    getConceptMappingCount = FALSE,
-    getFixedTimeSeries = FALSE,
-    getRelativeTimeSeries = FALSE
+getConnectionPool <- function(connectionDetails) {
+  connectionPool <-
+    pool::dbPool(
+      drv = DatabaseConnector::DatabaseConnectorDriver(),
+      dbms = connectionDetails$dbms,
+      server = connectionDetails$server(),
+      port = connectionDetails$port(),
+      user = connectionDetails$user(),
+      password = connectionDetails$password(),
+      connectionString = connectionDetails$connectionString()
+    )
+
+  return(connectionPool)
+}
+
+loadShinySettings <- function(configPath) {
+  stopifnot(file.exists(configPath))
+  shinySettings <- yaml::read_yaml(configPath)
+  
+  if (is.null(shinySettings$connectionDetails$server)) {
+    shinySettings$connectionDetails$server <-
+      paste0(Sys.getenv("phenotypeLibraryServer"),
+             "/",
+             Sys.getenv("phenotypeLibrarydb"))
+  }
+  
+  if (is.null(shinySettings$connectionDetails$user)) {
+    shinySettings$connectionDetails$user <-
+      Sys.getenv("phenotypeLibrarydbUser")
+  }
+  
+  if (is.null(shinySettings$connectionDetails$password)) {
+    shinySettings$connectionDetails$password <-
+      Sys.getenv("phenotypeLibrarydbPw")
+  }
+
+  defaultValues <- list(
+    resultsDatabaseSchema = c("main"),
+    vocabularyDatabaseSchemas = c("main"),
+    enableAnnotation = TRUE,
+    enableAuthorization = TRUE,
+    userCredentialsFile = "UserCredentials.csv",
+    tablePrefix = "",
+    cohortTableName = "cohort",
+    databaseTableName = "database"
   )
-  if (!databaseCount) {
-    if (!is.null(conceptMetadata$indexEventBreakdown)) {
-      if (all(
-        !is.null(conceptMetadata$indexEventBreakdown),
-        nrow(conceptMetadata$indexEventBreakdown) > 0
-      )) {
-        data <- data %>%
-          dplyr::left_join(
-            conceptMetadata$indexEventBreakdown %>%
-              dplyr::filter(.data$daysRelativeIndex == 0) %>%
-              dplyr::select(
-                .data$conceptId,
-                .data$databaseId,
-                .data$conceptCount,
-                .data$subjectCount
-              ) %>%
-              dplyr::rename(
-                "records" = .data$conceptCount,
-                "persons" = .data$subjectCount
-              ),
-            by = c("conceptId", "databaseId")
-          )
-      }
+
+  for (key in names(defaultValues)) {
+    if (is.null(shinySettings[[key]])) {
+      shinySettings[[key]] <- defaultValues[[key]]
     }
-  } else {
-    if (!is.null(conceptMetadata$databaseConceptCount)) {
-      data <- data %>%
-        dplyr::left_join(conceptMetadata$databaseConceptCount,
-                         by = c("conceptId", "databaseId")) %>%
-        dplyr::rename(
-          "records" = .data$conceptCount,
-          "persons" = .data$subjectCount
+  }
+
+  if (shinySettings$cohortTableName == "cohort") {
+    shinySettings$cohortTableName <- paste0(shinySettings$tablePrefix, shinySettings$cohortTableName)
+  }
+
+  if (shinySettings$databaseTableName == "database") {
+    shinySettings$databaseTableName <- paste0(shinySettings$tablePrefix, shinySettings$databaseTableName)
+  }
+
+
+  if (!is.null(shinySettings$connectionDetailsSecureKey)) {
+    shinySettings$connectionDetails <- jsonlite::fromJSON(keyring::key_get(shinySettings$connectionDetailsSecureKey))
+  }
+  shinySettings$connectionDetails <- do.call(DatabaseConnector::createConnectionDetails,
+                                             shinySettings$connectionDetails)
+
+  return(shinySettings)
+}
+
+createDatabaseDataSource <- function(connection,
+                                     resultsDatabaseSchema,
+                                     vocabularyDatabaseSchema = resultsDatabaseSchema,
+                                     dbms,
+                                     tablePrefix = "",
+                                     cohortTableName = "cohort",
+                                     databaseTableName = "database") {
+  return(
+    list(
+      connection = connection,
+      resultsDatabaseSchema = resultsDatabaseSchema,
+      vocabularyDatabaseSchema = vocabularyDatabaseSchema,
+      dbms = dbms,
+      resultsTablesOnServer = tolower(DatabaseConnector::dbListTables(connection, schema = resultsDatabaseSchema)),
+      tablePrefix = tablePrefix,
+      prefixTable = function(tableName) { paste0(tablePrefix, tableName) },
+      prefixVocabTable = function(tableName) {
+        # don't prexfix table if we us a dedicated vocabulary schema
+        if (vocabularyDatabaseSchema == resultsDatabaseSchema)
+          return(paste0(tablePrefix, tableName))
+
+        return(tableName)
+      },
+      cohortTableName = cohortTableName,
+      databaseTableName = databaseTableName
+    )
+  )
+}
+
+#' Initialize variables required in applications global shared environment
+#' These settings are shared across settings (e.g. accessed by all users) and should be read only during run time
+initializeEnvironment <- function(shinySettings,
+                                  table1SpecPath = "data/Table1SpecsLong.csv",
+                                  dataModelSpecificationsPath = "data/resultsDataModelSpecification.csv",
+                                  envir = .GlobalEnv) {
+  envir$shinySettings <- shinySettings
+
+  envir$connectionPool <- getConnectionPool(envir$shinySettings$connectionDetails)
+  shiny::onStop(function() {
+    if (DBI::dbIsValid(envir$connectionPool)) {
+      writeLines("Closing database pool")
+      pool::poolClose(envir$connectionPool)
+    }
+  })
+
+  envir$dataSource <-
+    createDatabaseDataSource(
+      connection = envir$connectionPool,
+      resultsDatabaseSchema = envir$shinySettings$resultsDatabaseSchema,
+      vocabularyDatabaseSchema = envir$
+        shinySettings$
+        vocabularyDatabaseSchemas,
+      dbms = envir$shinySettings$connectionDetails$dbms,
+      tablePrefix = envir$shinySettings$tablePrefix,
+      cohortTableName = envir$shinySettings$cohortTableName,
+      databaseTableName = envir$shinySettings$databaseTableName
+    )
+
+  envir$userCredentials <- data.frame()
+  envir$enableAuthorization <- envir$shinySettings$enableAuthorization
+  if (is.null(envir$enableAuthorization)) {
+    envir$enableAuthorization <- FALSE
+  }
+
+  if (envir$enableAuthorization & !is.null(envir$shinySettings$userCredentialsFile)) {
+    if (file.exists(envir$shinySettings$userCredentialsFile)) {
+      envir$userCredentials <-
+        readr::read_csv(file = envir$shinySettings$userCredentialsFile, col_types = readr::cols())
+    }
+  }
+
+  envir$enableAnnotation  <- envir$shinySettings$enableAnnotation
+
+  if (nrow(envir$userCredentials) == 0) {
+    envir$enableAuthorization <- FALSE
+  }
+
+  dataModelSpecifications <- read.csv(dataModelSpecificationsPath)
+  envir$dataModelSpecifications <- dataModelSpecifications
+  # Cleaning up any tables alreadu in memory:
+  suppressWarnings(rm(
+    list = SqlRender::snakeCaseToCamelCase(envir$dataModelSpecifications$tableName),
+    envir = envir
+  ))
+
+  envir$database <- loadResultsTable(envir$dataSource, envir$dataSource$databaseTableName, required = TRUE)
+  envir$cohort <- loadResultsTable(envir$dataSource, envir$dataSource$cohortTableName, required = TRUE)
+  envir$metadata <- loadResultsTable(envir$dataSource, "metadata", required = TRUE, tablePrefix = envir$dataSource$tablePrefix)
+  envir$temporalTimeRef <- loadResultsTable(envir$dataSource, "temporal_time_ref", tablePrefix = envir$dataSource$tablePrefix)
+  envir$temporalAnalysisRef <- loadResultsTable(envir$dataSource, "temporal_analysis_ref", tablePrefix = envir$dataSource$tablePrefix)
+  envir$conceptSets <- loadResultsTable(envir$dataSource, "concept_sets", tablePrefix = envir$dataSource$tablePrefix)
+  envir$cohortCount <- loadResultsTable(envir$dataSource, "cohort_count", required = TRUE, tablePrefix = envir$dataSource$tablePrefix)
+  envir$relationship <- loadResultsTable(envir$dataSource, "relationship", tablePrefix = envir$dataSource$tablePrefix)
+
+
+  if (is.numeric(envir$database$databaseId)) {
+    envir$metadata$databaseId <- as.numeric(envir$metadata$databaseId)
+  }
+
+  if (!is.null(envir$cohort)) {
+    if ("cohortDefinitionId" %in% names(envir$cohort)) {
+      envir$cohort <- envir$cohort %>% dplyr::mutate(cohortId = .data$cohortDefinitionId)
+
+      ## Note this is because the tables were labled wrong!
+      envir$cohort <- envir$cohort %>% dplyr::mutate(cohortId = .data$cohortDefinitionId,
+                                                     sql = .data$json,
+                                                     json = .data$sqlCommand)
+    }
+
+    envir$cohort <- envir$cohort %>%
+      dplyr::arrange(.data$cohortId) %>%
+      dplyr::mutate(shortName = paste0("C", .data$cohortId)) %>%
+      dplyr::mutate(compoundName = paste0(.data$shortName, ": ", .data$cohortName))
+  }
+
+  if (!is.null(envir$database)) {
+    if (nrow(envir$database) > 0 &
+      "vocabularyVersion" %in% colnames(envir$database)) {
+      envir$database <- envir$database %>%
+        dplyr::mutate(
+          databaseIdWithVocabularyVersion = paste0(.data$databaseId, " (", .data$vocabularyVersion, ")")
         )
     }
+
+    envir$databaseMetadata <- processMetadata(envir$metadata)
+    envir$databaseMetadata <- envir$database %>%
+      dplyr::distinct() %>%
+      dplyr::mutate(id = dplyr::row_number()) %>%
+      dplyr::mutate(shortName = paste0("D", .data$id)) %>%
+      dplyr::left_join(envir$databaseMetadata,
+                       by = "databaseId"
+      ) %>%
+      dplyr::relocate(.data$id, .data$databaseId, .data$shortName)
+
+
+    if ("databaseName" %in% names(envir$database)) {
+      envir$dbMapping <- envir$database %>%
+        dplyr::select(.data$databaseId, .data$databaseName) %>%
+        dplyr::distinct()
+    } else {
+      envir$dbMapping <- envir$database %>%
+        dplyr::select(.data$databaseId, .data$cdmSourceName) %>%
+        dplyr::distinct() %>%
+        dplyr::mutate(databaseName = .data$cdmSourceName)
+    }
   }
-  if (!is.null(conceptMetadata$concept)) {
-    data <- data %>%
-      dplyr::inner_join(
-        conceptMetadata$concept %>%
-          dplyr::select(
-            .data$conceptId,
-            .data$conceptName,
-            .data$vocabularyId,
-            .data$domainId,
-            .data$standardConcept
-          ),
-        by = c("conceptId")
-      ) %>% 
-      dplyr::relocate(.data$conceptId,
-                      .data$conceptName,
-                      .data$vocabularyId,
-                      .data$domainId,
-                      .data$standardConcept) %>% 
-      dplyr::rename("standard" = .data$standardConcept)
+
+  envir$temporalChoices <- NULL
+  envir$temporalCharacterizationTimeIdChoices <- NULL
+
+  if (!is.null(envir$temporalTimeRef)) {
+    envir$temporalChoices <- getResultsTemporalTimeRef(dataSource = envir$dataSource)
+    envir$temporalCharacterizationTimeIdChoices <- envir$temporalChoices %>%
+      dplyr::arrange(.data$sequence)
+
+    envir$characterizationTimeIdChoices <- envir$temporalChoices %>%
+      dplyr::filter(.data$isTemporal == 0) %>%
+      dplyr::filter(.data$primaryTimeId == 1) %>%
+      dplyr::arrange(.data$sequence)
   }
-  if (!is.null(conceptMetadata$databaseCount)) {
-    attr(x = data, which = "databaseCount") <-
-      conceptMetadata$databaseCount
+
+  if (!is.null(envir$temporalAnalysisRef)) {
+    envir$temporalAnalysisRef <- dplyr::bind_rows(
+      envir$temporalAnalysisRef,
+      dplyr::tibble(
+        analysisId = c(-201, -301),
+        analysisName = c("CohortEraStart", "CohortEraOverlap"),
+        domainId = "Cohort",
+        isBinary = "Y",
+        missingMeansZero = "Y"
+      )
+    )
+
+    envir$domainIdOptions <- envir$temporalAnalysisRef %>%
+      dplyr::select(.data$domainId) %>%
+      dplyr::pull(.data$domainId) %>%
+      unique() %>%
+      sort()
+    envir$analysisNameOptions <- envir$temporalAnalysisRef %>%
+      dplyr::select(.data$analysisName) %>%
+      dplyr::pull(.data$analysisName) %>%
+      unique() %>%
+      sort()
   }
-  if ('records' %in% colnames(data)) {
-    data <- data %>%
-      dplyr::arrange(dplyr::desc(abs(.data$records)))
+  
+  if (!is.null(envir$conceptSets)) {
+    envir$conceptSets <- envir$conceptSets %>% 
+      dplyr::mutate(compositeConceptSetName = paste0("C",
+                                                     .data$cohortId,
+                                                     ": ", 
+                                                     .data$conceptSetName,
+                                                     " (",
+                                                     .data$conceptSetId,
+                                                     ")")) %>% 
+      dplyr::arrange(.data$cohortId,
+                     .data$conceptSetName,
+                     .data$conceptSetId)
+  }
+
+  envir$resultsTables <- tolower(DatabaseConnector::dbListTables(dataSource$connection,
+                                                                 schema = dataSource$resultsDatabaseSchema))
+  envir$enabledTabs <- c()
+  for (table in envir$dataModelSpecifications$tableName %>% unique()) {
+    if (envir$dataSource$prefixTable(table) %in% envir$resultsTables) {
+      if (!tableIsEmpty(envir$dataSource, envir$dataSource$prefixTable(table))) {
+        envir$enabledTabs <- c(envir$enabledTabs, SqlRender::snakeCaseToCamelCase(table))
+      }
+    }
+  }
+
+  if (!(envir$dataSource$cohortTableName %in% envir$resultsTables & envir$dataSource$databaseTableName %in% envir$resultsTables)) {
+    stop(paste("cohort table:", envir$dataSource$cohortTableName, "and database table:", envir$dataSource$databaseTableName, "must be in results schema"))
+  }
+
+  envir$enabledTabs <- c(envir$enabledTabs, "database", "cohort")
+
+  envir$prettyTable1Specifications <- readr::read_csv(
+    file = table1SpecPath,
+    col_types = readr::cols(),
+    guess_max = min(1e7),
+    lazy = FALSE
+  )
+
+  envir$analysisIdInCohortCharacterization <- c(
+    1, 3, 4, 5, 6, 7,
+    203, 403, 501, 703,
+    801, 901, 903, 904,
+    -301, -201
+  )
+
+  envir$analysisIdInTemporalCharacterization <- c(
+    101, 401, 501, 701,
+    -301, -201
+  )
+
+  if (envir$enableAnnotation &
+    "annotation" %in% envir$resultsTables &
+    "annotation_link" %in% envir$resultsTables &
+    "annotation_attributes" %in% envir$resultsTables) {
+    envir$showAnnotation <- TRUE
+    envir$enableAnnotation <- TRUE
   } else {
-    data$records <- as.integer(NA)
+    envir$enableAnnotation <- FALSE
+    envir$showAnnotation <- FALSE
+    envir$enableAuthorization <- FALSE
   }
-  if (!'persons' %in% colnames(data)) {
-    data$persons <- as.integer(NA)
-  }
-  data <- data %>%
-    dplyr::mutate(dplyr::across(.cols = dplyr::contains("ount"),
-                                .fns = ~ tidyr::replace_na(.x, 0))) %>% 
-    dplyr::distinct()
-  return(data)
-}
 
-
-getMaxValueForStringMatchedColumnsInDataFrame <- function(data, string) {
-  data %>% 
-    dplyr::summarise(dplyr::across(dplyr::contains(string), ~ max(.x, na.rm = TRUE))) %>% 
-    tidyr::pivot_longer(values_to = "value", cols = dplyr::everything()) %>% 
-    dplyr::pull() %>% 
-    max(na.rm = TRUE)
+  return(envir)
 }
