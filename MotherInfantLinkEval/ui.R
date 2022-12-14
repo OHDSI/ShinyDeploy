@@ -6,7 +6,7 @@ library(DT)
 shinyUI(
   fluidPage(
 
-    titlePanel(title = "Mother-infant linkage algorithm evaluation"),
+    titlePanel(title = "Development and evaluation of an algorithm to link mothers and infants in two US commercial healthcare claims databases for pharmacoepidemiology research"),
 
     tabsetPanel(id = "main",
       tabPanel(title = "About",
