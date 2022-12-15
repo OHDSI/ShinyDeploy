@@ -6,12 +6,12 @@ library(DT)
 shinyUI(
   fluidPage(
 
-    titlePanel(title = "Development and evaluation of an algorithm to link mothers and infants in two US commercial healthcare claims databases for pharmacoepidemiology research"),
+    titlePanel(title = "Mother-infant linkage algorithm evaluation for pharmacoepidemiology research"),
 
     tabsetPanel(id = "main",
       tabPanel(title = "About",
         HTML("<br/>"),
-        div(p("This research developed and evaluated an algorithm to link mothers and infants in two observational US administrative databases to facilitate research on prenatal medication exposure and infant health outcomes."), style = "border: 1px solid black; padding: 5px;"),
+        div(p("This research developed and evaluated an algorithm to link mothers and infants in two US commercial healthcare databases to facilitate safety research on prenatal medication exposure and infant health outcomes."), style = "border: 1px solid black; padding: 5px;"),
         HTML("<br/>"),
         HTML("<p><strong>Abstract: </strong></p>"),
         HTML("<p><strong>Background: </strong>Administrative healthcare claims databases are used in drug safety research but are limited for investigating the impacts of prenatal exposures on neonatal and pediatric outcomes without mother-infant pair identification.</p>"),
@@ -20,13 +20,10 @@ shinyUI(
         HTML("<p><strong>Results: </strong>The algorithm linked 3,477,960 mothers to 4,160,284 infants in the two databases. Linked mothers and linked infants comprised 73.6% of all mothers and 49.1% of all-infants, respectively. 94.9% of linked infants’ dates of birth were within ±30-days of the associated mother’s pregnancy episode end dates. Linked mothers were older, had longer pregnancy episodes, and had greater post-pregnancy observation time than mothers with live births who did not meet linkage algorithm criteria. Linked infants had less observation time and greater healthcare utilization than non-linked infants. Other characteristics were similar in linked vs non-linked mothers and infants.</p>"),
         HTML("<p><strong>Conclusion: </strong>We developed a mother-infant linkage algorithm and applied it to two US commercial healthcare claims databases that achieved a high linkage proportion and demonstrated that linked and non-linked mother and infant cohorts were similar. Transparent, reusable algorithms applied to large databases enables large-scale research on exposures during pregnancy and pediatric outcomes with relevance to drug safety. These features suggest that prenatal exposure causal risk assessment that uses this algorithm can produce valid and generalizable evidence to inform clinical, policy, and regulatory decisions.</p>"),
         HTML("<p><strong>Key findings:</strong></p>"),
-        HTML("<li>This study establishes reliable mother-infant links in two US commercial healthcare databases to facilitate research on prenatal exposures and infant health outcomes</li>"),
-        HTML("<li>Linked mothers with live births comprise 73.6% of all mothers with live births and linked infants comprise 49.1% of all infants</li>"),
-        HTML("<li>Linked vs. non-linked mother and infant cohorts have similar demographic and clinical profiles</li>"),
-        HTML("<li>Substantial linked coverage and linked vs non-linked characteristic similarity suggests that prenatal exposure causal risk assessment using the linked cohorts will produce valid and generalizable evidence</li>"),
-        HTML("<li>This study created large mother-infant linked cohorts to enable research on rare exposures and outcomes available in healthcare claims databases</li>"),
-        HTML("<li>Linked mother and infant coverage is similar to that reported in previous linkage studies</li>"),
-        HTML("<li>Descriptive comparisons between linked vs. non-linked mother and infant cohorts increases confidence that results from research on linked cohorts also apply to mother and infant populations that do not meet linkage algorithm criteria</li>"),
+        HTML("<li>This study was conducted to establish mother-infant links in US healthcare databases to facilitate research on prenatal exposures and infant health outcomes</li>"),
+        HTML("<li>We found that linked mothers with live births comprise 73.6% of all mothers with live births and linked infants comprise 49.1% of all infants</li>"),
+        HTML("<li>We also found that linked vs. non-linked mothers and infants have similar demographic and clinical profiles</li>"),
+        HTML("<li>Substantial linked coverage and linked vs non-linked characteristic similarity suggests prenatal exposure causal risk assessment using linked cohorts will produce valid and generalizable evidence</li>"),
         HTML("<li>This mother-infant linkage algorithm is publicly available and easily implemented in databases converted to a common data model</li>"),
         HTML("<br/>"),
         HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
