@@ -11,10 +11,10 @@ connectionDetailsSecureKey: ~
 # Note - if dbms and port vars are unset in environment variables they will default to above connectionDetails settings
 connectionEnvironmentVariables:
   dbms: ~
-  database: "shinydbDatabase"
-  server: "shinydbServer"
-  user: "shinydbUser"
-  password: "shinydbPW"
+  database: "phenotypeLibrarydb"
+  server: "phenotypeLibraryServer"
+  user: "phenotypeLibrarydbUser"
+  password: "phenotypeLibrarydbPw"
   port: "shinydbPort"
   extraSettings: ~
 
