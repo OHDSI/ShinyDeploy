@@ -32,3 +32,5 @@ enableAuthorization: TRUE
 ### store in external file called UserCredentials.csv - with fields userId, hashCode
 ### place the file in the root folder
 userCredentialsFile: UserCredentials.csv
+
+## restart
