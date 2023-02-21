@@ -26,33 +26,31 @@ shinyUI(
         div(p("UNDER DEVELOPMENT - DO NOT USE OR REPORT"), style="border: 1px solid black; padding: 5px;"),
         HTML("<br/>"),
         HTML("<p><strong>Abstract: </strong></p>"),
-        HTML("<p><strong>Background: </strong>BACKGROUND</p>"),
-  		  HTML("<p><strong>Objective: </strong>OBJECTIVE</p>"),
+        HTML("<p><strong>Background: </strong>Outcome misclassification is acknowledged but rarely corrected for in drug safety causal inference studies using observational data. Quantitative bias analysis (QBA) is a method for outcome misclassification correction, but its performance characteristics have not been systematically evaluated in pharmacovigilance applications across distributed database networks.</p>"),
+  		  HTML("<p><strong>Objective: </strong>To evaluate the performance associated with the use of 2 types of QBA for outcome misclassification correction across a distributed database network.</p>"),
   		  HTML("<p><strong>Methods: </strong>METHODS</p>"),
   		  HTML("<p><strong>Results: </strong>RESULTS</p>"),
   		  HTML("<p><strong>Discussion: </strong>DISCUSSION</p>"),
         HTML("<p><strong>Key points:</strong></p>"),
-        HTML("<li>POINT 1.</li>"),
-        HTML("<li>POINT 2.</li>"),
-        HTML("<li>POINT 3.</li>"),
+        HTML("<li>Point 1.</li>"),
+        HTML("<li>Point 2.</li>"),
+        HTML("<li>Point 3.</li>"),
         HTML("<br/>"),
         HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
         HTML("<ul>"),
         HTML("<li>The full manuscript is available at: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
         HTML("<li>The study was registered at XXX: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
-        HTML("<li>The full study protocol is available at: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
-        
-  		  HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/QbaEvaluation/\">https://github.com/ohdsi-studies/QbaEvaluation/</a></li>"),
-  		  
+        HTML("<li>The full study protocol is available at: <a href=\"https://ohdsi-studies.github.io/QbaEvaluation/protocol.html\">https://ohdsi-studies.github.io/QbaEvaluation/protocol.html</a></li>"),
+        HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/QbaEvaluation/\">https://github.com/ohdsi-studies/QbaEvaluation/</a></li>"),
         HTML("</ul>")),
     tabPanel("Simple QBA",
       fluidRow(
         column(3,
-          selectInput("target", "Target", unique(exposureOfInterest$exposureName)[1], selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName)[c(2,3)], selected = unique(exposureOfInterest$exposureName)[3]),
-          selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)),
+          selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
+          selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
+          selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
           checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[1]),
-          checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[7:12])),
+          checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[13:18])),
         column(9,
           dataTableOutput("mainTable"),
           conditionalPanel(condition = "output.rowIsSelected == false",
@@ -62,7 +60,7 @@ shinyUI(
                         tabPanel("Validation",
                                  uiOutput("validationTableCaption"),
                                  tableOutput("validationTable")))),
-                     
+
           conditionalPanel(condition = "output.rowIsSelected == true",
             tabsetPanel(id = "detailsTabsetPanel",
                         tabPanel("Counts table",
@@ -98,9 +96,9 @@ shinyUI(
     tabPanel("Non-differential multidimensional QBA",
       fluidRow(
         column(3,
-          selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName)[1], selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName)[c(2,3)], selected = unique(exposureOfInterest$exposureName)[3]),
-          selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)),
+          selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
+          selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
+          selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
           selectInput("mdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
           selectInput("mdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
           sliderInput("sens", "Sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
@@ -115,19 +113,21 @@ shinyUI(
           plotOutput("mdForestPlot", width = 600, height = 200)
         )
       )
-    )#,
-    # tabPanel("Simulation",
-    #   fluidRow(
-    #     column(3,
-    #       selectInput("incidence", "Incidence proportion", unique(correctedOrs$incidence), selected = unique(correctedOrs$incidence)[1])#,
-    #       #selectInput("or", "Observed odds ratio", unique(correctedOrs$or), selected = unique(correctedOrs$or)[1]),
-    #       ),
-    #    column(9,
-    #       uiOutput("contourPlotCaption"),
-    #       plotOutput("contourPlot")
-    #    )
-    #  )
-    # )
+    ),
+    tabPanel("Grid space simulation",
+      fluidRow(
+        column(3,
+          selectInput("incidence", "Incidence proportion", unique(gridSpaceResults$incidence), selected = unique(gridSpaceResults$incidence)[1]),
+          selectInput("or", "Observed odds ratio", unique(gridSpaceResults$or), selected = unique(gridSpaceResults$or)[1])
+          ),
+       column(9,
+          uiOutput("contourPlotCaption"),
+          plotOutput("contourPlot"),
+          uiOutput("contourResultCaption"),
+          tableOutput("contourResults")
+       )
+      )
+    )
   )
 )
 )

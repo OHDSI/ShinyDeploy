@@ -177,9 +177,10 @@ getPropensityModel <- function(connection,
   return(model)
 }
 
-getContourPlotData <- function(connection,
-                               incidence) {
-                               #or) {
-  cData <- correctedOrs[correctedOrs$incidence == incidence, ]
-  return(cData)
+getContourData <- function(connection,
+                           contourData,
+                           incidence,
+                           or) {
+  result <- contourData[contourData$incidence %in% incidence & contourData$or %in% or, ]
+  return(result)
 }

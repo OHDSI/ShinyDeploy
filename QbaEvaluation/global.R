@@ -1,8 +1,8 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
-#shinySettings <- list(dataFolder = "G:/OutcomeMisclassificationEval/mergedShinyDataFolder")
-shinySettings <- list(dataFolder = "./data")
+shinySettings <- list(dataFolder = "G:/OutcomeMisclassificationEval/mergedShinyDataFolder")
+#shinySettings <- list(dataFolder = "./data")
 dataFolder <- shinySettings$dataFolder
 connection <- NULL
 
@@ -45,5 +45,7 @@ dummy <- lapply(files[grepl(removePart, files)], loadFile, removePart)
 
 tcos <- unique(cohortMethodResult[, c("targetId", "comparatorId", "outcomeId")])
 tcos <- tcos[tcos$outcomeId %in% outcomeOfInterest$outcomeId, ]
+
+gridSpaceResults <- readRDS(file.path(dataFolder, "grid_space_results.rds"))
 
 source("DataClean.R")

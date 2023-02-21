@@ -580,26 +580,10 @@ drawAttritionDiagram <- function(attrition,
   return(p)
 }
 
-judgeEffectiveness <- function(hrLower, hrUpper) {
-  nonZeroHazardRatio(hrLower, hrUpper, c("less", "more", "as"))
-}
-
 prettyHr <- function(x) {
   result <- sprintf("%.2f", x)
   result[is.na(x) | x > 100] <- "NA"
   return(result)
-}
-
-uncapitalize <- function(x) {
-  if (is.character(x)) {
-    substr(x, 1, 1) <- tolower(substr(x, 1, 1))
-  }
-  x
-}
-
-capitalize <- function(x) {
-  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
-  x
 }
 
 preparePropensityModelTable <- function(model) {
@@ -686,30 +670,84 @@ plotMdForest <- function(results) {
                    legend.position = "none")
 }
 
-plotContourPlot <- function(cData) {
-  if (nrow(cData) == 0) {
-    contourPlot <- NULL
-  }
-  breaks <- as.numeric(quantile(cData$correctedOr,
+drawContourPlot <- function(dat) {    
+  
+  #dat <- gridSpaceResults[gridSpaceResults$incidence == 1e-03 & gridSpaceResults$or == 1.001, ]  # 1e-02 1e-03 1e-04 1e-05
+  
+  incidence <- unique(dat$incidence)
+  minSens <- min(dat$sens)
+  maxSens <- max(dat$sens)
+  minSpec <- min(dat$spec)
+  maxSpec <- max(dat$spec)
+  breaks <- as.numeric(quantile(dat$correctedOr,
                                 na.rm = TRUE,
                                 type = 3))
-  pointData <- cData[cData$correctedOr %in% breaks, c("correctedOr", "sens", "spec")]
-  pointData$text <- sprintf("OR=%.2f", pointData$correctedOr)
   
-  contourPlot <- ggplot2::ggplot(data = cData, ggplot2::aes(x = sens, y = spec, z = correctedOr)) +
-    ggplot2::geom_contour(#ggplot2::aes(colour = ..level..),
-                          breaks = breaks) +
-    ggplot2::geom_point(data = pointData[c(1, nrow(pointData)), ]) +
+  #if (length(unique(breaks)) == 1) {
+    
+    # pointData <- dat[dat$correctedOr %in% breaks, c("or", "correctedOr", "sens", "spec")] 
+    # pointData <- pointData[pointData$sens == 1 & pointData$spec == 1, ]
+    # pointData$text <- sprintf("OR=%.3f", pointData$correctedOr)
+    
+    pointData <- dat[dat$correctedOr %in% breaks, c("or", "correctedOr", "sens", "spec")] %>%
+      dplyr::group_by(or, correctedOr) %>%
+      dplyr::summarize(#rows = dplyr::n(),
+        n = nrow(dat),
+        valid = sum(!is.na(dat$correctedOr)), 
+        estimable = valid / n,
+        nonEstimable = 1 - estimable,
+        sens = mean(sens),
+        spec = mean(spec),
+        .groups = "drop") %>% # avg sens and spec by corrected OR if >1 row per corrected OR (doesnt happen)
+      dplyr::mutate(incidence = incidence,
+                    orText = sprintf("OR=%.3f", correctedOr),
+                    biasDifference = round(log(or) - log(correctedOr), 3),
+                    relativeBias = round((or - correctedOr) / or), 3) %>%
+      dplyr::bind_cols(dist = c("min", "25%ile", "50%ile", "75%ile", "max")) %>%
+      dplyr::select(n, valid, estimable, nonEstimable, incidence, or, correctedOr, dist, orText, sens, spec, biasDifference, relativeBias)
+    
+  #} else {
+    
+  #   pointData <- dat[dat$correctedOr %in% breaks, c("or", "correctedOr", "sens", "spec")] %>%
+  #     dplyr::group_by(or, correctedOr) %>%
+  #     dplyr::summarize(#rows = dplyr::n(),
+  #                      n = nrow(dat),
+  #                      valid = sum(!is.na(dat$correctedOr)), 
+  #                      estimable = valid / n,
+  #                      nonEstimable = 1 - estimable,
+  #                      sens = mean(sens),
+  #                      spec = mean(spec),
+  #                      .groups = "drop") %>% # avg sens and spec by corrected OR if >1 row per corrected OR (doesnt happen)
+  #     dplyr::mutate(orText = sprintf("OR=%.3f", correctedOr),
+  #                   biasDifference = round(log(or) - log(correctedOr), 3),
+  #                   relativeBias = round((or - correctedOr) / or), 3) %>%
+  #     dplyr::bind_cols(dist = c("min", "25%ile", "50%ile", "75%ile", "max")) %>%
+  #     dplyr::select(n, valid, estimable, nonEstimable, or, correctedOr, dist, orText, sens, spec, biasDifference, relativeBias)
+  # }
+  
+  contourPlot <- ggplot2::ggplot(data = dat,
+                                 mapping = ggplot2::aes(x = sens,
+                                                        y = spec,
+                                                        z = correctedOr)) +
+    ggplot2::geom_contour(breaks = breaks) +
+    ggplot2::geom_point(data = pointData) +
     ggplot2::geom_text(data = pointData,
-                       ggplot2::aes(label = text),
+                       ggplot2::aes(label = orText),
                        size = 3,
                        vjust = 1.25) +
-    ggplot2::scale_colour_gradient(guide = 'none') +
-    ggplot2::xlab("Sensitivity") +
-    ggplot2::ylab("Specificity") +
-    ggplot2::facet_wrap(~ or, nrow = 1)
-  return(contourPlot)
+    
+    
+    ggplot2::scale_shape_manual(values = 21:25) +
+    ggplot2::coord_cartesian(xlim = c(0 - 0.1, 1 + 0.1),
+                             ylim = c(minSpec - (minSpec * incidence * 0.05), maxSpec), expand = TRUE) +
+    ggplot2::scale_x_continuous(breaks = seq(0, 1, 0.2), expand = c(0,0)) +
+    ggplot2::scale_colour_gradient(guide = "none")
+  
+  return(list(contourPlot, pointData))
 }
+
+
+
 
 
 
