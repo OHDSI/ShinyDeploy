@@ -625,22 +625,24 @@ shinyServer(function(input, output, session) {
     return(psDistPlot())
   })
   
-  # contour plots ==============================================================
+  # contour plot ==============================================================
   output$contourPlotCaption <- renderUI({
-    text <- "<strong>Contour plot.</strong> DESCRIBE PLOT HERE."
+    text <- "<strong>Contour plot.</strong> QBA-corrected odds ratio distribution across values of sensitivity and specificity. The data point where sensitivity = specificity = 1 represents to observed odds ration which is subjcet to phenptype error. Blue lines with associated data points display the QBA-corrected odds ration contour for the 25%ile, 50%ile, and 75%ile of the distribution."
     return(HTML(text))
   })
   
   contourPlotData <- reactive({
-    cData <- getContourPlotData(incidence = input$incidence)
-                                #or = input$or)
-    return(cData)
+    contourData <- getContourData(connection = connection,
+                                  contourData = gridSpaceResults,
+                                  incidence = input$incidence,
+                                  or = input$or)
+    return(contourData)
   })
   
   contourPlot <- reactive({
-    cData <- contourPlotData()
-    plot <- plotContourPlot(cData)
-    return(plot)
+    contourData <- contourPlotData()
+    plot <- drawContourPlot(contourData)
+    return(plot[[1]])
   })
   
   output$contourPlot <- renderPlot({
@@ -648,9 +650,20 @@ shinyServer(function(input, output, session) {
   }, res = 100)
   
   
+  output$contourResultCaption <- renderUI({
+    text <- "<strong>Contour Results</strong> DESCRIBE COLUMNS"
+    return(HTML(text))
+  })
   
+  contourResults <- reactive({
+    contourData <- contourPlotData()
+    table <- drawContourPlot(contourData)[[2]]
+    return(table)
+  })
   
-  
+  output$contourResults <- renderTable({
+    return(contourResults())
+  })
   
   
 })
