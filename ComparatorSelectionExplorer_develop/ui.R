@@ -16,25 +16,24 @@ shinyUI(fluidPage(
   titlePanel(
     title = "Comparator Selection Explorer",
     windowTitle = "Comparator Selection Explorer"),
-  p("Authors: Justin Bohn, James P. Gilbert, Christopher Knoll, Patrick B. Ryan, David M. Kern"),
   p("Janssen Research & Development"),
   # sidebar with option for target cohort selection
 
   tabsetPanel(
     type = "pills",
     tabPanel(
-      title = "Tool",
-
+      title = "App",
       sidebarLayout(
         sidebarPanel(
           h4(strong("Settings")),
           shiny::selectizeInput(
+            inputId = "selectedDatabase",
+            choices = NULL,
+            label = "Select target data source:"),
+          shiny::selectizeInput(
             inputId = "selectedExposure",
             choices = NULL,
             label = "Select target exposure:"),
-          shiny::checkboxInput("limitTo1000",
-                               label = "Limit to exposure of 1000 or more subjects",
-                               value = TRUE),
           shiny::selectInput(inputId = "selectedComparatorTypes",
                              label = "Select comparator type(s):",
                              choices = c("RxNorm Ingredients", "ATC Classes"),
@@ -65,7 +64,8 @@ shinyUI(fluidPage(
 
         # display table
         mainPanel(
-          h3(strong("Comparator listing")),
+          h3("Comparator listing"),
+          shiny::textOutput("selectedCohortInfo"),
           p("Select comparator to view covariate distributions"),
           shinycssloaders::withSpinner(reactable::reactableOutput("cosineSimilarityTbl")),
 
@@ -99,8 +99,15 @@ shinyUI(fluidPage(
       title = "About",
       shiny::fluidRow(
         shiny::column(
-          width = 8,
-          shiny::htmlTemplate("about.html")
+          width = 12,
+          h3("Description"),
+          shiny::htmlTemplate("about.html"),
+          h3("Currently Available Data Sources"),
+          shinycssloaders::withSpinner(
+            reactable::reactableOutput("dataSources")
+          ),
+          h3("License"),
+          shiny::htmlTemplate("license.html"),
         )
       )
     )
