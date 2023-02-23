@@ -180,22 +180,36 @@ shinyServer(function(input, output, session) {
       resultsData <- renderTranslateQuerySql(
         connection = conn,
         sql = "
-            select
-               t.cohort_definition_id_2,
-               cd2.atc_flag as is_atc_2,
-               cd2.short_name,
+            select distinct
+               CASE
+                  WHEN t.cohort_definition_id_1 = @targetCohortId THEN t.cohort_definition_id_2
+                  ELSE t.cohort_definition_id_1
+               END as cohort_definition_id_2,
+
+               CASE
+                  WHEN t.cohort_definition_id_1 = @targetCohortId THEN cd2.atc_flag
+                  ELSE cd.atc_flag
+               END as is_atc_2,
+
+               CASE
+                  WHEN t.cohort_definition_id_1 = @targetCohortId THEN cd2.short_name
+                  ELSE cd.short_name
+               END as short_name,
                cosine_similarity,
                atc.atc_4_related,
                atc.atc_3_related,
-               ec.num_persons,
+               CASE
+                  WHEN t.cohort_definition_id_1 = @targetCohortId THEN ec.num_persons
+                  ELSE ec2.num_persons
+               END as num_persons,
                t.covariate_type
              from @schema.@table_prefix@table t
              inner join @schema.@table_prefixcohort_count ec ON ec.cohort_definition_id = t.cohort_definition_id_2 and ec.database_id = t.database_id
+             inner join @schema.@table_prefixcohort_count ec2 ON ec2.cohort_definition_id = t.cohort_definition_id_1 and ec2.database_id = t.database_id
+             inner join @schema.@table_prefixcohort_definition cd ON cd.cohort_definition_id = t.cohort_definition_id_1
              inner join @schema.@table_prefixcohort_definition cd2 ON cd2.cohort_definition_id = t.cohort_definition_id_2
-
-             left join @schema.@table_prefixatc_level atc on t.cohort_definition_id_1 = atc.cohort_definition_id_1 and t.cohort_definition_id_2 = atc.cohort_definition_id_2
-             where t.cohort_definition_id_1 = @targetCohortId
-             and cd2.atc_flag in (@atc)
+             left join @schema.@table_prefixatc_level atc on (t.cohort_definition_id_1 = atc.cohort_definition_id_1 and t.cohort_definition_id_2 = atc.cohort_definition_id_2) or (t.cohort_definition_id_2 = atc.cohort_definition_id_1 and t.cohort_definition_id_1 = atc.cohort_definition_id_2)
+             where (t.cohort_definition_id_1 = @targetCohortId or t.cohort_definition_id_2 = @targetCohortId)
              and t.database_id = @database_id
            ",
         dbms = connectionDetails$dbms,
@@ -204,11 +218,11 @@ shinyServer(function(input, output, session) {
         table = "cosine_similarity_score",
         snakeCaseToCamelCase = TRUE,
         targetCohortId = targetCohortId,
-        database_id = databaseSelection(),
-        atc = atcSelection)
+        database_id = databaseSelection())
     }, message = "Loading similarity scores", value = 0.5)
 
     resultsData %>%
+      dplyr::filter(.data$isAtc2 %in% atcSelection) %>%
       tidyr::pivot_wider(names_from = covariateType,
                          values_from = cosineSimilarity) %>%
       dplyr::rename(cosineSimAll = average,
@@ -217,7 +231,6 @@ shinyServer(function(input, output, session) {
                     cosineSimMhist = "Medical history",
                     cosineSimPmeds = "prior meds",
                     cosineSimVisit = "visit context")
-
   })
 
   # displays target name and counts
