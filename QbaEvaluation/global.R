@@ -1,6 +1,9 @@
 source("DataPulls.R")
 source("PlotsAndTables.R")
 
+library(scales)
+library(magrittr)
+
 #shinySettings <- list(dataFolder = "G:/OutcomeMisclassificationEval/mergedShinyDataFolder")
 shinySettings <- list(dataFolder = "./data")
 dataFolder <- shinySettings$dataFolder

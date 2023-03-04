@@ -17,7 +17,8 @@ shinyUI(
          color: #000000;
          background-color: #ADD8E6;
          z-index: 105;
-      }")),
+      }")
+    ),
     conditionalPanel(condition = "$('html').hasClass('shiny-busy')",
                      tags$div("Procesing...",id = "loadmessage")),
     tabsetPanel(id = "mainTabsetPanel",
@@ -42,79 +43,106 @@ shinyUI(
         HTML("<li>The study was registered at XXX: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
         HTML("<li>The full study protocol is available at: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
         HTML("<li>The full source code for the study is available at: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
-        HTML("</ul>")),
-    tabPanel("Simple QBA",
-      fluidRow(
-        column(3,
-          selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
-          selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
-          checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[1]),
-          checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)),
-        column(9,
-          dataTableOutput("mainTable"),
-          conditionalPanel(condition = "output.rowIsSelected == false",
-            tabsetPanel(id = "forestPlotTabsetPanel",
-                        tabPanel("ForestPlot",
-                        plotOutput("forestPlot", height = 300)),
-                        tabPanel("Validation",
-                                 uiOutput("validationTableCaption"),
-                                 tableOutput("validationTable")))),
-                     
-          conditionalPanel(condition = "output.rowIsSelected == true",
-            tabsetPanel(id = "detailsTabsetPanel",
-                        tabPanel("Counts table",
-                                 uiOutput("countsTableCaption"),
-                                 tableOutput("countsTable"),
-                                 tableOutput("powerTable")),
-                        tabPanel("Attrition",
-                                 uiOutput("attritionPlotCaption"),
-                                 plotOutput("attritionPlot", width = 600, height = 600),
-                                 div(style = "display: inline-block;vertical-align:top;")),
-                        tabPanel("Population characteristics",
-                                 uiOutput("table1Caption"),
-                                 radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
-                                 dataTableOutput("table1Table")),
-                        tabPanel("Propensity model",
-                                 div(strong("Table 3."), "Fitted propensity model"),
-                                 dataTableOutput("propensityModelTable")),
-                        tabPanel("Propensity scores",
-                                 plotOutput("psDistPlot"),
-                                 div(strong("Figure 2."), "Preference score distribution"),
-                                 div(style = "display: inline-block;vertical-align:top;")),
-                        tabPanel("Covariate balance",
-                                 uiOutput("hoverInfoBalanceScatter"),
-                                 plotOutput("balancePlot",
-                                             hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
-                                 uiOutput("balancePlotCaption"),
-                                 div(style = "display: inline-block;vertical-align:top;"))
-            )
+        HTML("</ul>")
+  		),
+      tabPanel("Simple QBA",
+        fluidRow(
+          
+          column(3,
+            selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
+            selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
+            selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
+            checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[1]),
+            checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description)),
+          
+          column(9,
+            dataTableOutput("mainTable"),
+            
+            conditionalPanel(condition = "output.rowIsSelected == false",
+              tabsetPanel(id = "forestPlotTabsetPanel",
+                          tabPanel("ForestPlot",
+                          plotOutput("forestPlot", height = 300)),
+                          tabPanel("Validation",
+                                   uiOutput("validationTableCaption"),
+                                   tableOutput("validationTable")))),
+                       
+            conditionalPanel(condition = "output.rowIsSelected == true",
+              tabsetPanel(id = "detailsTabsetPanel",
+                          tabPanel("Counts table",
+                                   uiOutput("countsTableCaption"),
+                                   tableOutput("countsTable"),
+                                   tableOutput("powerTable")),
+                          tabPanel("Attrition",
+                                   uiOutput("attritionPlotCaption"),
+                                   plotOutput("attritionPlot", width = 600, height = 600),
+                                   div(style = "display: inline-block;vertical-align:top;")),
+                          tabPanel("Population characteristics",
+                                   uiOutput("table1Caption"),
+                                   radioButtons("charType", "", c("Pretty", "Raw"), selected = "Pretty", inline = TRUE),
+                                   dataTableOutput("table1Table")),
+                          tabPanel("Propensity model",
+                                   div(strong("Table 3."), "Fitted propensity model"),
+                                   dataTableOutput("propensityModelTable")),
+                          tabPanel("Propensity scores",
+                                   plotOutput("psDistPlot"),
+                                   div(strong("Figure 2."), "Preference score distribution"),
+                                   div(style = "display: inline-block;vertical-align:top;")),
+                          tabPanel("Covariate balance",
+                                   uiOutput("hoverInfoBalanceScatter"),
+                                   plotOutput("balancePlot",
+                                               hover = hoverOpts("plotHoverBalanceScatter", delay = 100, delayType = "debounce")),
+                                   uiOutput("balancePlotCaption"),
+                                   div(style = "display: inline-block;vertical-align:top;"))))
+          )
+        )
+      ),
+      tabPanel("Multidimensional QBA",
+        fluidRow(
+          column(3,
+            selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
+            selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
+            selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
+            selectInput("mdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
+            selectInput("mdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
+            sliderInput("sens", "Sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
+            sliderInput("spec", "Specificity", min = 0, max = 1, value = 1, step = 0.0001)
+          ),
+          column(9,
+            uiOutput("mdCountsTableCaption1"),
+            tableOutput("mdCountsTable1a"),
+            tableOutput("mdCountsTable1b"),
+            uiOutput("mdCountsTableCaption2"),
+            tableOutput("mdCountsTable2a"),
+            tableOutput("mdCountsTable2b"),
+            plotOutput("mdForestPlot", width = 600, height = 200)
+          )
+        )
+      ),
+      tabPanel("Differential multidimensional QBA",
+        fluidRow(
+          column(3,
+            selectInput("dmdTarget", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
+            selectInput("dmdComparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
+            selectInput("dmdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
+            selectInput("dmdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
+            selectInput("dmdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
+            sliderInput("dtSens", "Target sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
+            sliderInput("dtSpec", "Target specificity", min = 0, max = 1, value = 1, step = 0.0001),
+            sliderInput("dcSens", "Comparator sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
+            sliderInput("dcSpec", "Comparator specificity", min = 0, max = 1, value = 1, step = 0.0001)
+          ),
+          column(9,
+            uiOutput("dmdCountsTableCaption1"),
+            tableOutput("dmdCountsTable1a"),
+            tableOutput("dmdCountsTable1b"),
+            uiOutput("dmdCountsTableCaption2"),
+            tableOutput("dmdCountsTable2a"),
+            tableOutput("dmdCountsTable2b"),
+            plotOutput("dmdForestPlot", width = 600, height = 200)
           )
         )
       )
-    ),
-    tabPanel("Multidimensional QBA",
-      fluidRow(
-        column(3,
-          selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
-          selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
-          selectInput("mdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
-          selectInput("mdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
-          sliderInput("sens", "Sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
-          sliderInput("spec", "Specificity", min = 0, max = 1, value = 1, step = 0.0001)),
-        column(9,
-          uiOutput("mdCountsTableCaption1"),
-          tableOutput("mdCountsTable1a"),
-          tableOutput("mdCountsTable1b"),
-          uiOutput("mdCountsTableCaption2"),
-          tableOutput("mdCountsTable2a"),
-          tableOutput("mdCountsTable2b"),
-          plotOutput("mdForestPlot", width = 600, height = 200)
-        )
-      )
-    ),
-    tabPanel("Probabilitistic QBA")
+    )
   )
 )
-)
+

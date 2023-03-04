@@ -577,26 +577,10 @@ drawAttritionDiagram <- function(attrition,
   return(p)
 }
 
-judgeEffectiveness <- function(hrLower, hrUpper) {
-  nonZeroHazardRatio(hrLower, hrUpper, c("less", "more", "as"))
-}
-
 prettyHr <- function(x) {
   result <- sprintf("%.2f", x)
   result[is.na(x) | x > 100] <- "NA"
   return(result)
-}
-
-uncapitalize <- function(x) {
-  if (is.character(x)) {
-    substr(x, 1, 1) <- tolower(substr(x, 1, 1))
-  }
-  x
-}
-
-capitalize <- function(x) {
-  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
-  x
 }
 
 preparePropensityModelTable <- function(model) {

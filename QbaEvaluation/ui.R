@@ -46,9 +46,9 @@ shinyUI(
     tabPanel("Simple QBA",
       fluidRow(
         column(3,
-          selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
-          selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
+          selectInput("target", "Target", exposureOfInterest$exposureName[1]),
+          selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName)[2:3], selected = unique(exposureOfInterest$exposureName)[3]),
+          selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)),
           checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[1]),
           checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description,  selected = cohortMethodAnalysis$description[13:18])),
         column(9,
@@ -94,25 +94,25 @@ shinyUI(
       )
     ),
     tabPanel("Non-differential multidimensional QBA",
-      fluidRow(
-        column(3,
-          selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
-          selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[5]),
-          selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
-          selectInput("mdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
-          selectInput("mdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
-          sliderInput("sens", "Sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
-          sliderInput("spec", "Specificity", min = 0, max = 1, value = 1, step = 0.0001)),
-        column(9,
-          uiOutput("mdCountsTableCaption1"),
-          tableOutput("mdCountsTable1a"),
-          tableOutput("mdCountsTable1b"),
-          uiOutput("mdCountsTableCaption2"),
-          tableOutput("mdCountsTable2a"),
-          tableOutput("mdCountsTable2b"),
-          plotOutput("mdForestPlot", width = 600, height = 200)
-        )
-      )
+             fluidRow(
+               column(3,
+                      selectInput("mdTarget", "Target", unique(exposureOfInterest$exposureName[1])),
+                      selectInput("mdComparator", "Comparator", unique(exposureOfInterest$exposureName)[2:3], selected = unique(exposureOfInterest$exposureName)[3]),
+                      selectInput("mdOutcome", "Outcome", unique(outcomeOfInterest$outcomeName), selected = unique(outcomeOfInterest$outcomeName)[1]),
+                      selectInput("mdDatabase", "Data source", database$databaseId, selected = database$databaseId[1]),
+                      selectInput("mdAnalysis", "Analysis", cohortMethodAnalysis$description[cohortMethodAnalysis$analysisId %in% c(1,3,5,7,9,11)], selected = cohortMethodAnalysis$description[1]),
+                      sliderInput("sens", "Sensitivity", min = 0, max = 1, value = 1, step = 0.0001),
+                      sliderInput("spec", "Specificity", min = 0, max = 1, value = 1, step = 0.0001)),
+               column(9,
+                      uiOutput("mdCountsTableCaption1"),
+                      tableOutput("mdCountsTable1a"),
+                      tableOutput("mdCountsTable1b"),
+                      uiOutput("mdCountsTableCaption2"),
+                      tableOutput("mdCountsTable2a"),
+                      tableOutput("mdCountsTable2b"),
+                      plotOutput("mdForestPlot", width = 600, height = 200)
+               )
+             )
     ),
     tabPanel("Grid space simulation",
       fluidRow(

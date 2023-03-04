@@ -1,4 +1,4 @@
-rm(likelihoodProfile) # save space
+rm(likelihoodProfile, dummy) # save space
 
 
 relabel <- function(df) {
@@ -51,3 +51,6 @@ cohortMethodAnalysis$order <- NULL
 cohortMethodResult$order <- match(cohortMethodResult$analysisDescription, analysisOrder)
 cohortMethodResult <- cohortMethodResult[order(cohortMethodResult$order), ]
 cohortMethodResult$order <- NULL
+
+exposureOfInterest <- exposureOfInterest %>% dplyr::filter(exposureId %in% c(1:3))
+outcomeOfInterest <- outcomeOfInterest %>% dplyr::filter(outcomeId == 4008)

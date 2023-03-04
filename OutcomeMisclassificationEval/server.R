@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
                               outcomeIds = outcomeId,
                               databaseIds = databaseIds,
                               analysisIds = analysisIds)
-    results <- results[order(results$analysisId), ]
+    #results <- results[order(results$analysisId), ]
     return(results)
   })
   
@@ -160,7 +160,7 @@ shinyServer(function(input, output, session) {
   
   output$validationTable <- renderTable({
     return(validationTable())
-  }, digits = 3)
+  }, digits = 7)
   
   output$validationTableCaption <- renderUI({
     row <- selectedRow()
@@ -235,8 +235,8 @@ shinyServer(function(input, output, session) {
       tables <- prepareCountsTable(row, cohortMethodAnalysis)
       mdCountsTable1a <- tables[[1]]
       colnames(mdCountsTable1a) <- c("Target exposures",
-                                   "Comparator exposures",
-                                   "Total")
+                                     "Comparator exposures",
+                                     "Total")
       return(mdCountsTable1a)
   })
   
@@ -384,6 +384,14 @@ shinyServer(function(input, output, session) {
       return(HTML(sprintf(text, input$target, input$comparator)))
     }
   })
+  
+  
+  # dmd counts table ===========================================================
+  
+  
+  # dmd forest plot ============================================================
+  
+  
   
   
   # covariate balance ==========================================================

@@ -1,20 +1,30 @@
 
+analysisOrder <- c(
+  "Unadjusted, 183d",
+  "QBA, 183d",
+  "diff QBA, 183d",
+  "PS matched, 183d",
+  "PS matched, QBA, 183d",
+  "PS matched, diff QBA, 183d",
+  "Unadjusted, 365d",
+  "QBA, 365d",
+  "diff QBA, 365d",
+  "PS matched, 365d",
+  "PS matched, QBA, 365d",
+  "PS matched, diff QBA, 365d",
+  "Unadjusted, 730d",
+  "QBA, 730d",
+  "diff QBA, 730d",
+  "PS matched, 730d",
+  "PS matched, QBA, 730d",
+  "PS matched, diff QBA, 730d"
+)
 
-# outcomeOfInterest$definition <- NULL
-# outcomeOfInterest <- outcomeOfInterest[!duplicated(outcomeOfInterest), ]
-# outcomeOfInterest$outcomeName <- "Severe uterine bleed"
+cohortMethodAnalysis$analysisOrder <- match(cohortMethodAnalysis$description, analysisOrder)
+cohortMethodAnalysis <- cohortMethodAnalysis[order(cohortMethodAnalysis$analysisOrder), ]
+#cohortMethodAnalysis$analysisOrder <- NULL
 
-  
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "QBA, 183d"] <- "Simple QBA, 183d"
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "PS matched, QBA, 183d"] <- "PS matched, simple QBA, 183d"
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "QBA, 365d"] <- "Simple QBA, 365d"
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "PS matched, QBA, 365d"] <- "PS matched, simple QBA, 365d"
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "QBA, 730d"] <- "Simple QBA, 730d"
-cohortMethodAnalysis$description[cohortMethodAnalysis$description == "PS matched, QBA, 730d"] <- "PS matched, simple QBA, 730d"
+cohortMethodResult$analysisOrder <- match(cohortMethodResult$analysisDescription, analysisOrder)
+cohortMethodResult <- cohortMethodResult[order(cohortMethodResult$analysisOrder), ]
 
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "QBA, 183d"] <- "Simple QBA, 183d"
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "PS matched, QBA, 183d"] <- "PS matched, simple QBA, 183d"
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "QBA, 365d"] <- "Simple QBA, 365d"
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "PS matched, QBA, 365d"] <- "PS matched, simple QBA, 365d"
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "QBA, 730d"] <- "Simple QBA, 730d"
-cohortMethodResult$analysisDescription[cohortMethodResult$analysisDescription == "PS matched, QBA, 730d"] <- "PS matched, simple QBA, 730d"
+#cohortMethodResult$analysisOrder <- NULL

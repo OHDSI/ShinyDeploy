@@ -596,20 +596,22 @@ preparePropensityModelTable <- function(model) {
   return(table)
 }
 
+
 plotForest <- function(results) {
+  
   results <- results[!is.na(results$seLogRr), ]
   targetName <- "target"
   comparatorName <- "comparator"
   breaks <- c(0.125, 0.25, 0.5, 1, 2, 4, 8)
   labels <- c(0.125, paste("0.25\nFavors", targetName), 0.5, 1, 2, paste("4\nFavors", comparatorName), 8)
-
+  
   data <- data.frame(logRr = results$logRr,
                      logLb = results$logRr + qnorm(0.025) * results$seLogRr,
                      logUb = results$logRr + qnorm(0.975) * results$seLogRr,
                      databaseId = as.factor(results$databaseId),
                      analysisDescription = as.factor(results$analysisDescription))
   limits <- rev(unique(data$analysisDescription))
-
+  
   plot <- ggplot2::ggplot(data,
                           ggplot2::aes(x = exp(logRr),
                                        y = analysisDescription,
@@ -621,7 +623,12 @@ plotForest <- function(results) {
     ggplot2::geom_point(shape = 18, size = 4, alpha = 0.85) +
     ggplot2::scale_colour_manual(values = c(rgb(0.8, 0, 0), rgb(0, 0, 0))) +
     ggplot2::scale_y_discrete(limits = limits) +
-    ggplot2::scale_x_continuous("Odds ratio", trans = "log10", breaks = breaks, labels = labels) +
+    ggplot2::scale_x_continuous("Odds ratio",
+                                trans = "log10",
+                                breaks = breaks,
+                                labels = labels,
+                                limits = c(min(breaks), max(breaks)),
+                                oob = squish) +
     ggplot2::theme(text = ggplot2::element_text(size = 12),
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_rect(fill = "#FAFAFA",colour = NA),
@@ -634,6 +641,7 @@ plotForest <- function(results) {
     ggplot2::facet_wrap(~ databaseId, nrow = 1)
   return(plot)
 }
+
 
 plotMdForest <- function(results) {
   targetName <- "target"
@@ -704,7 +712,7 @@ drawContourPlot <- function(dat) {
                     biasDifference = round(log(or) - log(correctedOr), 3),
                     relativeBias = round((or - correctedOr) / or), 3) %>%
       dplyr::bind_cols(dist = c("min", "25%ile", "50%ile", "75%ile", "max")) %>%
-      dplyr::select(n, valid, estimable, nonEstimable, incidence, or, correctedOr, dist, orText, sens, spec, biasDifference, relativeBias)
+      dplyr::select(n, valid, estimable, nonEstimable, incidence, or, correctedOr, dist, sens, spec, biasDifference, relativeBias)
     
   #} else {
     
