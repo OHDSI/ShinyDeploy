@@ -708,8 +708,8 @@ drawContourPlot <- function(dat) {
         .groups = "drop") %>% # avg sens and spec by corrected OR if >1 row per corrected OR (doesnt happen)
       dplyr::mutate(incidence = incidence,
                     orText = sprintf("OR=%.3f", correctedOr),
-                    biasDifference = round(log(or) - log(correctedOr), 3),
-                    relativeBias = round((or - correctedOr) / or), 3) %>%
+                    biasDifference = log(or) - log(correctedOr),
+                    relativeBias = (or - correctedOr) / or) %>%
       dplyr::bind_cols(dist = c("min", "25%ile", "50%ile", "75%ile", "max")) %>%
       dplyr::select(n,
                     valid,

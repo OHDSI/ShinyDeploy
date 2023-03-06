@@ -664,7 +664,7 @@ shinyServer(function(input, output, session) {
   
   output$contourResults <- renderTable({
     return(contourResults())
-  })
+  }, digits = 4)
   
   
 })
