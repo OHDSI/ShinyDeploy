@@ -596,7 +596,6 @@ preparePropensityModelTable <- function(model) {
   return(table)
 }
 
-
 plotForest <- function(results) {
   
   results <- results[!is.na(results$seLogRr), ]
@@ -712,7 +711,19 @@ drawContourPlot <- function(dat) {
                     biasDifference = round(log(or) - log(correctedOr), 3),
                     relativeBias = round((or - correctedOr) / or), 3) %>%
       dplyr::bind_cols(dist = c("min", "25%ile", "50%ile", "75%ile", "max")) %>%
-      dplyr::select(n, valid, estimable, nonEstimable, incidence, or, correctedOr, dist, sens, spec, biasDifference, relativeBias)
+      dplyr::select(n,
+                    valid,
+                    estimable,
+                    nonEstimable,
+                    incidence,
+                    or,
+                    orText,
+                    correctedOr,
+                    dist,
+                    sens,
+                    spec,
+                    biasDifference,
+                    relativeBias)
     
   #} else {
     
@@ -754,7 +765,22 @@ drawContourPlot <- function(dat) {
   return(list(contourPlot, pointData))
 }
 
-
+prepareContourDataTable <- function(contourData) {
+  contourData <- contourData %>%
+    dplyr::select(n,
+                  valid,
+                  estimable,
+                  nonEstimable,
+                  incidence,
+                  or,
+                  correctedOr,
+                  dist,
+                  sens,
+                  spec,
+                  biasDifference,
+                  relativeBias)
+  return(contourData)
+}
 
 
 

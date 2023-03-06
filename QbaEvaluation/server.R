@@ -658,6 +658,7 @@ shinyServer(function(input, output, session) {
   contourResults <- reactive({
     contourData <- contourPlotData()
     table <- drawContourPlot(contourData)[[2]]
+    table <- prepareContourDataTable(table)
     return(table)
   })
   
