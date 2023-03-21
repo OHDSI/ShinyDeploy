@@ -3,7 +3,7 @@ library(DT)
 
 shinyUI(
   fluidPage(#style = "width:1500px;",
-    titlePanel("Empirical of QBA for outcome phenotype error correction in comparative effect estimation"),
+    titlePanel("Empirical and simulated evaluation of QBA for outcome phenotype error correction in comparative effect estimation"),
     tags$head(tags$style(type = "text/css",
       "#loadmessage {
          position: fixed;
