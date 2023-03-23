@@ -79,7 +79,6 @@ plotTimeDistribution <- function(data, shortNameRef = NULL) {
   
   plotData$shortName <- factor(plotData$shortName,
                                levels = sortShortName$shortName)
-  
   plot <- ggplot2::ggplot(data = plotData) +
     ggplot2::aes(
       x = .data$shortName,
@@ -361,14 +360,14 @@ plotIncidenceRate <- function(data,
     if (stratifyByGender | stratifyByCalendarYear) {
       if (stratifyByAgeGroup) {
         plot <-
-          plot + facet_nested(databaseId + shortName ~ plotData$ageGroup, scales = scales)
+          plot + ggh4x::facet_nested(databaseId + shortName ~ plotData$ageGroup, scales = scales)
       } else {
         plot <-
-          plot + facet_nested(databaseId + shortName ~ ., scales = scales)
+          plot + ggh4x::facet_nested(databaseId + shortName ~ ., scales = scales)
       }
     } else {
       plot <-
-        plot + facet_nested(databaseId + shortName ~ ., scales = scales)
+        plot + ggh4x::facet_nested(databaseId + shortName ~ ., scales = scales)
     }
     # spacing <- rep(c(1, rep(0.5, length(unique(plotData$shortName)) - 1)), length(unique(plotData$databaseId)))[-1]
     spacing <- plotData %>%
@@ -526,7 +525,7 @@ plotCohortComparisonStandardizedDifference <- function(balance,
     ggplot2::xlab(paste("Covariate Mean in ", xCohort)) +
     ggplot2::ylab(paste("Covariate Mean in ", yCohort)) +
     ggplot2::scale_color_manual("Domain", values = colors) +
-    facet_nested(databaseId + targetCohort ~ comparatorCohort) +
+    ggh4x::facet_nested(databaseId + targetCohort ~ comparatorCohort) +
     ggplot2::theme(strip.background = ggplot2::element_blank()) +
     ggplot2::xlim(xLimitMin, xLimitMax) +
     ggplot2::ylim(yLimitMin, yLimitMax)
