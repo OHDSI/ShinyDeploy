@@ -6,8 +6,8 @@ dashboardPage(
   dashboardHeader(title = "SqlRender Developer"),
   dashboardSidebar(
     sidebarMenu(
-      menuItemFileInput("open", "Open file"),
-      menuItemDownloadLink("save", "Save"),
+      menuItemFileInput("open", "Open file", icon = shiny::icon("folder-open")),
+      menuItemDownloadLink("save", "Save", icon = shiny::icon("save")),
       menuItem("Open new tab", href = "", icon = shiny::icon("plus-square")),
       menuItemCopyTextAreaToClipboard("source", "Copy source to clipboard"),
       menuItemCopyDivToClipboard("target", "Copy target to clipboard")
@@ -32,9 +32,9 @@ dashboardPage(
       column(width = 3,
              box(background = "light-blue",
                  h4("Target dialect"), width = NULL,
-                 selectInput("dialect", NULL, choices = c("BigQuery", "Impala", "Netezza", "Oracle", "PDW", "PostgreSQL", "RedShift", "SQL Server" ), selected = "SQL Server"),
-                 h4("Oracle temp schema"),
-                 textInput("oracleTempSchema", NULL),
+                 selectInput("dialect", NULL, choices = c("BigQuery", "Impala", "Netezza", "Oracle", "PDW", "PostgreSQL", "RedShift", "SQL Server", "SQLite", "Hive", "Spark", "Snowflake", "Azure Synapse"), selected = "SQL Server"),
+                 h4("Temp emulation schema"),
+                 textInput("tempEmulationSchema", NULL),
                  h4("Parameters"),
                  uiOutput("parameterInputs"),
                  textOutput("warnings")

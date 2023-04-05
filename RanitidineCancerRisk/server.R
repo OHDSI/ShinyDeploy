@@ -93,7 +93,7 @@ shinyServer(function(input, output, session) {
   
   output$isMetaAnalysis <- reactive({
     row <- selectedRow()
-    isMetaAnalysis <- !is.null(row) && (row$database == "Meta-analysis")
+    isMetaAnalysis <- !is.null(row) && (grepl("Meta-analysis", row$database))
     if (isMetaAnalysis) {
       hideTab("detailsTabsetPanel", "Attrition")
       hideTab("detailsTabsetPanel", "Population characteristics")

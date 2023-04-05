@@ -21,4 +21,16 @@ Now showing results for pre-task#4 for 7 databases.
 ## 2021-Jul-15: Adding task #5 results & bug fixes
 Now showing results for task #5 for 5 databases.
 Some bugs fixed from the previous version.
+
+## 2021-Oct-14: Aligning with the package v0.4.4 
+Updates to time to event analysis & fixes to cohort characterization & comparison.
+
+## 2021-Nov-09: Data update
+Triggering the data update to show results with correct clinical characterization.
+
+## 2021-Nov-15: Data update
+Triggering the data update to show results with correct clinical characterization.
+
+## 2021-Nov-30: Data update
+Data update to show results from 11 databases with version 0.4.4.
 ------

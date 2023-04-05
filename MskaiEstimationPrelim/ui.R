@@ -26,8 +26,8 @@ shinyUI(
                      selectInput("target", "Target", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[1]),
                      selectInput("comparator", "Comparator", unique(exposureOfInterest$exposureName), selected = unique(exposureOfInterest$exposureName)[4]),
                      selectInput("outcome", "Outcome", unique(outcomeOfInterest$outcomeName)),
-                     checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[[1]]),
-                     checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description, selected = cohortMethodAnalysis$description[[1]])
+                     checkboxGroupInput("database", "Data source", database$databaseId, selected = database$databaseId[16]),
+                     checkboxGroupInput("analysis", "Analysis", cohortMethodAnalysis$description, selected = cohortMethodAnalysis$description)
               ),
               column(9,
                      dataTableOutput("mainTable"),
@@ -73,14 +73,14 @@ shinyUI(
                                                              div(style = "display: inline-block;vertical-align: top;margin-bottom: 10px;",
                                                                  downloadButton("downloadBalancePlotPng", label = "Download plot as PNG"),
                                                                  downloadButton("downloadBalancePlotPdf", label = "Download plot as PDF")
-                                                             )),
-                                                           conditionalPanel("output.isMetaAnalysis == true",
-                                                                            plotOutput("balanceSummaryPlot"),
-                                                                            uiOutput("balanceSummaryPlotCaption"),
-                                                                            div(style = "display: inline-block;vertical-align: top;margin-bottom: 10px;",
-                                                                                downloadButton("downloadBalanceSummaryPlotPng", label = "Download plot as PNG"),
-                                                                                downloadButton("downloadBalanceSummaryPlotPdf", label = "Download plot as PDF")
-                                                                            ))
+                                                             ))#,
+                                                           # conditionalPanel("output.isMetaAnalysis == true",
+                                                           #                  plotOutput("balanceSummaryPlot"),
+                                                           #                  uiOutput("balanceSummaryPlotCaption"),
+                                                           #                  div(style = "display: inline-block;vertical-align: top;margin-bottom: 10px;",
+                                                           #                      downloadButton("downloadBalanceSummaryPlotPng", label = "Download plot as PNG"),
+                                                           #                      downloadButton("downloadBalanceSummaryPlotPdf", label = "Download plot as PDF")
+                                                           #                  ))
                                                            ),
                                                   tabPanel("Systematic error",
                                                            plotOutput("systematicErrorPlot"),

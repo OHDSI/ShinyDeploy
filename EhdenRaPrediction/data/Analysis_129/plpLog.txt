@@ -1,0 +1,42 @@
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Patient-Level Prediction Package version 4.3.6
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		AnalysisID:         Analysis_129
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		CohortID:           21683
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		OutcomeID:          14041
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Cohort size:        21547
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Covariates:         18
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Population size:    21496
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Cases:              30
+2021-04-09 12:16:43	[Main thread]	WARN	PatientLevelPrediction	personSplitter	deprecatedWarning: 'personSplitter' is deprecated. Use 'randomSplitter' instead. See help("Deprecated") 
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Creating a 25% test and 75% train (into 3 folds) random stratified split by class
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction	randomSplitter	Data split into 5373 test cases and 16123 train cases (5375, 5375, 5373)
+2021-04-09 12:16:43	[Main thread]	INFO	PatientLevelPrediction		Training Lasso Logistic Regression model
+2021-04-09 12:16:44	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 2 redundant covariates
+2021-04-09 12:16:44	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Removing 0 infrequent covariates
+2021-04-09 12:16:44	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Normalizing covariates
+2021-04-09 12:16:44	[Main thread]	INFO	FeatureExtraction	tidyCovariateData	Tidying covariates took 1.11 secs
+2021-04-09 12:16:44	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 12:16:44	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Running Cyclops
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Done.
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	GLM fit status:  OK
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	fitGLMModel	Fitting model took 0.785 secs
+2021-04-09 12:16:45	[Main thread]	WARN	PatientLevelPrediction	fitLassoLogisticRegression	No non-zero coefficients
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	fitLassoLogisticRegression	Getting predictions on train set
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 12:16:45	[Main thread]	WARN	PatientLevelPrediction	predictAndromeda	Model had no non-zero coefficients so predicted same for all population...
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 0.004 secs
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 12:16:45	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 12:16:46	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Starting to limit covariate data to population...
+2021-04-09 12:16:46	[Main thread]	INFO	PatientLevelPrediction	limitCovariatesToPopulation	Finished limiting covariate data to population...
+2021-04-09 12:16:46	[Main thread]	WARN	PatientLevelPrediction	predictAndromeda	Model had no non-zero coefficients so predicted same for all population...
+2021-04-09 12:16:46	[Main thread]	INFO	PatientLevelPrediction	predictProbabilities	Prediction took 0.004 secs
+2021-04-09 12:16:46	[Main thread]	WARN	PatientLevelPrediction		Evaluation not possible as prediciton NULL or all the same values
+2021-04-09 12:16:46	[Main thread]	INFO	PatientLevelPrediction		Calculating covariate summary @ 2021-04-09 12:16:46
+2021-04-09 12:16:46	[Main thread]	INFO	PatientLevelPrediction		This can take a while...
+2021-04-09 12:16:47	[Main thread]	INFO	PatientLevelPrediction		Finished covariate summary @ 2021-04-09 12:16:47
+2021-04-09 12:16:47	[Main thread]	INFO	PatientLevelPrediction		Saving PlpResult
+2021-04-09 12:16:47	[Main thread]	INFO	PatientLevelPrediction		plpResult saved to ..\./EhdenRaPredictionResults/Analysis_129\plpResult
+2021-04-09 12:16:47	[Main thread]	INFO	PatientLevelPrediction		Log saved to ./EhdenRaPredictionResults/Analysis_129/plplog.txt
+2021-04-09 12:16:47	[Main thread]	INFO	PatientLevelPrediction		Run finished successfully.

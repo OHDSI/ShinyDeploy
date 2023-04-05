@@ -338,7 +338,12 @@ getCovariateBalance <- function(connection,
 getPs <- function(connection, targetIds, comparatorIds, analysisId, databaseId = "") {
   if(databaseId != "") {
     file <- sprintf("preference_score_dist_t%s_c%s_%s.rds", targetIds, comparatorIds, databaseId)
-    ps <- readRDS(file.path(dataFolder, file))
+    filePath <- file.path(dataFolder, file)
+    if (!file.exists(filePath)) {
+      ps <- data.frame()
+      return(ps)
+    }
+    ps <- readRDS(filePath)
   } else {
     psFiles <- list.files(dataFolder, pattern = sprintf("^preference_score_dist_t%s_c%s_.*\\.rds", targetIds, comparatorIds), full.names = TRUE)
     ps <- do.call("rbind", lapply(psFiles, readRDS))

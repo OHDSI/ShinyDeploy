@@ -351,7 +351,14 @@ prepareTable1 <- function(balance,
   return(resultsTable)
 }
 
-plotPs <- function(ps, targetName, comparatorName) {
+plotPs <- function(ps, targetName, comparatorName, subjectCounts = NULL) {
+  if (!is.null(subjectCounts)) {
+    idx <- ps$preferenceScore > 0.3 & ps$preferenceScore < 0.7
+    equipoise <- ((subjectCounts$targetSubjects * sum(ps$targetDensity[idx]) / sum(ps$targetDensity)) +
+                    (subjectCounts$comparatorSubjects * sum(ps$comparatorDensity[idx]) / sum(ps$comparatorDensity))) /
+      (subjectCounts$targetSubjects + subjectCounts$comparatorSubjects)
+    labelData <- data.frame(text = sprintf("%2.1f%% is in equipoise", equipoise * 100))
+  }
   if (is.null(ps$databaseId)) {
     ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, group = targetName),
                 data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, group = comparatorName))
@@ -360,12 +367,13 @@ plotPs <- function(ps, targetName, comparatorName) {
     ps <- rbind(data.frame(x = ps$preferenceScore, y = ps$targetDensity, databaseId = ps$databaseId, group = targetName),
                 data.frame(x = ps$preferenceScore, y = ps$comparatorDensity, databaseId = ps$databaseId, group = comparatorName))
   }
+ 
   ps$group <- factor(ps$group, levels = c(as.character(targetName), as.character(comparatorName)))
   levels(ps$group) <- paste0(" " , levels(ps$group), " ") # Add space between legend labels
   theme <- ggplot2::element_text(colour = "#000000", size = 12)
   plot <- ggplot2::ggplot(ps,
-                          ggplot2::aes(x = x, y = y, color = group, group = group, fill = group)) +
-    ggplot2::geom_density(stat = "identity") +
+                          ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_density(stat = "identity", ggplot2::aes(color = group, group = group, fill = group)) +
     ggplot2::scale_fill_manual(values = c(rgb(0.8, 0, 0, alpha = 0.5),
                                           rgb(0, 0, 0.8, alpha = 0.5))) +
     ggplot2::scale_color_manual(values = c(rgb(0.8, 0, 0, alpha = 0.5),
@@ -385,6 +393,11 @@ plotPs <- function(ps, targetName, comparatorName) {
                    axis.text.y = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(),
                    axis.ticks.y = ggplot2::element_blank())
+  if (!is.null(subjectCounts)) {
+    plot <- plot + ggplot2::geom_label(x = 0, y = max(ps$y) * 0.99, hjust = "left", vjust = "top", alpha = 0.8, ggplot2::aes(label = text), data = labelData, size = 5)
+  } else {
+    equipoise <- NA
+  }
   if (!is.null(ps$databaseId)) {
      plot <- plot + ggplot2::facet_grid(databaseId~., switch = "both") +
        ggplot2::theme(legend.position = "right")
@@ -599,7 +612,20 @@ plotScatter <- function(controlResults) {
                             "% of CIs include ",
                             temp2$Group)
   temp2$Significant <- NULL
+  ncs <- controlResults[controlResults$effectSize == 1, ]
+  nullCalibrated <- EmpiricalCalibration::fitNull(ncs$calibratedLogRr, ncs$calibratedSeLogRr)
+  easeCalibrated <- EmpiricalCalibration::computeExpectedAbsoluteSystematicError(nullCalibrated)
+  nullUncalibrated <- EmpiricalCalibration::fitNull(ncs$logRr, ncs$seLogRr)
+  easeUncalibrated <- EmpiricalCalibration::computeExpectedAbsoluteSystematicError(nullUncalibrated)
+  temp3 <- data.frame(
+    Group = c(1,1),
+    yGroup = c("Uncalibrated", "Calibrated"),
+    easeLabel = sprintf("EASE = %0.2f", c(easeUncalibrated, easeCalibrated))
+  )
   dd <- merge(temp1, temp2)
+  dd$easeLabel <- NA
+  dd$easeLabel[dd$Group == "1" & dd$yGroup == "Uncalibrated"] <- sprintf("EASE = %0.2f", easeUncalibrated)
+  dd$easeLabel[dd$Group == "1" & dd$yGroup == "Calibrated"] <- sprintf("EASE = %0.2f", easeCalibrated)
   dd$tes <- as.numeric(as.character(dd$Group))
   
   breaks <- c(0.1, 0.25, 0.5, 1, 2, 4, 6, 8, 10)
@@ -629,18 +655,25 @@ plotScatter <- function(controlResults) {
                         alpha = alpha,
                         shape = 16) +
     ggplot2::geom_hline(yintercept = 0) +
-    ggplot2::geom_label(x = log(0.15),
+    ggplot2::geom_label(x = log(0.1),
                         y = 0.9,
                         alpha = 1,
                         hjust = "left",
                         ggplot2::aes(label = nLabel),
                         size = 5,
                         data = dd) +
-    ggplot2::geom_label(x = log(0.15),
+    ggplot2::geom_label(x = log(0.1),
                         y = labelY,
                         alpha = 1,
                         hjust = "left",
                         ggplot2::aes(label = meanLabel),
+                        size = 5,
+                        data = dd) +
+    ggplot2::geom_label(x = log(0.1),
+                        y = 0.5,
+                        alpha = 1,
+                        hjust = "left",
+                        ggplot2::aes(label = easeLabel),
                         size = 5,
                         data = dd) +
     ggplot2::scale_x_continuous("Hazard ratio",

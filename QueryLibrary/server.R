@@ -24,7 +24,7 @@ server <- shinyServer(
             parameterValues[[param]] <- value
           }
         }
-        sql <- do.call("renderSql", append(query$sqlSource(), parameterValues))$sql
+        sql <- do.call("render", append(query$sqlSource(), parameterValues))
         warningString <- c()
         handleWarning <- function(e) {
           output$warnings <- e$message
@@ -62,7 +62,7 @@ server <- shinyServer(
     output$html <- renderText(
       {
         if (!is.null(renderedFilename())){
-          includeHTML(renderedFilename())      
+          includeHTML(paste0(tempFolder, "/", renderedFilename()))      
         } else
           return("select a query")
       }
@@ -135,12 +135,6 @@ server <- shinyServer(
     # obsolete (does not work to have two DTtables in a the app?, to be fixed)
     output$resultsTable <- renderDataTable(
       query$data,
-      server = FALSE,
-      caption = "Table 2: Query results",
-      filter = list(position = 'top'),
-      extensions = 'Buttons',
-      rowname = FALSE,
-      selection = 'single',
       options = list(
         autoWidth = FALSE,
         lengthMenu = c(25, 50, 75, 100),
@@ -335,9 +329,13 @@ server <- shinyServer(
     
     output$about <- renderText(
       {
-        includeHTML(createRenderedHtml("./about.md", ""))
+        includeHTML(paste0(tempFolder, "/", createRenderedHtml("./about.md", "")))
       }
     )
+    
+    session$onSessionEnded(function() {
+      stopApp()
+    })
     
     outputOptions(output, "allowexecute", suspendWhenHidden = FALSE)
   }

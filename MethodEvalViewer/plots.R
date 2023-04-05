@@ -125,7 +125,7 @@ plotRocsInjectedSignals <- function(logRr, trueLogRr, showAucs, fileName = NULL)
   
   if (showAucs) {
     aucs <- data.frame(auc = aucs, label = labels) 
-    aucs <- aucs[order(-aucs$label), ]
+    aucs <- aucs[order(aucs$label, decreasing = TRUE), ]
     for (i in 1:nrow(aucs)) {
       label <- paste0(aucs$label[i], ": AUC = ", format(round(aucs$auc[i], 2), nsmall = 2))
       plot <- plot + geom_text(label = label, x = 1, y = 0.4 - (i*0.1), hjust = 1, color = "#000000", size = 5)

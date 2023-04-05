@@ -295,7 +295,9 @@ getCovariateBalance <- function(connection,
                            analysis_id = analysisId,
                            outcome_id = outcomeId)
   sql <- SqlRender::translate(sql, targetDialect = connection@dbms)
+  # writeLines(sql)
   balance <- querySql(connection, sql)
+  # writeLines("done")
   colnames(balance) <- c("covariateId",
                          "covariateName",
                          "analysisId",
@@ -312,15 +314,15 @@ getCovariateBalance <- function(connection,
 
 getPs <- function(connection, targetIds, comparatorIds, databaseId = "") {
   sql <- "SELECT database_id,
-      target_id,
-      comparator_id,
-      preference_score,
-      target_density,
-      comparator_density
+        target_id,
+        comparator_id,
+        preference_score,
+        target_density,
+        comparator_density
       FROM preference_score_dist
       WHERE target_id IN (@target_ids)
-      AND comparator_id IN (@comparator_ids)
-      {@database_id != \"\"} ? {AND database_id = '@database_id'};"
+        AND comparator_id IN (@comparator_ids)
+      {@database_id != \"\"} ? {  AND database_id = '@database_id'};"
   sql <- SqlRender::render(sql,
                            target_ids = targetIds,
                            comparator_ids = comparatorIds,
@@ -332,6 +334,23 @@ getPs <- function(connection, targetIds, comparatorIds, databaseId = "") {
     ps$databaseId <- NULL
   }
   return(ps)
+}
+
+getSubjectCounts <- function(connection, targetId, comparatorId, databaseId) {
+  sql <- "SELECT MAX(target_subjects) AS target_subjects,
+        MAX(comparator_subjects) AS comparator_subjects
+      FROM cohort_method_result
+      WHERE target_id  = @target_ids
+        AND comparator_id = @comparator_ids
+        AND database_id = '@database_id';"
+  sql <- SqlRender::render(sql,
+                           target_ids = targetId,
+                           comparator_ids = comparatorId,
+                           database_id = databaseId)
+  sql <- SqlRender::translate(sql, targetDialect = connection@dbms)
+  counts <- querySql(connection, sql)
+  colnames(counts) <- SqlRender::snakeCaseToCamelCase(colnames(counts))
+  return(counts)
 }
 
 getKaplanMeier <- function(connection, targetId, comparatorId, outcomeId, databaseId, analysisId) {
