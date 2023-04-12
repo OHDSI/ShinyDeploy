@@ -1,3 +1,5 @@
+facet_nested <- ggh4x::facet_nested
+
 addShortName <-
   function(data,
            shortNameRef = NULL,
