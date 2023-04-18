@@ -1,5 +1,7 @@
 # 04/2023 update: add BETTER-specific data pull functions
 
+library(dplyr)
+
 loadEntireTable <- function(connection, schema, tableName) {
   tryCatch({
     table <- DatabaseConnector::dbReadTable(connection, 
