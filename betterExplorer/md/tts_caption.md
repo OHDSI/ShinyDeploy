@@ -1,0 +1,1 @@
+<p> **Plot:** Timeliness. Measured by number of analyses (in months) needed to reach a desired sensitivity level for detecting true positive signals. </p>
