@@ -6,8 +6,8 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
                                               Sys.getenv("shinydbDatabase"),
                                               sep = "/"),
                                port = Sys.getenv("shinydbPort"),
-                               user = Sys.getenv("shinydbUser"),
-                               password = Sys.getenv("shinydbPw"))
+                               user = Sys.getenv("eumaeusdbUser"),
+                               password = Sys.getenv("eumaeusdbPw"))
 
 # OLD: credentials used for local testing...
 # connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
@@ -19,12 +19,12 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
 #                                password = keyring::key_get("eumaeusPassword"))
 
 
-# onStop(function() {
-#   if (DBI::dbIsValid(connectionPool)) {
-#     writeLines("Closing connection pool")
-#     pool::poolClose(connectionPool)
-#   }
-# })
+onStop(function() {
+  if (DBI::dbIsValid(connectionPool)) {
+    writeLines("Closing connection pool")
+    pool::poolClose(connectionPool)
+  }
+})
 
 schema <- "eumaeus"
 
@@ -47,7 +47,14 @@ trueRrs <- c("Any", 1, unique(positiveControlOutcome$effectSize))
 #                                password = keyring::key_get("betterPassword"))
 
 ## try to use Eumaeus credentials instead......
-connectionPoolBetter = connectionPool
+connectionPoolBetter <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
+                               dbms = "postgresql",
+                               server = paste(Sys.getenv("shinydbServer"),
+                                              Sys.getenv("shinydbDatabase"),
+                                              sep = "/"),
+                               port = Sys.getenv("shinydbPort"),
+                               user = Sys.getenv("shinydbUser"),
+                               password = Sys.getenv("shinydbPw"))
 
 
 onStop(function() {
@@ -57,10 +64,10 @@ onStop(function() {
   }
 })
 
-schema <- "better_results"
+schemaBetter <- "better_results"
 
-mses = loadEntireTable(connectionPoolBetter, schema, "mses")
-priors = loadEntireTable(connectionPoolBetter, schema, "priors")
+mses = loadEntireTable(connectionPoolBetter, schemaBetter, "mses")
+priors = loadEntireTable(connectionPoolBetter, schemaBetter, "priors")
 #type1s = loadEntireTable(connectionPoolBetter, schema, "type1s")
 #tts = loadEntireTable(connectionPoolBetter, schema, "time_to_signal")
 
