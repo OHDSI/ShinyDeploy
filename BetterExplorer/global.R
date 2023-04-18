@@ -6,8 +6,8 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
                                               Sys.getenv("shinydbDatabase"),
                                               sep = "/"),
                                port = Sys.getenv("shinydbPort"),
-                               user = Sys.getenv("eumaeusdbUser"),
-                               password = Sys.getenv("eumaeusdbPw"))
+                               user = Sys.getenv("shinydbUser"),
+                               password = Sys.getenv("shinydbPw"))
 
 # OLD: credentials used for local testing...
 # connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
