@@ -6,8 +6,10 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
                                               Sys.getenv("shinydbDatabase"),
                                               sep = "/"),
                                port = Sys.getenv("shinydbPort"),
-                               user = Sys.getenv("eumaeusdbUser"),
-                               password = Sys.getenv("eumaeusdbPw"))
+                               user = Sys.getenv("shinydbUser"),
+                               password = Sys.getenv("shinydbPw"))
+                               # user = Sys.getenv("eumaeusdbUser"),
+                               # password = Sys.getenv("eumaeusdbPw"))
 
 # OLD: credentials used for local testing...
 # connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
@@ -19,12 +21,12 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
 #                                password = keyring::key_get("eumaeusPassword"))
 
 
-# onStop(function() {
-#   if (DBI::dbIsValid(connectionPool)) {
-#     writeLines("Closing connection pool")
-#     pool::poolClose(connectionPool)
-#   }
-# })
+onStop(function() {
+  if (DBI::dbIsValid(connectionPool)) {
+    writeLines("Closing connection pool")
+    pool::poolClose(connectionPool)
+  }
+})
 
 schema <- "eumaeus"
 
@@ -64,12 +66,12 @@ connectionPoolBetter <- connectionPool
 #                                password = Sys.getenv("shinydbPw"))
 # 
 # 
-# onStop(function() {
-#   if (DBI::dbIsValid(connectionPoolBetter)) {
-#     writeLines("Closing connection pool")
-#     pool::poolClose(connectionPoolBetter)
-#   }
-# })
+onStop(function() {
+  if (DBI::dbIsValid(connectionPoolBetter)) {
+    writeLines("Closing connection pool")
+    pool::poolClose(connectionPoolBetter)
+  }
+})
 # 
 # schemaBetter <- "better_results"
 
