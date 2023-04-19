@@ -19,12 +19,12 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
 #                                password = keyring::key_get("eumaeusPassword"))
 
 
-onStop(function() {
-  if (DBI::dbIsValid(connectionPool)) {
-    writeLines("Closing connection pool")
-    pool::poolClose(connectionPool)
-  }
-})
+# onStop(function() {
+#   if (DBI::dbIsValid(connectionPool)) {
+#     writeLines("Closing connection pool")
+#     pool::poolClose(connectionPool)
+#   }
+# })
 
 schema <- "eumaeus"
 
@@ -35,6 +35,13 @@ negativeControlOutcome <- loadEntireTable(connectionPool, schema, "negative_cont
 positiveControlOutcome <- loadEntireTable(connectionPool, schema, "positive_control_outcome")
 
 trueRrs <- c("Any", 1, unique(positiveControlOutcome$effectSize))
+
+## try querying datatables that are moved under eumaeus schema
+mses = loadEntireTable(connectionPool, schema, "mses")
+priors = loadEntireTable(connectionPool, schema, "priors")
+
+
+connectionPoolBetter <- connectionPool
 
 
 # BETTER connections..... 
@@ -47,27 +54,28 @@ trueRrs <- c("Any", 1, unique(positiveControlOutcome$effectSize))
 #                                password = keyring::key_get("betterPassword"))
 
 ## try to use Eumaeus credentials instead......
-connectionPoolBetter <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
-                               dbms = "postgresql",
-                               server = paste(Sys.getenv("shinydbServer"),
-                                              Sys.getenv("shinydbDatabase"),
-                                              sep = "/"),
-                               port = Sys.getenv("shinydbPort"),
-                               user = Sys.getenv("shinydbUser"),
-                               password = Sys.getenv("shinydbPw"))
+# connectionPoolBetter <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
+#                                dbms = "postgresql",
+#                                server = paste(Sys.getenv("shinydbServer"),
+#                                               Sys.getenv("shinydbDatabase"),
+#                                               sep = "/"),
+#                                port = Sys.getenv("shinydbPort"),
+#                                user = Sys.getenv("shinydbUser"),
+#                                password = Sys.getenv("shinydbPw"))
+# 
+# 
+# onStop(function() {
+#   if (DBI::dbIsValid(connectionPoolBetter)) {
+#     writeLines("Closing connection pool")
+#     pool::poolClose(connectionPoolBetter)
+#   }
+# })
+# 
+# schemaBetter <- "better_results"
 
+# mses = loadEntireTable(connectionPoolBetter, schemaBetter, "mses")
+# priors = loadEntireTable(connectionPoolBetter, schemaBetter, "priors")
 
-onStop(function() {
-  if (DBI::dbIsValid(connectionPoolBetter)) {
-    writeLines("Closing connection pool")
-    pool::poolClose(connectionPoolBetter)
-  }
-})
-
-schemaBetter <- "better_results"
-
-mses = loadEntireTable(connectionPoolBetter, schemaBetter, "mses")
-priors = loadEntireTable(connectionPoolBetter, schemaBetter, "priors")
 #type1s = loadEntireTable(connectionPoolBetter, schema, "type1s")
 #tts = loadEntireTable(connectionPoolBetter, schema, "time_to_signal")
 
