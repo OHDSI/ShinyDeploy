@@ -65,14 +65,12 @@ onStop(function() {
 })
 
 # schemaBetter <- "better_results"
-schemaBetter <- "legendt2dm_class_diagnostics"
+schema <- "legendt2dm_class_diagnostics"
 
-mses = loadEntireTable(connectionPoolBetter, schemaBetter, "mses")
-#priors = loadEntireTable(connectionPoolBetter, schemaBetter, "priors")
+mses = loadEntireTable(connectionPoolBetter, schema, "mses")
+#priors = loadEntireTable(connectionPoolBetter, schema, "priors")
 #type1s = loadEntireTable(connectionPoolBetter, schema, "type1s")
 #tts = loadEntireTable(connectionPoolBetter, schema, "time_to_signal")
-
-cat("Test A\n")
 
 ## filter analysis to exclude "filtered" Historical Comparator results
 analysis = analysis %>% filter(!(method == 'HistoricalComparator' & analysisId >= 13))
