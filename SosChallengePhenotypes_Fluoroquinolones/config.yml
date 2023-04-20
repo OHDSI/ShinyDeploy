@@ -1,0 +1,25 @@
+# Alter these configuration settings for usage with remote databases
+connectionDetails:
+  dbms: "postgresql"
+  port: 5432
+
+# Store connection details as a json string in keyring
+# Store with keyring::key_set_with_value("KEYNAME", jsonlite::toJSON(myConnectionDetails))
+connectionDetailsSecureKey: ~
+
+# store connection details with environment variables
+# Note - if dbms and port vars are unset in environment variables they will default to above connectionDetails settings
+connectionEnvironmentVariables:
+  dbms: ~
+  database: "phenotypeLibrarydb"
+  server: "phenotypeLibraryServer"
+  user: "phenotypeLibrarydbUser"
+  password: "phenotypeLibrarydbPw"
+  port: "shinydbPort"
+  extraSettings: ~
+
+tablePrefix: "flrstudy_"
+resultsDatabaseSchema: "sosphenotypes"
+vocabularyDatabaseSchemas: ["sosphenotypes"]
+cohortTableName: "cohort"
+databaseTableName: "database"

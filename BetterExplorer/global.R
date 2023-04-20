@@ -6,10 +6,10 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
                                               Sys.getenv("shinydbDatabase"),
                                               sep = "/"),
                                port = Sys.getenv("shinydbPort"),
-                               user = Sys.getenv("shinydbUser"),
-                               password = Sys.getenv("shinydbPw"))
-                               # user = Sys.getenv("eumaeusdbUser"),
-                               # password = Sys.getenv("eumaeusdbPw"))
+                               # user = Sys.getenv("shinydbUser"),
+                               # password = Sys.getenv("shinydbPw"))
+                               user = Sys.getenv("eumaeusdbUser"),
+                               password = Sys.getenv("eumaeusdbPw"))
 
 # OLD: credentials used for local testing...
 # connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
@@ -38,15 +38,13 @@ positiveControlOutcome <- loadEntireTable(connectionPool, schema, "positive_cont
 
 trueRrs <- c("Any", 1, unique(positiveControlOutcome$effectSize))
 
-## try querying datatables that are moved under eumaeus schema
-mses = loadEntireTable(connectionPool, schema, "mses")
-priors = loadEntireTable(connectionPool, schema, "priors")
-
-
-connectionPoolBetter <- connectionPool
-
 
 # BETTER connections..... 
+
+# try to use the Eumaeus app user
+connectionPoolBetter <- connectionPool
+
+## credentials for local testing
 # connectionPoolBetter <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
 #                                      dbms = "postgresql",
 #                                server = paste(keyring::key_get("betterServer"),
@@ -55,7 +53,7 @@ connectionPoolBetter <- connectionPool
 #                                user = keyring::key_get("betterUser"),
 #                                password = keyring::key_get("betterPassword"))
 
-## try to use Eumaeus credentials instead......
+## try to use master shinydb user credentials instead......
 # connectionPoolBetter <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(),
 #                                dbms = "postgresql",
 #                                server = paste(Sys.getenv("shinydbServer"),
@@ -72,12 +70,11 @@ onStop(function() {
     pool::poolClose(connectionPoolBetter)
   }
 })
-# 
-# schemaBetter <- "better_results"
 
-# mses = loadEntireTable(connectionPoolBetter, schemaBetter, "mses")
-# priors = loadEntireTable(connectionPoolBetter, schemaBetter, "priors")
+schema <- "better_results"
 
+mses = loadEntireTable(connectionPoolBetter, schema, "mses")
+#priors = loadEntireTable(connectionPoolBetter, schema, "priors")
 #type1s = loadEntireTable(connectionPoolBetter, schema, "type1s")
 #tts = loadEntireTable(connectionPoolBetter, schema, "time_to_signal")
 
