@@ -21,12 +21,12 @@ connectionPool <- pool::dbPool(drv = DatabaseConnector::DatabaseConnectorDriver(
 #                                password = keyring::key_get("eumaeusPassword"))
 
 
-onStop(function() {
-  if (DBI::dbIsValid(connectionPool)) {
-    writeLines("Closing connection pool")
-    pool::poolClose(connectionPool)
-  }
-})
+# onStop(function() {
+#   if (DBI::dbIsValid(connectionPool)) {
+#     writeLines("Closing connection pool")
+#     pool::poolClose(connectionPool)
+#   }
+# })
 
 schema <- "eumaeus"
 
@@ -74,7 +74,7 @@ onStop(function() {
 schema <- "better_results"
 
 mses = loadEntireTable(connectionPoolBetter, schema, "mses")
-#priors = loadEntireTable(connectionPoolBetter, schema, "priors")
+priors = loadEntireTable(connectionPoolBetter, schema, "priors")
 #type1s = loadEntireTable(connectionPoolBetter, schema, "type1s")
 #tts = loadEntireTable(connectionPoolBetter, schema, "time_to_signal")
 
