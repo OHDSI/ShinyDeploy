@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(DT)
 library(shinyWidgets)
 
 titleName <- "BETTER: Bayesian Evaluation of Time-To-Event and Reliability (for vaccine surveillance)"
