@@ -19,11 +19,11 @@ plotType1Error <- function(d){
   
   pg = ggplot(d, 
              aes(x=period_id, y=y, color=approach, alpha = stage))+
-    geom_line(size = 1.5) +
+    geom_line(linewidth = 1.5) +
     geom_point(size=2)+
     geom_hline(yintercept = yinters, 
                color = 'gray60', 
-               size = 1, linetype=2)+
+               linewidth = 1, linetype=2)+
     scale_y_continuous(limits = c(0,1),
                        breaks = ybreaks,
                        trans = 'sqrt'
@@ -63,7 +63,7 @@ plotPower <- function(d) {
              aes(x=period_id, y=power, 
                  color = approach, 
                  alpha = stage))+
-    geom_line(size = 1.5) +
+    geom_line(linewidth = 1.5) +
     geom_point(size=2)+
     scale_y_continuous(limits = c(0,1))+
     scale_x_continuous(breaks = period_breaks, labels = period_labels)+
