@@ -13,6 +13,15 @@ loadEntireTable <- function(connection, schema, tableName) {
   return(table)
 }
 
+# getDatabaseInfo <- function(connection, schema) {
+#   sql <- "SELECT * FROM @schema.database"
+#   sql <- SqlRender::render(sql, schema = schema)
+#   database <- DatabaseConnector::dbGetQuery(connection, sql)
+#   colnames(database) <- SqlRender::snakeCaseToCamelCase(colnames(database))
+#   
+#   return(database)
+# }
+
 getVaccinations <- function(connection, schema) {
   sql <- "SELECT database_id,
     period_id,
