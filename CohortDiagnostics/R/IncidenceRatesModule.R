@@ -250,14 +250,14 @@ plotIncidenceRate <- function(data,
     if (stratifyByGender | stratifyByCalendarYear) {
       if (stratifyByAgeGroup) {
         plot <-
-          plot + ggh4x::facet_nested(databaseName + shortName ~ plotData$ageGroup, scales = scales)
+          plot + ggh4x::facet_nested(databaseId + shortName ~ plotData$ageGroup, scales = scales)
       } else {
         plot <-
-          plot + ggh4x::facet_nested(databaseName + shortName ~ ., scales = scales)
+          plot + ggh4x::facet_nested(databaseId + shortName ~ ., scales = scales)
       }
     } else {
       plot <-
-        plot + ggh4x::facet_nested(databaseName + shortName ~ ., scales = scales)
+        plot + ggh4x::facet_nested(databaseId + shortName ~ ., scales = scales)
     }
     # spacing <- rep(c(1, rep(0.5, length(unique(plotData$shortName)) - 1)), length(unique(plotData$databaseId)))[-1]
     spacing <- plotData %>%
@@ -345,15 +345,13 @@ incidenceRatesView <- function(id) {
           shiny::conditionalPanel(
             condition = "input.irYscaleFixed",
             ns = ns,
-            shiny::sliderInput(
+            shiny::numericInput(
               inputId = ns("YscaleMinAndMax"),
-              label = "Limit y-scale range to:",
+              label = "Limit y-scale max to:",
               min = c(0),
-              max = c(0),
+              max = c(100),
               value = c(0, 0),
-              dragRange = TRUE, width = 400,
-              step = 1,
-              sep = "",
+              width = 100,
             )
           )
         )
@@ -610,9 +608,10 @@ incidenceRatesModule <- function(id,
         ) %>%
         dplyr::distinct(incidenceRate) %>%
         dplyr::arrange(incidenceRate)
+      
       incidenceRateFilter <-
-        incidenceRateFilter[incidenceRateFilter$incidenceRate >= input$YscaleMinAndMax[1] &
-                              incidenceRateFilter$incidenceRate <= input$YscaleMinAndMax[2], , drop = FALSE] %>%
+        incidenceRateFilter[incidenceRateFilter$incidenceRate >= 0 &
+                              incidenceRateFilter$incidenceRate <= input$YscaleMinAndMax, , drop = FALSE] %>%
           dplyr::pull(incidenceRate)
       return(incidenceRateFilter)
     })
