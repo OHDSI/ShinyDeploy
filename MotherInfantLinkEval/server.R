@@ -20,7 +20,7 @@ colNames <- c("Domain",
 shinyServer(
   function(input, output) {
 
-    roundDf <- function(df, digits = 3) {
+    roundDf <- function(df, digits = 5) {
       nums <- vapply(df, is.numeric, FUN.VALUE = logical(1))
       df[, nums] <- round(df[, nums], digits = digits)
       return(df)
@@ -112,7 +112,6 @@ shinyServer(
        options = list(lengthMenu = list(c(5, 10, 15, 20), c('5', '10', '15', '20')),
                       pageLength = 5,
                       filter = 'none'))
-
 
     # mother preg end plot =====================================================
     motherPregEndPlotData <- reactive({
