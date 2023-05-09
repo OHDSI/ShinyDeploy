@@ -125,7 +125,8 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
 
 
 # create a connection handler using the ResultModelManager package
-connection <- ResultModelManager::ConnectionHandler$new(connectionDetails)
+connection <- ResultModelManager::PooledConnectionHandler$new(connectionDetails)
+##connection <- ResultModelManager::ConnectionHandler$new(connectionDetails)
 
 # now create the shiny app based on the config file and view the results
 # based on the connection 
