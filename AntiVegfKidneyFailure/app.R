@@ -91,28 +91,28 @@ config <- initializeModuleConfig() %>%
       ),
       useKeyring = F
     )
-  )# %>%
-  #addModuleConfig(
-  #  ShinyAppBuilder::createModuleConfig( 
-  #    moduleIcon = "object-group",#"meta",
-  #    moduleId = 'EvidenceSynthesis', 
-  #    tabName = 'Meta',
-  #    shinyModulePackage = "OhdsiShinyModules",
-  #    moduleUiFunction = "evidenceSynthesisViewer",
-  #    moduleServerFunction = "evidenceSynthesisServer",
-  #    moduleDatabaseConnectionKeyUsername = 'es', 
-  #    moduleInfoBoxFile = "evidenceSynthesisHelperFile()",
-  #    resultDatabaseDetails = list(
-  #      tablePrefix = 'es_',
-  #      cmTablePrefix = 'cm_',
-  #      cgTablePrefix = 'cg_',
-  #      sccsTablePrefix = 'sccs_',
-  #      schema = schema,
-  #      databaseMetaData = 'DATABASE_META_DATA'
-  #    ),
-  #    useKeyring = F
-  #  )
-  #)
+  ) %>%
+  addModuleConfig(
+    ShinyAppBuilder::createModuleConfig( 
+      moduleIcon = "object-group",#"meta",
+      moduleId = 'EvidenceSynthesis', 
+      tabName = 'Meta',
+      shinyModulePackage = "OhdsiShinyModules",
+      moduleUiFunction = "evidenceSynthesisViewer",
+      moduleServerFunction = "evidenceSynthesisServer",
+      moduleDatabaseConnectionKeyUsername = 'es', 
+      moduleInfoBoxFile = "evidenceSynthesisHelperFile()",
+      resultDatabaseDetails = list(
+        tablePrefix = 'es_',
+        cmTablePrefix = 'cm_',
+        cgTablePrefix = 'cg_',
+        sccsTablePrefix = 'sccs_',
+        schema = schema,
+        databaseMetaData = 'DATABASE_META_DATA'
+      ),
+      useKeyring = F
+    )
+  )
 
 # specify the connection to the results database
 connectionDetails <- DatabaseConnector::createConnectionDetails(
