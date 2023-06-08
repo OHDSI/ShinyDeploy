@@ -1,6 +1,19 @@
 # Code borrowed from https://github.com/teunbrand/ggh4x , just to merge the labels of grouped facets.
 # May need to simplify a bit.
 library(ggplot2)
+
+
+assert_strip <- function(strip, arg = deparse(substitute(strip))) {
+  is_strip <- inherits(strip, "Strip") && inherits(strip, "ggproto")
+  if (!is_strip) {
+    cli::cli_abort(
+      "The {.arg {arg}} argument is not a valid facet strip specification."
+    )
+  }
+  strip
+}
+
+
 # Constructor -------------------------------------------------------------
 
 ## External ---------------------------------------------------------------
