@@ -81,7 +81,7 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
     #  password = defaultPassword
     #)
     
-  connectionDetails <- createConnectionDetails(dbms = "postgresql",
+  connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "postgresql",
                                              server = paste(defaultServer,
                                                             defaultDatabase,
                                                             sep = "/"),
