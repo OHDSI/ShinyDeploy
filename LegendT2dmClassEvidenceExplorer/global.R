@@ -90,10 +90,10 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
                                              password = defaultPassword)
         connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
 
+    resultsDatabaseSchema <- defaultResultsSchema
  sql <- paste0("SET search_path TO ", resultsDatabaseSchema, ";")
     DatabaseConnector::executeSql(connection = connection, sql = sql)    
     
-    resultsDatabaseSchema <- defaultResultsSchema
   } else {
     dataFolder <- defaultDataFolder
   }
