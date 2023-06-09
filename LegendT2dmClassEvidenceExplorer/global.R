@@ -72,14 +72,27 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
   writeLines("Using default settings")
   databaseMode <- defaultDatabaseMode & defaultServer != ""
   if (databaseMode) {
-    connectionPool <- pool::dbPool(
-      drv = DatabaseConnector::DatabaseConnectorDriver(),
-      dbms = "postgresql",
-      server = paste(defaultServer, defaultDatabase, sep = "/"),
-      port = defaultPort,
-      user = defaultUser,
-      password = defaultPassword
-    )
+    # connectionPool <- pool::dbPool(
+    #  drv = DatabaseConnector::DatabaseConnectorDriver(),
+    #  dbms = "postgresql",
+    #  server = paste(defaultServer, defaultDatabase, sep = "/"),
+    #  port = defaultPort,
+    #  user = defaultUser,
+    #  password = defaultPassword
+    #)
+    
+  connectionDetails <- createConnectionDetails(dbms = "postgresql",
+                                             server = paste(defaultServer,
+                                                            defaultDatabase,
+                                                            sep = "/"),
+                                             port = defaultPort,
+                                             user = defaultUser,
+                                             password = defaultPassword)
+        connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
+
+ sql <- paste0("SET search_path TO ", resultsDatabaseSchema, ";")
+    DatabaseConnector::executeSql(connection = connection, sql = sql)    
+    
     resultsDatabaseSchema <- defaultResultsSchema
   } else {
     dataFolder <- defaultDataFolder
@@ -117,14 +130,13 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
 
 if (databaseMode) {
 
-  if (!exists("shinySettings")) {
-    onStop(function() {
-      if (DBI::dbIsValid(connectionPool)) {
-        writeLines("Closing database pool")
-        pool::poolClose(connectionPool)
-      }
-    })
-  }
+  # onStop(function() {
+  #   if (DBI::dbIsValid(connectionPool)) {
+  #     writeLines("Closing database pool")
+  #     pool::poolClose(connectionPool)
+  #   }
+  # })
+  
 
   exposureOfInterest <- getExposures(connection)
   outcomeOfInterest <- getOutcomes(connection)
