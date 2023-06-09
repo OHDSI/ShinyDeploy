@@ -117,12 +117,14 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
 
 if (databaseMode) {
 
-  # onStop(function() {
-  #   if (DBI::dbIsValid(connectionPool)) {
-  #     writeLines("Closing database pool")
-  #     pool::poolClose(connectionPool)
-  #   }
-  # })
+  if (!exists("shinySettings")) {
+    onStop(function() {
+      if (DBI::dbIsValid(connectionPool)) {
+        writeLines("Closing database pool")
+        pool::poolClose(connectionPool)
+      }
+    })
+  }
 
   exposureOfInterest <- getExposures(connection)
   outcomeOfInterest <- getOutcomes(connection)
