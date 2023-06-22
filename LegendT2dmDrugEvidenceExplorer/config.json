@@ -1,4 +1,5 @@
 {
   "resultsSchema": "legendt2dm_drug_results",
-  "headerText": "LEGEND-T2DM Drug Evidence Explorer" 
+  "headerText": "LEGEND-T2DM Drug Evidence Explorer",
+  "mainMask": "2........"
 }

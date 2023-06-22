@@ -2,7 +2,7 @@ library(shiny)
 library(DT)
 library(dplyr)
 
-titleName <- "LEGEND-T2DM Evidence Explorer"
+titleName <- headerText
 
 shinyUI(
   fluidPage(

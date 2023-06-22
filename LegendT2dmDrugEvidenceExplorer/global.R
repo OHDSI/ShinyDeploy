@@ -67,6 +67,7 @@ defaultPassword <- Sys.getenv("shinydbPw")
 defaultResultsSchema <- getConfiguration("resultsSchema")
 defaultBlind <- FALSE
 defaultHeaderText <- getConfiguration("headerText")
+defaultMainMask <- getConfiguration("mainMask")
 
 if (!exists("shinySettings")) { # Running on ShinyDeploy server
   writeLines("Using default settings")
@@ -90,7 +91,7 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
       password = defaultPassword)
     connection <- DatabaseConnector::connect(connectionDetails = connectionDetails)
     resultsDatabaseSchema <- defaultResultsSchema
-    
+
     sql <- paste0("SET search_path TO ", resultsDatabaseSchema, ";")
     DatabaseConnector::executeSql(connection = connection, sql = sql)
   } else {
@@ -98,6 +99,7 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
   }
   headerText <- defaultHeaderText
   blind <- defaultBlind
+  mainMask <- defaultMainMask
 } else {
   writeLines("Using user-provided settings")
   databaseMode <- !is.null(shinySettings$connectionDetails)
@@ -122,6 +124,7 @@ if (!exists("shinySettings")) { # Running on ShinyDeploy server
     dataFolder <- shinySettings$dataFolder
   }
   headerText <- shinySettings$headerText
+  mainMask <- shinySettings$mainMask
   blind <- shinySettings$blind
 }
 
@@ -135,7 +138,7 @@ if (databaseMode) {
   #     pool::poolClose(connectionPool)
   #   }
   # })
-  
+
   exposureOfInterest <- getExposures(connection)
   outcomeOfInterest <- getOutcomes(connection)
   database <- getDatabases(connection)

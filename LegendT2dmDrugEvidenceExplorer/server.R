@@ -72,6 +72,10 @@ shinyServer(function(input, output, session) {
       subsetIds <- subsetIds[grep(mask, subsetIds)]
     }
 
+    if (mainMask != "") {
+      subsetIds <- subsetIds[grep(mainMask, subsetIds)]
+    }
+
     subsetNames <- exposureOfInterest$exposureName[exposureOfInterest$exposureId %in% subsetIds]
 
     oldTarget <- paste0(unlist(strsplit(input$target, " "))[1], ".*")
