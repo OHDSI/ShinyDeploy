@@ -1,6 +1,5 @@
-# details of results database
-# Created for data.ohdsi.org
-# details of results database
+
+
 connectionDetails <- DatabaseConnector::createConnectionDetails(
   dbms = "postgresql",
   user = Sys.getenv("phenotypeLibrarydbUser"),
@@ -9,5 +8,9 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
   port = 5432
 )
 
-tablePrefix <- "cse0223_"
+tablePrefix <- "cse062023_"
 resultsSchema <- "comparator_selector"
+
+# decimal formatters
+fmtSim <- "%.3f"
+fmtSmd <- "%.2f"
