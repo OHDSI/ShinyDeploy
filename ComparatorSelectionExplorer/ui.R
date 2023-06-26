@@ -1,115 +1,120 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# Define UI for application
-shinyUI(fluidPage(
+menu <- shinydashboard::sidebarMenu(
+  shinydashboard::menuItem(text = "Recommend Comparators",
+                           tabName = "comparators",
+                           icon = shiny::icon("table")
+  ),
+  shinydashboard::menuItem(text = "About",
+                           tabName = "about",
+                           icon = shiny::icon("table")
+  )
+)
 
-  # Application title
-  titlePanel(
-    title = "Comparator Selection Explorer",
-    windowTitle = "Comparator Selection Explorer"),
-  p("Janssen Research & Development"),
-  # sidebar with option for target cohort selection
-
-  tabsetPanel(
-    type = "pills",
-    tabPanel(
-      title = "App",
-      sidebarLayout(
-        sidebarPanel(
-          h4(strong("Settings")),
-          shiny::selectizeInput(
-            inputId = "selectedDatabase",
-            choices = NULL,
-            label = "Select target data source:"),
-          shiny::selectizeInput(
-            inputId = "selectedExposure",
-            choices = NULL,
-            label = "Select target exposure:"),
-          shiny::selectInput(inputId = "selectedComparatorTypes",
-                             label = "Select comparator type(s):",
-                             choices = c("RxNorm Ingredients", "ATC Classes"),
-                             selected = "RxNorm Ingredients",
-                             multiple = TRUE),
-          h4(strong("Visualizations")),
-          h6(em("Similarity scores by domain-specific ranking")),
-          shinycssloaders::withSpinner(
-            plotOutput(
-              outputId = "stepPlot"),
-          ),
-          shiny::conditionalPanel(
-            condition = "output.selectedComparator == true",
-            h6(em("Covariate prevalence")),
-            shinycssloaders::withSpinner(
-              plotly::plotlyOutput(
-                outputId = "scatterPlot"
-              )
+bodyTabs <- shinydashboard::tabItems(
+  shinydashboard::tabItem(
+    tabName = "about",
+    shiny::fluidPage(
+      shinydashboard::box(
+        width = 12,
+        h3("Description"),
+        htmlTemplate("about.html"),
+        h3("Currently Available Data Sources"),
+        shinycssloaders::withSpinner(
+          reactable::reactableOutput("dataSources")
+        ),
+        h3("License"),
+        htmlTemplate("license.html"),
+      )
+    )
+  ),
+  shinydashboard::tabItem(
+    tabName = "exposureInfo",
+    shiny::div()
+  ),
+  shinydashboard::tabItem(
+    tabName = "comparators",
+    shiny::fluidPage(
+      shinydashboard::box(
+        title = "Target Selection Settings",
+        width = 12,
+        fluidRow(
+          column(
+            width = 6,
+            selectizeInput(
+              inputId = "selectedExposure",
+              choices = NULL,
+              width = "100%",
+              label = "Select target exposure:"),
+            selectInput(
+              inputId = "selectedComparatorTypes",
+              label = "Select comparator types:",
+              width = "100%",
+              choices = c("RxNorm Ingredients", "ATC Classes"),
+              selected = "RxNorm Ingredients",
+              multiple = TRUE
             ),
-            h6(em("Standardized mean differences")),
-            shinycssloaders::withSpinner(
-              plotly::plotlyOutput(
-                outputId = "smdPlot"
-              )
+            selectInput(
+              inputId = "selectedDatabases",
+              label = "Select data sources:",
+              choices = NULL,
+              selected = NULL,
+              multiple = TRUE
             )
+          ),
+          column(
+            width = 6,
+            sliderInput(
+              inputId = "minNumDatabases",
+              label = "Minimum data sources with comparator presence:",
+              min = 1,
+              max = 10,
+              value = 2,
+              step = 1,
+              ticks = FALSE
+            ),
+            radioButtons(
+              inputId = "avgOn",
+              label = "Rank comparators on:",
+              choices = c("Average similarity score", "Average source-specific rank"),
+              selected = "Average similarity score"
+            ),
           )
         ),
 
-        # display table
-        mainPanel(
-          h3("Comparator listing"),
-          shiny::textOutput("selectedCohortInfo"),
-          p("Select comparator to view covariate distributions"),
-          shinycssloaders::withSpinner(reactable::reactableOutput("cosineSimilarityTbl")),
-
-          shiny::conditionalPanel(
-            condition = "output.selectedComparator == true",
-            h3(strong("Distribution of covariates")),
-            h4(strong("Demographics")),
-            shiny::textOutput("covTableDemoBalance"),
-            shinycssloaders::withSpinner(reactable::reactableOutput("covTableDemo")),
-            h4(strong("Presentation")),
-            h5(em("One covariate per condition observed in 30 days prior to index")),
-            shiny::textOutput("covTablePresBalance"),
-            shinycssloaders::withSpinner(reactable::reactableOutput("covTablePres")),
-            h4(strong("Medical history")),
-            h5(em("One covariate per condition observed more than 30 days prior to index")),
-            shiny::textOutput("covTableMhistBalance"),
-            shinycssloaders::withSpinner(reactable::reactableOutput("covTableMhist")),
-            h4(strong("Prior medications")),
-            h5(em("One covariate per RxNorm ingredient observed more than 30 days prior to index")),
-            shiny::textOutput("covTablePmedsBalance"),
-            shinycssloaders::withSpinner(reactable::reactableOutput("covTablePmeds")),
-            h4(strong("Visit context")),
-            h5(em("Inpatient and emergency department visits observed in 30 days prior to index")),
-            shiny::textOutput("covTableVisitBalance"),
-            shinycssloaders::withSpinner(reactable::reactableOutput("covTableVisit"))
+        fluidRow(
+          column(
+            width = 3,
+            shiny::actionButton(inputId = "getResults", "Suggest Comparators")
           ),
+          column(
+            width = 9,
+            conditionalPanel(
+              "input.selectedExposure != ''",
+              shiny::actionButton(inputId = "showRankings", "Show rank plot"),
+            )
+          )
         )
-      )
-    ),
-    tabPanel(
-      title = "About",
-      shiny::fluidRow(
-        shiny::column(
+      ),
+      shiny::conditionalPanel(
+        condition = "input.getResults > 0",
+        shinydashboard::box(
           width = 12,
-          h3("Description"),
-          shiny::htmlTemplate("about.html"),
-          h3("Currently Available Data Sources"),
-          shinycssloaders::withSpinner(
-            reactable::reactableOutput("dataSources")
-          ),
-          h3("License"),
-          shiny::htmlTemplate("license.html"),
+          title = "Comparator listing",
+          shinycssloaders::withSpinner(reactable::reactableOutput("multiDatabaseSimTable"))
         )
       )
     )
   )
-))
+)
+
+shinydashboard::dashboardPage(
+  shinydashboard::dashboardHeader(title = "Comparator Selection Explorer"),
+  shinydashboard::dashboardSidebar(menu, collapsed = TRUE),
+  shinydashboard::dashboardBody(
+    bodyTabs
+  ),
+  title = "Comparator Selection Explorer",
+  skin = "black"
+)
+
