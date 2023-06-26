@@ -8,7 +8,7 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
   port = 5432
 )
 
-tablePrefix <- "cse062023_"
+tablePrefix <- "cse_062023_"
 resultsSchema <- "comparator_selector"
 
 # decimal formatters
