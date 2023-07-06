@@ -1,7 +1,7 @@
 loadDataFromDB <- function(connPool, networkSchema = Sys.getenv("heradbSchema")) {
   loadDataToGlobalEnv("cohort", queryTable(connPool, networkSchema, "cohort"))
   loadDataToGlobalEnv("cohortCount", queryTable(connPool, networkSchema, "cohort_count"))
-  loadDataToGlobalEnv("database", queryTable(connPool, networkSchema, "database"))
+  loadDataToGlobalEnv("database", queryTable(connPool = connPool, networkSchema = networkSchema, tableName = "database", orderBy = "database_id"))
   loadDataToGlobalEnv("covariate", queryTable(connPool, networkSchema, "covariate"))
   loadDataToGlobalEnv("covariateValue", queryTable(connPool, networkSchema, "covariate_value", limit = 1))
 }
@@ -27,8 +27,11 @@ getCovariateValue <- function(connPool, networkSchema = Sys.getenv("heradbSchema
   return(data)
 }
 
-queryTable <- function(connPool, networkSchema, tableName, limit = -1) {
+queryTable <- function(connPool, networkSchema, tableName, limit = -1, orderBy = NULL) {
   sql <- "SELECT * FROM @network_schema.@table_name"
+  if (!is.null(orderBy)) {
+    sql <- paste(sql, "ORDER BY ", orderBy)
+  }
   if (limit >= 0) {
     sql <- paste(sql, "LIMIT", limit)
   }

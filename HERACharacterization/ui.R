@@ -38,7 +38,7 @@ dashboardPage(
                 #actionButton("cookieGetVal", "Cookie value"),
                 #actionButton("cookieRmVal", "Cookie Remove"),
                 menuItem("About", tabName = "about"),
-                menuItem("Cohorts", tabName = "cohorts"),
+                #menuItem("Cohorts", tabName = "cohorts"),
                 if (exists("cohortCount")) addInfo(menuItem("Cohort Counts", tabName = "cohortCounts"), "cohortCountsInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Cohort Characterization", tabName = "cohortCharacterization"), "cohortCharacterizationInfo"),
                 if (exists("covariateValue")) addInfo(menuItem("Compare Cohort Char.", tabName = "compareCohortCharacterization"), "compareCohortCharacterizationInfo"),

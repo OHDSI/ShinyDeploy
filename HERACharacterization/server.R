@@ -609,9 +609,8 @@ shinyServer(function(input, output, session) {
                    lengthChange = FALSE,
                    ordering = TRUE,
                    paging = FALSE,
-                   columnDefs = list(list(width = '10%', targets = 0),
-                                     list(width = '20%', targets = 1),
-                                     list(width = '35%', targets = 2))
+                   columnDefs = list(list(width = '30%', targets = 1),
+                                     list(width = '40%', targets = 2))
     )
     table <- datatable(table,
                        options = options,
