@@ -1,0 +1,16 @@
+tag,mask,label
+ittOt1,..1......,NA
+ot2,..2......,NA
+priorMet,...1.....,NA
+noMet,...2.....,NA
+any,....00000, all subjects
+younger,....10000,18 - 44 yo
+middle,....20000,45 - 64 yo
+older,....30000,≥ 65 yo
+female,....01000,female
+male,....02000,male
+black,....00100,Black
+lowCv,....00010,low CV risk
+higherCv,....00020,higher CV risk
+withoutRd,....00001,without RD
+withRd,....00002,with RD
