@@ -12,9 +12,9 @@ config <- initializeModuleConfig() %>%
   addModuleConfig(
     createDefaultAboutConfig()
   )  %>%
-  addModuleConfig(
-    createDefaultDatasourcesConfig()
-  )  %>%
+  # addModuleConfig(
+  #   createDefaultDatasourcesConfig()
+  # )  %>%
   addModuleConfig(
     createDefaultCohortGeneratorConfig()
   ) %>%
