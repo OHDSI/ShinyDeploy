@@ -1,0 +1,27 @@
+DBMS:
+postgresql
+
+Error:
+org.postgresql.util.PSQLException: ERROR: relation "icpe2023_dme.subset_definition" does not exist
+  Position: 15
+
+SQL:
+SELECT * FROM icpe2023_dme.subset_definition LIMIT 1
+
+R version:
+R version 4.2.3 (2023-03-15 ucrt)
+
+Platform:
+x86_64-w64-mingw32
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- shiny (1.7.5)
