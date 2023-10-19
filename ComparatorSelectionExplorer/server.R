@@ -597,49 +597,24 @@ shiny::shinyServer(function(input, output, session) {
 
   #### ---- step-function plot of cosine similarity by rank ---- ####
   output$stepPlot <- plotly::renderPlotly({
-
-    resWide <- getDbSimilarity() %>%
-      dplyr::mutate(var = NA) %>%
-      dplyr::mutate(
-        var = ifelse(covariateType == "average", "cohortSimScore", var),
-        var = ifelse(covariateType == "Demographics", "csDemo", var),
-        var = ifelse(covariateType == "Presentation", "csPres", var),
-        var = ifelse(covariateType == "Medical history", "csMhis", var),
-        var = ifelse(covariateType == "prior meds", "csPmed", var),
-        var = ifelse(covariateType == "visit context", "csVisc", var)) %>%
-      dplyr::mutate(
-        var = factor(var, levels = c("cohortSimScore", "csDemo", "csPres", "csMhis", "csPmed", "csVisc"))) %>%
-      tidyr::pivot_wider(
-        id_cols = c("cohortDefinitionId2", "isAtc2", "shortName", "numPersons", "cdmSourceAbbreviation"),
-        names_from = var,
-        values_fill = NA,
-        values_from = cosineSimilarity) %>%
-      dplyr::ungroup()
-
-    if (!"csVisc" %in% colnames(resWide)) resWide$csVisc <- NA
-
-    resWide <- resWide %>%
-      dplyr::arrange(desc(cohortSimScore)) %>%
+    res <- getAllDbSimFiltered()  %>%
       dplyr::mutate(
         rank = row_number(),
-        tooltip = paste0(
-          "<extra></extra>",
-          "<b>",
-          stringr::str_wrap(string = shortName, width = 20, indent = 1, exdent = 1),
-          "</b>\n",
-          "Cohort similarity score: ", sprintf(fmtSim, cohortSimScore), "\n",
-          "Rank:", prettyNum(row_number(), big.mark = ","), " of ", prettyNum(nrow(.), big.mark = ","), "\n",
-          "Domain-specific cosine similarity:\n",
-          "\t<i> Demographics: </i>", sprintf(fmtSim, csDemo), "\n",
-          "\t<i> Presentation: </i>", sprintf(fmtSim, csPres), "\n",
-          "\t<i> Medical history: </i>", sprintf(fmtSim, csMhis), "\n",
-          "\t<i> Prior medications: </i>", sprintf(fmtSim, csPmed), "\n",
-          "\t<i> Visit context: </i>", ifelse(is.na(csVisc), "n/a", sprintf(fmtSim, csVisc))))
+        tooltip = stringr::str_wrap(
+          string = paste0(
+            shortName,
+            " (",
+            sprintf(fmtSim, cosineSimilarity),
+            ") #",
+            prettyNum(cdmSpecificRank, big.mark = ","),
+            " of ",
+            prettyNum(comparatorsInCdm, big.mark = ",")),
+          width = 20, indent = 1, exdent = 1))
 
     plotly::plot_ly(
-      data = resWide,
-      x = ~rank,
-      y = ~cohortSimScore,
+      data = res,
+      x = ~cdmSpecificRank,
+      y = ~cosineSimilarity,
       color = ~cdmSourceAbbreviation,
       type = "scatter",
       mode = "lines",
