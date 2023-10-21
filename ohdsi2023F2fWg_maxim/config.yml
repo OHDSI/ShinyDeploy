@@ -19,8 +19,8 @@ connectionEnvironmentVariables:
   extraSettings: ~
 
 tablePrefix: ""
-resultsDatabaseSchema: "ohdsi2023F2fWg_maxim"
-vocabularyDatabaseSchemas: ["ohdsi2023F2fWg_maxim"]
+resultsDatabaseSchema: "ohdsi2023f2fwg_maxim"
+vocabularyDatabaseSchemas: ["ohdsi2023f2fwg_maxim"]
 cohortTableName: "cohort"
 databaseTableName: "database"
 

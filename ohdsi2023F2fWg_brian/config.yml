@@ -19,8 +19,8 @@ connectionEnvironmentVariables:
   extraSettings: ~
 
 tablePrefix: ""
-resultsDatabaseSchema: "ohdsi2023F2fWg_brian"
-vocabularyDatabaseSchemas: ["ohdsi2023F2fWg_brian"]
+resultsDatabaseSchema: "ohdsi2023f2fwg_brian"
+vocabularyDatabaseSchemas: ["ohdsi2023f2fwg_brian"]
 cohortTableName: "cohort"
 databaseTableName: "database"
 
