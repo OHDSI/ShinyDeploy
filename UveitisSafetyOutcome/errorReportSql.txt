@@ -1,0 +1,27 @@
+DBMS:
+sqlite
+
+Error:
+Invalid or closed connection
+
+SQL:
+SELECT 1
+
+R version:
+R version 4.2.1 (2022-06-23 ucrt)
+
+Platform:
+x86_64-w64-mingw32
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- shiny (1.7.4.1)
+- magrittr (2.0.3)
