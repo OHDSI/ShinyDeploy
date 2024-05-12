@@ -469,12 +469,32 @@ getPs <- function(connection, targetIds, comparatorIds, analysisId, databaseId =
 }
 
 getKaplanMeier <- function(connection, targetId, comparatorId, outcomeId, databaseId, analysisId) {
-  file <- sprintf("kaplan_meier_dist_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
-  km <- readRDS(file.path(dataFolder, file))
-  colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
-  km <- km[km$outcomeId == outcomeId &
-             km$analysisId == analysisId, ]
-
+  
+  if(is.null(connection)){
+    # reading from local results folder
+    file <- sprintf("kaplan_meier_dist_t%s_c%s_%s.rds", targetId, comparatorId, databaseId)
+    km <- readRDS(file.path(dataFolder, file))
+    colnames(km) <- SqlRender::snakeCaseToCamelCase(colnames(km))
+    km <- km[km$outcomeId == outcomeId &
+               km$analysisId == analysisId, ]
+  }else{
+    sql <- "SELECT * FROM kaplan_meier_dist
+         WHERE (target_id = @target_id) AND
+          (comparator_id = @comparator_id) AND
+          (analysis_id = @analysis_id) AND
+          (outcome_id = @outcome_id) AND
+          (database_id = '@database_id');"
+    sql <- SqlRender::render(sql,
+                             target_id = targetId,
+                             comparator_id = comparatorId,
+                             outcome_id = outcomeId,
+                             database_id = databaseId,
+                             analysis_id = analysisId)
+    sql <- SqlRender::translate(sql, targetDialect = connection@dbms)
+    km <- DatabaseConnector::querySql(connection, sql)
+    names(km) <- SqlRender::snakeCaseToCamelCase(names(km))
+  }
+  
   return(km)
 }
 
