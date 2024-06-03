@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-options(shiny.maxRequestSize = 750 * 1024^2)
+options(shiny.maxRequestSize = 50 * 1024^3)
 
 library(shiny)
 library(OhdsiSharing)
