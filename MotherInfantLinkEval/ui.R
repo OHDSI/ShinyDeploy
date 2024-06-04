@@ -27,7 +27,7 @@ shinyUI(
         HTML("<br/>"),
         HTML("<p>Below are links for study-related artifacts that have been made available as part of this study:</p>"),
         HTML("<ul>"),
-        HTML("<li>The full manuscript is available at: <a href=\"https://data.ohdsi.org/\">https://data.ohdsi.org/</a></li>"),
+        HTML("<li>The full manuscript is available at: <a href=\"https://doi.org/10.1186/s12874-023-02073-6\">https://doi.org/10.1186/s12874-023-02073-6</a></li>"),
         HTML("<li>The full source code for the study is available at: <a href=\"https://github.com/ohdsi-studies/MotherInfantLinkEval/\">https://github.com/ohdsi-studies/MotherInfantLinkEval</a></li>"),
         HTML("</ul>")
       ),

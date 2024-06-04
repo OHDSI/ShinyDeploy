@@ -19,8 +19,8 @@ connectionEnvironmentVariables:
   extraSettings: ~
 
 tablePrefix: ""
-resultsDatabaseSchema: "icpe2023_dme"
-vocabularyDatabaseSchemas: ["icpe2023_dme"]
+resultsDatabaseSchema: "icpe2023dme"
+vocabularyDatabaseSchemas: ["icpe2023dme"]
 cohortTableName: "cohort"
 databaseTableName: "database"
 
