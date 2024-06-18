@@ -51,18 +51,20 @@ getAllReadmes <- function(repoTable) {
     url <- sprintf("https://raw.githubusercontent.com/ohdsi-studies/%s/master/README.md",
                    repoName)
     pageGet <- httr::GET(url)
-    page <- httr::content(pageGet)
+    page <- httr::content(pageGet, as = "text")
     return(page)
   }
   
   processRepo <- function(repoName) {
     readme <- getReadme(repoName)
+    if (!is.character(readme)) print(repoName)
     return(data.frame(name = repoName,
                       readme = readme))
   }  
   
   result <- lapply(repoTable$name, processRepo)
   result <- do.call(rbind, result)
+  
   # Remove rows where README.md not found (wrong case?)
   result <- result[!grepl("404", result$readme), ]
   # Remove rows where README does not adhere to template
