@@ -1,0 +1,5 @@
+{
+  "includeLagged": "true",
+  "resultsSchema": "legendt2dm_class_results_v2",
+  "headerText": "LEGEND-T2DM Class Sensitivity Evidence Explorer" 
+}
