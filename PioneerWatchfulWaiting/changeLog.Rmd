@@ -32,5 +32,11 @@ Triggering the data update to show results with correct clinical characterizatio
 Triggering the data update to show results with correct clinical characterization.
 
 ## 2021-Nov-30: Data update
-Data update to show results from 11 databases with version 0.4.4.
-------
+Data update to show results from 11 databases with v0.4.4.
+
+## 2021-Dec-06: Data update
+Data update to show results from 12 databases with v0.4.4.
+
+## 2022-Feb-11: Data update
+Data update to show results from 13 databases with v0.4.4.
+-----
